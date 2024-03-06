@@ -10,19 +10,19 @@ import {
   Typography,
   ListItemText,
   ListItemButton,
-} from '@mui/material'
+} from "@mui/material"
 
 // project import
-import MainCard from '../../components/MainCard'
-import OrdersTable from '../../pages/dashboard/OrdersTable'
-import { GroupsTable } from '../../components/GroupsPage/GroupsTable'
+import MainCard from "../../components/MainCard"
+import OrdersTable from "../../pages/dashboard/OrdersTable"
+import { GroupsTable } from "../../components/GroupsPage/GroupsTable"
 
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
 const categories = [
-  { name: 'Фармація, промислова фармація (ДФ)' },
-  { name: 'Фармація, промислова фармація (ЗФ)' },
-  { name: 'Лабораторна діагностика (ДФ)' },
+  { name: "Фармація, промислова фармація (ДФ)" },
+  { name: "Фармація, промислова фармація (ЗФ)" },
+  { name: "Лабораторна діагностика (ДФ)" },
 ]
 
 const GroupsPage = () => {
@@ -37,7 +37,7 @@ const GroupsPage = () => {
           <Grid item />
         </Grid>
         <MainCard sx={{ mt: 2 }} content={false}>
-          <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 2 } }}>
+          <List sx={{ p: 0, "& .MuiListItemButton-root": { py: 2 } }}>
             {categories.map((el) => (
               <ListItemButton divider sx={{ my: 0 }}>
                 <ListItemText primary={el.name} />
