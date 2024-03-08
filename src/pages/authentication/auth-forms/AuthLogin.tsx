@@ -28,6 +28,7 @@ import AnimateButton from '../../../components/@extended/AnimateButton'
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -40,12 +41,73 @@ const AuthLogin = () => {
   }
 
   const handleMouseDownPassword = (event: React.MouseEventHandler<HTMLButtonElement>) => {
+    // @ts-ignore
     event.preventDefault()
   }
 
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<{ name: string }>({
+    mode: 'onBlur',
+  })
+
+  const onSubmit: SubmitHandler<{ name: string }> = async (data) => {
+    try {
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
-    <>
-      <h1>REPLACE FORMIK TO REACT-HOOK-FORM</h1>
+    <div>
+      {/* <Typography sx={{ mt: 2 }}>Вхід</Typography> */}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* <Controller
+          name="name"
+          control={control}
+          rules={{ required: 'Вкажіть назву категорії' }}
+          render={({ field }) => {
+            return (
+              <Stack spacing={1} sx={{ mt: 2 }}>
+                <InputLabel htmlFor="name">Назва*</InputLabel>
+                <OutlinedInput
+                  id="name"
+                  type="firstname"
+                  {...field}
+                  // value={values.firstname}
+                  name="name"
+                  // onBlur={handleBlur}
+                  // onChange={handleChange}
+                  placeholder="Назва ЦК"
+                  fullWidth
+                  error={Boolean(errors.name)}
+                />
+                {errors.name && (
+                  <FormHelperText error id="helper-text-name">
+                    {errors.name.message}
+                  </FormHelperText>
+                )}
+              </Stack>
+            )
+          }}
+        /> */}
+
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{
+            textTransform: 'capitalize',
+            width: '100%',
+            p: '7.44px 15px',
+            mt: 3,
+          }}
+        >
+          {'Увійти за допомогою google'}
+        </Button>
+      </form>
       {/* <Formik
         initialValues={{
           email: 'info@codedthemes.com',
@@ -177,7 +239,7 @@ const AuthLogin = () => {
           </form>
         )}
       </Formik> */}
-    </>
+    </div>
   )
 }
 

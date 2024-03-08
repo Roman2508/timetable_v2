@@ -18,6 +18,22 @@ body {
   min-height: 100vh;
 }
 
+* {
+  /* scrollbar from moz */
+  scrollbar-color: var('secondary.main') #f4f4f4;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  background-color: #d9d9d9;
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var('secondary.main');
+  /* border-radius: 3px; */
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -44,4 +60,13 @@ h1 {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.rbc-timeslot-group {
+  /* min-height: 80px !important; */
+  min-height: 60px !important;
+}
+
+.rbc-events-container {
+  margin-right: 0 !important;
 }
