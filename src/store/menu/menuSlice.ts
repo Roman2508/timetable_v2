@@ -1,12 +1,12 @@
 // types
-import { createSlice } from '@reduxjs/toolkit'
-import { RootState } from '../index'
+import { createSlice } from "@reduxjs/toolkit"
+import { RootState } from "../store"
 
 // initial state
 const initialState = {
-  openItem: ['dashboard'],
-  defaultId: 'dashboard',
-  openComponent: 'buttons',
+  openItem: ["dashboard"],
+  defaultId: "dashboard",
+  openComponent: "buttons",
   drawerOpen: false,
   componentDrawerOpen: true,
 }
@@ -14,7 +14,7 @@ const initialState = {
 // ==============================|| SLICE - MENU ||============================== //
 
 const menuSlice = createSlice({
-  name: 'menu',
+  name: "menu",
   initialState,
   reducers: {
     activeItem(state, action) {

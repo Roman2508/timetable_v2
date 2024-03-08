@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import React, { useState } from "react"
+import { Link as RouterLink } from "react-router-dom"
 
 // material-ui
 import {
@@ -12,23 +12,32 @@ import {
   TableHead,
   SortDirection,
   TableContainer,
-} from '@mui/material'
+  IconButton,
+} from "@mui/material"
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons"
+import { GroupCategoriesType, GroupsShortType } from "../../store/groups/groupsTypes"
 
-const createData = (trackingNo: number, name: string, fat: number, carbs: number, protein: number) => {
+const createData = (
+  trackingNo: number,
+  name: string,
+  fat: number,
+  carbs: number,
+  protein: number
+) => {
   return { trackingNo, name, fat, carbs, protein }
 }
 
 const rows = [
-  createData(84564564, 'Camera Lens', 40, 2, 40570),
-  createData(98764564, 'Laptop', 300, 0, 180139),
-  createData(98756325, 'Mobile', 355, 1, 90989),
-  createData(98652366, 'Handset', 50, 1, 10239),
-  createData(13286564, 'Computer Accessories', 100, 1, 83348),
-  createData(86739658, 'TV', 99, 0, 410780),
-  createData(13256498, 'Keyboard', 125, 2, 70999),
-  createData(98753263, 'Mouse', 89, 2, 10570),
-  createData(98753275, 'Desktop', 185, 1, 98063),
-  createData(98753291, 'Chair', 100, 0, 14001),
+  createData(84564564, "Camera Lens", 40, 2, 40570),
+  createData(98764564, "Laptop", 300, 0, 180139),
+  createData(98756325, "Mobile", 355, 1, 90989),
+  createData(98652366, "Handset", 50, 1, 10239),
+  createData(13286564, "Computer Accessories", 100, 1, 83348),
+  createData(86739658, "TV", 99, 0, 410780),
+  createData(13256498, "Keyboard", 125, 2, 70999),
+  createData(98753263, "Mouse", 89, 2, 10570),
+  createData(98753275, "Desktop", 185, 1, 98063),
+  createData(98753291, "Chair", 100, 0, 14001),
 ]
 
 function descendingComparator(a, b, orderBy) {
@@ -42,7 +51,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === 'desc'
+  return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
@@ -63,36 +72,36 @@ function stableSort(array, comparator) {
 
 interface IHeadCells {
   id: string
-  align: 'center' | 'left' | 'right' | 'inherit' | 'justify'
+  align: "center" | "left" | "right" | "inherit" | "justify"
   disablePadding: boolean
   label: string
 }
 
 const headCells: IHeadCells[] = [
   {
-    id: 'trackingNo',
-    align: 'center',
+    id: "trackingNo",
+    align: "center",
     disablePadding: false,
-    label: 'Назва',
+    label: "Назва",
   },
   {
-    id: 'name',
-    align: 'center',
+    id: "name",
+    align: "center",
     disablePadding: true,
-    label: 'Курс',
+    label: "Курс",
   },
   {
-    id: 'fat',
-    align: 'center',
+    id: "fat",
+    align: "center",
     disablePadding: false,
-    label: 'Студентів',
+    label: "Студентів",
   },
   {
-    id: 'carbs',
-    align: 'center',
+    id: "carbs",
+    align: "center",
     disablePadding: false,
 
-    label: 'Дії',
+    label: "Дії",
   },
 ]
 
@@ -111,7 +120,7 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
           <TableCell
             key={headCell.id}
             align={headCell.align}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
+            padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
           >
             {headCell.label}
@@ -124,60 +133,73 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
 
 // ==============================|| ORDER TABLE ||============================== //
 
-const GroupsTable = () => {
-  const [order] = useState('asc')
-  const [orderBy] = useState('trackingNo')
+interface IGroupsTableProps {
+  groups: GroupsShortType[]
+}
+
+const GroupsTable: React.FC<IGroupsTableProps> = ({ groups }) => {
+  const [order] = useState("asc")
+  const [orderBy] = useState("trackingNo")
   const [selected] = useState([])
 
-  const isSelected = (trackingNo: number) => selected.indexOf(trackingNo) !== -1
+  const isSelected = (id: number) => selected.indexOf(id) !== -1
 
   return (
     <Box>
       <TableContainer
         sx={{
-          width: '100%',
-          overflowX: 'auto',
-          position: 'relative',
-          display: 'block',
-          maxWidth: '100%',
-          '& td, & th': { whiteSpace: 'nowrap' },
+          width: "100%",
+          overflowX: "auto",
+          position: "relative",
+          display: "block",
+          maxWidth: "100%",
+          "& td, & th": { whiteSpace: "nowrap" },
         }}
       >
         <Table
           aria-labelledby="tableTitle"
           sx={{
-            '& .MuiTableCell-root:first-of-type': {
+            "& .MuiTableCell-root:first-of-type": {
               pl: 2,
             },
-            '& .MuiTableCell-root:last-of-type': {
+            "& .MuiTableCell-root:last-of-type": {
               pr: 3,
             },
           }}
         >
           <OrderTableHead order={order} orderBy={orderBy} />
           <TableBody>
-            {stableSort(rows, getComparator(order, orderBy)).map((row, index) => {
-              const isItemSelected = isSelected(row.trackingNo)
+            {/* {stableSort(rows, getComparator(order, orderBy)).map((row, index) => { */}
+            {groups.map((group, index) => {
+              const isItemSelected = isSelected(group.id)
               const labelId = `enhanced-table-checkbox-${index}`
 
               return (
                 <TableRow
                   hover
                   role="checkbox"
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   aria-checked={isItemSelected}
                   tabIndex={-1}
-                  key={row.trackingNo}
+                  key={group.id}
                   selected={isItemSelected}
                 >
                   <TableCell component="th" id={labelId} scope="row" align="left">
                     <Link color="secondary" component={RouterLink} to="">
-                      {row.name}
+                      {group.name}
                     </Link>
                   </TableCell>
-                  <TableCell align="center">{row.fat}</TableCell>
-                  <TableCell align="center">{row.fat}</TableCell>
-                  <TableCell align="center">{row.trackingNo}</TableCell>
+                  <TableCell align="center">{group.students}</TableCell>
+                  <TableCell align="center">{group.courseNumber}</TableCell>
+                  <TableCell align="center">
+                    <IconButton>
+                      <EditOutlined />
+                    </IconButton>
+
+                    <IconButton sx={{ ml: "5px" }}>
+                      <DeleteOutlined />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               )
             })}
