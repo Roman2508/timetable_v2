@@ -6,18 +6,19 @@ import "./App.css"
 import ThemeCustomization from "./themes"
 import MainLayout from "./layout/MainLayout"
 import ScrollTop from "./components/ScrollTop"
+import "react-toastify/dist/ReactToastify.css"
 import MinimalLayout from "./layout/MinimalLayout"
-import AuthLogin from "./pages/authentication/auth-forms/AuthLogin"
-import AuthRegister from "./pages/authentication/auth-forms/AuthRegister"
-import { GroupsPage } from "./pages/Groups/GroupsPage"
-import FullGroupPage from "./pages/FullGroup/FullGroupPage"
 import { PlansPage } from "./pages/Plans/PlansPage"
-import { FullPlanPage } from "./pages/FullPlan/FullPlanPage"
-import { AuditoriesPage } from "./pages/Auditories/AuditoriesPage"
-import { TeachersPage } from "./pages/Teachers/TeachersPage"
-import { DistributionPage } from "./pages/Distribution/DistributionPage"
-import { StreamsPage } from "./pages/Streams/StreamsPage"
 import { TimetablePage } from "./pages/TimetablePage"
+import { GroupsPage } from "./pages/Groups/GroupsPage"
+import { StreamsPage } from "./pages/Streams/StreamsPage"
+import FullGroupPage from "./pages/FullGroup/FullGroupPage"
+import { FullPlanPage } from "./pages/FullPlan/FullPlanPage"
+import { TeachersPage } from "./pages/Teachers/TeachersPage"
+import { AuditoriesPage } from "./pages/Auditories/AuditoriesPage"
+import AuthLogin from "./pages/authentication/auth-forms/AuthLogin"
+import { DistributionPage } from "./pages/Distribution/DistributionPage"
+import AuthRegister from "./pages/authentication/auth-forms/AuthRegister"
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import("./pages/dashboard")))
@@ -39,6 +40,8 @@ const App = () => {
             <Route element={<GroupsPage />} path="/" />
             <Route element={<GroupsPage />} path="/groups" />
             <Route element={<FullGroupPage />} path="/groups/:id" />
+            <Route element={<FullGroupPage />} path="/groups/create/:categoryId" />
+
             <Route element={<PlansPage />} path="/plans" />
             <Route element={<FullPlanPage />} path="/plans/:id" />
             <Route element={<AuditoriesPage />} path="/auditories" />

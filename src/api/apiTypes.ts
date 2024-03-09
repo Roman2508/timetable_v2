@@ -1,5 +1,5 @@
-import { GroupsType } from '../redux/groups/groupsTypes'
-import { TeachersType } from '../redux/teachers/teachersTypes'
+import { GroupsType } from '../store/groups/groupsTypes'
+import { TeachersType } from '../store/teachers/teachersTypes'
 
 /* Global */
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink, useNavigate } from "react-router-dom"
 
 // material-ui
 import {
@@ -135,9 +135,10 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
 
 interface IGroupsTableProps {
   groups: GroupsShortType[]
+  onDeleteEntity: (type: "category" | "group", id: number) => void
 }
 
-const GroupsTable: React.FC<IGroupsTableProps> = ({ groups }) => {
+const GroupsTable: React.FC<IGroupsTableProps> = ({ groups, onDeleteEntity }) => {
   const [order] = useState("asc")
   const [orderBy] = useState("trackingNo")
   const [selected] = useState([])
@@ -185,18 +186,23 @@ const GroupsTable: React.FC<IGroupsTableProps> = ({ groups }) => {
                   selected={isItemSelected}
                 >
                   <TableCell component="th" id={labelId} scope="row" align="left">
-                    <Link color="secondary" component={RouterLink} to="">
+                    <Link color="secondary" component={RouterLink} to={`/groups/${group.id}`}>
                       {group.name}
                     </Link>
                   </TableCell>
-                  <TableCell align="center">{group.students}</TableCell>
                   <TableCell align="center">{group.courseNumber}</TableCell>
+                  <TableCell align="center">{group.students}</TableCell>
                   <TableCell align="center">
-                    <IconButton>
-                      <EditOutlined />
-                    </IconButton>
+                    <Link component={RouterLink} to={`/groups/${group.id}`}>
+                      <IconButton>
+                        <EditOutlined />
+                      </IconButton>
+                    </Link>
 
-                    <IconButton sx={{ ml: "5px" }}>
+                    <IconButton
+                      sx={{ ml: "5px" }}
+                      onClick={() => onDeleteEntity("group", group.id)}
+                    >
                       <DeleteOutlined />
                     </IconButton>
                   </TableCell>

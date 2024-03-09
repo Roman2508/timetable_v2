@@ -1,12 +1,12 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React from "react"
+import { useSelector } from "react-redux"
 
 // material-ui
-import { Box, List, Typography } from '@mui/material'
+import { Box, List, Typography } from "@mui/material"
 
 // project import
-import NavItem from './NavItem'
-import menuItems from '../../menu-items'
+import NavItem from "./NavItem"
+import menuItems from "../../menu-items"
 
 // ==============================|| NAVIGATION - LIST GROUP ||============================== //
 
@@ -17,6 +17,7 @@ const Navigation: React.FC = () => {
     <>
       {menuItems.items.map((item) => (
         <List
+          key={item.id}
           subheader={
             item.title &&
             drawerOpen && (

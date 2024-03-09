@@ -19,7 +19,7 @@ const groupsInitialState: GroupsInitialState = {
     id: 0,
     name: "",
     courseNumber: 1,
-    yearOfAdmission: 1,
+    yearOfAdmission: Number(new Date().getFullYear().toString()),
     students: 1,
     formOfEducation: "Денна",
     specializationList: [],
@@ -45,9 +45,9 @@ const groupsSlice = createSlice({
     //   const group = { ...state.group, [action.payload.field]: action.payload.value }
     //   state.group = group
     // },
-    // clearGroupData(state) {
-    //   state.group = groupsInitialState.group
-    // },
+    clearGroupData(state) {
+      state.group = groupsInitialState.group
+    },
   },
   extraReducers: (builder) => {
     /* getGroupCategories */
@@ -106,7 +106,7 @@ const groupsSlice = createSlice({
 
       const newGroups = state.groupCategories.map((el) => {
         if (el.id === action.payload.category?.id) {
-          return { ...el, auditories: [...el.groups, action.payload] }
+          return { ...el, groups: [...el.groups, action.payload] }
         }
 
         return el
@@ -129,12 +129,12 @@ const groupsSlice = createSlice({
             return group
           })
 
-          return { ...el, auditories: newGroups }
+          return { ...el, groups: newGroups }
         }
 
         return el
       })
-
+      state.group = action.payload
       state.groupCategories = newGroups
     })
 
@@ -145,7 +145,7 @@ const groupsSlice = createSlice({
       const updatedCategories = state.groupCategories.map((el) => {
         const newGroups = el.groups.filter((group) => group.id !== action.payload)
 
-        return { ...el, auditories: newGroups }
+        return { ...el, groups: newGroups }
       })
 
       state.groupCategories = updatedCategories
@@ -155,6 +155,6 @@ const groupsSlice = createSlice({
 
 export const groupsSelector = (state: RootState) => state.groups
 
-export const { setLoadingStatus } = groupsSlice.actions
+export const { setLoadingStatus, clearGroupData } = groupsSlice.actions
 
 export default groupsSlice.reducer

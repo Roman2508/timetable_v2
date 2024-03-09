@@ -1,384 +1,507 @@
 import {
-  Button,
-  FormHelperText,
   Grid,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
   Stack,
+  Button,
+  MenuItem,
   TextField,
   Typography,
-} from '@mui/material'
-import React from 'react'
-import MainCard from '../../components/MainCard'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+  InputLabel,
+  OutlinedInput,
+  FormHelperText,
+} from "@mui/material"
+import React from "react"
+import { useSelector } from "react-redux"
+import { useNavigate, useParams } from "react-router-dom"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 
-interface IGroupFilelds {
+import MainCard from "../../components/MainCard"
+import { useAppDispatch } from "../../store/store"
+import { LoadingStatusTypes } from "../../store/appTypes"
+import { plansSelector } from "../../store/plans/plansSlice"
+import { clearGroupData, groupsSelector } from "../../store/groups/groupsSlice"
+import { getPlansCategories } from "../../store/plans/plansAsyncActions"
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
+import { SelectPlanModal } from "../../components/GroupsPage/SelectPlanModal"
+import {
+  createGroup,
+  deleteGroup,
+  getGroup,
+  getGroupCategories,
+  updateGroup,
+} from "../../store/groups/groupsAsyncActions"
+import { toast } from "react-toastify"
+
+export interface IGroupFilelds {
   name: string
   yearOfAdmission: number
   courseNumber: number
   students: number
-  formOfEducation: 'Денна' | 'Заочна'
+  formOfEducation: "Денна" | "Заочна"
   educationPlan: number
   category: number
 }
 
 const FullGroupPage = () => {
+  const params = useParams()
+  const navigate = useNavigate()
+
+  const dispatch = useAppDispatch()
+
+  const { plansCategories } = useSelector(plansSelector)
+  const { group, groupCategories, loadingStatus } = useSelector(groupsSelector)
+
+  const [planModalVisible, setPlanModalVisible] = React.useState(false)
+
   const {
     control,
-    formState: { errors },
+    setValue,
+    getValues,
     handleSubmit,
+    formState: { errors },
   } = useForm<IGroupFilelds>({
-    mode: 'onBlur',
+    mode: "onChange",
+    defaultValues: {
+      category: group.id,
+      formOfEducation: "Денна",
+    },
   })
 
   const onSubmit: SubmitHandler<IGroupFilelds> = async (data) => {
     try {
-      console.log(data)
+      if (!data.educationPlan) {
+        toast.error("Навчальний план не вибраний")
+        return
+      }
+
+      const groupData = {
+        ...data,
+        id: group.id,
+        educationPlan: Number(data.educationPlan),
+      }
+
+      if (params.id) {
+        await dispatch(updateGroup(groupData))
+        navigate("/groups")
+      } else {
+        await dispatch(createGroup(groupData))
+        navigate("/groups")
+      }
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
+  const onDeleteGroup = async () => {
+    if (!group) return
+    if (window.confirm(`Ви дійсно хочете видалити групу ${group.name}?`)) {
+      await dispatch(deleteGroup(group.id))
+      navigate("/groups")
+    }
+  }
+
+  React.useEffect(() => {
+    if (params.id) {
+      dispatch(getGroup(params.id))
+    }
+    if (!groupCategories) {
+      dispatch(getGroupCategories())
+    }
+    if (!plansCategories) {
+      dispatch(getPlansCategories())
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (params.categoryId) {
+      setValue("category", Number(params.categoryId))
+    }
+    return () => {
+      dispatch(clearGroupData())
+    }
+  }, [params])
+
+  React.useEffect(() => {
+    if (params.id) {
+      setValue("name", group.name)
+      setValue("yearOfAdmission", group.yearOfAdmission)
+      setValue("courseNumber", group.courseNumber)
+      setValue("students", group.students)
+      setValue("formOfEducation", group.formOfEducation)
+
+      if (group.educationPlan) {
+        setValue("educationPlan", group.educationPlan.id)
+      }
+
+      if (group.category) {
+        setValue("category", group.category.id)
+      }
+    }
+  }, [group])
+
   return (
     <>
+      <SelectPlanModal
+        control={control}
+        getValues={getValues}
+        open={planModalVisible}
+        setOpen={setPlanModalVisible}
+        plansCategories={plansCategories}
+      />
+
       <Grid
         container
         alignItems="center"
         justifyContent="space-between"
-        sx={{ maxWidth: '860px', margin: '0 auto', mb: 2 }}
+        sx={{ maxWidth: "860px", margin: "0 auto", mb: 2 }}
       >
         <Grid item>
-          <Typography variant="h5">Група: PH-21-1</Typography>
+          <Typography variant="h5">{group.name ? `Група: ${group.name}` : "Нова група"}</Typography>
         </Grid>
         <Grid item />
       </Grid>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <MainCard sx={{ mt: 2, p: 4, maxWidth: '860px', margin: '0 auto' }} content={false}>
-          <Grid container spacing={3} sx={{ mb: 2, display: 'flex', alignItems: errors.name ? 'center' : 'flex-end' }}>
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="name"
-                control={control}
-                rules={{ required: 'Вкажіть шифр групи' }}
-                render={({ field }) => {
-                  return (
-                    <Stack spacing={1}>
-                      <InputLabel htmlFor="name">Шифр групи*</InputLabel>
-                      <OutlinedInput
-                        id="name"
-                        type="firstname"
-                        {...field}
-                        // value={values.firstname}
-                        name="name"
-                        // onBlur={handleBlur}
-                        // onChange={handleChange}
-                        placeholder="PH-24-1"
-                        fullWidth
-                        error={Boolean(errors.name)}
-                      />
-                      {errors.name && (
-                        <FormHelperText error id="helper-text-name">
-                          {errors.name.message}
-                        </FormHelperText>
-                      )}
-                    </Stack>
-                  )
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Button
-                // size="small"
-                variant="outlined"
-                color="secondary"
-                sx={{
-                  textTransform: 'capitalize',
-                  width: '100%',
-                  p: '7.44px 15px',
-                }}
-              >
-                Навчальний план
-              </Button>
-            </Grid>
-          </Grid>
-
-          <Grid
-            container
-            spacing={3}
-            sx={{
-              mb: 2,
-              display: 'flex',
-              alignItems: errors.yearOfAdmission ? 'center' : 'flex-end',
-            }}
-          >
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="yearOfAdmission"
-                control={control}
-                rules={{ required: 'Вкажіть рік вступу' }}
-                render={({ field }) => {
-                  return (
-                    <Stack spacing={1}>
-                      <InputLabel htmlFor="yearOfAdmission">Рік вступу*</InputLabel>
-                      <OutlinedInput
-                        id="yearOfAdmission"
-                        type="yearOfAdmission"
-                        {...field}
-                        // value={values.yearOfAdmission}
-                        name="yearOfAdmission"
-                        // onBlur={handleBlur}
-                        // onChange={handleChange}
-                        placeholder="2024"
-                        fullWidth
-                        error={Boolean(errors.yearOfAdmission)}
-                      />
-                      {errors.yearOfAdmission && (
-                        <FormHelperText error id="helper-text-yearOfAdmission">
-                          {errors.yearOfAdmission.message}
-                        </FormHelperText>
-                      )}
-                    </Stack>
-                  )
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Button
-                // size="small"
-                variant="outlined"
-                color="secondary"
-                sx={{
-                  textTransform: 'capitalize',
-                  width: '100%',
-                  p: '7.44px 15px',
-                }}
-              >
-                Потоки
-              </Button>
-            </Grid>
-          </Grid>
-
-          <Grid
-            container
-            spacing={3}
-            sx={{ mb: 2, display: 'flex', alignItems: errors.courseNumber ? 'center' : 'flex-end' }}
-          >
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="courseNumber"
-                control={control}
-                rules={{ required: 'Вкажіть номер курсу' }}
-                render={({ field }) => {
-                  return (
-                    <Stack spacing={1}>
-                      <InputLabel htmlFor="courseNumber">Курс*</InputLabel>
-                      <OutlinedInput
-                        id="courseNumber"
-                        type="courseNumber"
-                        {...field}
-                        // value={values.firstname}
-                        name="courseNumber"
-                        // onBlur={handleBlur}
-                        // onChange={handleChange}
-                        placeholder="1"
-                        fullWidth
-                        error={Boolean(errors.courseNumber)}
-                      />
-                      {errors.courseNumber && (
-                        <FormHelperText error id="helper-text-courseNumber">
-                          {errors.courseNumber.message}
-                        </FormHelperText>
-                      )}
-                    </Stack>
-                  )
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Button
-                // size="small"
-                variant="outlined"
-                color="secondary"
-                sx={{
-                  textTransform: 'capitalize',
-                  width: '100%',
-                  p: '7.44px 15px',
-                }}
-              >
-                Підгрупи
-              </Button>
-            </Grid>
-          </Grid>
-
-          <Grid
-            container
-            spacing={3}
-            sx={{ mb: 2, display: 'flex', alignItems: errors.students ? 'center' : 'flex-end' }}
-          >
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="students"
-                control={control}
-                rules={{ required: 'Вкажіть кількість студентів в групі' }}
-                render={({ field }) => {
-                  return (
-                    <Stack spacing={1}>
-                      <InputLabel htmlFor="students">Кількість студентів*</InputLabel>
-                      <OutlinedInput
-                        id="students"
-                        type="students"
-                        {...field}
-                        // value={values.firstname}
-                        name="students"
-                        // onBlur={handleBlur}
-                        // onChange={handleChange}
-                        placeholder="30"
-                        fullWidth
-                        error={Boolean(errors.students)}
-                      />
-                      {errors.students && (
-                        <FormHelperText error id="helper-text-students">
-                          {errors.students.message}
-                        </FormHelperText>
-                      )}
-                    </Stack>
-                  )
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Button
-                // size="small"
-                variant="outlined"
-                color="secondary"
-                sx={{
-                  textTransform: 'capitalize',
-                  width: '100%',
-                  p: '7.44px 15px',
-                }}
-              >
-                Навчальний план
-              </Button>
-            </Grid>
-          </Grid>
-
-          <Grid
-            container
-            spacing={3}
-            sx={{
-              mb: 2,
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="formOfEducation"
-                control={control}
-                rules={{ required: 'Вкажіть форму навчання' }}
-                render={({ field }) => {
-                  return (
-                    <Stack spacing={1}>
-                      <InputLabel htmlFor="formOfEducation">Форма навчання*</InputLabel>
-                      <TextField
-                        select
-                        {...field}
-                        fullWidth
-                        id="formOfEducation"
-                        //   value={value}
-                        //   onChange={(e) => setValue(e.target.value)}
-                        sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
-                      >
-                        {[
-                          { value: 'full-time', label: 'Денна' },
-                          { value: 'partTime', label: 'Заочна' },
-                        ].map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Stack>
-                  )
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="category"
-                control={control}
-                rules={{ required: 'Вкажіть категорію' }}
-                render={({ field }) => {
-                  return (
-                    <Stack spacing={1}>
-                      <InputLabel htmlFor="category">Категорія*</InputLabel>
-                      <TextField
-                        select
-                        {...field}
-                        fullWidth
-                        id="category"
-                        //   value={value}
-                        //   onChange={(e) => setValue(e.target.value)}
-                        sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
-                      >
-                        {[
-                          { value: '1', label: 'Фармація, промислова фармація (ДФ)' },
-                          { value: '2', label: 'Фармація, промислова фармація (ДФ)' },
-                          { value: '3', label: 'Лабораторна діагностика (ДФ)' },
-                        ].map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Stack>
-                  )
-                }}
-              />
-            </Grid>
-          </Grid>
+      {/* Якщо створена група ще не завантажилась */}
+      {params.id && !group.id && loadingStatus === LoadingStatusTypes.LOADING ? (
+        <MainCard sx={{ mt: 2, p: 4, maxWidth: "860px", margin: "0 auto" }} content={false}>
+          <LoadingSpinner />
         </MainCard>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <MainCard sx={{ mt: 2, p: 4, maxWidth: "860px", margin: "0 auto" }} content={false}>
+            <Grid
+              container
+              spacing={3}
+              sx={{ mb: 2, display: "flex", alignItems: errors.name ? "center" : "flex-end" }}
+            >
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="name"
+                  control={control}
+                  rules={{ required: "Вкажіть шифр групи" }}
+                  render={({ field }) => {
+                    return (
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor="name">Шифр групи*</InputLabel>
+                        <OutlinedInput
+                          fullWidth
+                          id="name"
+                          {...field}
+                          type="text"
+                          name="name"
+                          placeholder="PH-24-1"
+                          error={Boolean(errors.name)}
+                        />
+                        {errors.name && (
+                          <FormHelperText error id="helper-text-name">
+                            {errors.name.message}
+                          </FormHelperText>
+                        )}
+                      </Stack>
+                    )
+                  }}
+                />
+              </Grid>
 
-        <Grid
-          container
-          spacing={3}
-          sx={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '860px', m: '0 auto' }}
-        >
-          <Grid item xs={12} md={3}>
-            <Button
-              color="secondary"
+              <Grid item xs={12} md={6}>
+                <Button
+                  // size="small"
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => setPlanModalVisible(true)}
+                  sx={{ textTransform: "capitalize", width: "100%", p: "7.44px 15px" }}
+                >
+                  Навчальний план
+                </Button>
+              </Grid>
+            </Grid>
+
+            <Grid
+              container
+              spacing={3}
               sx={{
-                textTransform: 'capitalize',
-                width: '100%',
-                p: '7.44px 15px',
+                mb: 2,
+                display: "flex",
+                alignItems: errors.yearOfAdmission ? "center" : "flex-end",
               }}
             >
-              Відмінити
-            </Button>
-          </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="yearOfAdmission"
+                  control={control}
+                  rules={{ required: "Вкажіть рік вступу" }}
+                  render={({ field }) => {
+                    return (
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor="yearOfAdmission">Рік вступу*</InputLabel>
+                        <OutlinedInput
+                          {...field}
+                          type="number"
+                          id="yearOfAdmission"
+                          // value={values.yearOfAdmission}
+                          name="yearOfAdmission"
+                          // onBlur={handleBlur}
+                          // onChange={handleChange}
+                          placeholder="2024"
+                          fullWidth
+                          error={Boolean(errors.yearOfAdmission)}
+                        />
+                        {errors.yearOfAdmission && (
+                          <FormHelperText error id="helper-text-yearOfAdmission">
+                            {errors.yearOfAdmission.message}
+                          </FormHelperText>
+                        )}
+                      </Stack>
+                    )
+                  }}
+                />
+              </Grid>
 
-          <Grid item xs={12} md={3}>
-            <Button
-              variant="contained"
-              color="primary"
+              <Grid item xs={12} md={6}>
+                <Button
+                  // size="small"
+                  variant="outlined"
+                  color="secondary"
+                  sx={{
+                    textTransform: "capitalize",
+                    width: "100%",
+                    p: "7.44px 15px",
+                  }}
+                >
+                  Потоки
+                </Button>
+              </Grid>
+            </Grid>
+
+            <Grid
+              container
+              spacing={3}
               sx={{
-                textTransform: 'capitalize',
-                width: '100%',
-                p: '7.44px 15px',
+                mb: 2,
+                display: "flex",
+                alignItems: errors.courseNumber ? "center" : "flex-end",
               }}
             >
-              Зберегти
-            </Button>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="courseNumber"
+                  control={control}
+                  rules={{ required: "Вкажіть номер курсу" }}
+                  render={({ field }) => {
+                    return (
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor="courseNumber">Курс*</InputLabel>
+                        <OutlinedInput
+                          {...field}
+                          type="number"
+                          id="courseNumber"
+                          // value={values.firstname}
+                          name="courseNumber"
+                          // onBlur={handleBlur}
+                          // onChange={handleChange}
+                          placeholder="1"
+                          fullWidth
+                          error={Boolean(errors.courseNumber)}
+                        />
+                        {errors.courseNumber && (
+                          <FormHelperText error id="helper-text-courseNumber">
+                            {errors.courseNumber.message}
+                          </FormHelperText>
+                        )}
+                      </Stack>
+                    )
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <Button
+                  // size="small"
+                  variant="outlined"
+                  color="secondary"
+                  sx={{
+                    textTransform: "capitalize",
+                    width: "100%",
+                    p: "7.44px 15px",
+                  }}
+                >
+                  Підгрупи
+                </Button>
+              </Grid>
+            </Grid>
+
+            <Grid
+              container
+              spacing={3}
+              sx={{ mb: 2, display: "flex", alignItems: errors.students ? "center" : "flex-end" }}
+            >
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="students"
+                  control={control}
+                  rules={{ required: "Вкажіть кількість студентів в групі" }}
+                  render={({ field }) => {
+                    return (
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor="students">Кількість студентів*</InputLabel>
+                        <OutlinedInput
+                          {...field}
+                          type="number"
+                          id="students"
+                          // value={values.firstname}
+                          name="students"
+                          // onBlur={handleBlur}
+                          // onChange={handleChange}
+                          placeholder="30"
+                          fullWidth
+                          error={Boolean(errors.students)}
+                        />
+                        {errors.students && (
+                          <FormHelperText error id="helper-text-students">
+                            {errors.students.message}
+                          </FormHelperText>
+                        )}
+                      </Stack>
+                    )
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <Button
+                  // size="small"
+                  variant="outlined"
+                  color="secondary"
+                  sx={{
+                    textTransform: "capitalize",
+                    width: "100%",
+                    p: "7.44px 15px",
+                  }}
+                >
+                  Навчальний план
+                </Button>
+              </Grid>
+            </Grid>
+
+            <Grid
+              container
+              spacing={3}
+              sx={{
+                mb: 2,
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="formOfEducation"
+                  control={control}
+                  rules={{ required: "Вкажіть форму навчання" }}
+                  render={({ field }) => {
+                    return (
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor="formOfEducation">Форма навчання*</InputLabel>
+                        <TextField
+                          select
+                          {...field}
+                          fullWidth
+                          id="formOfEducation"
+                          //   value={value}
+                          //   onChange={(e) => setValue(e.target.value)}
+                          sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}
+                        >
+                          {[
+                            { value: "Денна", label: "Денна" },
+                            { value: "Заочна", label: "Заочна" },
+                          ].map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Stack>
+                    )
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="category"
+                  control={control}
+                  rules={{ required: "Вкажіть категорію" }}
+                  render={({ field }) => {
+                    return (
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor="category">Категорія*</InputLabel>
+                        <TextField
+                          select
+                          fullWidth
+                          {...field}
+                          id="category"
+                          //   value={value}
+                          //   onChange={(e) => setValue(e.target.value)}
+                          sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}
+                        >
+                          {(groupCategories ? groupCategories : []).map((category) => (
+                            <MenuItem key={category.id} value={category.id}>
+                              {category.name}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Stack>
+                    )
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </MainCard>
+
+          <Grid
+            container
+            spacing={3}
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              maxWidth: "860px",
+              m: "0 auto",
+              "& .MuiGrid-root": { pl: "0 !important" },
+            }}
+          >
+            <Grid item xs={5} md={5}>
+              <Button
+                color="error"
+                variant="outlined"
+                disabled={!group.id}
+                onClick={onDeleteGroup}
+                sx={{ textTransform: "capitalize", width: "200px", p: "7.44px 15px" }}
+              >
+                Видалити
+              </Button>
+            </Grid>
+
+            <Grid item xs={7} md={7} sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                color="secondary"
+                variant="outlined"
+                onClick={() => navigate("/groups")}
+                sx={{ textTransform: "capitalize", width: "200px", p: "7.44px 15px", mr: 3 }}
+              >
+                Відмінити
+              </Button>
+
+              <Button
+                type="submit"
+                color="primary"
+                variant="contained"
+                disabled={loadingStatus === LoadingStatusTypes.LOADING}
+                sx={{ textTransform: "capitalize", width: "200px", p: "7.44px 15px" }}
+              >
+                Зберегти
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-      </form>
+        </form>
+      )}
     </>
   )
 }
