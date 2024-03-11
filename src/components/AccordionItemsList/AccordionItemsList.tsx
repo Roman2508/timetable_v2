@@ -10,46 +10,21 @@ import {
   ListItemButton,
   AccordionSummary,
   AccordionDetails,
-} from '@mui/material'
-import { DownOutlined } from '@ant-design/icons'
-import { EditOutlined } from '@ant-design/icons'
-import { DeleteOutlined } from '@ant-design/icons'
+} from "@mui/material"
+import { DownOutlined } from "@ant-design/icons"
+import { EditOutlined } from "@ant-design/icons"
+import { DeleteOutlined } from "@ant-design/icons"
 
 // project import
-import { Dispatch, SetStateAction } from 'react'
-import { TeachersCategoryType, TeachersType } from '../../store/teachers/teachersTypes'
-import { AuditoriesTypes, AuditoryCategoriesTypes } from '../../store/auditories/auditoriesTypes'
-import { GroupCategoriesType } from '../../store/groups/groupsTypes'
-import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
-
-interface IItemType {
-  id: number
-  name: string
-  teachers?: {
-    id: number
-    name: string
-  }[]
-  auditories?: {
-    id: number
-    name: string
-  }[]
-  plans?: {
-    id: number
-    name: string
-  }[]
-  groups?: {
-    id: number
-    name: string
-  }[]
-  items?: {
-    id: number
-    name: string
-  }[]
-}
+import { Dispatch, SetStateAction } from "react"
+import { GroupCategoriesType } from "../../store/groups/groupsTypes"
+import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
+import { TeachersCategoryType, TeachersType } from "../../store/teachers/teachersTypes"
+import { AuditoriesTypes, AuditoryCategoriesTypes } from "../../store/auditories/auditoriesTypes"
 
 interface IAccordionItemsListProps {
   onDeleteItem: (id: number) => void
-  onDeleteMainItem: (id: number) => void
+  onDeleteMainItem: (id: number, itemsCount: number) => void
   setIsUpdateItemModalOpen?: Dispatch<SetStateAction<boolean>>
   setIsUpdateCategoryModalOpen?: Dispatch<SetStateAction<boolean>>
   onEditItem: Dispatch<SetStateAction<TeachersType | AuditoriesTypes | null>>
@@ -66,25 +41,31 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
   onEditItem,
   items,
 }) => {
-  const getItemsKeyName = (items: IItemType[]) => {
-    if ('teachers' in items[0]) return 'teachers'
-    else if ('auditories' in items[0]) return 'auditories'
-    else if ('plans' in items[0]) return 'plans'
-    else if ('groups' in items[0]) return 'groups'
-    else return 'items'
+  const getItemsKeyName = (
+    items: TeachersCategoryType[] | AuditoryCategoriesTypes[] | GroupCategoriesType[]
+  ) => {
+    if ("teachers" in items[0]) return "teachers"
+    else if ("auditories" in items[0]) return "auditories"
+    else if ("plans" in items[0]) return "plans"
+    else if ("groups" in items[0]) return "groups"
+    else return "items"
   }
 
   return (
     <>
       {items.map((mainItem) => (
-        <Accordion key={mainItem.id} sx={{ boxShadow: 0, border: '' }} disableGutters>
-          <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={<DownOutlined />}>
+        <Accordion key={mainItem.id} sx={{ boxShadow: 0, border: "" }} disableGutters>
+          <AccordionSummary
+            aria-controls="panel1d-content"
+            id="panel1d-header"
+            expandIcon={<DownOutlined />}
+          >
             <Typography
               sx={{
                 flexGrow: 1,
                 fontWeight: 500,
-                display: 'flex',
-                alignItems: 'center',
+                display: "flex",
+                alignItems: "center",
               }}
               variant="h6"
             >
@@ -93,10 +74,10 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
 
             <Typography
               sx={{
-                color: 'text.secondary',
-                display: 'flex',
-                justifyContent: 'end',
-                alignItems: 'center',
+                color: "text.secondary",
+                display: "flex",
+                justifyContent: "end",
+                alignItems: "center",
                 mr: 4,
               }}
             >
@@ -111,7 +92,7 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                   onEditMainItem({ id: mainItem.id, name: mainItem.name })
                   setIsUpdateCategoryModalOpen(true)
                 }}
-                sx={{ mr: '5px' }}
+                sx={{ mr: "5px" }}
               >
                 <EditOutlined />
               </IconButton>
@@ -120,9 +101,10 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
             <IconButton
               onClick={(e) => {
                 e.stopPropagation()
-                onDeleteMainItem(mainItem.id)
+                // @ts-ignore
+                onDeleteMainItem(mainItem.id, mainItem[getItemsKeyName(items)].length)
               }}
-              sx={{ mr: '15px' }}
+              sx={{ mr: "15px" }}
             >
               <DeleteOutlined />
             </IconButton>
@@ -134,7 +116,11 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
               {mainItem[getItemsKeyName(items)]?.map((el) => (
                 <div>
                   <Divider />
-                  <ListItem disablePadding key={el.id} sx={{ '&:hover .MuiButtonBase-root': { display: 'block' } }}>
+                  <ListItem
+                    disablePadding
+                    key={el.id}
+                    sx={{ "&:hover .MuiButtonBase-root": { display: "block" } }}
+                  >
                     <ListItemButton>
                       <ListItemText primary={el.name ? el.name : getLastnameAndInitials(el)} />
                     </ListItemButton>
@@ -146,7 +132,7 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                           onEditItem(el)
                           setIsUpdateItemModalOpen(true)
                         }}
-                        sx={{ mr: '5px', display: 'none' }}
+                        sx={{ mr: "5px", display: "none" }}
                       >
                         <EditOutlined />
                       </IconButton>
@@ -157,7 +143,7 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                         e.stopPropagation()
                         onDeleteItem(el.id)
                       }}
-                      sx={{ mr: '5px', display: 'none' }}
+                      sx={{ mr: "5px", display: "none" }}
                     >
                       <DeleteOutlined />
                     </IconButton>

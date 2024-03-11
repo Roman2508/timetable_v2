@@ -1,14 +1,22 @@
 // material-ui
-import { Stack, Button, MenuItem, TextField, InputLabel, OutlinedInput, FormHelperText } from '@mui/material'
-import React from 'react'
+import {
+  Stack,
+  Button,
+  MenuItem,
+  TextField,
+  InputLabel,
+  OutlinedInput,
+  FormHelperText,
+} from "@mui/material"
+import React from "react"
 
 // project import
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { AuditoriesTypes } from '../../store/auditories/auditoriesTypes'
-import { useAppDispatch } from '../../store/store'
-import { createAuditory, updateAuditory } from '../../store/auditories/auditoriesAsyncActions'
-import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
-import { useSelector } from 'react-redux'
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { AuditoriesTypes } from "../../store/auditories/auditoriesTypes"
+import { useAppDispatch } from "../../store/store"
+import { createAuditory, updateAuditory } from "../../store/auditories/auditoriesAsyncActions"
+import { auditoriesSelector } from "../../store/auditories/auditoriesSlise"
+import { useSelector } from "react-redux"
 
 interface IAuditoriesFields {
   name: string
@@ -45,7 +53,7 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
     formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm<IAuditoriesFields>({
-    mode: 'onBlur',
+    mode: "onBlur",
     defaultValues: defaultFormValues,
   })
 
@@ -56,11 +64,11 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
         if (!editingAuditory) return
         await dispatch(updateAuditory({ ...data, id: editingAuditory.id }))
         handleClose()
-        reset({ name: '', seatsNumber: 1 })
+        reset({ name: "", seatsNumber: 1 })
       } else {
         // Якщо форму відкрито НЕ в модалці - створення викладача
         await dispatch(createAuditory(data))
-        reset({ name: '', seatsNumber: 1 })
+        reset({ name: "", seatsNumber: 1 })
       }
     } catch (error) {
       console.log(error)
@@ -72,21 +80,17 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
       <Controller
         name="name"
         control={control}
-        rules={{ required: 'Вкажіть назву аудиторії' }}
+        rules={{ required: "Вкажіть назву аудиторії" }}
         render={({ field }) => {
           return (
             <Stack spacing={1} sx={{ mt: 2 }}>
               <InputLabel htmlFor="name">Назва*</InputLabel>
               <OutlinedInput
                 id="name"
-                type="firstname"
                 {...field}
-                // value={values.firstname}
-                name="name"
-                // onBlur={handleBlur}
-                // onChange={handleChange}
-                placeholder="PH-24-1"
                 fullWidth
+                name="name"
+                placeholder="111"
                 error={Boolean(errors.name)}
               />
               {errors.name && (
@@ -102,21 +106,17 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
       <Controller
         name="seatsNumber"
         control={control}
-        rules={{ required: 'Вкажіть кількість місць в аудиторії' }}
+        rules={{ required: "Вкажіть кількість місць в аудиторії" }}
         render={({ field }) => {
           return (
             <Stack spacing={1} sx={{ mt: 2 }}>
               <InputLabel htmlFor="seatsNumber">Кількість місць*</InputLabel>
               <OutlinedInput
-                id="seatsNumber"
-                type="seatsNumber"
                 {...field}
-                // value={values.firstname}
-                name="seatsNumber"
-                // onBlur={handleBlur}
-                // onChange={handleChange}
-                placeholder="30"
                 fullWidth
+                id="seatsNumber"
+                placeholder="30"
+                name="seatsNumber"
                 error={Boolean(errors.seatsNumber)}
               />
               {errors.seatsNumber && (
@@ -132,19 +132,17 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
       <Controller
         name="category"
         control={control}
-        rules={{ required: 'Вкажіть категорію' }}
+        rules={{ required: "Вкажіть категорію" }}
         render={({ field }) => {
           return (
             <Stack spacing={1} sx={{ mt: 2 }}>
               <InputLabel htmlFor="category">Категорія*</InputLabel>
               <TextField
                 select
-                {...field}
                 fullWidth
+                {...field}
                 id="category"
-                //   value={value}
-                //   onChange={(e) => setValue(e.target.value)}
-                sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
+                sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}
               >
                 {(!auditoriCategories ? [] : auditoriCategories).map((option) => (
                   <MenuItem key={option.id} value={option.id}>
@@ -162,9 +160,13 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
         color="primary"
         variant="contained"
         disabled={isSubmitting}
-        sx={{ textTransform: 'capitalize', width: '100%', p: '7.44px 15px', mt: 3 }}
+        sx={{ textTransform: "capitalize", width: "100%", p: "7.44px 15px", mt: 3 }}
       >
-        {isOpenInModal && !isSubmitting ? 'Оновити' : !isSubmitting ? 'Створити' : 'Завантаження...'}
+        {isOpenInModal && !isSubmitting
+          ? "Оновити"
+          : !isSubmitting
+          ? "Створити"
+          : "Завантаження..."}
       </Button>
     </form>
   )

@@ -55,7 +55,7 @@ const plansSlice = createSlice({
 
         const newCategories = state.plansCategories.map((el) => {
           if (el.id === action.payload.id) {
-            return { ...action.payload }
+            return { ...el, ...action.payload }
           }
 
           return el
