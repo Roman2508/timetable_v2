@@ -9,67 +9,65 @@ import UpdateTeacherModal from '../../components/TeachersPage/UpdateTeacherModal
 import { AccordionItemsList } from '../../components/AccordionItemsList/AccordionItemsList'
 import CreateTeachersCategoryForm from '../../components/TeachersPage/CreateTeachersCategoryForm'
 import UpdateTeachersCategoryForm from '../../components/TeachersPage/UpdateTeachersCategoryForm'
+import { useAppDispatch } from '../../store/store'
+import { useSelector } from 'react-redux'
+import { teachersSelector } from '../../store/teachers/teachersSlice'
+import { deleteTeacher, deleteTeacherCategory, getTeachersCategories } from '../../store/teachers/teachersAsyncActions'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { TeachersType } from '../../store/teachers/teachersTypes'
 
 // ==============================|| PLANS ||============================== //
 
-const teachers = [
-  {
-    id: 1,
-    name: 'ЦК Хімічних дисциплін',
-    items: [
-      { id: 1, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 2, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 3, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 4, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 5, name: 'Фармація, промислова фармація (ДФ)' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'ЦК Фармацевтичних дисциплін',
-    items: [
-      { id: 1, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 2, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 5, name: 'Фармація, промислова фармація (ДФ)' },
-    ],
-  },
-  {
-    id: 3,
-    name: 'ЦК Медико-біологічних дисциплін',
-    items: [
-      { id: 6, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 7, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 8, name: 'Фармація, промислова фармація (ЗФ)' },
-    ],
-  },
-  {
-    id: 4,
-    name: 'ЦК Загальноосвітніх дисциплін',
-    items: [
-      { id: 9, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 10, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 11, name: 'Лабораторна діагностика (ДФ)' },
-    ],
-  },
-  {
-    id: 5,
-    name: 'ЦК Гумарітарних дисциплін',
-    items: [
-      { id: 9, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 10, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 11, name: 'Лабораторна діагностика (ДФ)' },
-    ],
-  },
-]
-
 const TeachersPage = () => {
+  const dispatch = useAppDispatch()
+
+  const { teachersCategories, loadingStatus } = useSelector(teachersSelector)
+
   const [isUpdateTeacherModalOpen, setIsUpdateTeacherModalOpen] = React.useState(false)
   const [isUpdateCategoryModalOpen, setIsUpdateCategoryModalOpen] = React.useState(false)
+  const [editingTeacher, setEditingTeacher] = React.useState<TeachersType | null>(null)
+  const [editingTeacherCategory, setEditingTeacherCategory] = React.useState<{ id: number; name: string } | null>(null)
+
+  React.useEffect(() => {
+    if (teachersCategories) return
+
+    dispatch(getTeachersCategories())
+  }, [])
+
+  const onDeleteTeacher = (id: number) => {
+    try {
+      if (window.confirm('Ви дійсно хочете видалити викладача?')) {
+        dispatch(deleteTeacher(id))
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const onDeleteTeacherCategory = (id: number) => {
+    try {
+      if (window.confirm('Ви дійсно хочете видалити категорію?')) {
+        dispatch(deleteTeacherCategory(id))
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <>
-      <UpdateTeacherModal open={isUpdateTeacherModalOpen} setOpen={setIsUpdateTeacherModalOpen} />
-      <UpdateTeachersCategoryForm open={isUpdateCategoryModalOpen} setOpen={setIsUpdateCategoryModalOpen} />
+      <UpdateTeacherModal
+        editingTeacher={editingTeacher}
+        open={isUpdateTeacherModalOpen}
+        setOpen={setIsUpdateTeacherModalOpen}
+      />
+      <UpdateTeachersCategoryForm
+        open={isUpdateCategoryModalOpen}
+        setOpen={setIsUpdateCategoryModalOpen}
+        editingTeacherCategory={editingTeacherCategory}
+      />
 
       <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
         {/* Категорії (відділення) */}
@@ -85,11 +83,20 @@ const TeachersPage = () => {
         <Grid item xs={12} md={10} sx={{ display: 'flex', alignItems: 'flex-start' }}>
           <Grid item xs={8} sx={{ borderRadius: '8px', border: '1px solid #e6ebf1', overflow: 'hidden' }}>
             {/* TEACHERS LIST */}
-            <AccordionItemsList
-              items={teachers}
-              setIsUpdateItemModalOpen={setIsUpdateTeacherModalOpen}
-              setIsUpdateCategoryModalOpen={setIsUpdateCategoryModalOpen}
-            />
+            {!teachersCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
+            {!teachersCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
+            {teachersCategories?.length && (
+              <AccordionItemsList
+                items={teachersCategories}
+                /* @ts-ignore */
+                onEditItem={setEditingTeacher}
+                onDeleteItem={onDeleteTeacher}
+                onEditMainItem={setEditingTeacherCategory}
+                onDeleteMainItem={onDeleteTeacherCategory}
+                setIsUpdateItemModalOpen={setIsUpdateTeacherModalOpen}
+                setIsUpdateCategoryModalOpen={setIsUpdateCategoryModalOpen}
+              />
+            )}
             {/* // TEACHERS LIST */}
           </Grid>
 
@@ -100,7 +107,7 @@ const TeachersPage = () => {
                   Додати нового викладача
                 </Typography>
 
-                <CreateTeacherForm />
+                <CreateTeacherForm editingTeacher={null} />
               </MainCard>
             </Grid>
 
@@ -110,7 +117,7 @@ const TeachersPage = () => {
                   Додати нову категорію
                 </Typography>
 
-                <CreateTeachersCategoryForm />
+                <CreateTeachersCategoryForm editingTeacherCategory={null} />
               </MainCard>
             </Grid>
           </Grid>

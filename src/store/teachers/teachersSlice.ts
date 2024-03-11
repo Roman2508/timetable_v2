@@ -1,5 +1,5 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { RootState } from "../store"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { RootState } from '../store'
 import {
   createTeacher,
   createTeacherCategory,
@@ -8,9 +8,9 @@ import {
   getTeachersCategories,
   updateTeacher,
   updateTeacherCategory,
-} from "./teachersAsyncActions"
-import { TeachersCategoryType, TeachersInitialState, TeachersType } from "./teachersTypes"
-import { LoadingStatusTypes } from "../appTypes"
+} from './teachersAsyncActions'
+import { TeachersCategoryType, TeachersInitialState, TeachersType } from './teachersTypes'
+import { LoadingStatusTypes } from '../appTypes'
 
 const teachersInitialState: TeachersInitialState = {
   teachersCategories: null,
@@ -18,7 +18,7 @@ const teachersInitialState: TeachersInitialState = {
 }
 
 const teachersSlice = createSlice({
-  name: "teachers",
+  name: 'teachers',
   initialState: teachersInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -27,43 +27,34 @@ const teachersSlice = createSlice({
   },
   extraReducers: (builder) => {
     /* --- categories --- */
-    builder.addCase(
-      getTeachersCategories.fulfilled,
-      (state, action: PayloadAction<TeachersCategoryType[]>) => {
-        state.teachersCategories = action.payload
-        state.loadingStatus = LoadingStatusTypes.SUCCESS
-      }
-    )
+    builder.addCase(getTeachersCategories.fulfilled, (state, action: PayloadAction<TeachersCategoryType[]>) => {
+      state.teachersCategories = action.payload
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
+    })
 
     /* createTeacherCategory */
-    builder.addCase(
-      createTeacherCategory.fulfilled,
-      (state, action: PayloadAction<TeachersCategoryType>) => {
-        if (!state.teachersCategories) return
+    builder.addCase(createTeacherCategory.fulfilled, (state, action: PayloadAction<TeachersCategoryType>) => {
+      if (!state.teachersCategories) return
 
-        state.teachersCategories = [...state.teachersCategories, action.payload]
-        state.loadingStatus = LoadingStatusTypes.SUCCESS
-      }
-    )
+      state.teachersCategories = [...state.teachersCategories, action.payload]
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
+    })
 
     /* updateTeacherCategory */
-    builder.addCase(
-      updateTeacherCategory.fulfilled,
-      (state, action: PayloadAction<TeachersCategoryType>) => {
-        if (!state.teachersCategories) return
+    builder.addCase(updateTeacherCategory.fulfilled, (state, action: PayloadAction<TeachersCategoryType>) => {
+      if (!state.teachersCategories) return
 
-        const newCategories = state.teachersCategories.map((el) => {
-          if (el.id === action.payload.id) {
-            return { ...action.payload }
-          }
+      const newCategories = state.teachersCategories.map((el) => {
+        if (el.id === action.payload.id) {
+          return { ...action.payload }
+        }
 
-          return el
-        })
+        return el
+      })
 
-        state.teachersCategories = newCategories
-        state.loadingStatus = LoadingStatusTypes.SUCCESS
-      }
-    )
+      state.teachersCategories = newCategories
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
+    })
 
     /* deleteTeacherCategory */
     builder.addCase(deleteTeacherCategory.fulfilled, (state, action: PayloadAction<number>) => {
@@ -97,25 +88,41 @@ const teachersSlice = createSlice({
     builder.addCase(updateTeacher.fulfilled, (state, action: PayloadAction<TeachersType>) => {
       if (!state.teachersCategories) return
 
-      alert("Не змінюється категорія викладача при оновленні в redux")
+      let isChangeCategory = false
 
       const newTeachersCategories = state.teachersCategories.map((el) => {
-        if (el.id === action.payload.category.id) {
-          const newTeachers = el.teachers.map((teacher) => {
-            if (teacher.id === action.payload.id) {
+        const newTeachers = el.teachers.map((teacher) => {
+          if (teacher.id === action.payload.id) {
+            if (teacher.category.id === action.payload.category.id) {
               return action.payload
             }
 
-            return teacher
-          })
+            isChangeCategory = true
+            return null
+          }
 
-          return { ...el, teachers: newTeachers }
-        }
+          return { ...teacher }
+        })
 
-        return el
+        const filtredTeachers = newTeachers.filter((el) => el !== null)
+        return { ...el, teachers: filtredTeachers }
       })
 
-      state.teachersCategories = newTeachersCategories
+      // Якщо категорія змінилась
+      if (isChangeCategory) {
+        const newCategories = newTeachersCategories.map((el) => {
+          if (el.id === action.payload.category.id) {
+            const teachers = [...el.teachers, action.payload]
+            return { ...el, teachers }
+          }
+          return el
+        })
+        // @ts-ignore
+        state.teachersCategories = newCategories
+      } else {
+        // @ts-ignore
+        state.teachersCategories = newTeachersCategories
+      }
       state.loadingStatus = LoadingStatusTypes.SUCCESS
     })
 

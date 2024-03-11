@@ -18,6 +18,11 @@ import { DeleteOutlined } from '@ant-design/icons'
 
 // project import
 import { Link } from 'react-router-dom'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { plansSelector } from '../../store/plans/plansSlice'
+import { useAppDispatch } from '../../store/store'
+import { getPlansCategories } from '../../store/plans/plansAsyncActions'
 
 // ==============================|| PLANS ||============================== //
 
@@ -54,6 +59,16 @@ const plans = [
 ]
 
 const PlansPage = () => {
+  const dispatch = useAppDispatch()
+
+  const { plansCategories, loadingStatus } = useSelector(plansSelector)
+
+  React.useEffect(() => {
+    if (plansCategories) return
+
+    dispatch(getPlansCategories())
+  }, [])
+
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
       {/* Категорії (відділення) */}
@@ -67,17 +82,11 @@ const PlansPage = () => {
       </Grid>
 
       <Grid item xs={12} md={9}>
-        {plans.map((planCategory) => (
-          <Accordion key={planCategory.id}>
-            <AccordionSummary
-              aria-controls="panel1d-content"
-              id="panel1d-header"
-              expandIcon={<DownOutlined />}
-              //   sx={{ display: 'flex', alignItems: 'center' }}
-            >
+        {(!plansCategories ? [] : plansCategories).map((planCategory) => (
+          <Accordion key={planCategory.id} disableGutters>
+            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={<DownOutlined />}>
               <Typography
                 sx={{
-                  // width: '70%',
                   flexGrow: 1,
                   fontWeight: 500,
                   display: 'flex',
@@ -91,7 +100,7 @@ const PlansPage = () => {
               <Typography
                 sx={{ color: 'text.secondary', display: 'flex', justifyContent: 'end', alignItems: 'center', mr: 4 }}
               >
-                Планів в категорії: {planCategory.items.length}
+                Планів в категорії: {planCategory.plans.length}
               </Typography>
 
               <IconButton onClick={(e) => e.stopPropagation()} sx={{ mr: '5px' }}>
@@ -103,9 +112,9 @@ const PlansPage = () => {
               </IconButton>
             </AccordionSummary>
 
-            <AccordionDetails sx={{ p: 0 }}>
+            <AccordionDetails>
               <List>
-                {planCategory.items.map((plan) => (
+                {planCategory.plans.map((plan) => (
                   <Link to={`/plans/${plan.id}`} style={{ color: 'inherit' }}>
                     <Divider />
                     <ListItem disablePadding key={plan.id}>

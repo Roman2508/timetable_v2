@@ -1,81 +1,80 @@
 // material-ui
-import {
-  Grid,
-  List,
-  Divider,
-  ListItem,
-  Accordion,
-  IconButton,
-  Typography,
-  ListItemText,
-  ListItemButton,
-  AccordionSummary,
-  AccordionDetails,
-} from '@mui/material'
-import { DownOutlined } from '@ant-design/icons'
-import { EditOutlined } from '@ant-design/icons'
-import { DeleteOutlined } from '@ant-design/icons'
+import { Grid, Typography } from '@mui/material'
 
 // project import
 import React from 'react'
+import { useSelector } from 'react-redux'
 import MainCard from '../../components/MainCard'
+import { useAppDispatch } from '../../store/store'
+import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
 import CreateAuditoryForm from '../../components/AuditoriesPage/CreateAuditoryForm'
 import UpdateAuditoryModal from '../../components/AuditoriesPage/UpdateAuditoryModal'
-import CreateAuditoryCategoryForm from '../../components/AuditoriesPage/CreateAuditoryCategoryForm'
-import UpdateAuditoryCategoryForm from '../../components/AuditoriesPage/UpdateAuditoryCategoryForm'
 import { AccordionItemsList } from '../../components/AccordionItemsList/AccordionItemsList'
+import CreateAuditoryCategoryForm from '../../components/AuditoriesPage/CreateAuditoryCategoryForm'
+import UpdateAuditoryCategoryForm from '../../components/AuditoriesPage/UpdateAuditoryCategoryModal'
+import {
+  deleteAuditory,
+  deleteAuditoryCategory,
+  getAuditoryCategories,
+} from '../../store/auditories/auditoriesAsyncActions'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { AuditoriesTypes } from '../../store/auditories/auditoriesTypes'
 
 // ==============================|| AUDITORIES ||============================== //
 
-const auditories = [
-  {
-    id: 1,
-    name: '1 поверх',
-    auditories: [
-      { id: 1, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 2, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 3, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 4, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 5, name: 'Фармація, промислова фармація (ДФ)' },
-    ],
-  },
-  {
-    id: 2,
-    name: '2 поверх',
-    auditories: [
-      { id: 6, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 7, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 8, name: 'Фармація, промислова фармація (ЗФ)' },
-    ],
-  },
-  {
-    id: 3,
-    name: '3 поверх',
-    auditories: [
-      { id: 9, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 10, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 11, name: 'Лабораторна діагностика (ДФ)' },
-    ],
-  },
-  {
-    id: 3,
-    name: '4 поверх',
-    auditories: [
-      { id: 9, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 10, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 11, name: 'Лабораторна діагностика (ДФ)' },
-    ],
-  },
-]
-
 const AuditoriesPage = () => {
+  const dispatch = useAppDispatch()
+
+  const { auditoriCategories, loadingStatus } = useSelector(auditoriesSelector)
+
   const [isAuditoryModalOpen, setIsAuditoryModalOpen] = React.useState(false)
   const [isAuditoryCategoryModalOpen, setIsAuditoryCategoryModalOpen] = React.useState(false)
+  const [editingAuditory, setEditingAuditory] = React.useState<AuditoriesTypes | null>(null)
+  const [editingAuditoryCategory, setEditingAuditoryCategory] = React.useState<{ id: number; name: string } | null>(
+    null
+  )
+
+  React.useEffect(() => {
+    if (auditoriCategories) return
+
+    dispatch(getAuditoryCategories())
+  }, [])
+
+  const onDeleteAuditory = (id: number) => {
+    try {
+      if (window.confirm('Ви дійсно хочете видалити викладача?')) {
+        dispatch(deleteAuditory(id))
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const onDeleteAuditoryCategory = (id: number) => {
+    try {
+      if (window.confirm('Ви дійсно хочете видалити категорію?')) {
+        dispatch(deleteAuditoryCategory(id))
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <>
-      <UpdateAuditoryModal open={isAuditoryModalOpen} setOpen={setIsAuditoryModalOpen} />
-      <UpdateAuditoryCategoryForm open={isAuditoryCategoryModalOpen} setOpen={setIsAuditoryCategoryModalOpen} />
+      <UpdateAuditoryModal 
+      open={isAuditoryModalOpen} 
+      setOpen={setIsAuditoryModalOpen} 
+      editingAuditory={editingAuditory}
+      />
+
+      <UpdateAuditoryCategoryForm
+        open={isAuditoryCategoryModalOpen}
+        setOpen={setIsAuditoryCategoryModalOpen}
+        editingAuditoryCategory={editingAuditoryCategory}
+      />
 
       <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
         <Grid item xs={12} md={10}>
@@ -89,11 +88,22 @@ const AuditoriesPage = () => {
 
         <Grid item xs={12} md={10} sx={{ display: 'flex', alignItems: 'flex-start' }}>
           <Grid item xs={8} sx={{ borderRadius: '8px', border: '1px solid #e6ebf1', overflow: 'hidden' }}>
-            <AccordionItemsList
-              items={auditories}
-              setIsUpdateItemModalOpen={setIsAuditoryModalOpen}
-              setIsUpdateCategoryModalOpen={setIsAuditoryCategoryModalOpen}
-            />
+            {/* AUDITORIES LIST */}
+            {!auditoriCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
+            {!auditoriCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
+            {auditoriCategories?.length && (
+              <AccordionItemsList
+                items={auditoriCategories}
+                /* @ts-ignore */
+                onEditItem={setEditingAuditory}
+                onDeleteItem={onDeleteAuditory}
+                onEditMainItem={setEditingAuditoryCategory}
+                onDeleteMainItem={onDeleteAuditoryCategory}
+                setIsUpdateItemModalOpen={setIsAuditoryModalOpen}
+                setIsUpdateCategoryModalOpen={setIsAuditoryCategoryModalOpen}
+              />
+            )}
+            {/* // AUDITORIES LIST */}
           </Grid>
 
           <Grid item xs={4} sx={{ ml: 2 }}>
@@ -103,7 +113,7 @@ const AuditoriesPage = () => {
                   Додати нову аудиторію
                 </Typography>
 
-                <CreateAuditoryForm />
+                <CreateAuditoryForm editingAuditory={null} />
               </MainCard>
             </Grid>
 
@@ -113,7 +123,7 @@ const AuditoriesPage = () => {
                   Додати нову категорію
                 </Typography>
 
-                <CreateAuditoryCategoryForm />
+                <CreateAuditoryCategoryForm editingAuditoryCategory={null} />
               </MainCard>
             </Grid>
           </Grid>

@@ -37,8 +37,9 @@ export type CreateTeacherCategoryPayloadType = {
 }
 
 export type UpdateTeacherCategoryPayloadType = {
-  id: Number
-} & CreateTeacherCategoryPayloadType
+  id: number
+  name: string
+}
 
 export type CreateTeacherPayloadType = {
   category: number

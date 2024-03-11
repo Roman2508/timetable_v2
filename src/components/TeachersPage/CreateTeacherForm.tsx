@@ -1,14 +1,20 @@
 // material-ui
-import { Stack, Button, MenuItem, TextField, InputLabel, OutlinedInput, FormHelperText, Grid } from '@mui/material'
-import React from 'react'
+import { Stack, Button, MenuItem, TextField, InputLabel, OutlinedInput, FormHelperText } from '@mui/material'
 
 // project import
+import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { TeachersType } from '../../store/teachers/teachersTypes'
+import { useSelector } from 'react-redux'
+import { teachersSelector } from '../../store/teachers/teachersSlice'
+import { useAppDispatch } from '../../store/store'
+import { createTeacher, updateTeacher } from '../../store/teachers/teachersAsyncActions'
+import { emailRegex } from '../../utils/emailRegex'
 
 interface IAuditoriesFields {
   firstName: string
-  middleName: number
-  lastName: number
+  middleName: string
+  lastName: string
   email: string
   calendarUrl: string
   category: number
@@ -16,23 +22,45 @@ interface IAuditoriesFields {
 
 interface ICreateTeacherFormProps {
   isOpenInModal?: boolean
+  handleClose?: () => void
+  editingTeacher: TeachersType | null
 }
 
-const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({ isOpenInModal }) => {
+const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
+  isOpenInModal,
+  editingTeacher,
+  handleClose = () => {},
+}) => {
+  const dispatch = useAppDispatch()
+
+  const { teachersCategories } = useSelector(teachersSelector)
+
   const {
+    reset,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm<IAuditoriesFields>({
     mode: 'onBlur',
+    defaultValues: editingTeacher ? { ...editingTeacher, category: editingTeacher.category.id } : {},
   })
 
   const onSubmit: SubmitHandler<IAuditoriesFields> = async (data) => {
     try {
-      console.log(data)
+      // Якщо форму відкрито в модалці - оновлення викладача
+      if (isOpenInModal) {
+        if (!editingTeacher) return
+        await dispatch(updateTeacher({ ...data, id: editingTeacher.id }))
+        handleClose()
+        reset({ calendarUrl: '', email: '', firstName: '', lastName: '', middleName: '' })
+      } else {
+        // Якщо форму відкрито НЕ в модалці - створення викладача
+        await dispatch(createTeacher(data))
+        reset({ calendarUrl: '', email: '', firstName: '', lastName: '', middleName: '' })
+      }
     } catch (error) {
       console.log(error)
-    }
+    } 
   }
 
   return (
@@ -142,22 +170,25 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({ isOpenInModal })
         <Controller
           name="email"
           control={control}
-          rules={{ required: 'Вкажіть по батькові' }}
+          rules={{
+            required: 'Вкажіть пошту викладача',
+            pattern: {
+              value: emailRegex,
+              message: 'Не вірний формат пошти',
+            },
+          }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
                 <InputLabel htmlFor="email">Пошта*</InputLabel>
                 <OutlinedInput
+                  fullWidth
+                  {...field}
                   id="email"
                   type="email"
-                  {...field}
-                  // value={values.firstname}
                   name="email"
-                  // onBlur={handleBlur}
-                  // onChange={handleChange}
-                  placeholder="test.teacher@pharm.zt.ua"
-                  fullWidth
                   error={Boolean(errors.email)}
+                  placeholder="test.teacher@pharm.zt.ua"
                 />
                 {errors.email && (
                   <FormHelperText error id="helper-text-email">
@@ -208,20 +239,14 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({ isOpenInModal })
                 <InputLabel htmlFor="category">Категорія*</InputLabel>
                 <TextField
                   select
-                  {...field}
                   fullWidth
+                  {...field}
                   id="category"
-                  //   value={value}
-                  //   onChange={(e) => setValue(e.target.value)}
                   sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
                 >
-                  {[
-                    { value: '1', label: 'Фармація, промислова фармація (ДФ)' },
-                    { value: '2', label: 'Фармація, промислова фармація (ДФ)' },
-                    { value: '3', label: 'Лабораторна діагностика (ДФ)' },
-                  ].map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
+                  {(!teachersCategories ? [] : teachersCategories).map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.name}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -234,6 +259,8 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({ isOpenInModal })
       <Button
         variant="contained"
         color="primary"
+        type="submit"
+        disabled={isSubmitting}
         sx={{
           textTransform: 'capitalize',
           width: '100%',
@@ -241,7 +268,7 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({ isOpenInModal })
           mt: 3,
         }}
       >
-        {isOpenInModal ? 'Оновити' : 'Створити'}
+        {isOpenInModal && !isSubmitting ? 'Оновити' : !isSubmitting ? 'Створити' : 'Завантаження...'}
       </Button>
     </form>
   )

@@ -1,6 +1,6 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { AuditoryCategoriesTypes, AuditoriesInitialState, AuditoriesTypes } from "./auditoriesTypes"
-import { LoadingStatusTypes } from "../appTypes"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { AuditoryCategoriesTypes, AuditoriesInitialState, AuditoriesTypes } from './auditoriesTypes'
+import { LoadingStatusTypes } from '../appTypes'
 import {
   createAuditory,
   createAuditoryCategory,
@@ -9,8 +9,8 @@ import {
   getAuditoryCategories,
   updateAuditory,
   updateAuditoryCategory,
-} from "./auditoriesAsyncActions"
-import { RootState } from "../store"
+} from './auditoriesAsyncActions'
+import { RootState } from '../store'
 
 const auditoriesInitialState: AuditoriesInitialState = {
   auditoriCategories: null,
@@ -18,7 +18,7 @@ const auditoriesInitialState: AuditoriesInitialState = {
 }
 
 const auditoriesSlice = createSlice({
-  name: "auditories",
+  name: 'auditories',
   initialState: auditoriesInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -29,38 +29,32 @@ const auditoriesSlice = createSlice({
     /* --- categories --- */
 
     /* getAuditoryCategories */
-    builder.addCase(
-      getAuditoryCategories.fulfilled,
-      (state, action: PayloadAction<AuditoryCategoriesTypes[]>) => {
-        state.auditoriCategories = action.payload
-      }
-    )
+    builder.addCase(getAuditoryCategories.fulfilled, (state, action: PayloadAction<AuditoryCategoriesTypes[]>) => {
+      state.auditoriCategories = action.payload
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
+    })
 
     /* createAuditoryCategory */
-    builder.addCase(
-      createAuditoryCategory.fulfilled,
-      (state, action: PayloadAction<AuditoryCategoriesTypes>) => {
-        state.auditoriCategories?.push(action.payload)
-      }
-    )
+    builder.addCase(createAuditoryCategory.fulfilled, (state, action: PayloadAction<AuditoryCategoriesTypes>) => {
+      state.auditoriCategories?.push(action.payload)
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
+    })
 
     /* updateAuditoryCategory */
-    builder.addCase(
-      updateAuditoryCategory.fulfilled,
-      (state, action: PayloadAction<AuditoryCategoriesTypes>) => {
-        if (!state.auditoriCategories) return
+    builder.addCase(updateAuditoryCategory.fulfilled, (state, action: PayloadAction<AuditoryCategoriesTypes>) => {
+      if (!state.auditoriCategories) return
 
-        const newAuditories = state.auditoriCategories.map((el) => {
-          if (el.id === action.payload.id) {
-            return { ...action.payload }
-          }
+      const newAuditories = state.auditoriCategories.map((el) => {
+        if (el.id === action.payload.id) {
+          return { ...action.payload }
+        }
 
-          return el
-        })
+        return el
+      })
 
-        state.auditoriCategories = newAuditories
-      }
-    )
+      state.auditoriCategories = newAuditories
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
+    })
 
     /* deleteAuditoryCategory */
     builder.addCase(deleteAuditoryCategory.fulfilled, (state, action: PayloadAction<number>) => {
@@ -69,6 +63,7 @@ const auditoriesSlice = createSlice({
       const newCategories = state.auditoriCategories.filter((el) => el.id !== action.payload)
 
       state.auditoriCategories = newCategories
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
     })
 
     /* --- auditories --- */
@@ -86,29 +81,50 @@ const auditoriesSlice = createSlice({
       })
 
       state.auditoriCategories = newAuditories
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
     })
 
     /* updateAuditory */
     builder.addCase(updateAuditory.fulfilled, (state, action: PayloadAction<AuditoriesTypes>) => {
       if (!state.auditoriCategories) return
 
-      const newAuditories = state.auditoriCategories.map((el) => {
-        if (el.id === action.payload.category.id) {
-          const newAuditories = el.auditories.map((auditory) => {
-            if (auditory.id === action.payload.id) {
+      let isChangeCategory = false
+
+      const newCategories = state.auditoriCategories.map((el) => {
+        const newAuditories = el.auditories.map((auditory) => {
+          if (auditory.id === action.payload.id) {
+            if (auditory.category.id === action.payload.category.id) {
               return action.payload
             }
 
-            return auditory
-          })
+            isChangeCategory = true
+            return null
+          }
 
-          return { ...el, auditories: newAuditories }
-        }
+          return auditory
+        })
 
-        return el
+        const filtredAuditory = newAuditories.filter((el) => el !== null)
+        return { ...el, auditories: filtredAuditory }
       })
 
-      state.auditoriCategories = newAuditories
+      // Якщо категорія змінилась
+      if (isChangeCategory) {
+        const changedCategories = newCategories.map((el) => {
+          if (el.id === action.payload.category.id) {
+            const auditories = [...el.auditories, action.payload]
+            return { ...el, auditories }
+          }
+
+          return el
+        })
+        // @ts-ignore
+        state.auditoriCategories = changedCategories
+      } else {
+        // @ts-ignore
+        state.auditoriCategories = newCategories
+      }
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
     })
 
     /* deleteAuditory */
@@ -122,6 +138,7 @@ const auditoriesSlice = createSlice({
       })
 
       state.auditoriCategories = updatedCategories
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
     })
   },
 })

@@ -4,29 +4,64 @@ import React from 'react'
 
 // project import
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { AuditoriesTypes } from '../../store/auditories/auditoriesTypes'
+import { useAppDispatch } from '../../store/store'
+import { createAuditory, updateAuditory } from '../../store/auditories/auditoriesAsyncActions'
+import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
+import { useSelector } from 'react-redux'
 
 interface IAuditoriesFields {
   name: string
-  seatsCount: number
+  seatsNumber: number
   category: number
 }
 
 interface ICreateAuditoryFormProps {
   isOpenInModal?: boolean
+  handleClose?: () => void
+  editingAuditory: AuditoriesTypes | null
 }
 
-const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({ isOpenInModal }) => {
+const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
+  isOpenInModal,
+  editingAuditory,
+  handleClose = () => {},
+}) => {
+  const dispatch = useAppDispatch()
+
+  const { auditoriCategories } = useSelector(auditoriesSelector)
+
+  const defaultFormValues = editingAuditory
+    ? {
+        name: editingAuditory.name,
+        seatsNumber: editingAuditory.seatsNumber,
+        category: editingAuditory.category.id,
+      }
+    : {}
+
   const {
+    reset,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm<IAuditoriesFields>({
     mode: 'onBlur',
+    defaultValues: defaultFormValues,
   })
 
   const onSubmit: SubmitHandler<IAuditoriesFields> = async (data) => {
     try {
-      console.log(data)
+      // Якщо форму відкрито в модалці - оновлення викладача
+      if (isOpenInModal) {
+        if (!editingAuditory) return
+        await dispatch(updateAuditory({ ...data, id: editingAuditory.id }))
+        handleClose()
+        reset({ name: '', seatsNumber: 1 })
+      } else {
+        // Якщо форму відкрито НЕ в модалці - створення викладача
+        await dispatch(createAuditory(data))
+        reset({ name: '', seatsNumber: 1 })
+      }
     } catch (error) {
       console.log(error)
     }
@@ -65,28 +100,28 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({ isOpenInModal 
       />
 
       <Controller
-        name="seatsCount"
+        name="seatsNumber"
         control={control}
         rules={{ required: 'Вкажіть кількість місць в аудиторії' }}
         render={({ field }) => {
           return (
             <Stack spacing={1} sx={{ mt: 2 }}>
-              <InputLabel htmlFor="seatsCount">Кількість місць*</InputLabel>
+              <InputLabel htmlFor="seatsNumber">Кількість місць*</InputLabel>
               <OutlinedInput
-                id="seatsCount"
-                type="seatsCount"
+                id="seatsNumber"
+                type="seatsNumber"
                 {...field}
                 // value={values.firstname}
-                name="seatsCount"
+                name="seatsNumber"
                 // onBlur={handleBlur}
                 // onChange={handleChange}
                 placeholder="30"
                 fullWidth
-                error={Boolean(errors.seatsCount)}
+                error={Boolean(errors.seatsNumber)}
               />
-              {errors.seatsCount && (
-                <FormHelperText error id="helper-text-seatsCount">
-                  {errors.seatsCount.message}
+              {errors.seatsNumber && (
+                <FormHelperText error id="helper-text-seatsNumber">
+                  {errors.seatsNumber.message}
                 </FormHelperText>
               )}
             </Stack>
@@ -111,13 +146,9 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({ isOpenInModal 
                 //   onChange={(e) => setValue(e.target.value)}
                 sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
               >
-                {[
-                  { value: '1', label: 'Фармація, промислова фармація (ДФ)' },
-                  { value: '2', label: 'Фармація, промислова фармація (ДФ)' },
-                  { value: '3', label: 'Лабораторна діагностика (ДФ)' },
-                ].map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+                {(!auditoriCategories ? [] : auditoriCategories).map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.name}
                   </MenuItem>
                 ))}
               </TextField>
@@ -127,16 +158,13 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({ isOpenInModal 
       />
 
       <Button
-        variant="contained"
+        type="submit"
         color="primary"
-        sx={{
-          textTransform: 'capitalize',
-          width: '100%',
-          p: '7.44px 15px',
-          mt: 3,
-        }}
+        variant="contained"
+        disabled={isSubmitting}
+        sx={{ textTransform: 'capitalize', width: '100%', p: '7.44px 15px', mt: 3 }}
       >
-        {isOpenInModal ? 'Оновити' : 'Створити'}
+        {isOpenInModal && !isSubmitting ? 'Оновити' : !isSubmitting ? 'Створити' : 'Завантаження...'}
       </Button>
     </form>
   )
