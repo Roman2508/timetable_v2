@@ -12,22 +12,22 @@ import {
   AccordionSummary,
   AccordionDetails,
   Tooltip,
-} from "@mui/material"
-import React from "react"
-import { Link } from "react-router-dom"
-import { useSelector } from "react-redux"
-import { EditOutlined } from "@ant-design/icons"
-import { DeleteOutlined } from "@ant-design/icons"
-import { DownOutlined, PlusCircleOutlined } from "@ant-design/icons"
+} from '@mui/material'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { EditOutlined } from '@ant-design/icons'
+import { DeleteOutlined } from '@ant-design/icons'
+import { DownOutlined, PlusCircleOutlined } from '@ant-design/icons'
 
 // project import
-import { useAppDispatch } from "../../store/store"
-import { LoadingStatusTypes } from "../../store/appTypes"
-import EmptyCard from "../../components/EmptyCard/EmptyCard"
-import { plansSelector } from "../../store/plans/plansSlice"
-import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
-import PlanCategoryModal from "../../components/PlansPage/PlanCategoryModal"
-import { deletePlanCategory, getPlansCategories } from "../../store/plans/plansAsyncActions"
+import { useAppDispatch } from '../../store/store'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { plansSelector } from '../../store/plans/plansSlice'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import PlanCategoryModal from '../../components/PlansPage/PlanCategoryModal'
+import { deletePlanCategory, getPlansCategories } from '../../store/plans/plansAsyncActions'
 
 // ==============================|| PLANS ||============================== //
 
@@ -41,19 +41,18 @@ const PlansPage = () => {
     id: number
     name: string
   } | null>(null)
-  const [modalType, setModalType] = React.useState<"create" | "update" | "create-plan">("create")
+  const [modalType, setModalType] = React.useState<'create' | 'update' | 'create-plan'>('create')
 
   React.useEffect(() => {
     if (plansCategories) return
-
     dispatch(getPlansCategories())
   }, [])
 
   const onDeleteCategory = (id: number, plansCount: number) => {
-    if (!window.confirm("Ви дійсно хочете видалити категорію?")) return
+    if (!window.confirm('Ви дійсно хочете видалити категорію?')) return
 
     if (plansCount > 0) {
-      alert("В категорії не повинно бути планів")
+      alert('В категорії не повинно бути планів')
     } else {
       dispatch(deletePlanCategory(id))
     }
@@ -68,10 +67,10 @@ const PlansPage = () => {
         editingPlanCategory={editingPlanCategory}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
         {/* Категорії */}
         <Grid item xs={12} md={9}>
-          <Grid container sx={{ alignItems: "center" }}>
+          <Grid container sx={{ alignItems: 'center' }}>
             <Grid item sx={{ flexGrow: 1 }}>
               <Typography variant="h5">Плани</Typography>
             </Grid>
@@ -79,7 +78,7 @@ const PlansPage = () => {
               <Tooltip title="Створити нову категорію" enterDelay={1000}>
                 <IconButton
                   onClick={() => {
-                    setModalType("create")
+                    setModalType('create')
                     setIsOpenModal(true)
                   }}
                 >
@@ -93,24 +92,18 @@ const PlansPage = () => {
         <Grid item xs={12} md={9}>
           {!plansCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
 
-          {!plansCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && (
-            <EmptyCard />
-          )}
+          {!plansCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
 
           {plansCategories?.length &&
             plansCategories.map((planCategory) => (
               <Accordion key={planCategory.id} disableGutters>
-                <AccordionSummary
-                  aria-controls="panel1d-content"
-                  id="panel1d-header"
-                  expandIcon={<DownOutlined />}
-                >
+                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={<DownOutlined />}>
                   <Typography
                     sx={{
                       flexGrow: 1,
                       fontWeight: 500,
-                      display: "flex",
-                      alignItems: "center",
+                      display: 'flex',
+                      alignItems: 'center',
                     }}
                     variant="h6"
                   >
@@ -119,10 +112,10 @@ const PlansPage = () => {
 
                   <Typography
                     sx={{
-                      color: "text.secondary",
-                      display: "flex",
-                      justifyContent: "end",
-                      alignItems: "center",
+                      color: 'text.secondary',
+                      display: 'flex',
+                      justifyContent: 'end',
+                      alignItems: 'center',
                       mr: 4,
                     }}
                   >
@@ -134,10 +127,10 @@ const PlansPage = () => {
                       onClick={(e) => {
                         e.stopPropagation()
                         setEditingPlanCategory({ id: planCategory.id, name: planCategory.name })
-                        setModalType("create-plan")
+                        setModalType('create-plan')
                         setIsOpenModal(true)
                       }}
-                      sx={{ mr: "5px" }}
+                      sx={{ mr: '5px' }}
                     >
                       <PlusCircleOutlined />
                     </IconButton>
@@ -148,10 +141,10 @@ const PlansPage = () => {
                       onClick={(e) => {
                         e.stopPropagation()
                         setEditingPlanCategory({ id: planCategory.id, name: planCategory.name })
-                        setModalType("update")
+                        setModalType('update')
                         setIsOpenModal(true)
                       }}
-                      sx={{ mr: "5px" }}
+                      sx={{ mr: '5px' }}
                     >
                       <EditOutlined />
                     </IconButton>
@@ -163,7 +156,7 @@ const PlansPage = () => {
                         e.stopPropagation()
                         onDeleteCategory(planCategory.id, planCategory.plans.length)
                       }}
-                      sx={{ mr: "15px" }}
+                      sx={{ mr: '15px' }}
                     >
                       <DeleteOutlined />
                     </IconButton>
@@ -173,7 +166,7 @@ const PlansPage = () => {
                 <AccordionDetails sx={{ p: 0 }}>
                   <List>
                     {planCategory.plans.map((plan) => (
-                      <Link to={`/plans/${plan.id}`} style={{ color: "inherit" }}>
+                      <Link to={`/plans/${plan.id}`} style={{ color: 'inherit' }}>
                         <Divider />
                         <ListItem disablePadding key={plan.id}>
                           <ListItemButton>

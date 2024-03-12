@@ -19,11 +19,11 @@ export const getPlansCategories = createAsyncThunk('plans/getPlansCategories', a
     thunkAPI.dispatch(setAppAlert({ message: 'Плани завантажено', status: 'success' }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
     return data
-  } catch (error) {
+  } catch (error: any) {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
     thunkAPI.dispatch(
       setAppAlert({
-        message: (error as any).response.data.message || 'Помилка при завантаженні',
+        message: (error as any)?.response?.data?.message || error.message,
         status: 'error',
       })
     )
@@ -42,9 +42,11 @@ export const createPlanCategory = createAsyncThunk(
       thunkAPI.dispatch(setAppAlert({ message: 'Категорію створено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
-    } catch (error) {
+    } catch (error: any) {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message: (error as any).response.data.message, status: 'error' }))
+      thunkAPI.dispatch(
+        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
+      )
       throw error
     }
   }
@@ -61,9 +63,11 @@ export const updatePlanCategory = createAsyncThunk(
       thunkAPI.dispatch(setAppAlert({ message: 'Категорію оновлено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
-    } catch (error) {
+    } catch (error: any) {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message: (error as any).response.data.message, status: 'error' }))
+      thunkAPI.dispatch(
+        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
+      )
       throw error
     }
   }
@@ -78,9 +82,11 @@ export const deletePlanCategory = createAsyncThunk('plans/deletePlanCategory', a
     thunkAPI.dispatch(setAppAlert({ message: 'Категорію видалено', status: 'success' }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
     return data
-  } catch (error) {
+  } catch (error: any) {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-    thunkAPI.dispatch(setAppAlert({ message: (error as any).response.data.message, status: 'error' }))
+    thunkAPI.dispatch(
+      setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
+    )
     throw error
   }
 })
@@ -98,9 +104,11 @@ export const createPlan = createAsyncThunk(
       thunkAPI.dispatch(setAppAlert({ message: 'План створено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
-    } catch (error) {
+    } catch (error: any) {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message: (error as any).response.data.message, status: 'error' }))
+      thunkAPI.dispatch(
+        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
+      )
       throw error
     }
   }
@@ -117,9 +125,11 @@ export const updatePlan = createAsyncThunk(
       thunkAPI.dispatch(setAppAlert({ message: 'План оновлено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
-    } catch (error) {
+    } catch (error: any) {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message: (error as any).response.data.message, status: 'error' }))
+      thunkAPI.dispatch(
+        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
+      )
       throw error
     }
   }
@@ -134,9 +144,11 @@ export const deletePlan = createAsyncThunk('plans/deletePlan', async (id: number
     thunkAPI.dispatch(setAppAlert({ message: 'План видалено', status: 'success' }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
     return data
-  } catch (error) {
+  } catch (error: any) {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-    thunkAPI.dispatch(setAppAlert({ message: (error as any).response.data.message, status: 'error' }))
+    thunkAPI.dispatch(
+      setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
+    )
     throw error
   }
 })
@@ -151,11 +163,11 @@ export const getPlanSubjects = createAsyncThunk('plans/getPlanSubjects', async (
     thunkAPI.dispatch(setAppAlert({ message: 'План завантажено', status: 'success' }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
     return data
-  } catch (error) {
+  } catch (error: any) {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
     thunkAPI.dispatch(
       setAppAlert({
-        message: (error as any).response.data.message || 'Помилка при завантаженні',
+        message: (error as any)?.response?.data?.message || error.message,
         status: 'error',
       })
     )
@@ -174,9 +186,11 @@ export const createPlanSubjects = createAsyncThunk(
       thunkAPI.dispatch(setAppAlert({ message: 'Дисципліну створено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
-    } catch (error) {
+    } catch (error: any) {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message: (error as any).response.data.message, status: 'error' }))
+      thunkAPI.dispatch(
+        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
+      )
       throw error
     }
   }
@@ -193,9 +207,11 @@ export const updatePlanSubjectsName = createAsyncThunk(
       thunkAPI.dispatch(setAppAlert({ message: 'Дисципліну оновлено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
-    } catch (error) {
+    } catch (error: any) {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message: (error as any).response.data.message, status: 'error' }))
+      thunkAPI.dispatch(
+        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
+      )
       throw error
     }
   }
@@ -212,9 +228,11 @@ export const updatePlanSubjectsHours = createAsyncThunk(
       thunkAPI.dispatch(setAppAlert({ message: 'Дисципліну оновлено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
-    } catch (error) {
+    } catch (error: any) {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message: (error as any).response.data.message, status: 'error' }))
+      thunkAPI.dispatch(
+        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
+      )
       throw error
     }
   }
@@ -229,9 +247,11 @@ export const deletePlanSubjects = createAsyncThunk('plans/deletePlanSubjects', a
     thunkAPI.dispatch(setAppAlert({ message: 'Дисципліну видалено', status: 'success' }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
     return data
-  } catch (error) {
+  } catch (error: any) {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-    thunkAPI.dispatch(setAppAlert({ message: (error as any).response.data.message, status: 'error' }))
+    thunkAPI.dispatch(
+      setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
+    )
     throw error
   }
 })

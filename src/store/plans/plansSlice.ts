@@ -1,6 +1,6 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { PlanType, PlansCategoriesType, PlansInitialState, PlansType } from "./plansTypes"
-import { LoadingStatusTypes } from "../appTypes"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PlanType, PlansCategoriesType, PlansInitialState, PlansType } from './plansTypes'
+import { LoadingStatusTypes } from '../appTypes'
 import {
   createPlan,
   createPlanCategory,
@@ -10,8 +10,9 @@ import {
   getPlansCategories,
   updatePlan,
   updatePlanCategory,
-} from "./plansAsyncActions"
-import { RootState } from "../store"
+  updatePlanSubjectsName,
+} from './plansAsyncActions'
+import { RootState } from '../store'
 
 const plansInitialState: PlansInitialState = {
   plansCategories: null,
@@ -20,7 +21,7 @@ const plansInitialState: PlansInitialState = {
 }
 
 const plansSlice = createSlice({
-  name: "plans",
+  name: 'plans',
   initialState: plansInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -31,39 +32,30 @@ const plansSlice = createSlice({
     /* --- categories --- */
 
     /* getPlansCategories */
-    builder.addCase(
-      getPlansCategories.fulfilled,
-      (state, action: PayloadAction<PlansCategoriesType[]>) => {
-        state.plansCategories = action.payload
-      }
-    )
+    builder.addCase(getPlansCategories.fulfilled, (state, action: PayloadAction<PlansCategoriesType[]>) => {
+      state.plansCategories = action.payload
+    })
 
     /* createPlanCategory */
-    builder.addCase(
-      createPlanCategory.fulfilled,
-      (state, action: PayloadAction<PlansCategoriesType>) => {
-        if (!state.plansCategories) return
-        state.plansCategories = [...state.plansCategories, action.payload]
-      }
-    )
+    builder.addCase(createPlanCategory.fulfilled, (state, action: PayloadAction<PlansCategoriesType>) => {
+      if (!state.plansCategories) return
+      state.plansCategories = [...state.plansCategories, action.payload]
+    })
 
     /* updatePlanCategory */
-    builder.addCase(
-      updatePlanCategory.fulfilled,
-      (state, action: PayloadAction<PlansCategoriesType>) => {
-        if (!state.plansCategories) return
+    builder.addCase(updatePlanCategory.fulfilled, (state, action: PayloadAction<PlansCategoriesType>) => {
+      if (!state.plansCategories) return
 
-        const newCategories = state.plansCategories.map((el) => {
-          if (el.id === action.payload.id) {
-            return { ...el, ...action.payload }
-          }
+      const newCategories = state.plansCategories.map((el) => {
+        if (el.id === action.payload.id) {
+          return { ...el, ...action.payload }
+        }
 
-          return el
-        })
+        return el
+      })
 
-        state.plansCategories = newCategories
-      }
-    )
+      state.plansCategories = newCategories
+    })
 
     /* deletePlanCategory */
     builder.addCase(deletePlanCategory.fulfilled, (state, action: PayloadAction<number>) => {
@@ -113,6 +105,25 @@ const plansSlice = createSlice({
 
       state.plansCategories = newPlansCategories
     })
+
+    /* updatePlanSubjectsName */
+    builder.addCase(
+      updatePlanSubjectsName.fulfilled,
+      (state, action: PayloadAction<{ id: number; name: string; cmk: number }[]>) => {
+        if (!state.plan) return
+        console.log(action.payload)
+
+        const subjects = state.plan.subjects.map((el) => {
+          if (el.id === action.payload[0].id) {
+            return { ...el, name: action.payload[0].name, cmk: { id: action.payload[0].cmk } }
+          }
+
+          return el
+        })
+        console.log(subjects)
+        state.plan.subjects = subjects
+      }
+    )
 
     /* deletePlan */
     builder.addCase(deletePlan.fulfilled, (state, action: PayloadAction<number>) => {

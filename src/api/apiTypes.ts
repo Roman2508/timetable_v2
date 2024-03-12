@@ -77,12 +77,14 @@ export type UpdateGroupPayloadType = Pick<
 
 export type CreateSubjectPayloadType = {
   name: string
+  cmk: number
   planId: number
 }
 
 export type UpdateSubjectNamePayloadType = {
-  oldName: 'string'
-  newName: 'string'
+  oldName: string
+  newName: string
+  cmk: number
   planId: number
 }
 

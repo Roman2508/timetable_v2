@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
+import { EditOutlined } from '@ant-design/icons'
 
 // material-ui
 import {
@@ -12,7 +13,11 @@ import {
   TableHead,
   SortDirection,
   TableContainer,
+  Tooltip,
+  IconButton,
+  Typography,
 } from '@mui/material'
+import { PlanType } from '../../store/plans/plansTypes'
 
 const createData = (trackingNo: number, name: string, fat: number, carbs: number, protein: number) => {
   return { trackingNo, name, fat, carbs, protein }
@@ -26,19 +31,6 @@ const rows = [
   createData(13286564, 'Computer Accessories', 100, 1, 83348),
   createData(86739658, 'TV', 99, 0, 410780),
   createData(13256498, 'Keyboard', 125, 2, 70999),
-  createData(98753263, 'Mouse', 89, 2, 10570),
-  createData(98753275, 'Desktop', 185, 1, 98063),
-  createData(98753291, 'Chair', 100, 0, 14001),
-  createData(84564564, 'Camera Lens', 40, 2, 40570),
-  createData(98764564, 'Laptop', 300, 0, 180139),
-  createData(98756325, 'Mobile', 355, 1, 90989),
-  createData(98652366, 'Handset', 50, 1, 10239),
-  createData(13286564, 'Computer Accessories', 100, 1, 83348),
-  createData(86739658, 'TV', 99, 0, 410780),
-  createData(13256498, 'Keyboard', 125, 2, 70999),
-  createData(98753263, 'Mouse', 89, 2, 10570),
-  createData(98753275, 'Desktop', 185, 1, 98063),
-  createData(98753291, 'Chair', 100, 0, 14001),
 ]
 
 function descendingComparator(a, b, orderBy) {
@@ -76,54 +68,73 @@ interface IOrderTableHeadProps {
   orderBy: string
 }
 
-const cellStyles = { border: '1px solid rgb(235, 235, 235)', backgroundColor: '#fff' }
+const cellStyles = { border: '1px solid rgb(235, 235, 235)' }
 
 const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
-  console.log(order, orderBy)
   return (
     <TableHead>
       <TableRow>
-        <TableCell sx={cellStyles} align="center" rowSpan={3} padding="none">
+        <TableCell sx={{ ...cellStyles, backgroundColor: '#fff !important' }} align="center" rowSpan={3} padding="none">
           Дисципліна
         </TableCell>
-        <TableCell sx={cellStyles} align="center" rowSpan={3} padding="none">
+        <TableCell sx={{ ...cellStyles, backgroundColor: '#fff !important' }} align="center" rowSpan={3} padding="none">
           Всього
         </TableCell>
 
-        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none" colSpan={6}>
+        <TableCell
+          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+          align="center"
+          padding="none"
+          colSpan={6}
+        >
           Розподіл за курсами та семестрами
         </TableCell>
       </TableRow>
 
       <TableRow>
-        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none" colSpan={2}>
+        <TableCell
+          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+          align="center"
+          padding="none"
+          colSpan={2}
+        >
           1 курс
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none" colSpan={2}>
+        <TableCell
+          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+          align="center"
+          padding="none"
+          colSpan={2}
+        >
           1 курс
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none" colSpan={2}>
+        <TableCell
+          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+          align="center"
+          padding="none"
+          colSpan={2}
+        >
           3 курс
         </TableCell>
       </TableRow>
 
       <TableRow>
-        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 1
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 2
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 3
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 4
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 5
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 6
         </TableCell>
       </TableRow>
@@ -131,9 +142,21 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
   )
 }
 
-// ==============================|| ORDER TABLE ||============================== //
+// ==============================|| FULL PLAN TABLE ||============================== //
 
-const FullPlanTable = () => {
+interface IFullPlanTableProps {
+  plan: PlanType
+  setEditingSubjectName: React.Dispatch<React.SetStateAction<string>>
+  setSubjectsModalVisible: React.Dispatch<React.SetStateAction<boolean>>
+  setSubjectsModalType: React.Dispatch<React.SetStateAction<'create' | 'update'>>
+}
+
+const FullPlanTable: React.FC<IFullPlanTableProps> = ({
+  plan,
+  setSubjectsModalType,
+  setEditingSubjectName,
+  setSubjectsModalVisible,
+}) => {
   const [order] = useState('asc')
   const [orderBy] = useState('trackingNo')
   const [selected] = useState([])
@@ -157,52 +180,95 @@ const FullPlanTable = () => {
           stickyHeader
           aria-labelledby="tableTitle"
           sx={{
-            '& .MuiTableCell-root:first-of-type': {
-              pl: 2,
-            },
-            '& .MuiTableCell-root:last-of-type': {
-              pr: 3,
-            },
+            '& .MuiTableCell-root:first-of-type': { pl: 2 },
+            '& .MuiTableCell-root:last-of-type': { pr: 3 },
           }}
         >
           <OrderTableHead order={order} orderBy={orderBy} />
           <TableBody>
-            {stableSort(rows, getComparator(order, orderBy)).map((row, index: number) => {
-              const isItemSelected = isSelected(row.trackingNo)
+            {/* stableSort(rows, getComparator(order, orderBy)) */}
+            {plan.subjects.map((row, index: number) => {
+              // const isItemSelected = isSelected(row.trackingNo)
               const labelId = `enhanced-table-checkbox-${index}`
 
               return (
                 <TableRow
                   hover
                   role="checkbox"
-                  aria-checked={isItemSelected}
+                  // aria-checked={isItemSelected}
                   tabIndex={-1}
-                  key={row.trackingNo}
-                  selected={isItemSelected}
+                  // key={row.trackingNo}
+                  // selected={isItemSelected}
                 >
-                  <TableCell sx={cellStyles} component="th" id={labelId} scope="row" align="left">
-                    {row.name}
+                  <TableCell
+                    sx={{
+                      ...cellStyles,
+                      position: 'relative',
+                      ':hover *': { display: 'block !important' },
+                    }}
+                    component="th"
+                    id={labelId}
+                    scope="row"
+                    align="left"
+                  >
+                    <Typography sx={{ flexGrow: 1 }}>{row.name}</Typography>
+
+                    <IconButton
+                      sx={{
+                        display: 'none',
+                        position: 'absolute',
+                        right: 6,
+                        top: 6,
+                        background: '#fff',
+                        ':hover': { background: '#fff' },
+                      }}
+                      onClick={() => {
+                        setEditingSubjectName(row.name)
+                        setSubjectsModalType('update')
+                        setSubjectsModalVisible(true)
+                      }}
+                    >
+                      <EditOutlined />
+                    </IconButton>
                   </TableCell>
                   <TableCell sx={cellStyles} align="center">
-                    {row.fat}
+                    ???
                   </TableCell>
-                  <TableCell sx={cellStyles} align="center">
-                    {1}
+                  <TableCell
+                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    align="center"
+                  >
+                    {row.semesterNumber === 1 ? row.totalHours : ''}
                   </TableCell>
-                  <TableCell sx={cellStyles} align="center">
-                    {1}
+                  <TableCell
+                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    align="center"
+                  >
+                    {row.semesterNumber === 2 ? row.totalHours : ''}
                   </TableCell>
-                  <TableCell sx={cellStyles} align="center">
-                    {1}
+                  <TableCell
+                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    align="center"
+                  >
+                    {row.semesterNumber === 3 ? row.totalHours : ''}
                   </TableCell>
-                  <TableCell sx={cellStyles} align="center">
-                    {1}
+                  <TableCell
+                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    align="center"
+                  >
+                    {row.semesterNumber === 4 ? row.totalHours : ''}
                   </TableCell>
-                  <TableCell sx={cellStyles} align="center">
-                    {1}
+                  <TableCell
+                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    align="center"
+                  >
+                    {row.semesterNumber === 5 ? row.totalHours : ''}
                   </TableCell>
-                  <TableCell sx={cellStyles} align="center">
-                    {1}
+                  <TableCell
+                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    align="center"
+                  >
+                    {row.semesterNumber === 6 ? row.totalHours : ''}
                   </TableCell>
                 </TableRow>
               )

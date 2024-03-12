@@ -21,6 +21,7 @@ export type PlansType = {
 export type PlanType = {
   id: number
   name: string
+  category: { id: number }
   subjects: PlanSubjectType[]
 }
 
