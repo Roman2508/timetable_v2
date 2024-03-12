@@ -1,15 +1,24 @@
 // material-ui
-import { Stack, Button, MenuItem, TextField, InputLabel, OutlinedInput, FormHelperText } from '@mui/material'
+import {
+  Stack,
+  Button,
+  MenuItem,
+  TextField,
+  InputLabel,
+  OutlinedInput,
+  FormHelperText,
+} from "@mui/material"
 
 // project import
-import React from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { TeachersType } from '../../store/teachers/teachersTypes'
-import { useSelector } from 'react-redux'
-import { teachersSelector } from '../../store/teachers/teachersSlice'
-import { useAppDispatch } from '../../store/store'
-import { createTeacher, updateTeacher } from '../../store/teachers/teachersAsyncActions'
-import { emailRegex } from '../../utils/emailRegex'
+import React from "react"
+import { useSelector } from "react-redux"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
+
+import { useAppDispatch } from "../../store/store"
+import { emailRegex } from "../../utils/emailRegex"
+import { TeachersType } from "../../store/teachers/teachersTypes"
+import { teachersSelector } from "../../store/teachers/teachersSlice"
+import { createTeacher, updateTeacher } from "../../store/teachers/teachersAsyncActions"
 
 interface IAuditoriesFields {
   firstName: string
@@ -41,8 +50,10 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
     formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm<IAuditoriesFields>({
-    mode: 'onBlur',
-    defaultValues: editingTeacher ? { ...editingTeacher, category: editingTeacher.category.id } : {},
+    mode: "onBlur",
+    defaultValues: editingTeacher
+      ? { ...editingTeacher, category: editingTeacher.category.id }
+      : {},
   })
 
   const onSubmit: SubmitHandler<IAuditoriesFields> = async (data) => {
@@ -52,15 +63,15 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
         if (!editingTeacher) return
         await dispatch(updateTeacher({ ...data, id: editingTeacher.id }))
         handleClose()
-        reset({ calendarUrl: '', email: '', firstName: '', lastName: '', middleName: '' })
+        reset({ calendarUrl: "", email: "", firstName: "", lastName: "", middleName: "" })
       } else {
         // Якщо форму відкрито НЕ в модалці - створення викладача
         await dispatch(createTeacher(data))
-        reset({ calendarUrl: '', email: '', firstName: '', lastName: '', middleName: '' })
+        reset({ calendarUrl: "", email: "", firstName: "", lastName: "", middleName: "" })
       }
     } catch (error) {
       console.log(error)
-    } 
+    }
   }
 
   return (
@@ -69,10 +80,10 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
         style={
           isOpenInModal
             ? {
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gridTemplateRows: 'repeat(2, 1fr)',
-                gap: '0 20px',
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)",
+                gridTemplateRows: "repeat(2, 1fr)",
+                gap: "0 20px",
               }
             : {}
         }
@@ -80,21 +91,18 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
         <Controller
           name="lastName"
           control={control}
-          rules={{ required: 'Вкажіть прізвище викладача' }}
+          rules={{ required: "Вкажіть прізвище викладача" }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
                 <InputLabel htmlFor="lastName">Прізвище*</InputLabel>
                 <OutlinedInput
+                  fullWidth
+                  {...field}
                   id="lastName"
                   type="lastName"
-                  {...field}
-                  // value={values.lastName}
                   name="lastName"
-                  // onBlur={handleBlur}
-                  // onChange={handleChange}
                   placeholder="Прізвище"
-                  fullWidth
                   error={Boolean(errors.lastName)}
                 />
                 {errors.lastName && (
@@ -116,15 +124,12 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
               <Stack spacing={1} sx={{ mt: 2 }}>
                 <InputLabel htmlFor="firstName">Ім'я*</InputLabel>
                 <OutlinedInput
+                  fullWidth
+                  {...field}
                   id="firstName"
                   type="firstname"
-                  {...field}
-                  // value={values.firstname}
                   name="firstName"
-                  // onBlur={handleBlur}
-                  // onChange={handleChange}
                   placeholder="Ім'я"
-                  fullWidth
                   error={Boolean(errors.firstName)}
                 />
                 {errors.firstName && (
@@ -140,21 +145,18 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
         <Controller
           name="middleName"
           control={control}
-          rules={{ required: 'Вкажіть по батькові' }}
+          rules={{ required: "Вкажіть по батькові" }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
                 <InputLabel htmlFor="middleName">По батькові*</InputLabel>
                 <OutlinedInput
+                  fullWidth
+                  {...field}
                   id="middleName"
                   type="middleName"
-                  {...field}
-                  // value={values.firstname}
                   name="middleName"
-                  // onBlur={handleBlur}
-                  // onChange={handleChange}
                   placeholder="По батькові"
-                  fullWidth
                   error={Boolean(errors.middleName)}
                 />
                 {errors.middleName && (
@@ -171,10 +173,10 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
           name="email"
           control={control}
           rules={{
-            required: 'Вкажіть пошту викладача',
+            required: "Вкажіть пошту викладача",
             pattern: {
               value: emailRegex,
-              message: 'Не вірний формат пошти',
+              message: "Не вірний формат пошти",
             },
           }}
           render={({ field }) => {
@@ -208,15 +210,12 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
               <Stack spacing={1} sx={{ mt: 2 }}>
                 <InputLabel htmlFor="calendarUrl">ID календаря</InputLabel>
                 <OutlinedInput
+                  fullWidth
+                  {...field}
                   id="calendarUrl"
                   type="calendarUrl"
-                  {...field}
-                  // value={values.firstname}
                   name="calendarUrl"
-                  // onBlur={handleBlur}
-                  // onChange={handleChange}
                   placeholder="https://calendar.google.com"
-                  fullWidth
                   error={Boolean(errors.calendarUrl)}
                 />
                 {errors.calendarUrl && (
@@ -232,7 +231,7 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
         <Controller
           name="category"
           control={control}
-          rules={{ required: 'Вкажіть категорію' }}
+          rules={{ required: "Вкажіть категорію" }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
@@ -242,7 +241,7 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
                   fullWidth
                   {...field}
                   id="category"
-                  sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
+                  sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}
                 >
                   {(!teachersCategories ? [] : teachersCategories).map((option) => (
                     <MenuItem key={option.id} value={option.id}>
@@ -262,13 +261,17 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
         type="submit"
         disabled={isSubmitting}
         sx={{
-          textTransform: 'capitalize',
-          width: '100%',
-          p: '7.44px 15px',
+          textTransform: "capitalize",
+          width: "100%",
+          p: "7.44px 15px",
           mt: 3,
         }}
       >
-        {isOpenInModal && !isSubmitting ? 'Оновити' : !isSubmitting ? 'Створити' : 'Завантаження...'}
+        {isOpenInModal && !isSubmitting
+          ? "Оновити"
+          : !isSubmitting
+          ? "Створити"
+          : "Завантаження..."}
       </Button>
     </form>
   )

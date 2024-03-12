@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
-import { EditOutlined } from '@ant-design/icons'
+import React, { useState } from "react"
+import { Link as RouterLink } from "react-router-dom"
+import { EditOutlined } from "@ant-design/icons"
 
 // material-ui
 import {
@@ -16,21 +16,27 @@ import {
   Tooltip,
   IconButton,
   Typography,
-} from '@mui/material'
-import { PlanType } from '../../store/plans/plansTypes'
+} from "@mui/material"
+import { PlanSubjectType, PlanType } from "../../store/plans/plansTypes"
 
-const createData = (trackingNo: number, name: string, fat: number, carbs: number, protein: number) => {
+const createData = (
+  trackingNo: number,
+  name: string,
+  fat: number,
+  carbs: number,
+  protein: number
+) => {
   return { trackingNo, name, fat, carbs, protein }
 }
 
 const rows = [
-  createData(84564564, 'Camera Lens', 40, 2, 40570),
-  createData(98764564, 'Laptop', 300, 0, 180139),
-  createData(98756325, 'Mobile', 355, 1, 90989),
-  createData(98652366, 'Handset', 50, 1, 10239),
-  createData(13286564, 'Computer Accessories', 100, 1, 83348),
-  createData(86739658, 'TV', 99, 0, 410780),
-  createData(13256498, 'Keyboard', 125, 2, 70999),
+  createData(84564564, "Camera Lens", 40, 2, 40570),
+  createData(98764564, "Laptop", 300, 0, 180139),
+  createData(98756325, "Mobile", 355, 1, 90989),
+  createData(98652366, "Handset", 50, 1, 10239),
+  createData(13286564, "Computer Accessories", 100, 1, 83348),
+  createData(86739658, "TV", 99, 0, 410780),
+  createData(13256498, "Keyboard", 125, 2, 70999),
 ]
 
 function descendingComparator(a, b, orderBy) {
@@ -44,7 +50,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === 'desc'
+  return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
@@ -68,21 +74,31 @@ interface IOrderTableHeadProps {
   orderBy: string
 }
 
-const cellStyles = { border: '1px solid rgb(235, 235, 235)' }
+const cellStyles = { border: "1px solid rgb(235, 235, 235)" }
 
 const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
   return (
     <TableHead>
       <TableRow>
-        <TableCell sx={{ ...cellStyles, backgroundColor: '#fff !important' }} align="center" rowSpan={3} padding="none">
+        <TableCell
+          sx={{ ...cellStyles, backgroundColor: "#fff !important" }}
+          align="center"
+          rowSpan={3}
+          padding="none"
+        >
           Дисципліна
         </TableCell>
-        <TableCell sx={{ ...cellStyles, backgroundColor: '#fff !important' }} align="center" rowSpan={3} padding="none">
+        <TableCell
+          sx={{ ...cellStyles, backgroundColor: "#fff !important" }}
+          align="center"
+          rowSpan={3}
+          padding="none"
+        >
           Всього
         </TableCell>
 
         <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
           align="center"
           padding="none"
           colSpan={6}
@@ -93,7 +109,7 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
 
       <TableRow>
         <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
           align="center"
           padding="none"
           colSpan={2}
@@ -101,7 +117,7 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
           1 курс
         </TableCell>
         <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
           align="center"
           padding="none"
           colSpan={2}
@@ -109,7 +125,7 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
           1 курс
         </TableCell>
         <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
           align="center"
           padding="none"
           colSpan={2}
@@ -119,22 +135,46 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
       </TableRow>
 
       <TableRow>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell
+          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
+          align="center"
+          padding="none"
+        >
           Семестр 1
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell
+          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
+          align="center"
+          padding="none"
+        >
           Семестр 2
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell
+          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
+          align="center"
+          padding="none"
+        >
           Семестр 3
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell
+          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
+          align="center"
+          padding="none"
+        >
           Семестр 4
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell
+          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
+          align="center"
+          padding="none"
+        >
           Семестр 5
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell
+          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
+          align="center"
+          padding="none"
+        >
           Семестр 6
         </TableCell>
       </TableRow>
@@ -148,17 +188,21 @@ interface IFullPlanTableProps {
   plan: PlanType
   setEditingSubjectName: React.Dispatch<React.SetStateAction<string>>
   setSubjectsModalVisible: React.Dispatch<React.SetStateAction<boolean>>
-  setSubjectsModalType: React.Dispatch<React.SetStateAction<'create' | 'update'>>
+  setSemesterHoursModalVisible: React.Dispatch<React.SetStateAction<boolean>>
+  setSubjectsModalType: React.Dispatch<React.SetStateAction<"create" | "update">>
+  setSelectedSemester: React.Dispatch<React.SetStateAction<PlanSubjectType | null>>
 }
 
 const FullPlanTable: React.FC<IFullPlanTableProps> = ({
   plan,
+  setSelectedSemester,
   setSubjectsModalType,
   setEditingSubjectName,
   setSubjectsModalVisible,
+  setSemesterHoursModalVisible,
 }) => {
-  const [order] = useState('asc')
-  const [orderBy] = useState('trackingNo')
+  const [order] = useState("asc")
+  const [orderBy] = useState("trackingNo")
   const [selected] = useState([])
 
   const isSelected = (trackingNo: number) => selected.indexOf(trackingNo) !== -1
@@ -167,21 +211,21 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
     <Box>
       <TableContainer
         sx={{
-          width: '100%',
-          overflowX: 'auto',
+          width: "100%",
+          overflowX: "auto",
           // maxHeight: '600px',
-          position: 'relative',
-          display: 'block',
-          maxWidth: '100%',
-          '& td, & th': { whiteSpace: 'nowrap' },
+          position: "relative",
+          display: "block",
+          maxWidth: "100%",
+          "& td, & th": { whiteSpace: "nowrap" },
         }}
       >
         <Table
           stickyHeader
           aria-labelledby="tableTitle"
           sx={{
-            '& .MuiTableCell-root:first-of-type': { pl: 2 },
-            '& .MuiTableCell-root:last-of-type': { pr: 3 },
+            "& .MuiTableCell-root:first-of-type": { pl: 2 },
+            "& .MuiTableCell-root:last-of-type": { pr: 3 },
           }}
         >
           <OrderTableHead order={order} orderBy={orderBy} />
@@ -203,8 +247,8 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
                   <TableCell
                     sx={{
                       ...cellStyles,
-                      position: 'relative',
-                      ':hover *': { display: 'block !important' },
+                      position: "relative",
+                      ":hover *": { display: "block !important" },
                     }}
                     component="th"
                     id={labelId}
@@ -215,16 +259,16 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
 
                     <IconButton
                       sx={{
-                        display: 'none',
-                        position: 'absolute',
+                        display: "none",
+                        position: "absolute",
                         right: 6,
                         top: 6,
-                        background: '#fff',
-                        ':hover': { background: '#fff' },
+                        background: "#fff",
+                        ":hover": { background: "#fff" },
                       }}
                       onClick={() => {
                         setEditingSubjectName(row.name)
-                        setSubjectsModalType('update')
+                        setSubjectsModalType("update")
                         setSubjectsModalVisible(true)
                       }}
                     >
@@ -235,40 +279,88 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
                     ???
                   </TableCell>
                   <TableCell
-                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    onClick={() => {
+                      setSelectedSemester(row)
+                      setSemesterHoursModalVisible(true)
+                    }}
+                    sx={{
+                      ...cellStyles,
+                      cursor: "pointer",
+                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
+                    }}
                     align="center"
                   >
-                    {row.semesterNumber === 1 ? row.totalHours : ''}
+                    {row.semesterNumber === 1 ? row.totalHours : ""}
                   </TableCell>
                   <TableCell
-                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    onClick={() => {
+                      setSelectedSemester(row)
+                      setSemesterHoursModalVisible(true)
+                    }}
+                    sx={{
+                      ...cellStyles,
+                      cursor: "pointer",
+                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
+                    }}
                     align="center"
                   >
-                    {row.semesterNumber === 2 ? row.totalHours : ''}
+                    {row.semesterNumber === 2 ? row.totalHours : ""}
                   </TableCell>
                   <TableCell
-                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    onClick={() => {
+                      setSelectedSemester(row)
+                      setSemesterHoursModalVisible(true)
+                    }}
+                    sx={{
+                      ...cellStyles,
+                      cursor: "pointer",
+                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
+                    }}
                     align="center"
                   >
-                    {row.semesterNumber === 3 ? row.totalHours : ''}
+                    {row.semesterNumber === 3 ? row.totalHours : ""}
                   </TableCell>
                   <TableCell
-                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    onClick={() => {
+                      setSelectedSemester(row)
+                      setSemesterHoursModalVisible(true)
+                    }}
+                    sx={{
+                      ...cellStyles,
+                      cursor: "pointer",
+                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
+                    }}
                     align="center"
                   >
-                    {row.semesterNumber === 4 ? row.totalHours : ''}
+                    {row.semesterNumber === 4 ? row.totalHours : ""}
                   </TableCell>
                   <TableCell
-                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    onClick={() => {
+                      setSelectedSemester(row)
+                      setSemesterHoursModalVisible(true)
+                    }}
+                    sx={{
+                      ...cellStyles,
+                      cursor: "pointer",
+                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
+                    }}
                     align="center"
                   >
-                    {row.semesterNumber === 5 ? row.totalHours : ''}
+                    {row.semesterNumber === 5 ? row.totalHours : ""}
                   </TableCell>
                   <TableCell
-                    sx={{ ...cellStyles, cursor: 'pointer', ':hover': { background: 'rgba(0, 0, 0, 0.05);' } }}
+                    onClick={() => {
+                      setSelectedSemester(row)
+                      setSemesterHoursModalVisible(true)
+                    }}
+                    sx={{
+                      ...cellStyles,
+                      cursor: "pointer",
+                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
+                    }}
                     align="center"
                   >
-                    {row.semesterNumber === 6 ? row.totalHours : ''}
+                    {row.semesterNumber === 6 ? row.totalHours : ""}
                   </TableCell>
                 </TableRow>
               )
