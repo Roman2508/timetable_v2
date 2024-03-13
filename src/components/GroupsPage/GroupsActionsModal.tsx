@@ -15,8 +15,8 @@ import React, { Dispatch, SetStateAction } from "react"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 
 import { useAppDispatch } from "../../store/store"
-import { createGroupCategory, updateGroupCategory } from "../../store/groups/groupsAsyncActions"
 import { GroupCategoriesType } from "../../store/groups/groupsTypes"
+import { createGroupCategory, updateGroupCategory } from "../../store/groups/groupsAsyncActions"
 
 interface IGroupsActionsModalProps {
   open: boolean
@@ -42,7 +42,6 @@ const GroupsActionsModal: React.FC<IGroupsActionsModalProps> = ({
   const {
     watch,
     control,
-    register,
     setValue,
     formState: { errors },
     handleSubmit,

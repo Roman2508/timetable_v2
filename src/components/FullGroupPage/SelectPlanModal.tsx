@@ -19,8 +19,8 @@ import React, { Dispatch, SetStateAction } from "react"
 import { CloseOutlined } from "@ant-design/icons"
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"
 import { PlansCategoriesType } from "../../store/plans/plansTypes"
-import { Control, Controller, UseFormGetValues, UseFormSetValue } from "react-hook-form"
 import { IGroupFilelds } from "../../pages/FullGroup/FullGroupPage"
+import { Control, Controller, UseFormGetValues } from "react-hook-form"
 
 interface ISelectPlanModalProps {
   open: boolean

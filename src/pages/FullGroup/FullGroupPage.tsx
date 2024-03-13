@@ -21,7 +21,7 @@ import { plansSelector } from "../../store/plans/plansSlice"
 import { clearGroupData, groupsSelector } from "../../store/groups/groupsSlice"
 import { getPlansCategories } from "../../store/plans/plansAsyncActions"
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
-import { SelectPlanModal } from "../../components/GroupsPage/SelectPlanModal"
+import { SelectPlanModal } from "../../components/FullGroupPage/SelectPlanModal"
 import {
   createGroup,
   deleteGroup,
@@ -30,6 +30,7 @@ import {
   updateGroup,
 } from "../../store/groups/groupsAsyncActions"
 import { toast } from "react-toastify"
+import SpecializationModal from "../../components/FullGroupPage/SpecializationModal"
 
 export interface IGroupFilelds {
   name: string
@@ -51,6 +52,7 @@ const FullGroupPage = () => {
   const { group, groupCategories, loadingStatus } = useSelector(groupsSelector)
 
   const [planModalVisible, setPlanModalVisible] = React.useState(false)
+  const [specializationModalVisible, setSpecializationModalVisible] = React.useState(false)
 
   const {
     control,
@@ -146,6 +148,11 @@ const FullGroupPage = () => {
         open={planModalVisible}
         setOpen={setPlanModalVisible}
         plansCategories={plansCategories}
+      />
+
+      <SpecializationModal
+        open={specializationModalVisible}
+        setOpen={setSpecializationModalVisible}
       />
 
       <Grid
@@ -368,16 +375,12 @@ const FullGroupPage = () => {
 
               <Grid item xs={12} md={6}>
                 <Button
-                  // size="small"
-                  variant="outlined"
                   color="secondary"
-                  sx={{
-                    textTransform: "capitalize",
-                    width: "100%",
-                    p: "7.44px 15px",
-                  }}
+                  variant="outlined"
+                  onClick={() => setSpecializationModalVisible(true)}
+                  sx={{ textTransform: "capitalize", width: "100%", p: "7.44px 15px" }}
                 >
-                  Навчальний план
+                  Спеціалізовані підгрупи
                 </Button>
               </Grid>
             </Grid>

@@ -185,14 +185,24 @@ const GroupsTable: React.FC<IGroupsTableProps> = ({ groups, onDeleteEntity }) =>
                   key={group.id}
                   selected={isItemSelected}
                 >
-                  <TableCell component="th" id={labelId} scope="row" align="left">
+                  <TableCell
+                    component="th"
+                    id={labelId}
+                    scope="row"
+                    align="left"
+                    sx={{ p: "4px 12px" }}
+                  >
                     <Link color="secondary" component={RouterLink} to={`/groups/${group.id}`}>
                       {group.name}
                     </Link>
                   </TableCell>
-                  <TableCell align="center">{group.courseNumber}</TableCell>
-                  <TableCell align="center">{group.students}</TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" sx={{ p: "4px 12px" }}>
+                    {group.courseNumber}
+                  </TableCell>
+                  <TableCell align="center" sx={{ p: "4px 12px" }}>
+                    {group.students}
+                  </TableCell>
+                  <TableCell align="center" sx={{ p: "4px 12px" }}>
                     <Link component={RouterLink} to={`/groups/${group.id}`}>
                       <IconButton>
                         <EditOutlined />
