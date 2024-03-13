@@ -1,104 +1,45 @@
-import React, { useState } from "react"
-import { Link as RouterLink } from "react-router-dom"
-import { EditOutlined } from "@ant-design/icons"
+import React, { useState } from 'react'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 // material-ui
 import {
   Box,
-  Link,
   Table,
   TableRow,
   TableBody,
   TableCell,
   TableHead,
-  SortDirection,
-  TableContainer,
-  Tooltip,
   IconButton,
   Typography,
-} from "@mui/material"
-import { PlanSubjectType, PlanType } from "../../store/plans/plansTypes"
+  TableContainer,
+} from '@mui/material'
+import { groupLessonsByName } from '../../utils/groupLessonsByName'
+import { PlanSubjectType, PlanType } from '../../store/plans/plansTypes'
+import { useAppDispatch } from '../../store/store'
+import { deletePlanSubjects } from '../../store/plans/plansAsyncActions'
 
-const createData = (
-  trackingNo: number,
-  name: string,
-  fat: number,
-  carbs: number,
-  protein: number
-) => {
-  return { trackingNo, name, fat, carbs, protein }
-}
-
-const rows = [
-  createData(84564564, "Camera Lens", 40, 2, 40570),
-  createData(98764564, "Laptop", 300, 0, 180139),
-  createData(98756325, "Mobile", 355, 1, 90989),
-  createData(98652366, "Handset", 50, 1, 10239),
-  createData(13286564, "Computer Accessories", 100, 1, 83348),
-  createData(86739658, "TV", 99, 0, 410780),
-  createData(13256498, "Keyboard", 125, 2, 70999),
-]
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1
-  }
-  return 0
-}
-
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy)
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index])
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0])
-    if (order !== 0) {
-      return order
-    }
-    return a[1] - b[1]
-  })
-  return stabilizedThis.map((el) => el[0])
-}
-
-// ==============================|| ORDER TABLE - HEADER ||============================== //
+// ==============================|| TABLE - HEADER ||============================== //
 
 interface IOrderTableHeadProps {
   order: string
   orderBy: string
 }
 
-const cellStyles = { border: "1px solid rgb(235, 235, 235)" }
+const cellStyles = { border: '1px solid rgb(235, 235, 235)' }
 
-const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
+const OrderTableHead: React.FC<IOrderTableHeadProps> = () => {
   return (
     <TableHead>
       <TableRow>
-        <TableCell
-          sx={{ ...cellStyles, backgroundColor: "#fff !important" }}
-          align="center"
-          rowSpan={3}
-          padding="none"
-        >
+        <TableCell sx={{ ...cellStyles, backgroundColor: '#fff !important' }} align="center" rowSpan={3} padding="none">
           Дисципліна
         </TableCell>
-        <TableCell
-          sx={{ ...cellStyles, backgroundColor: "#fff !important" }}
-          align="center"
-          rowSpan={3}
-          padding="none"
-        >
+        <TableCell sx={{ ...cellStyles, backgroundColor: '#fff !important' }} align="center" rowSpan={3} padding="none">
           Всього
         </TableCell>
 
         <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
+          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
           align="center"
           padding="none"
           colSpan={6}
@@ -109,7 +50,7 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
 
       <TableRow>
         <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
+          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
           align="center"
           padding="none"
           colSpan={2}
@@ -117,15 +58,15 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
           1 курс
         </TableCell>
         <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
+          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
           align="center"
           padding="none"
           colSpan={2}
         >
-          1 курс
+          2 курс
         </TableCell>
         <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
+          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
           align="center"
           padding="none"
           colSpan={2}
@@ -135,46 +76,22 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
       </TableRow>
 
       <TableRow>
-        <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
-          align="center"
-          padding="none"
-        >
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 1
         </TableCell>
-        <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
-          align="center"
-          padding="none"
-        >
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 2
         </TableCell>
-        <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
-          align="center"
-          padding="none"
-        >
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 3
         </TableCell>
-        <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
-          align="center"
-          padding="none"
-        >
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 4
         </TableCell>
-        <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
-          align="center"
-          padding="none"
-        >
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 5
         </TableCell>
-        <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
-          align="center"
-          padding="none"
-        >
+        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
           Семестр 6
         </TableCell>
       </TableRow>
@@ -186,10 +103,10 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
 
 interface IFullPlanTableProps {
   plan: PlanType
-  setEditingSubjectName: React.Dispatch<React.SetStateAction<string>>
+  setEditingSubjectData: React.Dispatch<React.SetStateAction<{ name: string; cmk: number }>>
   setSubjectsModalVisible: React.Dispatch<React.SetStateAction<boolean>>
   setSemesterHoursModalVisible: React.Dispatch<React.SetStateAction<boolean>>
-  setSubjectsModalType: React.Dispatch<React.SetStateAction<"create" | "update">>
+  setSubjectsModalType: React.Dispatch<React.SetStateAction<'create' | 'update'>>
   setSelectedSemester: React.Dispatch<React.SetStateAction<PlanSubjectType | null>>
 }
 
@@ -197,47 +114,56 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
   plan,
   setSelectedSemester,
   setSubjectsModalType,
-  setEditingSubjectName,
+  setEditingSubjectData,
   setSubjectsModalVisible,
   setSemesterHoursModalVisible,
 }) => {
-  const [order] = useState("asc")
-  const [orderBy] = useState("trackingNo")
-  const [selected] = useState([])
+  const dispatch = useAppDispatch()
 
-  const isSelected = (trackingNo: number) => selected.indexOf(trackingNo) !== -1
+  const [order] = useState('asc')
+  const [orderBy] = useState('trackingNo')
+
+  const onDeleteSubject = (subjects: PlanSubjectType[]) => {
+    if (subjects.length > 1) return alert('Видаліть спочатку всі семестри')
+    if (window.confirm('Ви дійсно хочете видалити дисципліну?')) {
+      dispatch(deletePlanSubjects(subjects[0].id))
+    }
+  }
 
   return (
     <Box>
       <TableContainer
         sx={{
-          width: "100%",
-          overflowX: "auto",
+          width: '100%',
+          overflowX: 'auto',
           // maxHeight: '600px',
-          position: "relative",
-          display: "block",
-          maxWidth: "100%",
-          "& td, & th": { whiteSpace: "nowrap" },
+          position: 'relative',
+          display: 'block',
+          maxWidth: '100%',
+          '& td, & th': { whiteSpace: 'nowrap' },
         }}
       >
         <Table
           stickyHeader
           aria-labelledby="tableTitle"
           sx={{
-            "& .MuiTableCell-root:first-of-type": { pl: 2 },
-            "& .MuiTableCell-root:last-of-type": { pr: 3 },
+            '& .MuiTableCell-root:first-of-type': { pl: 2 },
+            '& .MuiTableCell-root:last-of-type': { pr: 3 },
           }}
         >
           <OrderTableHead order={order} orderBy={orderBy} />
           <TableBody>
             {/* stableSort(rows, getComparator(order, orderBy)) */}
-            {plan.subjects.map((row, index: number) => {
+            {groupLessonsByName(plan.subjects).map((row, index: number) => {
               // const isItemSelected = isSelected(row.trackingNo)
               const labelId = `enhanced-table-checkbox-${index}`
+
+              const totalSubjectHours = row.reduce((acc, cur) => Number(cur.totalHours) + acc, 0)
 
               return (
                 <TableRow
                   hover
+                  key={row[0].id}
                   role="checkbox"
                   // aria-checked={isItemSelected}
                   tabIndex={-1}
@@ -247,121 +173,89 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
                   <TableCell
                     sx={{
                       ...cellStyles,
-                      position: "relative",
-                      ":hover *": { display: "block !important" },
+                      position: 'relative',
+                      ':hover *': { display: 'flex !important' },
                     }}
                     component="th"
                     id={labelId}
                     scope="row"
                     align="left"
                   >
-                    <Typography sx={{ flexGrow: 1 }}>{row.name}</Typography>
+                    <Typography sx={{ flexGrow: 1 }}>{row[0].name}</Typography>
 
-                    <IconButton
-                      sx={{
-                        display: "none",
-                        position: "absolute",
-                        right: 6,
+                    <div
+                      style={{
+                        display: 'none',
+                        position: 'absolute',
+                        right: 5,
                         top: 6,
-                        background: "#fff",
-                        ":hover": { background: "#fff" },
-                      }}
-                      onClick={() => {
-                        setEditingSubjectName(row.name)
-                        setSubjectsModalType("update")
-                        setSubjectsModalVisible(true)
+                        backgroundColor: '#f5f5f5',
                       }}
                     >
-                      <EditOutlined />
-                    </IconButton>
+                      <IconButton
+                        sx={{ mr: 1, background: '#fff', ':hover': { background: '#fff' } }}
+                        onClick={() => {
+                          setEditingSubjectData({ name: row[0].name, cmk: row[0].cmk.id })
+                          setSubjectsModalType('update')
+                          setSubjectsModalVisible(true)
+                        }}
+                      >
+                        <EditOutlined />
+                      </IconButton>
+                      <IconButton
+                        sx={{ background: '#fff', ':hover': { background: '#fff' } }}
+                        onClick={() => onDeleteSubject(row)}
+                      >
+                        <DeleteOutlined />
+                      </IconButton>
+                    </div>
                   </TableCell>
                   <TableCell sx={cellStyles} align="center">
-                    ???
+                    {totalSubjectHours}
                   </TableCell>
-                  <TableCell
-                    onClick={() => {
-                      setSelectedSemester(row)
-                      setSemesterHoursModalVisible(true)
-                    }}
-                    sx={{
-                      ...cellStyles,
-                      cursor: "pointer",
-                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
-                    }}
-                    align="center"
-                  >
-                    {row.semesterNumber === 1 ? row.totalHours : ""}
-                  </TableCell>
-                  <TableCell
-                    onClick={() => {
-                      setSelectedSemester(row)
-                      setSemesterHoursModalVisible(true)
-                    }}
-                    sx={{
-                      ...cellStyles,
-                      cursor: "pointer",
-                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
-                    }}
-                    align="center"
-                  >
-                    {row.semesterNumber === 2 ? row.totalHours : ""}
-                  </TableCell>
-                  <TableCell
-                    onClick={() => {
-                      setSelectedSemester(row)
-                      setSemesterHoursModalVisible(true)
-                    }}
-                    sx={{
-                      ...cellStyles,
-                      cursor: "pointer",
-                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
-                    }}
-                    align="center"
-                  >
-                    {row.semesterNumber === 3 ? row.totalHours : ""}
-                  </TableCell>
-                  <TableCell
-                    onClick={() => {
-                      setSelectedSemester(row)
-                      setSemesterHoursModalVisible(true)
-                    }}
-                    sx={{
-                      ...cellStyles,
-                      cursor: "pointer",
-                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
-                    }}
-                    align="center"
-                  >
-                    {row.semesterNumber === 4 ? row.totalHours : ""}
-                  </TableCell>
-                  <TableCell
-                    onClick={() => {
-                      setSelectedSemester(row)
-                      setSemesterHoursModalVisible(true)
-                    }}
-                    sx={{
-                      ...cellStyles,
-                      cursor: "pointer",
-                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
-                    }}
-                    align="center"
-                  >
-                    {row.semesterNumber === 5 ? row.totalHours : ""}
-                  </TableCell>
-                  <TableCell
-                    onClick={() => {
-                      setSelectedSemester(row)
-                      setSemesterHoursModalVisible(true)
-                    }}
-                    sx={{
-                      ...cellStyles,
-                      cursor: "pointer",
-                      ":hover": { background: "rgba(0, 0, 0, 0.05);" },
-                    }}
-                    align="center"
-                  >
-                    {row.semesterNumber === 6 ? row.totalHours : ""}
-                  </TableCell>
+
+                  {Array(6)
+                    .fill(null)
+                    .map((_, index) => {
+                      const semester = index + 1
+                      const semesterHours = row.find((el) => el.semesterNumber === semester)
+
+                      return (
+                        <TableCell
+                          key={index}
+                          onClick={() => {
+                            const data = semesterHours
+                              ? { ...semesterHours, semesterNumber: semester }
+                              : {
+                                  ...row[0],
+                                  planId: row[0].plan.id,
+                                  semesterNumber: semester,
+                                  totalHours: 0,
+                                  lectures: 0,
+                                  practical: 0,
+                                  laboratory: 0,
+                                  seminars: 0,
+                                  exams: 0,
+                                  examsConsulation: 0,
+                                  metodologicalGuidance: 0,
+                                  independentWork: 0,
+                                }
+
+                            setSelectedSemester(data)
+                            setEditingSubjectData({ name: row[0].name, cmk: row[0].cmk.id })
+                            setSemesterHoursModalVisible(true)
+                          }}
+                          sx={{
+                            ...cellStyles,
+                            cursor: 'pointer',
+                            ':hover': { background: 'rgba(0, 0, 0, 0.05);' },
+                          }}
+                          align="center"
+                        >
+                          {semesterHours ? semesterHours.totalHours : ''}
+                        </TableCell>
+                      )
+                    })}
                 </TableRow>
               )
             })}

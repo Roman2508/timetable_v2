@@ -1,31 +1,23 @@
 // material-ui
-import {
-  Grid,
-  Button,
-  TextField,
-  Typography,
-  IconButton,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material"
-import { SearchOutlined } from "@ant-design/icons"
+import { Grid, Button, TextField, Typography, IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { SearchOutlined } from '@ant-design/icons'
 
 // project import
-import React from "react"
-import { useSelector } from "react-redux"
-import { useParams } from "react-router-dom"
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
-import MainCard from "../../components/MainCard"
-import { useAppDispatch } from "../../store/store"
-import { LoadingStatusTypes } from "../../store/appTypes"
-import EmptyCard from "../../components/EmptyCard/EmptyCard"
-import { clearPlan, plansSelector } from "../../store/plans/plansSlice"
-import { getPlanSubjects } from "../../store/plans/plansAsyncActions"
-import SubjectsModal from "../../components/FullPlanPage/SubjectsModal"
-import { FullPlanTable } from "../../components/FullPlanPage/FullPlanTable"
-import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
-import { SemesterHoursModal } from "../../components/FullPlanPage/SemesterHoursModal"
-import { PlanSubjectType } from "../../store/plans/plansTypes"
+import MainCard from '../../components/MainCard'
+import { useAppDispatch } from '../../store/store'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { clearPlan, plansSelector } from '../../store/plans/plansSlice'
+import { getPlanSubjects } from '../../store/plans/plansAsyncActions'
+import SubjectsModal from '../../components/FullPlanPage/SubjectsModal'
+import { FullPlanTable } from '../../components/FullPlanPage/FullPlanTable'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import { SemesterHoursModal } from '../../components/FullPlanPage/SemesterHoursModal'
+import { PlanSubjectType } from '../../store/plans/plansTypes'
 
 // ==============================|| FULL PLAN ||============================== //
 
@@ -35,9 +27,9 @@ const FullPlanPage = () => {
   const dispatch = useAppDispatch()
 
   const { plan, loadingStatus } = useSelector(plansSelector)
-  const [editingSubjectName, setEditingSubjectName] = React.useState<string>("")
+  const [editingSubjectData, setEditingSubjectData] = React.useState({ name: '', cmk: 0 })
   const [subjectsModalVisible, setSubjectsModalVisible] = React.useState(false)
-  const [subjectsModalType, setSubjectsModalType] = React.useState<"create" | "update">("create")
+  const [subjectsModalType, setSubjectsModalType] = React.useState<'create' | 'update'>('create')
   const [semesterHoursModalVisible, setSemesterHoursModalVisible] = React.useState(false)
   const [selectedSemester, setSelectedSemester] = React.useState<PlanSubjectType | null>(null)
 
@@ -63,39 +55,31 @@ const FullPlanPage = () => {
         open={subjectsModalVisible}
         setOpen={setSubjectsModalVisible}
         subjectsModalType={subjectsModalType}
-        editingSubjectName={editingSubjectName}
+        editingSubjectData={editingSubjectData}
       />
 
       <SemesterHoursModal
         open={semesterHoursModalVisible}
         selectedSemester={selectedSemester}
         setOpen={setSemesterHoursModalVisible}
-        setSelectedSemester={setSelectedSemester}
+        editingSubjectData={editingSubjectData}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
         <Grid item xs={12}>
-          <Grid container sx={{ display: "flex", alignItems: "center" }}>
+          <Grid container sx={{ display: 'flex', alignItems: 'center' }}>
             <Grid item xs={3}>
               <Typography variant="h5">
-                {plan && loadingStatus === LoadingStatusTypes.SUCCESS
-                  ? plan.name
-                  : loadingStatus === LoadingStatusTypes.ERROR
-                  ? ""
-                  : "Завантаження..."}
+                {plan && loadingStatus === LoadingStatusTypes.SUCCESS ? plan.name : 'Завантаження...'}
               </Typography>
             </Grid>
 
-            <Grid
-              item
-              xs={5}
-              sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-            >
+            <Grid item xs={5} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Button
-                sx={{ mr: 3, whiteSpace: "nowrap" }}
+                sx={{ mr: 3, whiteSpace: 'nowrap' }}
                 variant="outlined"
                 onClick={() => {
-                  setSubjectsModalType("create")
+                  setSubjectsModalType('create')
                   setSubjectsModalVisible(true)
                 }}
               >
@@ -105,8 +89,8 @@ const FullPlanPage = () => {
                 size="small"
                 placeholder="Знайти..."
                 sx={{
-                  "& .css-r8nwpq-MuiInputBase-root-MuiOutlinedInput-root": { p: 0 },
-                  width: "200px",
+                  '& .css-r8nwpq-MuiInputBase-root-MuiOutlinedInput-root': { p: 0 },
+                  width: '200px',
                 }}
                 InputProps={{
                   endAdornment: (
@@ -118,18 +102,10 @@ const FullPlanPage = () => {
               />
             </Grid>
 
-            <Grid
-              item
-              xs={4}
-              sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}
-            >
+            <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
               <Typography sx={{ mr: 2 }}>Семестри:</Typography>
 
-              <ToggleButtonGroup
-                value={showedSemesters}
-                onChange={handleShowedSemesters}
-                aria-label="text formatting"
-              >
+              <ToggleButtonGroup value={showedSemesters} onChange={handleShowedSemesters} aria-label="text formatting">
                 {[1, 2, 3, 4, 5, 6].map((el) => (
                   <ToggleButton key={el} value={el} sx={{ py: 0.55 }}>
                     {el}
@@ -149,7 +125,7 @@ const FullPlanPage = () => {
                 plan={plan}
                 setSelectedSemester={setSelectedSemester}
                 setSubjectsModalType={setSubjectsModalType}
-                setEditingSubjectName={setEditingSubjectName}
+                setEditingSubjectData={setEditingSubjectData}
                 setSubjectsModalVisible={setSubjectsModalVisible}
                 setSemesterHoursModalVisible={setSemesterHoursModalVisible}
               />

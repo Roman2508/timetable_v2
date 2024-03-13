@@ -91,7 +91,8 @@ export type UpdateSubjectNamePayloadType = {
 export type UpdateSubjectHoursPayloadType = {
   id: number
   name: string
-  plan: number
+  planId: number
+  cmk: number
   totalHours: number
   semesterNumber: number
   lectures: number

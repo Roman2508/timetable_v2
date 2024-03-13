@@ -136,7 +136,7 @@ const GroupsPage = () => {
             </Grid>
 
             <Grid item alignItems="center" sx={{ display: 'flex' }}>
-              <Typography variant="h5" sx={{ flexGrow: 1 }}>
+              <Typography variant="h5" sx={activeGroupCategory ? { flexGrow: 1 } : { flexGrow: 1, mb: '12px' }}>
                 {activeGroupCategory ? activeGroupCategory.name : 'Завантаження...'}
               </Typography>
 

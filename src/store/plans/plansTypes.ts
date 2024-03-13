@@ -41,4 +41,7 @@ export type PlanSubjectType = {
   plan: {
     id: number
   }
+  cmk: {
+    id: number
+  }
 }
