@@ -5,7 +5,14 @@ import { setLoadingStatus } from './groupsSlice'
 import { LoadingStatusTypes } from '../appTypes'
 import { GroupCategoriesType } from './groupsTypes'
 import { setAppAlert } from '../appStatus/appStatusSlice'
-import { UpdateEntityNamePayloadType, UpdateGroupPayloadType } from '../../api/apiTypes'
+import {
+  AttachSpecializationPayloadType,
+  CreateSpecializationPayloadType,
+  DeleteSpecializationPayloadType,
+  UpdateEntityNamePayloadType,
+  UpdateGroupPayloadType,
+  UpdateSpecializationPayloadType,
+} from '../../api/apiTypes'
 
 export const getGroupCategories = createAsyncThunk(
   'groups-categories/getGroupCategories',
@@ -190,3 +197,101 @@ export const deleteGroup = createAsyncThunk('group/deleteGroup', async (id: numb
     throw error
   }
 })
+
+/* Specialization */
+
+export const attachSpecialization = createAsyncThunk(
+  'group/attachSpecialization',
+  async (payload: AttachSpecializationPayloadType, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+    try {
+      const { data } = await groupsAPI.attachSpecialization(payload)
+      thunkAPI.dispatch(setAppAlert({ message: 'Спец. підгрупу оновлено', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)
+
+export const createSpecialization = createAsyncThunk(
+  'group/createSpecialization',
+  async (payload: CreateSpecializationPayloadType, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+    try {
+      const { data } = await groupsAPI.createSpecialization(payload)
+      thunkAPI.dispatch(setAppAlert({ message: 'Спец. підгрупу створено', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)
+
+export const updateSpecialization = createAsyncThunk(
+  'group/updateSpecialization',
+  async (payload: UpdateSpecializationPayloadType, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+    try {
+      const { data } = await groupsAPI.updateSpecialization(payload)
+      thunkAPI.dispatch(setAppAlert({ message: 'Спец. підгрупу оновлено', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)
+
+export const deleteSpecialization = createAsyncThunk(
+  'group/deleteSpecialization',
+  async (payload: DeleteSpecializationPayloadType, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+    try {
+      const { data } = await groupsAPI.deleteSpecialization(payload)
+      thunkAPI.dispatch(setAppAlert({ message: 'Спец. підгрупу видалено', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)

@@ -1,35 +1,31 @@
 import {
-  Chip,
-  Radio,
+  Table,
+  Stack,
   Dialog,
-  Divider,
-  RadioGroup,
+  Button,
+  Tooltip,
+  MenuItem,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableBody,
+  Typography,
+  TextField,
   IconButton,
   DialogTitle,
-  FormControl,
   DialogContent,
-  FormControlLabel,
-  DialogContentText,
   DialogActions,
-  Grid,
-  Button,
   TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  Typography,
-  TableBody,
-  Stack,
-  InputLabel,
-  TextField,
-  MenuItem,
-  Tooltip,
-} from "@mui/material"
+  DialogContentText,
+} from '@mui/material'
+import { useSelector } from 'react-redux'
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
+import React, { Dispatch, SetStateAction } from 'react'
 
-import React, { Dispatch, SetStateAction } from "react"
-
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons"
+import SpecializationListModal from './SpecializationListModal'
+import { groupsSelector } from '../../store/groups/groupsSlice'
+import { groupLessonsByNameAndSemester } from '../../utils/groupLessonsByNameAndSemester'
+import { GroupLoadType } from '../../store/groups/groupsTypes'
 
 interface ISelectPlanModalProps {
   open: boolean
@@ -37,241 +33,260 @@ interface ISelectPlanModalProps {
 }
 
 const cellStyles = {
-  borderBottom: "1px solid rgb(220, 220, 220)",
-  p: "4px 10px",
-  minWidth: "100px",
+  borderBottom: '1px solid rgb(220, 220, 220)',
+  p: '4px 10px',
+  minWidth: '100px',
 }
 
 const SpecializationModal: React.FC<ISelectPlanModalProps> = ({ open, setOpen }) => {
+  // const dispatch = useAppDispatch()
+
+  const [specializationListModalVisible, setSpecializationListModalVisible] = React.useState(false)
+  const [selectedLesson, setSelectedLesson] = React.useState<GroupLoadType | null>(null)
+
+  const { group } = useSelector(groupsSelector)
+
   const handleClose = () => {
     setOpen(false)
   }
 
   return (
-    <Dialog
-      open={open}
-      // fullScreen
-      maxWidth={"xl"}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <DialogTitle>{"Спеціалізовані підгрупи"}</DialogTitle>
+    <>
+      <SpecializationListModal
+        open={specializationListModalVisible}
+        setOpen={setSpecializationListModalVisible}
+        specializationList={group.specializationList}
+      />
 
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Stack>
-            <TextField
-              select
-              fullWidth
-              id="category"
-              //   value={value}
-              //   onChange={(e) => setValue(e.target.value)}
-              sx={{
-                width: "240px",
-                p: "16px 8px",
-                "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
-              }}
-            >
-              {[
-                { label: "Спеціалізація відсутня", value: "1" },
-                { label: "Не вивчається", value: "2" },
-              ].map((category) => (
-                <MenuItem key={category.value} value={category.value}>
-                  {category.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Stack>
+      <Dialog
+        open={open}
+        // fullScreen
+        maxWidth={'xl'}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <DialogTitle>{'Спеціалізовані підгрупи'}</DialogTitle>
 
-          <Tooltip title="Зберегти спец. підгрупу">
-            <IconButton sx={{ mr: "24px" }}>
-              <CheckOutlined />
-            </IconButton>
-          </Tooltip>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Stack>
+              <TextField
+                select
+                fullWidth
+                id="category"
+                defaultValue={'empty'}
+                //   value={value}
+                //   onChange={(e) => setValue(e.target.value)}
+                sx={{ width: '240px', p: '16px 8px', '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
+              >
+                {[
+                  { label: 'Спеціалізація відсутня', value: 'empty' },
+                  { label: 'Не вивчається', value: 'is-not-studied' },
+                  ...group.specializationList.map((el) => ({ label: el, value: el })),
+                ].map((category) => (
+                  <MenuItem key={category.value} value={category.value}>
+                    {category.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Stack>
+
+            <Tooltip title="Підтвердити зміни">
+              <IconButton sx={{ mr: '24px' }}>
+                <CheckOutlined />
+              </IconButton>
+            </Tooltip>
+          </div>
+
+          <IconButton sx={{ mr: '24px' }} onClick={handleClose}>
+            <CloseOutlined />
+          </IconButton>
         </div>
-      </div>
-      <DialogContent sx={{ padding: "0 24px 20px" }}>
-        {/*  */}
-        <DialogContentText id="alert-dialog-description"></DialogContentText>
-
-        <TableContainer
-          sx={{
-            width: "100%",
-            overflowX: "auto",
-            // maxHeight: '600px',
-            position: "relative",
-            display: "block",
-            maxWidth: "100%",
-            "& td, & th": { whiteSpace: "nowrap" },
-          }}
-        >
-          <Table
-            stickyHeader
-            aria-labelledby="tableTitle"
+        <DialogContent sx={{ padding: '0 24px 20px' }}>
+          <TableContainer
             sx={{
-              "& .MuiTableCell-root:first-of-type": { pl: 2 },
-              "& .MuiTableCell-root:last-of-type": { pr: 3 },
+              width: '100%',
+              display: 'block',
+              maxWidth: '100%',
+              overflowX: 'auto',
+              position: 'relative',
+              '& td, & th': { whiteSpace: 'nowrap' },
             }}
           >
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  sx={{ ...cellStyles, backgroundColor: "#fff !important" }}
-                  align="center"
-                  rowSpan={3}
-                  padding="none"
-                >
-                  Дисципліна
-                </TableCell>
-                <TableCell
-                  sx={{ ...cellStyles, backgroundColor: "#fff !important" }}
-                  align="center"
-                  rowSpan={3}
-                  padding="none"
-                >
-                  Семестр
-                </TableCell>
+            <Table
+              stickyHeader
+              aria-labelledby="tableTitle"
+              sx={{
+                '& .MuiTableCell-root:first-of-type': { pl: 2 },
+                '& .MuiTableCell-root:last-of-type': { pr: 3 },
+              }}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    sx={{ ...cellStyles, backgroundColor: '#fff !important' }}
+                    align="center"
+                    rowSpan={3}
+                    padding="none"
+                  >
+                    Дисципліна
+                  </TableCell>
+                  <TableCell
+                    sx={{ ...cellStyles, backgroundColor: '#fff !important' }}
+                    align="center"
+                    rowSpan={3}
+                    padding="none"
+                  >
+                    Семестр
+                  </TableCell>
+                  <TableCell
+                    sx={{ ...cellStyles, backgroundColor: '#fff !important' }}
+                    align="center"
+                    rowSpan={3}
+                    padding="none"
+                  >
+                    Спец. підгрупа
+                  </TableCell>
 
-                <TableCell
-                  sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
-                  align="center"
-                  padding="none"
-                >
-                  Лекції
-                </TableCell>
-                <TableCell
-                  sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
-                  align="center"
-                  padding="none"
-                >
-                  Практичні
-                </TableCell>
-                <TableCell
-                  sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
-                  align="center"
-                  padding="none"
-                >
-                  Лабораторні
-                </TableCell>
-                <TableCell
-                  sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
-                  align="center"
-                  padding="none"
-                >
-                  Семінари
-                </TableCell>
-                <TableCell
-                  sx={{ ...cellStyles, p: 1, backgroundColor: "#fff !important" }}
-                  align="center"
-                  padding="none"
-                >
-                  Екзамени
-                </TableCell>
-              </TableRow>
-            </TableHead>
+                  <TableCell
+                    sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+                    align="center"
+                    padding="none"
+                  >
+                    Лекції
+                  </TableCell>
+                  <TableCell
+                    sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+                    align="center"
+                    padding="none"
+                  >
+                    Практичні
+                  </TableCell>
+                  <TableCell
+                    sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+                    align="center"
+                    padding="none"
+                  >
+                    Лабораторні
+                  </TableCell>
+                  <TableCell
+                    sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+                    align="center"
+                    padding="none"
+                  >
+                    Семінари
+                  </TableCell>
+                  <TableCell
+                    sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+                    align="center"
+                    padding="none"
+                  >
+                    Екзамени
+                  </TableCell>
+                </TableRow>
+              </TableHead>
 
-            <TableBody>
-              {/* {groupLessonsByName(plan.subjects).map((row, index: number) => { */}
-              {Array(15)
-                .fill(null)
-                .map((row, index: number) => {
-                  // const isItemSelected = isSelected(row.trackingNo)
+              <TableBody>
+                {/* {groupLessonsByName(plan.subjects).map((row, index: number) => { */}
+                {(!group.groupLoad ? [] : groupLessonsByNameAndSemester(group.groupLoad)).map((row, index: number) => {
+                  const isItemSelected = selectedLesson?.id === row[0].id
                   const labelId = `enhanced-table-checkbox-${index}`
 
                   return (
                     <TableRow
                       hover
-                      key={index}
-                      role="checkbox"
-                      // aria-checked={isItemSelected}
                       tabIndex={-1}
-                      // key={row.trackingNo}
-                      // selected={isItemSelected}
+                      role="checkbox"
+                      selected={isItemSelected}
+                      aria-checked={isItemSelected}
+                      key={row[0].name + row[0].semester}
+                      onClick={() => setSelectedLesson(row[0])}
                     >
                       <TableCell
                         sx={{
                           ...cellStyles,
-                          minWidth: "250px !important",
-                          position: "relative",
-                          ":hover *": { display: "flex !important" },
+                          minWidth: '250px !important',
+                          position: 'relative',
+                          ':hover *': { display: 'flex !important' },
                         }}
                         component="th"
                         id={labelId}
                         scope="row"
                         align="left"
                       >
-                        <Typography sx={{ flexGrow: 1 }}>{"row[0].name"}</Typography>
+                        <Typography sx={{ flexGrow: 1 }}>{row[0].name}</Typography>
                       </TableCell>
                       <TableCell sx={cellStyles} align="center">
-                        {"1"}
+                        {row[0].semester}
                       </TableCell>
 
-                      {Array(5)
-                        .fill(null)
-                        .map((_, index) => {
-                          const semester = index + 1
-                          // const semesterHours = row.find((el) => el.semesterNumber === semester)
+                      <TableCell
+                        key={index}
+                        sx={{
+                          ...cellStyles,
+                          cursor: 'pointer',
+                          ':hover': { background: 'rgba(0, 0, 0, 0.05);' },
+                        }}
+                        align="center"
+                      >
+                        {row[0].specialization ? row[0].specialization : '-'}
+                      </TableCell>
 
-                          return (
-                            <TableCell
-                              key={index}
-                              onClick={() => {}}
-                              sx={{
-                                ...cellStyles,
-                                cursor: "pointer",
-                                ":hover": { background: "rgba(0, 0, 0, 0.05);" },
-                              }}
-                              align="center"
-                            >
-                              {"1"}
-                            </TableCell>
-                          )
-                        })}
+                      {['lectures', 'practical', 'laboratory', 'seminars', 'exams'].map((lessonType, index) => {
+                        const lesson = row.find((el) => el.typeEn === lessonType)
+
+                        return (
+                          <TableCell
+                            key={index}
+                            onClick={() => {}}
+                            sx={{
+                              ...cellStyles,
+                              cursor: 'pointer',
+                            }}
+                            align="center"
+                          >
+                            {lesson ? lesson.hours : ''}
+                          </TableCell>
+                        )
+                      })}
                     </TableRow>
                   )
                 })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </DialogContent>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
 
-      <DialogActions>
-        {/* 
-        <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
-          <CloseOutlined />
-        </IconButton> */}
+        <DialogActions sx={{ paddingBottom: '24px' }}>
+          <Button
+            type="submit"
+            color="primary"
+            variant="outlined"
+            onClick={() => setSpecializationListModalVisible(true)}
+            sx={{ textTransform: 'capitalize', marginRight: 'auto', marginLeft: '16px', p: '7.44px 15px' }}
+          >
+            Редагувати спеціалізовані підгрупи
+          </Button>
 
-        <Button
-          type="submit"
-          color="primary"
-          variant="outlined"
-          sx={{
-            textTransform: "capitalize",
-            marginRight: "auto",
-            p: "7.44px 15px",
-          }}
-        >
-          Редагувати спеціалізовані підгрупи
-        </Button>
-
-        <Button
-          type="submit"
-          color="secondary"
-          variant="outlined"
-          onClick={handleClose}
-          sx={{
-            textTransform: "capitalize",
-            maxWidth: "140px",
-            marginLeft: "auto",
-            p: "7.44px 15px",
-            width: "100%",
-          }}
-        >
-          Закрити
-        </Button>
-      </DialogActions>
-    </Dialog>
+          <Button
+            type="submit"
+            color="secondary"
+            variant="outlined"
+            onClick={handleClose}
+            sx={{
+              textTransform: 'capitalize',
+              maxWidth: '140px',
+              marginLeft: 'auto',
+              p: '7.44px 15px',
+              width: '100%',
+            }}
+          >
+            Закрити
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   )
 }
 

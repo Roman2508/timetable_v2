@@ -104,3 +104,24 @@ export type UpdateSubjectHoursPayloadType = {
   metodologicalGuidance: number
   independentWork: number
 }
+
+// Specialization
+
+export type AttachSpecializationPayloadType = {
+  planSubjectId: number
+  groupId: number
+  name: string
+}
+
+export type CreateSpecializationPayloadType = {
+  groupId: number
+  name: string
+}
+
+export type UpdateSpecializationPayloadType = {
+  groupId: number
+  oldName: string
+  newName: string
+}
+
+export type DeleteSpecializationPayloadType = CreateSpecializationPayloadType

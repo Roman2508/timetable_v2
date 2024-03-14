@@ -32,7 +32,9 @@ const MinimalLayout = () => (
         }}
       >
         <img src={Logo} width={70} />
-        <Typography>ЖБФФК</Typography>
+        <Typography sx={{ textAlign: 'center' }}>
+          Житомирський базовий фармацевтичний фаховий коледж Житомирської обласної ради
+        </Typography>
 
         <Divider />
 

@@ -11,13 +11,17 @@ import {
   UpdateEntityNamePayloadType,
   UpdateSubjectNamePayloadType,
   UpdateSubjectHoursPayloadType,
+  AttachSpecializationPayloadType,
+  CreateSpecializationPayloadType,
+  UpdateSpecializationPayloadType,
+  DeleteSpecializationPayloadType,
   CreateTeacherCategoryPayloadType,
   UpdateTeacherCategoryPayloadType,
   UpdateAuditoryCategoryPayloadType,
 } from './apiTypes'
 import { TeachersCategoryType } from '../store/teachers/teachersTypes'
-import { GroupCategoriesType, GroupsType } from '../store/groups/groupsTypes'
 import { PlanType, PlansCategoriesType, PlansType } from '../store/plans/plansTypes'
+import { GroupCategoriesType, GroupLoadType, GroupsType } from '../store/groups/groupsTypes'
 import { AuditoriesTypes, AuditoryCategoriesTypes } from '../store/auditories/auditoriesTypes'
 
 const instanse = axios.create({
@@ -177,6 +181,7 @@ export const groupsAPI = {
   getGroup(id: string) {
     return instanse.get<GroupsType>(`/groups/${id}`)
   },
+
   createGroup(payload: UpdateGroupPayloadType) {
     return instanse.post<GroupsType>('/groups', payload)
   },
@@ -186,5 +191,22 @@ export const groupsAPI = {
   },
   deleteGroup(id: number) {
     return instanse.delete<number>(`/groups/${id}`)
+  },
+
+  /* Specialization */
+  attachSpecialization(payload: AttachSpecializationPayloadType) {
+    return instanse.patch<number>(`/groups/specialization`, payload)
+  },
+
+  createSpecialization(payload: CreateSpecializationPayloadType) {
+    return instanse.post<string[]>(`/groups/specialization`, payload)
+  },
+
+  updateSpecialization(payload: UpdateSpecializationPayloadType) {
+    return instanse.patch<string[]>(`/groups/specialization`, payload)
+  },
+
+  deleteSpecialization(payload: DeleteSpecializationPayloadType) {
+    return instanse.delete<string[]>(`/groups/specialization/${payload.groupId}/${payload.name}`)
   },
 }
