@@ -3,6 +3,7 @@ import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
 import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from './groupsTypes'
 import {
+  attachSpecialization,
   createGroup,
   createGroupCategory,
   createSpecialization,
@@ -15,6 +16,7 @@ import {
   updateGroupCategory,
   updateSpecialization,
 } from './groupsAsyncActions'
+import { AttachSpecializationPayloadType } from '../../api/apiTypes'
 
 const groupsInitialState: GroupsInitialState = {
   groupCategories: null,
@@ -141,10 +143,20 @@ const groupsSlice = createSlice({
     /* specialization */
 
     /* attachSpecialization */
-    /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
-    /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
-    /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
-    /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+    builder.addCase(attachSpecialization.fulfilled, (state, action: PayloadAction<AttachSpecializationPayloadType>) => {
+      if (!state.group || !state.group.groupLoad) return
+
+      const { groupId, planSubjectId, name } = action.payload
+
+      const groupLoad = state.group.groupLoad.map((el) => {
+        if (el.group.id === groupId && el.planSubjectId.id === planSubjectId) {
+          return { ...el, specialization: name }
+        }
+        return el
+      })
+
+      state.group.groupLoad = groupLoad
+    })
 
     /* createSpecialization */
     builder.addCase(createSpecialization.fulfilled, (state, action: PayloadAction<string[]>) => {

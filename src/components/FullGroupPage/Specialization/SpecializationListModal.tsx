@@ -13,23 +13,17 @@ import {
   DialogContent,
   OutlinedInput,
   TableContainer,
-} from "@mui/material"
-import React, { Dispatch, SetStateAction } from "react"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
-import {
-  EditOutlined,
-  CheckOutlined,
-  CloseOutlined,
-  DeleteOutlined,
-  CloseSquareOutlined,
-} from "@ant-design/icons"
+} from '@mui/material'
+import React, { Dispatch, SetStateAction } from 'react'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { EditOutlined, CheckOutlined, CloseOutlined, DeleteOutlined, CloseSquareOutlined } from '@ant-design/icons'
 
-import { useAppDispatch } from "../../store/store"
+import { useAppDispatch } from '../../../store/store'
 import {
   createSpecialization,
   deleteSpecialization,
   updateSpecialization,
-} from "../../store/groups/groupsAsyncActions"
+} from '../../../store/groups/groupsAsyncActions'
 
 interface ISpecializationListProps {
   open: boolean
@@ -39,9 +33,9 @@ interface ISpecializationListProps {
 }
 
 const cellStyles = {
-  borderBottom: "1px solid rgb(220, 220, 220)",
-  p: "4px 10px",
-  minWidth: "100px",
+  borderBottom: '1px solid rgb(220, 220, 220)',
+  p: '4px 10px',
+  minWidth: '100px',
 }
 
 const SpecializationListModal: React.FC<ISpecializationListProps> = ({
@@ -52,17 +46,16 @@ const SpecializationListModal: React.FC<ISpecializationListProps> = ({
 }) => {
   const dispatch = useAppDispatch()
 
-  const [selectedSpecialization, setSelectedSpecialization] = React.useState("")
-  const [oldName, setOldName] = React.useState("")
+  const [selectedSpecialization, setSelectedSpecialization] = React.useState('')
+  const [oldName, setOldName] = React.useState('')
 
   const {
     reset,
-    watch,
     control,
     setValue,
     formState: { errors, isSubmitting },
     handleSubmit,
-  } = useForm<{ name: string }>({ mode: "onBlur" })
+  } = useForm<{ name: string }>({ mode: 'onBlur' })
 
   const handleClose = () => {
     setOpen(false)
@@ -72,12 +65,12 @@ const SpecializationListModal: React.FC<ISpecializationListProps> = ({
     try {
       if (selectedSpecialization) {
         dispatch(updateSpecialization({ newName: data.name, oldName, groupId }))
-        reset({ name: "" })
-        setSelectedSpecialization("")
+        reset({ name: '' })
+        setSelectedSpecialization('')
       } else {
         dispatch(createSpecialization({ name: data.name, groupId }))
-        reset({ name: "" })
-        setSelectedSpecialization("")
+        reset({ name: '' })
+        setSelectedSpecialization('')
       }
     } catch (error) {
       console.log(error)
@@ -85,7 +78,7 @@ const SpecializationListModal: React.FC<ISpecializationListProps> = ({
   }
 
   const onDeleteSpecGroup = (name: string) => {
-    if (window.confirm("Ви дійсно хочете видалити спец. підгрупу")) {
+    if (window.confirm('Ви дійсно хочете видалити спец. підгрупу')) {
       dispatch(deleteSpecialization({ groupId, name }))
     }
   }
@@ -93,60 +86,48 @@ const SpecializationListModal: React.FC<ISpecializationListProps> = ({
   return (
     <Dialog
       open={open}
-      maxWidth={"sm"}
+      maxWidth={'sm'}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <DialogTitle>{"Спеціалізовані підгрупи"}</DialogTitle>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <DialogTitle>{'Спеціалізовані підгрупи'}</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
           <CloseOutlined />
         </IconButton>
       </div>
-      <DialogContent sx={{ padding: "0 24px 20px" }}>
+      <DialogContent sx={{ padding: '0 24px 20px' }}>
         <TableContainer
           sx={{
-            width: "100%",
-            overflowX: "auto",
-            position: "relative",
-            display: "block",
-            maxWidth: "100%",
-            "& td, & th": { whiteSpace: "nowrap" },
+            width: '100%',
+            overflowX: 'auto',
+            position: 'relative',
+            display: 'block',
+            maxWidth: '100%',
+            '& td, & th': { whiteSpace: 'nowrap' },
           }}
         >
           <Table
             stickyHeader
             aria-labelledby="tableTitle"
             sx={{
-              "& .MuiTableCell-root:first-of-type": { pl: 2 },
-              "& .MuiTableCell-root:last-of-type": { pr: 3 },
+              '& .MuiTableCell-root:first-of-type': { pl: 2 },
+              '& .MuiTableCell-root:last-of-type': { pr: 3 },
             }}
           >
             <TableHead>
               <TableRow>
-                <TableCell
-                  sx={{ ...cellStyles, backgroundColor: "#fff !important" }}
-                  align="center"
-                  padding="none"
-                >
+                <TableCell sx={{ ...cellStyles, backgroundColor: '#fff !important' }} align="center" padding="none">
                   №
                 </TableCell>
 
-                <TableCell
-                  sx={{ ...cellStyles, backgroundColor: "#fff !important" }}
-                  align="center"
-                  padding="none"
-                >
+                <TableCell sx={{ ...cellStyles, backgroundColor: '#fff !important' }} align="center" padding="none">
                   Назва спеціалізованої підгрупи
                 </TableCell>
 
-                <TableCell
-                  sx={{ ...cellStyles, backgroundColor: "#fff !important" }}
-                  align="center"
-                  padding="none"
-                >
+                <TableCell sx={{ ...cellStyles, backgroundColor: '#fff !important' }} align="center" padding="none">
                   Дії
                 </TableCell>
               </TableRow>
@@ -163,15 +144,9 @@ const SpecializationListModal: React.FC<ISpecializationListProps> = ({
                     tabIndex={-1}
                     role="checkbox"
                     selected={row === selectedSpecialization}
-                    sx={{ ":hover .spec-table-actions": { visibility: "visible !important" } }}
+                    sx={{ ':hover .spec-table-actions': { visibility: 'visible !important' } }}
                   >
-                    <TableCell
-                      sx={cellStyles}
-                      align="center"
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                    >
+                    <TableCell sx={cellStyles} align="center" component="th" id={labelId} scope="row">
                       <Typography sx={{ flexGrow: 1 }}>{index + 1}</Typography>
                     </TableCell>
 
@@ -180,13 +155,13 @@ const SpecializationListModal: React.FC<ISpecializationListProps> = ({
                     </TableCell>
 
                     <TableCell sx={cellStyles}>
-                      <div className="spec-table-actions" style={{ visibility: "hidden" }}>
+                      <div className="spec-table-actions" style={{ visibility: 'hidden' }}>
                         <Tooltip title="Редагувати спец. підгрупу">
                           <IconButton
                             disabled={isSubmitting}
                             onClick={() => {
                               setOldName(row)
-                              setValue("name", row)
+                              setValue('name', row)
                               setSelectedSpecialization(row)
                             }}
                           >
@@ -195,10 +170,7 @@ const SpecializationListModal: React.FC<ISpecializationListProps> = ({
                         </Tooltip>
 
                         <Tooltip title="Видалити спец. підгрупу">
-                          <IconButton
-                            disabled={isSubmitting}
-                            onClick={() => onDeleteSpecGroup(row)}
-                          >
+                          <IconButton disabled={isSubmitting} onClick={() => onDeleteSpecGroup(row)}>
                             <DeleteOutlined />
                           </IconButton>
                         </Tooltip>
@@ -214,16 +186,14 @@ const SpecializationListModal: React.FC<ISpecializationListProps> = ({
         <form
           onSubmit={handleSubmit(onSubmit)}
           style={{
-            display: "flex",
-            alignItems: "cener",
-            justifyContent: "center",
+            display: 'flex',
+            alignItems: 'cener',
+            justifyContent: 'center',
             gap: 10,
-            marginTop: "20px",
+            marginTop: '20px',
           }}
         >
-          <Tooltip
-            title={selectedSpecialization ? "Оновити спец. підгрупу" : "Створити спец. підгрупу"}
-          >
+          <Tooltip title={selectedSpecialization ? 'Оновити спец. підгрупу' : 'Створити спец. підгрупу'}>
             <IconButton disabled={isSubmitting} type="submit">
               <CheckOutlined />
             </IconButton>
@@ -233,8 +203,8 @@ const SpecializationListModal: React.FC<ISpecializationListProps> = ({
             <IconButton
               disabled={isSubmitting}
               onClick={() => {
-                setValue("name", "")
-                setSelectedSpecialization("")
+                setValue('name', '')
+                setSelectedSpecialization('')
               }}
             >
               <CloseSquareOutlined />

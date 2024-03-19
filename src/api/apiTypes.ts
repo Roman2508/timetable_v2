@@ -110,7 +110,7 @@ export type UpdateSubjectHoursPayloadType = {
 export type AttachSpecializationPayloadType = {
   planSubjectId: number
   groupId: number
-  name: string
+  name: string | null
 }
 
 export type CreateSpecializationPayloadType = {

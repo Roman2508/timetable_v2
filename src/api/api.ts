@@ -195,7 +195,7 @@ export const groupsAPI = {
 
   /* Specialization */
   attachSpecialization(payload: AttachSpecializationPayloadType) {
-    return instanse.patch<number>(`/groups/specialization`, payload)
+    return instanse.patch<AttachSpecializationPayloadType>(`/group-load-lessons/specialization`, payload)
   },
 
   createSpecialization(payload: CreateSpecializationPayloadType) {
