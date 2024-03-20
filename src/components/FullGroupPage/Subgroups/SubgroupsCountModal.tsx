@@ -8,14 +8,19 @@ import {
   IconButton,
   DialogTitle,
   DialogContent,
-} from '@mui/material'
-import { CloseOutlined } from '@ant-design/icons'
-import React, { Dispatch, SetStateAction } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+} from "@mui/material"
+import { CloseOutlined } from "@ant-design/icons"
+import React, { Dispatch, SetStateAction } from "react"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 
-import { useAppDispatch } from '../../../store/store'
-import { GroupLoadType } from '../../../store/groups/groupsTypes'
-import { SubgroupsCountList, getLessonSubgroups } from '../../../utils/getLessonSubgroups'
+import { useAppDispatch } from "../../../store/store"
+import { GroupLoadType } from "../../../store/groups/groupsTypes"
+import { createSubgroups } from "../../../store/groups/groupsAsyncActions"
+import {
+  SubgroupsCountList,
+  getLessonSubgroups,
+  lessonsTypes,
+} from "../../../utils/getLessonSubgroups"
 
 interface ISubgroupsCountModalProps {
   open: boolean
@@ -23,14 +28,6 @@ interface ISubgroupsCountModalProps {
   selectedLesson: GroupLoadType[] | null
   setOpen: Dispatch<SetStateAction<boolean>>
 }
-
-const lessonsTypes = [
-  { label: 'Лекції', value: 'lectures' },
-  { label: 'Практичні', value: 'practical' },
-  { label: 'Лабораторні', value: 'laboratory' },
-  { label: 'Семінари', value: 'seminars' },
-  { label: 'Екзамени', value: 'exams' },
-] as const
 
 interface IFieldsType {
   lectures: string
@@ -40,26 +37,89 @@ interface IFieldsType {
   exams: string
 }
 
-const SubgroupsCountModal: React.FC<ISubgroupsCountModalProps> = ({ open, groupId, setOpen, selectedLesson }) => {
+const initialFormState = [
+  {
+    count: 1,
+    isDisabled: false,
+    typeEn: "lectures",
+    label: "Лекції",
+  },
+  {
+    count: 1,
+    isDisabled: false,
+    typeEn: "practical",
+    label: "Практичні",
+  },
+  {
+    count: 1,
+    isDisabled: false,
+    typeEn: "laboratory",
+    label: "Лабораторні",
+  },
+  {
+    count: 1,
+    isDisabled: false,
+    typeEn: "seminars",
+    label: "Семінари",
+  },
+  {
+    count: 1,
+    isDisabled: false,
+    typeEn: "exams",
+    label: "Екзамени",
+  },
+] as SubgroupsCountList[]
+
+const SubgroupsCountModal: React.FC<ISubgroupsCountModalProps> = ({
+  open,
+  groupId,
+  setOpen,
+  selectedLesson,
+}) => {
   const dispatch = useAppDispatch()
 
-  const [initialFormValues, setInitialFormValues] = React.useState<SubgroupsCountList[]>([])
+  const [initialFormValues, setInitialFormValues] =
+    React.useState<SubgroupsCountList[]>(initialFormState)
 
   const {
     control,
+    setValue,
     formState: { isSubmitting },
     handleSubmit,
-  } = useForm<IFieldsType>({ mode: 'onBlur' })
+  } = useForm<IFieldsType>({ mode: "onBlur" })
 
   const handleClose = () => {
     setOpen(false)
+    // setValue("lectures", "1")
+    // setValue("practical", "1")
+    // setValue("laboratory", "1")
+    // setValue("seminars", "1")
+    // setValue("exams", "1")
   }
 
   const onSubmit: SubmitHandler<IFieldsType> = async (data) => {
     try {
-      console.log(data)
+      if (!selectedLesson) return
+
+      const keys = Object.keys(data)
+
+      keys.map(async (k) => {
+        /* @ts-ignore */
+        if (!data[k]) return
+
+        const payload = {
+          groupId,
+          /* @ts-ignore */
+          subgroupsCount: Number(data[k]),
+          typeEn: k as keyof typeof lessonsTypes,
+          planSubjectId: selectedLesson[0].planSubjectId.id,
+        }
+
+        await dispatch(createSubgroups(payload))
+      })
+      handleClose()
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -72,13 +132,13 @@ const SubgroupsCountModal: React.FC<ISubgroupsCountModalProps> = ({ open, groupI
   return (
     <Dialog
       open={open}
-      maxWidth={'sm'}
+      maxWidth={"sm"}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <DialogTitle>{'Спеціалізовані підгрупи'}</DialogTitle>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <DialogTitle>{"Спеціалізовані підгрупи"}</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
           <CloseOutlined />
@@ -103,9 +163,13 @@ const SubgroupsCountModal: React.FC<ISubgroupsCountModalProps> = ({ open, groupI
                       {...field}
                       defaultValue={lessonType.count}
                       disabled={lessonType.isDisabled}
-                      sx={{ width: '100%', pb: 2, '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
+                      sx={{
+                        width: "100%",
+                        pb: 2,
+                        "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
+                      }}
                     >
-                      {['1', '2', '3', '4'].map((el) => (
+                      {["1", "2", "3", "4"].map((el) => (
                         <MenuItem key={`${lessonType}_${el}`} value={el}>
                           {el}
                         </MenuItem>
@@ -117,7 +181,12 @@ const SubgroupsCountModal: React.FC<ISubgroupsCountModalProps> = ({ open, groupI
             />
           ))}
 
-          <Button type="submit" variant="contained" sx={{ p: '7.44px 15px', width: '100%' }} disabled={isSubmitting}>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{ p: "7.44px 15px", width: "100%" }}
+            disabled={isSubmitting}
+          >
             Зберегти
           </Button>
         </form>

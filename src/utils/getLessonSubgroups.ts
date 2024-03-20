@@ -1,6 +1,6 @@
 import { GroupLoadType } from '../store/groups/groupsTypes'
 
-const lessonsTypes = {
+export const lessonsTypes = {
   lectures: 'ЛекціЇ',
   practical: 'Практичні',
   laboratory: 'Лабораторні',

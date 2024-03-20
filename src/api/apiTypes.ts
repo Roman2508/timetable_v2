@@ -1,5 +1,5 @@
-import { GroupsType } from '../store/groups/groupsTypes'
-import { TeachersType } from '../store/teachers/teachersTypes'
+import { GroupsType } from "../store/groups/groupsTypes"
+import { TeachersType } from "../store/teachers/teachersTypes"
 
 /* Global */
 
@@ -43,11 +43,11 @@ export type UpdateTeacherCategoryPayloadType = {
 
 export type CreateTeacherPayloadType = {
   category: number
-} & Omit<TeachersType, 'id' | 'category'>
+} & Omit<TeachersType, "id" | "category">
 
 export type UpdateTeacherPayloadType = {
   category: number
-} & Omit<TeachersType, 'category'>
+} & Omit<TeachersType, "category">
 
 /* Plans */
 
@@ -60,7 +60,7 @@ export type CreatePlanPayloadType = {
 
 export type UpdateGroupPayloadType = Pick<
   GroupsType,
-  'id' | 'name' | 'students' | 'courseNumber' | 'yearOfAdmission' | 'formOfEducation'
+  "id" | "name" | "students" | "courseNumber" | "yearOfAdmission" | "formOfEducation"
 > & { educationPlan: number; category: number }
 
 // {
@@ -125,3 +125,12 @@ export type UpdateSpecializationPayloadType = {
 }
 
 export type DeleteSpecializationPayloadType = CreateSpecializationPayloadType
+
+// Subgroups
+
+export type CreateSubgroupsPayloadType = {
+  planSubjectId: number
+  groupId: number
+  typeEn: "lectures" | "practical" | "laboratory" | "seminars" | "exams"
+  subgroupsCount: number
+}
