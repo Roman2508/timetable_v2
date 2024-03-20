@@ -20,9 +20,9 @@ import { useAppDispatch } from '../../../store/store'
 import { GroupLoadType } from '../../../store/groups/groupsTypes'
 import { groupsSelector } from '../../../store/groups/groupsSlice'
 import { SubgroupsModalTableHead } from './SubgroupsModalTableHead'
-import { SubgroupsModalTableBody } from './SubgroupsModalTableBody'
 import { attachSpecialization } from '../../../store/groups/groupsAsyncActions'
 import { SubgroupsCountModal } from './SubgroupsCountModal'
+import { SubgroupsModalTableBody } from './SubgroupsModalTableBody'
 
 interface ISelectPlanModalProps {
   open: boolean
@@ -33,22 +33,9 @@ const SubgroupsModal: React.FC<ISelectPlanModalProps> = ({ open, setOpen }) => {
   const dispatch = useAppDispatch()
 
   const [subgroupsCountModalVisible, setSubgroupsCountModalVisible] = React.useState(false)
-  const [selectedLesson, setSelectedLesson] = React.useState<GroupLoadType | null>(null)
-  const [specializationList, setSpecializationList] = React.useState([
-    { label: 'Спеціалізація відсутня', value: 'Спеціалізація відсутня' },
-    { label: 'Не вивчається', value: 'Не вивчається' },
-  ])
-  const [selectedSpecialization, setSelectedSpecialization] = React.useState(specializationList[0].value)
+  const [selectedLesson, setSelectedLesson] = React.useState<GroupLoadType[] | null>(null)
 
   const { group } = useSelector(groupsSelector)
-
-  React.useEffect(() => {
-    if (group) {
-      setSpecializationList((prev) => {
-        return [...prev, ...group.specializationList.map((el) => ({ label: el, value: el }))]
-      })
-    }
-  }, [group.specializationList])
 
   const handleClose = () => {
     setOpen(false)
@@ -57,9 +44,10 @@ const SubgroupsModal: React.FC<ISelectPlanModalProps> = ({ open, setOpen }) => {
   return (
     <>
       <SubgroupsCountModal
+        groupId={group.id}
+        selectedLesson={selectedLesson}
         open={subgroupsCountModalVisible}
         setOpen={setSubgroupsCountModalVisible}
-        groupId={group.id}
       />
 
       <Dialog
@@ -102,7 +90,6 @@ const SubgroupsModal: React.FC<ISelectPlanModalProps> = ({ open, setOpen }) => {
                 groupLoad={group.groupLoad}
                 selectedLesson={selectedLesson}
                 setSelectedLesson={setSelectedLesson}
-                setSelectedSpecialization={setSelectedSpecialization}
               />
             </Table>
           </TableContainer>

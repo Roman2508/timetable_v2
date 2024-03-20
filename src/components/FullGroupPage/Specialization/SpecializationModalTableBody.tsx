@@ -2,6 +2,7 @@ import { TableBody, TableCell, TableRow, Typography } from '@mui/material'
 import React, { Dispatch, SetStateAction } from 'react'
 import { groupLessonsByNameAndSemester } from '../../../utils/groupLessonsByNameAndSemester'
 import { GroupLoadType } from '../../../store/groups/groupsTypes'
+import { groupLessonByNameSubgroupsAndSemester } from '../../../utils/groupLessonByNameSubgroupsAndSemester'
 
 const cellStyles = {
   borderBottom: '1px solid rgb(220, 220, 220)',

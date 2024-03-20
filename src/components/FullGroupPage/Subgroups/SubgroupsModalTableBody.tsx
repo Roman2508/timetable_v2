@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react'
 import { TableBody, TableCell, TableRow, Typography } from '@mui/material'
 
 import { GroupLoadType } from '../../../store/groups/groupsTypes'
-import { groupLessonsByNameAndSemester } from '../../../utils/groupLessonsByNameAndSemester'
+import { groupLessonByNameSubgroupsAndSemester } from '../../../utils/groupLessonByNameSubgroupsAndSemester'
 
 const cellStyles = {
   borderBottom: '1px solid rgb(220, 220, 220)',
@@ -12,40 +12,30 @@ const cellStyles = {
 
 interface ISubgroupsModalTableBodyProps {
   groupLoad: GroupLoadType[] | null
-  selectedLesson: GroupLoadType | null
-  setSelectedSpecialization: Dispatch<SetStateAction<string>>
-  setSelectedLesson: Dispatch<SetStateAction<GroupLoadType | null>>
+  selectedLesson: GroupLoadType[] | null
+  setSelectedLesson: Dispatch<SetStateAction<GroupLoadType[] | null>>
 }
 
 const SubgroupsModalTableBody: React.FC<ISubgroupsModalTableBodyProps> = ({
   groupLoad,
   selectedLesson,
   setSelectedLesson,
-  setSelectedSpecialization,
 }) => {
   return (
     <TableBody>
-      {(!groupLoad ? [] : groupLessonsByNameAndSemester(groupLoad)).map((row, index: number) => {
-        const isItemSelected = selectedLesson?.id === row[0].id
+      {(!groupLoad ? [] : groupLessonByNameSubgroupsAndSemester(groupLoad)).map((row, index: number) => {
+        const isItemSelected = (selectedLesson ? selectedLesson[0].id : 0) === row[0].id
         const labelId = `enhanced-table-checkbox-${index}`
-
-        const specializationName = row[0].specialization === null ? 'Спеціалізація відсутня' : row[0].specialization
-
-        const isNotStudied = row[0].specialization === 'Не вивчається'
 
         return (
           <TableRow
             hover
             tabIndex={-1}
             role="checkbox"
-            sx={isNotStudied ? { opacity: 0.5 } : {}}
             selected={isItemSelected}
             aria-checked={isItemSelected}
             key={row[0].name + row[0].semester}
-            onClick={() => {
-              setSelectedLesson(row[0])
-              setSelectedSpecialization(specializationName)
-            }}
+            onClick={() => setSelectedLesson(row)}
           >
             <TableCell
               sx={{
@@ -65,11 +55,11 @@ const SubgroupsModalTableBody: React.FC<ISubgroupsModalTableBodyProps> = ({
               {row[0].semester}
             </TableCell>
 
-            {['lectures', 'practical', 'laboratory', 'seminars', 'exams'].map((lessonType, index) => {
+            {['lectures', 'practical', 'laboratory', 'seminars', 'exams'].map((lessonType) => {
               const lesson = row.find((el) => el.typeEn === lessonType)
 
               return (
-                <TableCell key={index} sx={{ ...cellStyles, cursor: 'pointer' }} align="center">
+                <TableCell key={lessonType} sx={{ ...cellStyles, cursor: 'pointer' }} align="center">
                   {lesson?.subgroupNumber ? lesson.subgroupNumber : '-'}
                 </TableCell>
               )

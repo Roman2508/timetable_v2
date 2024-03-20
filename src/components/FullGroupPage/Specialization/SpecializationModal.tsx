@@ -5,31 +5,24 @@ import {
   Button,
   Tooltip,
   MenuItem,
-  TableRow,
-  TableHead,
-  TableCell,
-  TableBody,
-  Typography,
   TextField,
   IconButton,
   DialogTitle,
   DialogContent,
   DialogActions,
   TableContainer,
-  DialogContentText,
 } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import React, { Dispatch, SetStateAction } from 'react'
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 
-import SpecializationListModal from './SpecializationListModal'
-import { groupsSelector } from '../../../store/groups/groupsSlice'
-import { groupLessonsByNameAndSemester } from '../../../utils/groupLessonsByNameAndSemester'
-import { GroupLoadType } from '../../../store/groups/groupsTypes'
 import { useAppDispatch } from '../../../store/store'
-import { attachSpecialization } from '../../../store/groups/groupsAsyncActions'
-import { SpecializationModalTableHead } from './SpecializationModalTableHead'
+import SpecializationListModal from './SpecializationListModal'
+import { GroupLoadType } from '../../../store/groups/groupsTypes'
+import { groupsSelector } from '../../../store/groups/groupsSlice'
 import SpecializationModalTableBody from './SpecializationModalTableBody'
+import { SpecializationModalTableHead } from './SpecializationModalTableHead'
+import { attachSpecialization } from '../../../store/groups/groupsAsyncActions'
 
 interface ISelectPlanModalProps {
   open: boolean
