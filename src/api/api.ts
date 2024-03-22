@@ -219,6 +219,6 @@ export const groupsAPI = {
 
   /* Subgroups */
   createSubgroups(payload: CreateSubgroupsPayloadType) {
-    return instanse.patch<GroupLoadType[]>(`/group-load-lessons/subgroups`, payload)
+    return instanse.patch<CreateSubgroupsPayloadType[]>(`/group-load-lessons/subgroups`, payload)
   },
 }

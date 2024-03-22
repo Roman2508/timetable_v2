@@ -1,7 +1,7 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from "./groupsTypes"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from './groupsTypes'
 import {
   attachSpecialization,
   createGroup,
@@ -16,18 +16,18 @@ import {
   updateGroup,
   updateGroupCategory,
   updateSpecialization,
-} from "./groupsAsyncActions"
-import { AttachSpecializationPayloadType } from "../../api/apiTypes"
+} from './groupsAsyncActions'
+import { AttachSpecializationPayloadType, CreateSubgroupsPayloadType } from '../../api/apiTypes'
 
 const groupsInitialState: GroupsInitialState = {
   groupCategories: null,
   group: {
     id: 0,
-    name: "",
+    name: '',
     courseNumber: 1,
     yearOfAdmission: Number(new Date().getFullYear().toString()),
     students: 1,
-    formOfEducation: "Денна",
+    formOfEducation: 'Денна',
     specializationList: [],
     educationPlan: null,
     groupLoad: null,
@@ -38,7 +38,7 @@ const groupsInitialState: GroupsInitialState = {
 }
 
 const groupsSlice = createSlice({
-  name: "groups",
+  name: 'groups',
   initialState: groupsInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -50,38 +50,29 @@ const groupsSlice = createSlice({
   },
   extraReducers: (builder) => {
     /* getGroupCategories */
-    builder.addCase(
-      getGroupCategories.fulfilled,
-      (state, action: PayloadAction<GroupCategoriesType[]>) => {
-        state.groupCategories = action.payload
-      }
-    )
+    builder.addCase(getGroupCategories.fulfilled, (state, action: PayloadAction<GroupCategoriesType[]>) => {
+      state.groupCategories = action.payload
+    })
 
     /* createGroupCategory */
-    builder.addCase(
-      createGroupCategory.fulfilled,
-      (state, action: PayloadAction<GroupCategoriesType>) => {
-        state.groupCategories?.push(action.payload)
-      }
-    )
+    builder.addCase(createGroupCategory.fulfilled, (state, action: PayloadAction<GroupCategoriesType>) => {
+      state.groupCategories?.push(action.payload)
+    })
 
     /* updateGroupCategory */
-    builder.addCase(
-      updateGroupCategory.fulfilled,
-      (state, action: PayloadAction<GroupCategoriesType>) => {
-        if (!state.groupCategories) return
+    builder.addCase(updateGroupCategory.fulfilled, (state, action: PayloadAction<GroupCategoriesType>) => {
+      if (!state.groupCategories) return
 
-        const newCategories = state.groupCategories.map((el) => {
-          if (el.id === action.payload.id) {
-            return { ...el, ...action.payload }
-          }
+      const newCategories = state.groupCategories.map((el) => {
+        if (el.id === action.payload.id) {
+          return { ...el, ...action.payload }
+        }
 
-          return el
-        })
+        return el
+      })
 
-        state.groupCategories = newCategories
-      }
-    )
+      state.groupCategories = newCategories
+    })
 
     /* deleteGroupCategory */
     builder.addCase(deleteGroupCategory.fulfilled, (state, action: PayloadAction<number>) => {
@@ -153,23 +144,20 @@ const groupsSlice = createSlice({
     /* specialization */
 
     /* attachSpecialization */
-    builder.addCase(
-      attachSpecialization.fulfilled,
-      (state, action: PayloadAction<AttachSpecializationPayloadType>) => {
-        if (!state.group || !state.group.groupLoad) return
+    builder.addCase(attachSpecialization.fulfilled, (state, action: PayloadAction<AttachSpecializationPayloadType>) => {
+      if (!state.group || !state.group.groupLoad) return
 
-        const { groupId, planSubjectId, name } = action.payload
+      const { groupId, planSubjectId, name } = action.payload
 
-        const groupLoad = state.group.groupLoad.map((el) => {
-          if (el.group.id === groupId && el.planSubjectId.id === planSubjectId) {
-            return { ...el, specialization: name }
-          }
-          return el
-        })
+      const groupLoad = state.group.groupLoad.map((el) => {
+        if (el.group.id === groupId && el.planSubjectId.id === planSubjectId) {
+          return { ...el, specialization: name }
+        }
+        return el
+      })
 
-        state.group.groupLoad = groupLoad
-      }
-    )
+      state.group.groupLoad = groupLoad
+    })
 
     /* createSpecialization */
     builder.addCase(createSpecialization.fulfilled, (state, action: PayloadAction<string[]>) => {
@@ -190,22 +178,23 @@ const groupsSlice = createSlice({
     })
 
     /* createSubgroups */
-    builder.addCase(createSubgroups.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
+    builder.addCase(createSubgroups.fulfilled, (state, action: PayloadAction<CreateSubgroupsPayloadType[]>) => {
       if (!state.group || !state.group.groupLoad) return
 
-      // const groupLoad = state.group.groupLoad.map((el) => {
-      //   let lesson = el
+      let newLessons = action.payload
 
-      //   const a = action.payload.forEach((el) => {
-      //     if (true) {
-      //     } else {
-      //     }
-      //   })
+      const groupLoad = state.group.groupLoad.map((el) => {
+        const lesson = action.payload.find((l) => l.planSubjectId === el.planSubjectId.id)
 
-      //   return el
-      // })
+        if (lesson) {
+          newLessons = newLessons.filter((l) => l.id === lesson.id)
+          return lesson
+        }
 
-      // state.group.groupLoad = groupLoad
+        return el
+      })
+
+      state.group.groupLoad = [...groupLoad, ...newLessons]
     })
   },
 })

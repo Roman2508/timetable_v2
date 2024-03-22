@@ -1,34 +1,22 @@
 // material-ui
-import {
-  Grid,
-  List,
-  Typography,
-  ListItemText,
-  ListItemButton,
-  IconButton,
-  Tooltip,
-} from "@mui/material"
-import { EditOutlined, DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons"
+import { Grid, List, Typography, ListItemText, ListItemButton, IconButton, Tooltip } from '@mui/material'
+import { EditOutlined, DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons'
 
 // project import
-import React, { useState } from "react"
-import { useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
-import {
-  deleteGroup,
-  getGroupCategories,
-  deleteGroupCategory,
-} from "../../store/groups/groupsAsyncActions"
-import MainCard from "../../components/MainCard"
-import { useAppDispatch } from "../../store/store"
-import { LoadingStatusTypes } from "../../store/appTypes"
-import EmptyCard from "../../components/EmptyCard/EmptyCard"
-import { groupsSelector } from "../../store/groups/groupsSlice"
-import { GroupCategoriesType } from "../../store/groups/groupsTypes"
-import { GroupsTable } from "../../components/GroupsPage/GroupsTable"
-import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
-import { GroupsActionsModal } from "../../components/GroupsPage/GroupsActionsModal"
+import { deleteGroup, getGroupCategories, deleteGroupCategory } from '../../store/groups/groupsAsyncActions'
+import MainCard from '../../components/MainCard'
+import { useAppDispatch } from '../../store/store'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { groupsSelector } from '../../store/groups/groupsSlice'
+import { GroupCategoriesType } from '../../store/groups/groupsTypes'
+import { GroupsTable } from '../../components/GroupsPage/GroupsTable'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import { GroupsActionsModal } from '../../components/GroupsPage/GroupsActionsModal'
 
 // ==============================|| GROUPS ||============================== //
 
@@ -40,14 +28,12 @@ const GroupsPage = () => {
   const { groupCategories, loadingStatus } = useSelector(groupsSelector)
 
   const [modalVisible, setModalVisible] = useState(false)
-  const [actionsModalType, setActionsModalType] = useState<"create-category" | "update-category">(
-    "create-category"
-  )
+  const [actionsModalType, setActionsModalType] = useState<'create-category' | 'update-category'>('create-category')
   const [activeGroupCategory, setActiveGroupCategory] = useState<null | GroupCategoriesType>(null)
 
-  const onDeleteEntity = async (type: "category" | "group", id: number) => {
-    if (type === "category") {
-      if (window.confirm("Ви дійсно хочете видалити категорію?")) {
+  const onDeleteEntity = async (type: 'category' | 'group', id: number) => {
+    if (type === 'category') {
+      if (window.confirm('Ви дійсно хочете видалити категорію?')) {
         await dispatch(deleteGroupCategory(id))
 
         if (groupCategories) {
@@ -56,8 +42,8 @@ const GroupsPage = () => {
       }
     }
 
-    if (type === "group") {
-      if (window.confirm("Ви дійсно хочете видалити групу?")) {
+    if (type === 'group') {
+      if (window.confirm('Ви дійсно хочете видалити групу?')) {
         const { payload } = await dispatch(deleteGroup(id))
         setActiveGroupCategory((prev) => {
           if (prev) {
@@ -93,19 +79,19 @@ const GroupsPage = () => {
         setActiveGroupCategory={setActiveGroupCategory}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ m: '0 auto', maxWidth: '1200px' }}>
         {/* Категорії (відділення) */}
-        <Grid item xs={12} md={5} lg={4}>
+        <Grid item xs={12} md={5} lg={5}>
           <Grid container alignItems="center" justifyContent="space-between">
-            <Grid item sx={{ display: "flex", alignItems: "center" }}>
-              <Typography variant="h5" sx={{ mr: "10px" }}>
+            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="h5" sx={{ mr: '10px' }}>
                 Структурні підрозділи
               </Typography>
 
               <Tooltip title="Створити структурний підрозділ" enterDelay={1000}>
                 <IconButton
                   onClick={() => {
-                    setActionsModalType("create-category")
+                    setActionsModalType('create-category')
                     setModalVisible(true)
                   }}
                 >
@@ -119,15 +105,15 @@ const GroupsPage = () => {
             {loadingStatus === LoadingStatusTypes.LOADING && !groupCategories && <LoadingSpinner />}
             {loadingStatus !== LoadingStatusTypes.LOADING && !groupCategories && <EmptyCard />}
             {groupCategories && (
-              <List sx={{ p: 0, "& .MuiListItemButton-root": { py: 2 } }}>
+              <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 2 } }}>
                 {groupCategories.map((el) => (
                   <ListItemButton
                     divider
                     sx={{
                       my: 0,
-                      background: activeGroupCategory?.id === el.id ? "#e6f7ff" : "transparent",
-                      "&:hover": {
-                        background: activeGroupCategory?.id === el.id ? "#e6f7ff" : "#fafafa",
+                      background: activeGroupCategory?.id === el.id ? '#e6f7ff' : 'transparent',
+                      '&:hover': {
+                        background: activeGroupCategory?.id === el.id ? '#e6f7ff' : '#fafafa',
                       },
                     }}
                     onClick={() => setActiveGroupCategory(el)}
@@ -141,25 +127,22 @@ const GroupsPage = () => {
         </Grid>
 
         {/* Групи */}
-        <Grid item xs={12} md={7} lg={8}>
+        <Grid item xs={12} md={7} lg={7}>
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item sx={{ flexGrow: 1 }}>
               <Typography variant="h5">Групи</Typography>
             </Grid>
 
-            <Grid item alignItems="center" sx={{ display: "flex" }}>
-              <Typography
-                variant="h5"
-                sx={activeGroupCategory ? { flexGrow: 1 } : { flexGrow: 1, mb: "12px" }}
-              >
-                {activeGroupCategory ? activeGroupCategory.name : "Завантаження..."}
+            <Grid item alignItems="center" sx={{ display: 'flex' }}>
+              <Typography variant="h5" sx={activeGroupCategory ? { flexGrow: 1 } : { flexGrow: 1, mb: '12px' }}>
+                {activeGroupCategory ? activeGroupCategory.name : 'Завантаження...'}
               </Typography>
 
               {activeGroupCategory && (
                 <>
                   <Tooltip title="Додати групу до структурного підрозділу" enterDelay={1000}>
                     <IconButton
-                      sx={{ ml: "20px" }}
+                      sx={{ ml: '20px' }}
                       onClick={() => navigate(`/groups/create/${activeGroupCategory.id}`)}
                     >
                       <PlusCircleOutlined />
@@ -168,9 +151,9 @@ const GroupsPage = () => {
 
                   <Tooltip title="Перейменувати структурний підрозділ" enterDelay={1000}>
                     <IconButton
-                      sx={{ mr: "5px" }}
+                      sx={{ mr: '5px' }}
                       onClick={() => {
-                        setActionsModalType("update-category")
+                        setActionsModalType('update-category')
                         setModalVisible(true)
                       }}
                     >
@@ -179,10 +162,7 @@ const GroupsPage = () => {
                   </Tooltip>
 
                   <Tooltip title="Видалити структурний підрозділ" enterDelay={1000}>
-                    <IconButton
-                      sx={{ mr: "5px" }}
-                      onClick={() => onDeleteEntity("category", activeGroupCategory.id)}
-                    >
+                    <IconButton sx={{ mr: '5px' }} onClick={() => onDeleteEntity('category', activeGroupCategory.id)}>
                       <DeleteOutlined />
                     </IconButton>
                   </Tooltip>
@@ -192,14 +172,9 @@ const GroupsPage = () => {
           </Grid>
 
           <MainCard sx={{ mt: 2 }} content={false}>
-            {loadingStatus === LoadingStatusTypes.LOADING && !activeGroupCategory && (
-              <LoadingSpinner />
-            )}
-            {activeGroupCategory && (
-              <GroupsTable groups={activeGroupCategory.groups} onDeleteEntity={onDeleteEntity} />
-            )}
-            {!activeGroupCategory?.groups.length &&
-              loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
+            {loadingStatus === LoadingStatusTypes.LOADING && !activeGroupCategory && <LoadingSpinner />}
+            {activeGroupCategory && <GroupsTable groups={activeGroupCategory.groups} onDeleteEntity={onDeleteEntity} />}
+            {!activeGroupCategory?.groups.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
 
             {/* {activeGroupCategory ? (
               <GroupsTable groups={activeGroupCategory.groups} onDeleteEntity={onDeleteEntity} />
