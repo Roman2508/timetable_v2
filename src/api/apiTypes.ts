@@ -63,16 +63,6 @@ export type UpdateGroupPayloadType = Pick<
   "id" | "name" | "students" | "courseNumber" | "yearOfAdmission" | "formOfEducation"
 > & { educationPlan: number; category: number }
 
-// {
-//   "name": "string",
-//   "students": 0,
-//   "courseNumber": 0,
-//   "yearOfAdmission": 0,
-//   "formOfEducation": "string",
-//   "educationPlan": 0
-//   "category": 0,
-// }
-
 /* plan-subjects */
 
 export type CreateSubjectPayloadType = {
@@ -133,4 +123,28 @@ export type CreateSubgroupsPayloadType = {
   groupId: number
   typeEn: "lectures" | "practical" | "laboratory" | "seminars" | "exams"
   subgroupsCount: number
+}
+
+/* Streams */
+
+export type AddGroupToStreamPayloadType = {
+  streamId: number
+  groupId: number
+}
+
+export type DeleteGroupFromStreamPayloadType = AddGroupToStreamPayloadType
+
+export type DeleteGroupFromStreamResponseType = {
+  streamId: number
+  groupId: number
+  updatedLessons: []
+}
+
+export type DeleteLessonFromStreamPayloadType = {
+  name: string
+  hours: number
+  typeEn: string
+  semester: number
+  streamId: number
+  subgroupNumber: number
 }

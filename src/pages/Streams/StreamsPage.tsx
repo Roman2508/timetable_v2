@@ -1,78 +1,78 @@
 // material-ui
-import {
-  Grid,
-  List,
-  Divider,
-  ListItem,
-  Accordion,
-  IconButton,
-  Typography,
-  ListItemText,
-  ListItemButton,
-  AccordionSummary,
-  AccordionDetails,
-  Stack,
-  InputLabel,
-  TextField,
-  Tooltip,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-} from '@mui/material'
-import {
-  DownOutlined,
-  LeftSquareOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  CheckOutlined,
-  FilterOutlined,
-} from '@ant-design/icons'
+import React from "react"
+import { useSelector } from "react-redux"
+import { FilterOutlined } from "@ant-design/icons"
+import { Grid, Table, Divider, IconButton, Typography } from "@mui/material"
 
 // project import
-import React from 'react'
-import MainCard from '../../components/MainCard'
-import { AccordionItemsList } from '../../components/AccordionItemsList/AccordionItemsList'
+import MainCard from "../../components/MainCard"
+import { useAppDispatch } from "../../store/store"
+import { StreamsType } from "../../store/streams/streamsTypes"
+import { groupsSelector } from "../../store/groups/groupsSlice"
+import { streamsSelector } from "../../store/streams/streamsSlice"
+import { getStreamLessons, getStreams } from "../../store/streams/streamsAsyncActions"
+import { getGroupCategories } from "../../store/groups/groupsAsyncActions"
+import StreamSelections from "../../components/StreamsPage/StreamSelections"
+import { StreamActionsModal } from "../../components/StreamsPage/StreamActionsModal"
+import { AccordionItemsList } from "../../components/AccordionItemsList/AccordionItemsList"
+import { StreamLessonsTableHead } from "../../components/StreamsPage/StreamLessonsTableHead"
+import { StreamLessonsTableBody } from "../../components/StreamsPage/StreamLessonsTableBody"
+import { AddGroupsToStreamModal } from "../../components/StreamsPage/AddGroupsToStreamModal"
 
-// ==============================|| AUDITORIES ||============================== //
-
-const groups = [
-  {
-    id: 1,
-    name: 'Фармація, промислова фармація (ДФ)',
-    groups: [
-      { id: 1, name: 'PH9-24-1' },
-      { id: 2, name: 'PH9-24-2' },
-      { id: 3, name: 'PH9-24-3' },
-      { id: 4, name: 'PH11-24-1' },
-      { id: 5, name: 'PH11-24-2' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Фармація, промислова фармація (ЗФ)',
-    groups: [
-      { id: 6, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 7, name: 'Фармація, промислова фармація (ДФ)' },
-      { id: 8, name: 'Фармація, промислова фармація (ЗФ)' },
-    ],
-  },
-  {
-    id: 3,
-    name: 'Лабораторна діагностика (ДФ)',
-    groups: [
-      { id: 9, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 10, name: 'Фармація, промислова фармація (ЗФ)' },
-      { id: 11, name: 'Лабораторна діагностика (ДФ)' },
-    ],
-  },
-]
+// ==============================|| STREAMS ||============================== //
 
 const StreamsPage = () => {
+  const dispatch = useAppDispatch()
+
+  const { streams, streamLessons } = useSelector(streamsSelector)
+  const { groupCategories } = useSelector(groupsSelector)
+
+  const [actionsModalVisible, setActionsModalVisible] = React.useState(false)
+  const [selectedStream, setSelectedStream] = React.useState<null | StreamsType>(null)
+  const [actionsModalType, setActionsModalType] = React.useState<"create" | "update">("create")
+  const [addGroupsToStreamModalVisible, setAddGroupsToStreamModalVisible] = React.useState(false)
+
+  React.useEffect(() => {
+    if (groupCategories) return
+    dispatch(getGroupCategories())
+  }, [])
+
+  React.useEffect(() => {
+    if (streams) return
+    dispatch(getStreams())
+  }, [])
+
+  React.useEffect(() => {
+    if (!selectedStream) return
+    const fetchGroups = async () => {
+      Promise.allSettled(
+        selectedStream.groups.map(async (el) => {
+          await dispatch(getStreamLessons(el.id))
+        })
+      )
+    }
+
+    fetchGroups()
+  }, [selectedStream])
+
   return (
     <>
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
+      <StreamActionsModal
+        open={actionsModalVisible}
+        modalType={actionsModalType}
+        selectedStream={selectedStream}
+        setOpen={setActionsModalVisible}
+      />
+
+      <AddGroupsToStreamModal
+        selectedStream={selectedStream}
+        groupCategories={groupCategories}
+        open={addGroupsToStreamModalVisible}
+        setSelectedStream={setSelectedStream}
+        setOpen={setAddGroupsToStreamModalVisible}
+      />
+
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
         <Grid item xs={12}>
           <Grid container>
             <Grid item>
@@ -82,85 +82,46 @@ const StreamsPage = () => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-          <Grid item xs={4}>
-            <MainCard sx={{ '& .MuiCardContent-root': { p: 0 } }}>
-              <AccordionItemsList items={groups} />
+        <Grid item xs={12} sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+          {/* <Grid
+            item
+            xs={4}
+            sx={{
+              "& .MuiCardContent-root": { p: 0 },
+              ".MuiCardContent-root:last-child": { p: 0 },
+              p: 0,
+            }}
+          >
+            <MainCard>
+              <AccordionItemsList
+                activeItemId={selectedGroupId}
+                onSelectItem={setSelectedGroupId}
+                items={groupCategories ? groupCategories : []}
+              />
             </MainCard>
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={8}>
-            <Grid item sx={{ display: 'flex', gap: 2 }}>
-              <Grid item xs={6}>
-                <Grid item xs={12} sx={{ mb: 2 }}>
-                  <MainCard sx={{ '& .MuiCardContent-root': { p: 0 }, p: 0 }}>
-                    <Typography
-                      variant="button"
-                      sx={{
-                        textAlign: 'center',
-                        display: 'block',
-                        textTransform: 'uppercase',
-                        my: 2.6,
-                      }}
-                    >
-                      Виберіть потік
-                    </Typography>
+          <Grid item xs={12} sx={{ display: "flex" }}>
+            {/* <Grid item xs={8}> */}
 
-                    <Divider />
-                    <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 2 }, maxHeight: '235px', overflowY: 'auto' }}>
-                      {[{ name: '1' }, { name: '1' }, { name: '1' }, { name: '1' }, { name: '1' }, { name: '1' }].map(
-                        (el) => (
-                          <ListItemButton divider sx={{ padding: '8px 24px !important' }}>
-                            <ListItemText primary={el.name} />
-                          </ListItemButton>
-                        )
-                      )}
-                    </List>
-                  </MainCard>
-                </Grid>
-              </Grid>
-
-              <Grid item xs={6}>
-                <MainCard sx={{ '& .MuiCardContent-root': { p: 0 }, p: 0 }}>
-                  <Typography
-                    variant="button"
-                    sx={{
-                      textAlign: 'center',
-                      display: 'block',
-                      textTransform: 'uppercase',
-                      my: 2.6,
-                    }}
-                  >
-                    Потік: PH-24
-                  </Typography>
-
-                  <Divider />
-                  <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 2 }, maxHeight: '235px', overflowY: 'auto' }}>
-                    {[{ name: '1' }, { name: '1' }, { name: '1' }, { name: '1' }, { name: '1' }, { name: '1' }].map(
-                      (el) => (
-                        <ListItemButton divider sx={{ padding: '8px 24px !important' }}>
-                          <ListItemText primary={el.name} />
-                        </ListItemButton>
-                      )
-                    )}
-                  </List>
-                </MainCard>
-              </Grid>
-            </Grid>
-
-            <Grid item sx={{ mt: 2 }}>
-              <MainCard sx={{ '& .MuiCardContent-root': { px: 1 } }}>
+            <Grid item xs={9} sx={{ mr: 2 }}>
+              <MainCard sx={{ "& .MuiCardContent-root": { px: 1 } }}>
                 <div
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginBottom: '10px',
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
                   }}
                 >
                   <Typography
                     variant="button"
-                    sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase', px: 2 }}
+                    sx={{
+                      textAlign: "center",
+                      display: "block",
+                      textTransform: "uppercase",
+                      px: 2,
+                    }}
                   >
                     Навантаження групи PH-24-1
                   </Typography>
@@ -172,39 +133,24 @@ const StreamsPage = () => {
                 <Divider />
 
                 <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell padding="none" align="left">
-                        Назва дисципліни
-                      </TableCell>
-                      <TableCell padding="none" align="right">
-                        Семестр
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    {Array(10)
-                      .fill(null)
-                      .map((_, index) => (
-                        <TableRow
-                          key={index}
-                          sx={{
-                            '&:hover': { backgroundColor: 'secondary.lighter', cursor: 'pointer' },
-                          }}
-                        >
-                          <TableCell padding="none" align="left">
-                            Інформаційні технології в фармації
-                          </TableCell>
-                          <TableCell padding="none" align="right">
-                            1
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
+                  <StreamLessonsTableHead />
+                  <StreamLessonsTableBody
+                    selectedLesson={null}
+                    streamLessons={streamLessons}
+                    setSelectedLesson={() => {}}
+                  />
                 </Table>
               </MainCard>
             </Grid>
+
+            <StreamSelections
+              streams={streams}
+              selectedStream={selectedStream}
+              setSelectedStream={setSelectedStream}
+              setActionsModalType={setActionsModalType}
+              setActionsModalVisible={setActionsModalVisible}
+              setAddGroupsToStreamModalVisible={setAddGroupsToStreamModalVisible}
+            />
           </Grid>
         </Grid>
       </Grid>

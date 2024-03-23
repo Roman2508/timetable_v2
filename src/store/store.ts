@@ -7,6 +7,7 @@ import groupsSlice from "./groups/groupsSlice"
 import teachersSlice from "./teachers/teachersSlice"
 import appStatusSlice from "./appStatus/appStatusSlice"
 import auditoriesSlise from "./auditories/auditoriesSlise"
+import streamsSlice from "./streams/streamsSlice"
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     teachers: teachersSlice,
     plans: plansSlice,
     groups: groupsSlice,
+    streams: streamsSlice,
     appStatus: appStatusSlice,
     menu: menuSlice,
   },

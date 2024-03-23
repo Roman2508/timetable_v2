@@ -10,8 +10,9 @@ import {
   ListItemButton,
   AccordionSummary,
   AccordionDetails,
+  Tooltip,
 } from "@mui/material"
-import { DownOutlined } from "@ant-design/icons"
+import { DownOutlined, PlusOutlined } from "@ant-design/icons"
 import { EditOutlined } from "@ant-design/icons"
 import { DeleteOutlined } from "@ant-design/icons"
 
@@ -23,12 +24,13 @@ import { TeachersCategoryType, TeachersType } from "../../store/teachers/teacher
 import { AuditoriesTypes, AuditoryCategoriesTypes } from "../../store/auditories/auditoriesTypes"
 
 interface IAccordionItemsListProps {
-  onDeleteItem: (id: number) => void
-  onDeleteMainItem: (id: number, itemsCount: number) => void
+  onDeleteItem?: (id: number) => void
+  onSelectItem?: Dispatch<SetStateAction<any>>
+  onDeleteMainItem?: (id: number, itemsCount: number) => void
   setIsUpdateItemModalOpen?: Dispatch<SetStateAction<boolean>>
   setIsUpdateCategoryModalOpen?: Dispatch<SetStateAction<boolean>>
-  onEditItem: Dispatch<SetStateAction<TeachersType | AuditoriesTypes | null>>
-  onEditMainItem: Dispatch<SetStateAction<{ id: number; name: string } | null>>
+  onEditItem?: Dispatch<SetStateAction<TeachersType | AuditoriesTypes | null>>
+  onEditMainItem?: Dispatch<SetStateAction<{ id: number; name: string } | null>>
   items: TeachersCategoryType[] | AuditoryCategoriesTypes[] | GroupCategoriesType[]
 }
 
@@ -38,6 +40,7 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
   onDeleteMainItem,
   onEditMainItem,
   onDeleteItem,
+  onSelectItem,
   onEditItem,
   items,
 }) => {
@@ -85,7 +88,7 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
               {mainItem[getItemsKeyName(items)]?.length || 0}
             </Typography>
 
-            {setIsUpdateCategoryModalOpen && (
+            {setIsUpdateCategoryModalOpen && onEditMainItem && (
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation()
@@ -98,16 +101,18 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
               </IconButton>
             )}
 
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation()
-                // @ts-ignore
-                onDeleteMainItem(mainItem.id, mainItem[getItemsKeyName(items)].length)
-              }}
-              sx={{ mr: "15px" }}
-            >
-              <DeleteOutlined />
-            </IconButton>
+            {onDeleteMainItem && (
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation()
+                  // @ts-ignore
+                  onDeleteMainItem(mainItem.id, mainItem[getItemsKeyName(items)].length)
+                }}
+                sx={{ mr: "15px" }}
+              >
+                <DeleteOutlined />
+              </IconButton>
+            )}
           </AccordionSummary>
 
           <AccordionDetails sx={{ p: 0 }}>
@@ -117,15 +122,15 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                 <div>
                   <Divider />
                   <ListItem
-                    disablePadding
                     key={el.id}
+                    disablePadding
                     sx={{ "&:hover .MuiButtonBase-root": { display: "block" } }}
                   >
                     <ListItemButton>
                       <ListItemText primary={el.name ? el.name : getLastnameAndInitials(el)} />
                     </ListItemButton>
 
-                    {setIsUpdateItemModalOpen && (
+                    {setIsUpdateItemModalOpen && onEditItem && (
                       <IconButton
                         onClick={(e) => {
                           e.stopPropagation()
@@ -138,15 +143,30 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                       </IconButton>
                     )}
 
-                    <IconButton
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onDeleteItem(el.id)
-                      }}
-                      sx={{ mr: "5px", display: "none" }}
-                    >
-                      <DeleteOutlined />
-                    </IconButton>
+                    {onDeleteItem && (
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onDeleteItem(el.id)
+                        }}
+                        sx={{ mr: "5px", display: "none" }}
+                      >
+                        <DeleteOutlined />
+                      </IconButton>
+                    )}
+
+                    {/* select group (streams page) */}
+                    {onSelectItem && (
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onSelectItem(el.id)
+                        }}
+                        sx={{ mr: "5px", display: "none" }}
+                      >
+                        <PlusOutlined />
+                      </IconButton>
+                    )}
                   </ListItem>
                 </div>
               ))}

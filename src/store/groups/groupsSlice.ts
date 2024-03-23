@@ -1,33 +1,34 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { RootState } from '../store'
-import { LoadingStatusTypes } from '../appTypes'
-import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from './groupsTypes'
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+
 import {
-  attachSpecialization,
-  createGroup,
-  createGroupCategory,
-  createSpecialization,
-  createSubgroups,
-  deleteGroup,
-  deleteGroupCategory,
-  deleteSpecialization,
   getGroup,
-  getGroupCategories,
   updateGroup,
+  createGroup,
+  deleteGroup,
+  createSubgroups,
+  getGroupCategories,
   updateGroupCategory,
+  createGroupCategory,
+  deleteGroupCategory,
+  attachSpecialization,
+  createSpecialization,
   updateSpecialization,
-} from './groupsAsyncActions'
-import { AttachSpecializationPayloadType, CreateSubgroupsPayloadType } from '../../api/apiTypes'
+  deleteSpecialization,
+} from "./groupsAsyncActions"
+import { RootState } from "../store"
+import { LoadingStatusTypes } from "../appTypes"
+import { AttachSpecializationPayloadType } from "../../api/apiTypes"
+import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from "./groupsTypes"
 
 const groupsInitialState: GroupsInitialState = {
   groupCategories: null,
   group: {
     id: 0,
-    name: '',
+    name: "",
     courseNumber: 1,
     yearOfAdmission: Number(new Date().getFullYear().toString()),
     students: 1,
-    formOfEducation: 'Денна',
+    formOfEducation: "Денна",
     specializationList: [],
     educationPlan: null,
     groupLoad: null,
@@ -38,7 +39,7 @@ const groupsInitialState: GroupsInitialState = {
 }
 
 const groupsSlice = createSlice({
-  name: 'groups',
+  name: "groups",
   initialState: groupsInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -50,29 +51,38 @@ const groupsSlice = createSlice({
   },
   extraReducers: (builder) => {
     /* getGroupCategories */
-    builder.addCase(getGroupCategories.fulfilled, (state, action: PayloadAction<GroupCategoriesType[]>) => {
-      state.groupCategories = action.payload
-    })
+    builder.addCase(
+      getGroupCategories.fulfilled,
+      (state, action: PayloadAction<GroupCategoriesType[]>) => {
+        state.groupCategories = action.payload
+      }
+    )
 
     /* createGroupCategory */
-    builder.addCase(createGroupCategory.fulfilled, (state, action: PayloadAction<GroupCategoriesType>) => {
-      state.groupCategories?.push(action.payload)
-    })
+    builder.addCase(
+      createGroupCategory.fulfilled,
+      (state, action: PayloadAction<GroupCategoriesType>) => {
+        state.groupCategories?.push(action.payload)
+      }
+    )
 
     /* updateGroupCategory */
-    builder.addCase(updateGroupCategory.fulfilled, (state, action: PayloadAction<GroupCategoriesType>) => {
-      if (!state.groupCategories) return
+    builder.addCase(
+      updateGroupCategory.fulfilled,
+      (state, action: PayloadAction<GroupCategoriesType>) => {
+        if (!state.groupCategories) return
 
-      const newCategories = state.groupCategories.map((el) => {
-        if (el.id === action.payload.id) {
-          return { ...el, ...action.payload }
-        }
+        const newCategories = state.groupCategories.map((el) => {
+          if (el.id === action.payload.id) {
+            return { ...el, ...action.payload }
+          }
 
-        return el
-      })
+          return el
+        })
 
-      state.groupCategories = newCategories
-    })
+        state.groupCategories = newCategories
+      }
+    )
 
     /* deleteGroupCategory */
     builder.addCase(deleteGroupCategory.fulfilled, (state, action: PayloadAction<number>) => {
@@ -144,20 +154,23 @@ const groupsSlice = createSlice({
     /* specialization */
 
     /* attachSpecialization */
-    builder.addCase(attachSpecialization.fulfilled, (state, action: PayloadAction<AttachSpecializationPayloadType>) => {
-      if (!state.group || !state.group.groupLoad) return
+    builder.addCase(
+      attachSpecialization.fulfilled,
+      (state, action: PayloadAction<AttachSpecializationPayloadType>) => {
+        if (!state.group || !state.group.groupLoad) return
 
-      const { groupId, planSubjectId, name } = action.payload
+        const { groupId, planSubjectId, name } = action.payload
 
-      const groupLoad = state.group.groupLoad.map((el) => {
-        if (el.group.id === groupId && el.planSubjectId.id === planSubjectId) {
-          return { ...el, specialization: name }
-        }
-        return el
-      })
+        const groupLoad = state.group.groupLoad.map((el) => {
+          if (el.group.id === groupId && el.planSubjectId.id === planSubjectId) {
+            return { ...el, specialization: name }
+          }
+          return el
+        })
 
-      state.group.groupLoad = groupLoad
-    })
+        state.group.groupLoad = groupLoad
+      }
+    )
 
     /* createSpecialization */
     builder.addCase(createSpecialization.fulfilled, (state, action: PayloadAction<string[]>) => {
@@ -178,23 +191,27 @@ const groupsSlice = createSlice({
     })
 
     /* createSubgroups */
-    builder.addCase(createSubgroups.fulfilled, (state, action: PayloadAction<CreateSubgroupsPayloadType[]>) => {
+    builder.addCase(createSubgroups.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
       if (!state.group || !state.group.groupLoad) return
+      // Якщо змінити одразу 2 або більше видів занять - змінюється порядок елементів в масиві
+      // Якщо змінити одразу 2 або більше видів занять - змінюється порядок елементів в масиві
+      // Якщо змінити одразу 2 або більше видів занять - змінюється порядок елементів в масиві
+      // Якщо змінити одразу 2 або більше видів занять - змінюється порядок елементів в масиві
+      // Якщо змінити одразу 2 або більше видів занять - змінюється порядок елементів в масиві
 
-      let newLessons = action.payload
+      // groupsSlice.ts:203 Uncaught (in promise) TypeError: Cannot destructure property 'planSubjectId' of 'action.payload[0]' as it is undefined.
+      const lessons = state.group.groupLoad.filter((el) => {
+        const { planSubjectId, typeEn, semester } = action.payload[0]
 
-      const groupLoad = state.group.groupLoad.map((el) => {
-        const lesson = action.payload.find((l) => l.planSubjectId === el.planSubjectId.id)
+        const bool =
+          el.planSubjectId.id === planSubjectId.id &&
+          el.typeEn === typeEn &&
+          el.semester === semester
 
-        if (lesson) {
-          newLessons = newLessons.filter((l) => l.id === lesson.id)
-          return lesson
-        }
-
-        return el
+        return !bool
       })
 
-      state.group.groupLoad = [...groupLoad, ...newLessons]
+      state.group.groupLoad = [...lessons, ...action.payload]
     })
   },
 })

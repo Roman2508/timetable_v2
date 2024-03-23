@@ -90,11 +90,6 @@ const SubgroupsCountModal: React.FC<ISubgroupsCountModalProps> = ({
 
   const handleClose = () => {
     setOpen(false)
-    // setValue("lectures", "1")
-    // setValue("practical", "1")
-    // setValue("laboratory", "1")
-    // setValue("seminars", "1")
-    // setValue("exams", "1")
   }
 
   const onSubmit: SubmitHandler<IFieldsType> = async (data) => {
@@ -102,10 +97,12 @@ const SubgroupsCountModal: React.FC<ISubgroupsCountModalProps> = ({
       if (!selectedLesson) return
 
       const keys = Object.keys(data)
-
-      keys.map(async (k) => {
+      keys.map(async (k: string) => {
         /* @ts-ignore */
         if (!data[k]) return
+
+        const lessonType = initialFormValues.find((el) => el.typeEn === k)
+        if (lessonType?.isDisabled) return
 
         const payload = {
           groupId,
@@ -125,8 +122,14 @@ const SubgroupsCountModal: React.FC<ISubgroupsCountModalProps> = ({
 
   React.useEffect(() => {
     if (!selectedLesson) return
+    // handleClearValues()
     const data = getLessonSubgroups(selectedLesson)
     setInitialFormValues(data)
+    setValue("lectures", String(data[0].isDisabled ? "" : data[0].count))
+    setValue("practical", String(data[1].isDisabled ? "" : data[1].count))
+    setValue("laboratory", String(data[2].isDisabled ? "" : data[2].count))
+    setValue("seminars", String(data[3].isDisabled ? "" : data[3].count))
+    setValue("exams", String(data[4].isDisabled ? "" : data[4].count))
   }, [selectedLesson])
 
   return (
