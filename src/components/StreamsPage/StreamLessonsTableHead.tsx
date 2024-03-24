@@ -2,10 +2,13 @@ import { TableCell, TableHead, TableRow } from "@mui/material"
 
 const cellStyles = {
   borderBottom: "1px solid rgb(220, 220, 220)",
-  p: "4px 10px",
-  minWidth: "100px",
+  p: "4px",
+  // minWidth: "80px",
   backgroundColor: "#fff !important",
 }
+
+// const lessonsTypes = ["Лекції", "Практичні", "Лабораторні", "Семінари", "Екзамени"]
+const lessonsTypes = ["ЛК", "ПЗ", "ЛАБ", "СЕМ", "ЕКЗ"]
 
 const StreamLessonsTableHead = () => {
   return (
@@ -21,21 +24,11 @@ const StreamLessonsTableHead = () => {
           Семестр
         </TableCell>
 
-        <TableCell sx={cellStyles} align="center" padding="none">
-          Лекції
-        </TableCell>
-        <TableCell sx={cellStyles} align="center" padding="none">
-          Практичні
-        </TableCell>
-        <TableCell sx={cellStyles} align="center" padding="none">
-          Лабораторні
-        </TableCell>
-        <TableCell sx={cellStyles} align="center" padding="none">
-          Семінари
-        </TableCell>
-        <TableCell sx={cellStyles} align="center" padding="none">
-          Екзамени
-        </TableCell>
+        {lessonsTypes.map((lessonType) => (
+          <TableCell key={lessonType} sx={cellStyles} align="center" padding="none">
+            {lessonType}
+          </TableCell>
+        ))}
       </TableRow>
     </TableHead>
   )

@@ -2,33 +2,48 @@ import React, { Dispatch, SetStateAction } from "react"
 import { TableBody, TableCell, TableRow, Typography } from "@mui/material"
 
 import { GroupLoadType } from "../../store/groups/groupsTypes"
-import { groupLessonsByNameAndSemester } from "../../utils/groupLessonsByNameAndSemester"
 import { groupLessonsByLessonGroupAndSemester } from "../../utils/groupLessonsByLessonGroupAndSemester"
 
 // import { groupLessonByNameSubgroupsAndSemester } from "../../../utils/groupLessonByNameSubgroupsAndSemester"
 
 const cellStyles = {
   borderBottom: "1px solid rgb(220, 220, 220)",
-  p: "4px 10px",
-  minWidth: "100px",
+  p: "4px",
+  minWidth: "70px",
 }
 
 interface IStreamLessonsTableBodyProps {
   streamLessons: GroupLoadType[] | null
-  selectedLesson: GroupLoadType[] | null
-  setSelectedLesson: Dispatch<SetStateAction<GroupLoadType[] | null>>
+  selectedLessons: GroupLoadType[] | null
+  setSelectedLessons: Dispatch<SetStateAction<GroupLoadType[]>>
 }
 
 const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = ({
   streamLessons,
-  selectedLesson,
-  setSelectedLesson,
+  selectedLessons,
+  setSelectedLessons,
 }) => {
+  const handleSelectLesson = (lesson: GroupLoadType) => {
+    setSelectedLessons((prev) => {
+      const existedLesson = prev.find((el) => el.id === lesson.id)
+      if (existedLesson) {
+        return prev.filter((el) => el.id !== existedLesson.id)
+      } else {
+        return [...prev, lesson]
+      }
+    })
+  }
+
   return (
     <TableBody>
       {(streamLessons ? groupLessonsByLessonGroupAndSemester(streamLessons) : []).map(
         (row, index: number) => {
-          const isItemSelected = (selectedLesson ? selectedLesson[0].id : 0) === row[0].id
+          const isItemSelected = selectedLessons?.find(
+            (el) =>
+              el.name === row[0].name &&
+              el.semester === row[0].semester &&
+              el.group.name === row[0].group.name
+          )
           const labelId = `enhanced-table-checkbox-${index}`
 
           return (
@@ -36,10 +51,10 @@ const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = ({
               hover
               tabIndex={-1}
               role="checkbox"
-              selected={isItemSelected}
-              aria-checked={isItemSelected}
+              selected={!!isItemSelected}
+              aria-checked={!!isItemSelected}
               key={row[0].name + row[0].semester}
-              onClick={() => setSelectedLesson(row)}
+              onClick={() => handleSelectLesson(row[0])}
             >
               <TableCell
                 sx={{

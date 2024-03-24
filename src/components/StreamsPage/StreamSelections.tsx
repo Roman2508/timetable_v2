@@ -20,6 +20,11 @@ import MainCard from "../MainCard"
 import { useAppDispatch } from "../../store/store"
 import { StreamsType } from "../../store/streams/streamsTypes"
 import { DeleteGroupFromStreamResponseType } from "../../api/apiTypes"
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"
+import { useSelector } from "react-redux"
+import { streamsSelector } from "../../store/streams/streamsSlice"
+import { LoadingStatusTypes } from "../../store/appTypes"
+import EmptyCard from "../EmptyCard/EmptyCard"
 
 interface IStreamSelectionsProps {
   streams: StreamsType[] | null
@@ -39,6 +44,7 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
   streams,
 }) => {
   const dispatch = useAppDispatch()
+  const { loadingStatus } = useSelector(streamsSelector)
 
   const onDeleteStream = async () => {
     if (!selectedStream) return alert("Потік не вибраний")
@@ -47,15 +53,6 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
     await dispatch(deleteStream(selectedStream.id))
     setSelectedStream(null)
   }
-
-  // const onAddGroupToStream = async () => {
-  //   if (!selectedStream) return alert("Виберіть потік")
-  //   if (!selectedGroupId) return alert("Виберіть групу")
-  //   const { payload } = await dispatch(
-  //     addGroupToStream({ groupId: selectedGroupId, streamId: selectedStream.id })
-  //   )
-  //   setSelectedStream(payload as StreamsType)
-  // }
 
   const onRemoveGroupFromStream = async (groupId: number) => {
     if (!selectedStream) return alert("Потік не вибраний")
@@ -121,6 +118,9 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
                 overflowY: "auto",
               }}
             >
+              {!streams && loadingStatus === LoadingStatusTypes.ERROR && <EmptyCard />}
+              {!streams && loadingStatus !== LoadingStatusTypes.ERROR && <LoadingSpinner />}
+
               {(streams ? streams : []).map((el) => (
                 <ListItemButton
                   divider

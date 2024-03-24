@@ -1,23 +1,26 @@
 // material-ui
 import React from "react"
 import { useSelector } from "react-redux"
-import { FilterOutlined } from "@ant-design/icons"
+import { FilterOutlined, FormOutlined } from "@ant-design/icons"
 import { Grid, Table, Divider, IconButton, Typography } from "@mui/material"
 
 // project import
 import MainCard from "../../components/MainCard"
 import { useAppDispatch } from "../../store/store"
+import EmptyCard from "../../components/EmptyCard/EmptyCard"
+import { GroupLoadType } from "../../store/groups/groupsTypes"
 import { StreamsType } from "../../store/streams/streamsTypes"
 import { groupsSelector } from "../../store/groups/groupsSlice"
 import { streamsSelector } from "../../store/streams/streamsSlice"
-import { getStreamLessons, getStreams } from "../../store/streams/streamsAsyncActions"
 import { getGroupCategories } from "../../store/groups/groupsAsyncActions"
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
 import StreamSelections from "../../components/StreamsPage/StreamSelections"
 import { StreamActionsModal } from "../../components/StreamsPage/StreamActionsModal"
-import { AccordionItemsList } from "../../components/AccordionItemsList/AccordionItemsList"
+import { getStreamLessons, getStreams } from "../../store/streams/streamsAsyncActions"
 import { StreamLessonsTableHead } from "../../components/StreamsPage/StreamLessonsTableHead"
 import { StreamLessonsTableBody } from "../../components/StreamsPage/StreamLessonsTableBody"
 import { AddGroupsToStreamModal } from "../../components/StreamsPage/AddGroupsToStreamModal"
+import { AddLessonToStreamModal } from "../../components/StreamsPage/AddLessonToStreamModal"
 
 // ==============================|| STREAMS ||============================== //
 
@@ -31,6 +34,8 @@ const StreamsPage = () => {
   const [selectedStream, setSelectedStream] = React.useState<null | StreamsType>(null)
   const [actionsModalType, setActionsModalType] = React.useState<"create" | "update">("create")
   const [addGroupsToStreamModalVisible, setAddGroupsToStreamModalVisible] = React.useState(false)
+  const [addLessonToStreamModalVisible, setAddLessonToStreamModalVisible] = React.useState(false)
+  const [selectedLessons, setSelectedLessons] = React.useState<GroupLoadType[]>([])
 
   React.useEffect(() => {
     if (groupCategories) return
@@ -72,6 +77,12 @@ const StreamsPage = () => {
         setOpen={setAddGroupsToStreamModalVisible}
       />
 
+      <AddLessonToStreamModal
+        selectedStream={selectedStream}
+        open={addLessonToStreamModalVisible}
+        setOpen={setAddLessonToStreamModalVisible}
+      />
+
       <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
         <Grid item xs={12}>
           <Grid container>
@@ -83,27 +94,7 @@ const StreamsPage = () => {
         </Grid>
 
         <Grid item xs={12} sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
-          {/* <Grid
-            item
-            xs={4}
-            sx={{
-              "& .MuiCardContent-root": { p: 0 },
-              ".MuiCardContent-root:last-child": { p: 0 },
-              p: 0,
-            }}
-          >
-            <MainCard>
-              <AccordionItemsList
-                activeItemId={selectedGroupId}
-                onSelectItem={setSelectedGroupId}
-                items={groupCategories ? groupCategories : []}
-              />
-            </MainCard>
-          </Grid> */}
-
           <Grid item xs={12} sx={{ display: "flex" }}>
-            {/* <Grid item xs={8}> */}
-
             <Grid item xs={9} sx={{ mr: 2 }}>
               <MainCard sx={{ "& .MuiCardContent-root": { px: 1 } }}>
                 <div
@@ -123,23 +114,38 @@ const StreamsPage = () => {
                       px: 2,
                     }}
                   >
-                    Навантаження групи PH-24-1
+                    {selectedStream ? `Потік: ${selectedStream.name}` : "Виберіть потік"}
                   </Typography>
-                  <IconButton>
-                    <FilterOutlined />
-                  </IconButton>
+
+                  <div>
+                    <IconButton
+                      sx={{ mr: 1 }}
+                      onClick={() => setAddLessonToStreamModalVisible(true)}
+                    >
+                      <FormOutlined />
+                    </IconButton>
+
+                    <IconButton>
+                      <FilterOutlined />
+                    </IconButton>
+                  </div>
                 </div>
 
                 <Divider />
 
-                <Table>
-                  <StreamLessonsTableHead />
-                  <StreamLessonsTableBody
-                    selectedLesson={null}
-                    streamLessons={streamLessons}
-                    setSelectedLesson={() => {}}
-                  />
-                </Table>
+                {!selectedStream && <EmptyCard text="Потік не вибраний" />}
+                {selectedStream && !streamLessons && <LoadingSpinner />}
+
+                {selectedStream && streamLessons && (
+                  <Table>
+                    <StreamLessonsTableHead />
+                    <StreamLessonsTableBody
+                      streamLessons={streamLessons}
+                      selectedLessons={selectedLessons}
+                      setSelectedLessons={setSelectedLessons}
+                    />
+                  </Table>
+                )}
               </MainCard>
             </Grid>
 
