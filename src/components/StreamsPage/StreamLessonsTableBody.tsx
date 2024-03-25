@@ -1,21 +1,19 @@
-import React, { Dispatch, SetStateAction } from "react"
-import { TableBody, TableCell, TableRow, Typography } from "@mui/material"
+import React, { Dispatch, SetStateAction } from 'react'
+import { TableBody, TableCell, TableRow, Typography } from '@mui/material'
 
-import { GroupLoadType } from "../../store/groups/groupsTypes"
-import { groupLessonsByLessonGroupAndSemester } from "../../utils/groupLessonsByLessonGroupAndSemester"
-
-// import { groupLessonByNameSubgroupsAndSemester } from "../../../utils/groupLessonByNameSubgroupsAndSemester"
+import { GroupLoadType } from '../../store/groups/groupsTypes'
+import { groupLessonsByFields } from '../../utils/groupLessonsByFields'
 
 const cellStyles = {
-  borderBottom: "1px solid rgb(220, 220, 220)",
-  p: "4px",
-  minWidth: "70px",
+  borderBottom: '1px solid rgb(220, 220, 220)',
+  p: '4px',
+  minWidth: '0px',
 }
 
 interface IStreamLessonsTableBodyProps {
   streamLessons: GroupLoadType[] | null
-  selectedLessons: GroupLoadType[] | null
-  setSelectedLessons: Dispatch<SetStateAction<GroupLoadType[]>>
+  selectedLessons: GroupLoadType[][] | null
+  setSelectedLessons: Dispatch<SetStateAction<GroupLoadType[][]>>
 }
 
 const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = ({
@@ -23,11 +21,11 @@ const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = ({
   selectedLessons,
   setSelectedLessons,
 }) => {
-  const handleSelectLesson = (lesson: GroupLoadType) => {
+  const handleSelectLesson = (lesson: GroupLoadType[]) => {
     setSelectedLessons((prev) => {
-      const existedLesson = prev.find((el) => el.id === lesson.id)
+      const existedLesson = prev.find((el) => el[0].id === lesson[0].id)
       if (existedLesson) {
-        return prev.filter((el) => el.id !== existedLesson.id)
+        return prev.filter((el) => el[0].id !== existedLesson[0].id)
       } else {
         return [...prev, lesson]
       }
@@ -36,64 +34,63 @@ const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = ({
 
   return (
     <TableBody>
-      {(streamLessons ? groupLessonsByLessonGroupAndSemester(streamLessons) : []).map(
-        (row, index: number) => {
-          const isItemSelected = selectedLessons?.find(
-            (el) =>
-              el.name === row[0].name &&
-              el.semester === row[0].semester &&
-              el.group.name === row[0].group.name
-          )
-          const labelId = `enhanced-table-checkbox-${index}`
+      {(streamLessons
+        ? groupLessonsByFields(streamLessons, { groupName: true, lessonName: true, semester: true, subgroups: true })
+        : []
+      ).map((row, index: number) => {
+        const isItemSelected = selectedLessons?.find(
+          (el) =>
+            el[0].name === row[0].name &&
+            el[0].semester === row[0].semester &&
+            el[0].group.name === row[0].group.name &&
+            el[0].subgroupNumber === row[0].subgroupNumber
+        )
+        const labelId = `enhanced-table-checkbox-${index}`
+        const lessonKey = row[0].name + row[0].semester + row[0].group.name + row[0].subgroupNumber
 
-          return (
-            <TableRow
-              hover
-              tabIndex={-1}
-              role="checkbox"
-              selected={!!isItemSelected}
-              aria-checked={!!isItemSelected}
-              key={row[0].name + row[0].semester}
-              onClick={() => handleSelectLesson(row[0])}
+        return (
+          <TableRow
+            hover
+            tabIndex={-1}
+            role="checkbox"
+            key={lessonKey}
+            selected={!!isItemSelected}
+            aria-checked={!!isItemSelected}
+            onClick={() => handleSelectLesson(row)}
+          >
+            <TableCell
+              sx={{
+                ...cellStyles,
+                minWidth: '250px !important',
+                position: 'relative',
+                ':hover *': { display: 'flex !important' },
+              }}
+              component="th"
+              id={labelId}
+              scope="row"
+              align="left"
             >
-              <TableCell
-                sx={{
-                  ...cellStyles,
-                  minWidth: "250px !important",
-                  position: "relative",
-                  ":hover *": { display: "flex !important" },
-                }}
-                component="th"
-                id={labelId}
-                scope="row"
-                align="left"
-              >
-                <Typography sx={{ flexGrow: 1 }}>{row[0].name}</Typography>
-              </TableCell>
-              <TableCell sx={cellStyles} align="center">
-                {row[0].group.name}
-              </TableCell>
-              <TableCell sx={cellStyles} align="center">
-                {row[0].semester}
-              </TableCell>
+              <Typography sx={{ flexGrow: 1 }}>{row[0].name}</Typography>
+            </TableCell>
+            <TableCell sx={cellStyles} align="center">
+              {row[0].group.name} {row[0].subgroupNumber ? `підгр.${row[0].subgroupNumber}` : ''}
+            </TableCell>
+            <TableCell sx={cellStyles} align="center">
+              {row[0].semester}
+            </TableCell>
 
-              {["lectures", "practical", "laboratory", "seminars", "exams"].map((lessonType) => {
-                const lesson = row.find((el) => el.typeEn === lessonType)
+            {['lectures', 'practical', 'laboratory', 'seminars', 'exams'].map((lessonType) => {
+              const lesson = row.find((el) => el.typeEn === lessonType)
 
-                return (
-                  <TableCell
-                    key={lessonType}
-                    sx={{ ...cellStyles, cursor: "pointer" }}
-                    align="center"
-                  >
-                    {lesson ? lesson.hours : "-"}
-                  </TableCell>
-                )
-              })}
-            </TableRow>
-          )
-        }
-      )}
+              return (
+                <TableCell key={lessonType} sx={{ ...cellStyles, cursor: 'pointer' }} align="center">
+                  {lesson ? lesson.hours : '-'}
+                </TableCell>
+              )
+            })}
+          </TableRow>
+        )
+      })}
     </TableBody>
   )
 }
