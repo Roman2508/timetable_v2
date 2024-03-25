@@ -1,27 +1,27 @@
 // material-ui
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { FilterOutlined, FormOutlined } from '@ant-design/icons'
-import { Grid, Table, Divider, IconButton, Typography, Tooltip } from '@mui/material'
+import React from "react"
+import { useSelector } from "react-redux"
+import { FilterOutlined, FormOutlined } from "@ant-design/icons"
+import { Grid, Table, Divider, IconButton, Typography, Tooltip } from "@mui/material"
 
 // project import
-import MainCard from '../../components/MainCard'
-import { useAppDispatch } from '../../store/store'
-import EmptyCard from '../../components/EmptyCard/EmptyCard'
-import { GroupLoadType } from '../../store/groups/groupsTypes'
-import { StreamsType } from '../../store/streams/streamsTypes'
-import { groupsSelector } from '../../store/groups/groupsSlice'
-import { streamsSelector } from '../../store/streams/streamsSlice'
-import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
-import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
-import StreamSelections from '../../components/StreamsPage/StreamSelections'
-import { StreamActionsModal } from '../../components/StreamsPage/StreamActionsModal'
-import { getStreamLessons, getStreams } from '../../store/streams/streamsAsyncActions'
-import { StreamLessonsTableHead } from '../../components/StreamsPage/StreamLessonsTableHead'
-import { StreamLessonsTableBody } from '../../components/StreamsPage/StreamLessonsTableBody'
-import { AddGroupsToStreamModal } from '../../components/StreamsPage/AddGroupsToStreamModal'
-import { AddLessonToStreamModal } from '../../components/StreamsPage/AddLessonToStreamModal'
-import { areAllFieldsInStreamEqual } from '../../utils/compateStreamFilelds'
+import MainCard from "../../components/MainCard"
+import { useAppDispatch } from "../../store/store"
+import EmptyCard from "../../components/EmptyCard/EmptyCard"
+import { GroupLoadType } from "../../store/groups/groupsTypes"
+import { StreamsType } from "../../store/streams/streamsTypes"
+import { groupsSelector } from "../../store/groups/groupsSlice"
+import { streamsSelector } from "../../store/streams/streamsSlice"
+import { getGroupCategories } from "../../store/groups/groupsAsyncActions"
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
+import StreamSelections from "../../components/StreamsPage/StreamSelections"
+import { StreamActionsModal } from "../../components/StreamsPage/StreamActionsModal"
+import { getStreamLessons, getStreams } from "../../store/streams/streamsAsyncActions"
+import { StreamLessonsTableHead } from "../../components/StreamsPage/StreamLessonsTableHead"
+import { StreamLessonsTableBody } from "../../components/StreamsPage/StreamLessonsTableBody"
+import { AddGroupsToStreamModal } from "../../components/StreamsPage/AddGroupsToStreamModal"
+import { AddLessonToStreamModal } from "../../components/StreamsPage/AddLessonToStreamModal"
+import { areAllFieldsInStreamEqual } from "../../utils/compateStreamFilelds"
 
 // ==============================|| STREAMS ||============================== //
 
@@ -34,10 +34,11 @@ const StreamsPage = () => {
   const [actionsModalVisible, setActionsModalVisible] = React.useState(false)
   const [selectedLessons, setSelectedLessons] = React.useState<GroupLoadType[][]>([])
   const [selectedStream, setSelectedStream] = React.useState<null | StreamsType>(null)
-  const [actionsModalType, setActionsModalType] = React.useState<'create' | 'update'>('create')
+  const [actionsModalType, setActionsModalType] = React.useState<"create" | "update">("create")
   const [addGroupsToStreamModalVisible, setAddGroupsToStreamModalVisible] = React.useState(false)
   const [addLessonToStreamModalVisible, setAddLessonToStreamModalVisible] = React.useState(false)
-  const [isCombineLessonsToStreamButtonDisabled, setIsCombineLessonsToStreamButtonDisabled] = React.useState(false)
+  const [isCombineLessonsToStreamButtonDisabled, setIsCombineLessonsToStreamButtonDisabled] =
+    React.useState(false)
 
   React.useEffect(() => {
     if (groupCategories) return
@@ -89,11 +90,12 @@ const StreamsPage = () => {
 
       <AddLessonToStreamModal
         selectedStream={selectedStream}
+        selectedLessons={selectedLessons}
         open={addLessonToStreamModalVisible}
         setOpen={setAddLessonToStreamModalVisible}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
         <Grid item xs={12}>
           <Grid container>
             <Grid item>
@@ -103,28 +105,28 @@ const StreamsPage = () => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-          <Grid item xs={12} sx={{ display: 'flex' }}>
+        <Grid item xs={12} sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+          <Grid item xs={12} sx={{ display: "flex" }}>
             <Grid item xs={9} sx={{ mr: 2 }}>
-              <MainCard sx={{ '& .MuiCardContent-root': { px: 1 } }}>
+              <MainCard sx={{ "& .MuiCardContent-root": { px: 1 } }}>
                 <div
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginBottom: '10px',
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
                   }}
                 >
                   <Typography
                     variant="button"
                     sx={{
-                      textAlign: 'center',
-                      display: 'block',
-                      textTransform: 'uppercase',
+                      textAlign: "center",
+                      display: "block",
+                      textTransform: "uppercase",
                       px: 2,
                     }}
                   >
-                    {selectedStream ? `Потік: ${selectedStream.name}` : 'Виберіть потік'}
+                    {selectedStream ? `Потік: ${selectedStream.name}` : "Виберіть потік"}
                   </Typography>
 
                   <div>
