@@ -82,9 +82,11 @@ const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = ({
             {['lectures', 'practical', 'laboratory', 'seminars', 'exams'].map((lessonType) => {
               const lesson = row.find((el) => el.typeEn === lessonType)
 
+              const streamName = lesson && lesson.stream ? lesson.stream.name : ''
+
               return (
                 <TableCell key={lessonType} sx={{ ...cellStyles, cursor: 'pointer' }} align="center">
-                  {lesson ? lesson.hours : '-'}
+                  {lesson ? `${lesson.hours} ${streamName && `(${streamName})`}` : '-'}
                 </TableCell>
               )
             })}

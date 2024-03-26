@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from 'axios'
 
 import {
   CreatePlanPayloadType,
@@ -12,6 +12,7 @@ import {
   AddGroupToStreamPayloadType,
   UpdateEntityNamePayloadType,
   UpdateSubjectNamePayloadType,
+  AddLessonsToStreamPayloadType,
   UpdateSubjectHoursPayloadType,
   AttachSpecializationPayloadType,
   CreateSpecializationPayloadType,
@@ -23,15 +24,15 @@ import {
   UpdateAuditoryCategoryPayloadType,
   DeleteLessonFromStreamPayloadType,
   DeleteGroupFromStreamResponseType,
-} from "./apiTypes"
-import { StreamsType } from "../store/streams/streamsTypes"
-import { TeachersCategoryType } from "../store/teachers/teachersTypes"
-import { PlanType, PlansCategoriesType, PlansType } from "../store/plans/plansTypes"
-import { GroupCategoriesType, GroupLoadType, GroupsType } from "../store/groups/groupsTypes"
-import { AuditoriesTypes, AuditoryCategoriesTypes } from "../store/auditories/auditoriesTypes"
+} from './apiTypes'
+import { StreamsType } from '../store/streams/streamsTypes'
+import { TeachersCategoryType } from '../store/teachers/teachersTypes'
+import { PlanType, PlansCategoriesType, PlansType } from '../store/plans/plansTypes'
+import { GroupCategoriesType, GroupLoadType, GroupsType } from '../store/groups/groupsTypes'
+import { AuditoriesTypes, AuditoryCategoriesTypes } from '../store/auditories/auditoriesTypes'
 
 const instanse = axios.create({
-  baseURL: "http://localhost:7777/",
+  baseURL: 'http://localhost:7777/',
   // headers: {
   //   ['Content-Type']: 'application/json',
   //   responseType: 'json',
@@ -44,7 +45,7 @@ const instanse = axios.create({
 instanse.interceptors.request.use((config) => {
   if (config.headers) {
     config.headers.Authorization = String(
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzA5NzM2NjgwLCJleHAiOjE3MTIzMjg2ODB9.2kHG4Wrj1jQlsyuWRiaQP1NgE6SdhCbYSnSw1A41zwA"
+      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzA5NzM2NjgwLCJleHAiOjE3MTIzMjg2ODB9.2kHG4Wrj1jQlsyuWRiaQP1NgE6SdhCbYSnSw1A41zwA'
     )
     // config.headers.Authorization = String(window.localStorage.getItem('token'))
 
@@ -55,10 +56,10 @@ instanse.interceptors.request.use((config) => {
 export const auditoriesAPI = {
   /* categories */
   getAuditoryCategories() {
-    return instanse.get<AuditoryCategoriesTypes[]>("/auditory-categories")
+    return instanse.get<AuditoryCategoriesTypes[]>('/auditory-categories')
   },
   createAuditoryCategory(name: string) {
-    return instanse.post<AuditoryCategoriesTypes>("/auditory-categories", {
+    return instanse.post<AuditoryCategoriesTypes>('/auditory-categories', {
       name,
     })
   },
@@ -74,7 +75,7 @@ export const auditoriesAPI = {
   /* auditories */
 
   createAuditory(payload: CreateAuditoryPayloadType) {
-    return instanse.post<AuditoriesTypes>("/auditories", payload)
+    return instanse.post<AuditoriesTypes>('/auditories', payload)
   },
   updateAuditory(payload: UpdateAuditoryPayloadType) {
     const { id, ...rest } = payload
@@ -88,10 +89,10 @@ export const auditoriesAPI = {
 export const teachersAPI = {
   /* categories */
   getTeachersCategories() {
-    return instanse.get<TeachersCategoryType[]>("/teacher-categories")
+    return instanse.get<TeachersCategoryType[]>('/teacher-categories')
   },
   createTeacherCategory(payload: CreateTeacherCategoryPayloadType) {
-    return instanse.post("/teacher-categories/", { name: payload.name })
+    return instanse.post('/teacher-categories/', { name: payload.name })
   },
   updateTeacherCategory(payload: UpdateTeacherCategoryPayloadType) {
     const { id, ...rest } = payload
@@ -104,7 +105,7 @@ export const teachersAPI = {
 
   /* teachers */
   createTeacher(payload: CreateTeacherPayloadType) {
-    return instanse.post("/teachers", payload)
+    return instanse.post('/teachers', payload)
   },
   updateTeacher(payload: UpdateTeacherPayloadType) {
     const { id, ...rest } = payload
@@ -119,10 +120,10 @@ export const teachersAPI = {
 export const plansAPI = {
   /* categories */
   getPlansCategories() {
-    return instanse.get<PlansCategoriesType[]>("/plan-categories")
+    return instanse.get<PlansCategoriesType[]>('/plan-categories')
   },
   createPlanCategory(payload: { name: string }) {
-    return instanse.post<PlansCategoriesType>("/plan-categories", payload)
+    return instanse.post<PlansCategoriesType>('/plan-categories', payload)
   },
   updatePlanCategory(payload: { name: string; id: number }) {
     return instanse.patch<PlansCategoriesType>(`/plan-categories/${payload.id}`, {
@@ -135,7 +136,7 @@ export const plansAPI = {
 
   /* plans */
   createPlan(payload: CreatePlanPayloadType) {
-    return instanse.post<PlansType>("/plans", payload)
+    return instanse.post<PlansType>('/plans', payload)
   },
   updatePlan(payload: { name: string; id: number }) {
     return instanse.patch<PlansType>(`/plans/${payload.id}`, {
@@ -152,13 +153,10 @@ export const planSubjectsAPI = {
     return instanse.get<PlanType>(`/plans/${id}`)
   },
   createSubject(payload: CreateSubjectPayloadType) {
-    return instanse.post<any>("/plan-subjects", payload)
+    return instanse.post<any>('/plan-subjects', payload)
   },
   updateSubjectName(payload: UpdateSubjectNamePayloadType) {
-    return instanse.patch<{ id: number; name: string; cmk: number }[]>(
-      "/plan-subjects/name",
-      payload
-    )
+    return instanse.patch<{ id: number; name: string; cmk: number }[]>('/plan-subjects/name', payload)
   },
   updateSubjectHours(payload: UpdateSubjectHoursPayloadType) {
     const { id, ...data } = payload
@@ -172,10 +170,10 @@ export const planSubjectsAPI = {
 export const groupsAPI = {
   /* categories */
   getGroupsCategories() {
-    return instanse.get<GroupCategoriesType[]>("/group-categories")
+    return instanse.get<GroupCategoriesType[]>('/group-categories')
   },
   createGroupCategory(payload: string) {
-    return instanse.post<GroupCategoriesType>("/group-categories", { name: payload })
+    return instanse.post<GroupCategoriesType>('/group-categories', { name: payload })
   },
   updateGroupCategory(payload: UpdateEntityNamePayloadType) {
     return instanse.patch<GroupCategoriesType>(`/group-categories/${payload.id}`, {
@@ -192,7 +190,7 @@ export const groupsAPI = {
   },
 
   createGroup(payload: UpdateGroupPayloadType) {
-    return instanse.post<GroupsType>("/groups", payload)
+    return instanse.post<GroupsType>('/groups', payload)
   },
   updateGroup(payload: UpdateGroupPayloadType) {
     const { id, ...rest } = payload
@@ -204,10 +202,7 @@ export const groupsAPI = {
 
   /* Specialization */
   attachSpecialization(payload: AttachSpecializationPayloadType) {
-    return instanse.patch<AttachSpecializationPayloadType>(
-      `/group-load-lessons/specialization`,
-      payload
-    )
+    return instanse.patch<AttachSpecializationPayloadType>(`/group-load-lessons/specialization`, payload)
   },
 
   createSpecialization(payload: CreateSpecializationPayloadType) {
@@ -230,10 +225,10 @@ export const groupsAPI = {
 
 export const streamsAPI = {
   getStreams() {
-    return instanse.get<StreamsType[]>("/streams")
+    return instanse.get<StreamsType[]>('/streams')
   },
   createStream(payload: { name: string }) {
-    return instanse.post<StreamsType>("/streams", payload)
+    return instanse.post<StreamsType>('/streams', payload)
   },
   updateStreamName(payload: UpdateEntityNamePayloadType) {
     const { id, name } = payload
@@ -250,9 +245,7 @@ export const streamsAPI = {
   },
   deleteGroupFromStream(payload: DeleteGroupFromStreamPayloadType) {
     const { groupId, streamId } = payload
-    return instanse.delete<DeleteGroupFromStreamResponseType>(
-      `/streams/group/remove/${streamId}/${groupId}`
-    )
+    return instanse.delete<DeleteGroupFromStreamResponseType>(`/streams/group/remove/${streamId}/${groupId}`)
   },
 
   /* lessons (get, add or delete)  */
@@ -260,15 +253,11 @@ export const streamsAPI = {
     return instanse.get<GroupLoadType[]>(`/group-load-lessons/${id}`)
   },
 
-  addLessonToStream(payload: AddGroupToStreamPayloadType) {
-    // const { groupId, streamId } = payload
-    // return instanse.patch<null>(`/streams/lesson/add/${streamId}`, { groupId })
-
-    return alert("!!!!!! CHANGE PAYLOAD !!!!!!")
+  addLessonToStream(payload: AddLessonsToStreamPayloadType) {
+    return instanse.patch<GroupLoadType[]>(`/streams/lesson/add/${payload.streamId}`, payload)
   },
   deleteLessonFromStream(payload: DeleteLessonFromStreamPayloadType) {
-    // const { streamId, ...rest } = payload
-    // return instanse.patch<StreamsType>(`/streams/lesson/remove/${streamId}`, rest)
-    return alert("!!!!!! CHANGE PAYLOAD !!!!!!")
+    const { streamId, ...rest } = payload
+    return instanse.patch<StreamsType>(`/streams/lesson/remove/${streamId}`, rest)
   },
 }
