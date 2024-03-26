@@ -1,9 +1,9 @@
-import { GroupLoadType } from '../store/groups/groupsTypes'
+import { GroupLoadType } from "../store/groups/groupsTypes"
 
 export const convertLessonsForCompare = (lessons: GroupLoadType[][]) => {
   const allLessonsArr = lessons.map((lesson) => {
     let result = {
-      name: '',
+      name: "",
       semester: 0,
       stream: null as null | { id: number; name: string },
       specialization: null as number | null,
@@ -37,6 +37,8 @@ export const convertLessonsForCompare = (lessons: GroupLoadType[][]) => {
 export const areAllFieldsInStreamEqual = (lessons: GroupLoadType[][]): boolean => {
   const allLessonsArr = convertLessonsForCompare(lessons)
 
+  console.log(allLessonsArr)
+
   if (allLessonsArr.length === 0) {
     return false // Пустий масив
   }
@@ -48,15 +50,18 @@ export const areAllFieldsInStreamEqual = (lessons: GroupLoadType[][]): boolean =
       let key = _key as keyof typeof sampleObject
 
       if (Object.hasOwnProperty.call(sampleObject, key)) {
-        if (key === 'subgroupNumber' || key === 'specialization') {
+        if (key === "subgroupNumber" || key === "specialization") {
           if (
             (sampleObject[key] !== null) !== (currentObject[key] !== null) ||
             typeof sampleObject[key] !== typeof currentObject[key]
           ) {
             return false // Значення поля subgroupNumber не співпадають
           }
-        } else if (key === 'stream') {
-          return sampleObject.stream !== currentObject.stream || sampleObject.stream?.id !== currentObject.stream?.id
+        } else if (key === "stream") {
+          return (
+            sampleObject.stream === currentObject.stream ||
+            sampleObject.stream?.id === currentObject.stream?.id
+          )
         } else if (sampleObject[key] !== currentObject[key]) {
           return false // Значення інших полів не співпадають
         }
@@ -66,7 +71,7 @@ export const areAllFieldsInStreamEqual = (lessons: GroupLoadType[][]): boolean =
   return true // Усі поля однакові
 }
 
-type FieldsType = 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams'
+type FieldsType = "lectures" | "practical" | "laboratory" | "seminars" | "exams"
 
 // export const areFieldInStreamEqual = (lessons: GroupLoadType[][], field: FieldsType): boolean => {
 //   const allLessonsArr = convertLessonsForCompare(lessons)
