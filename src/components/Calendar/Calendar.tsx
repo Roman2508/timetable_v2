@@ -79,6 +79,7 @@ const Calendar: React.FC<ICalendarProps> = ({
         localizer={localizer}
         events={events}
         defaultView="week"
+        // timeslots={7}
         onSelectSlot={(slotInfo: SlotInfo) => {
           //   const isOverlap = isDatesOverlap(events, { start: slotInfo.start, end: slotInfo.end })
           //   if (!isOverlap) {

@@ -1,30 +1,40 @@
-import { GroupLoadType } from "../store/groups/groupsTypes"
+import { GroupLoadType } from '../store/groups/groupsTypes'
+
+type LessonType = {
+  hours: number
+  stream: { id: number; name: string } | null
+} | null
+
+type FieldsType = 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams'
 
 export const convertLessonsForCompare = (lessons: GroupLoadType[][]) => {
   const allLessonsArr = lessons.map((lesson) => {
     let result = {
-      name: "",
+      name: '',
       semester: 0,
-      stream: null as null | { id: number; name: string },
+      // stream: null as null | { id: number; name: string },
       specialization: null as number | null,
       subgroupNumber: null as number | null,
       //
-      lectures: null,
-      practical: null,
-      laboratory: null,
-      seminars: null,
-      exams: null,
+      lectures: null as LessonType,
+      practical: null as LessonType,
+      laboratory: null as LessonType,
+      seminars: null as LessonType,
+      exams: null as LessonType,
     }
 
     lesson.forEach((el) => {
       result = {
         ...result,
         name: el.name,
-        stream: el.stream,
+        // stream: el.stream,
         semester: el.semester,
         specialization: el.specialization,
         subgroupNumber: el.subgroupNumber,
-        [el.typeEn]: el.hours,
+        [el.typeEn]: {
+          hours: el.hours,
+          stream: el.stream,
+        },
       }
     })
 
@@ -34,60 +44,52 @@ export const convertLessonsForCompare = (lessons: GroupLoadType[][]) => {
   return allLessonsArr
 }
 
+const lessonTypes = ['lectures', 'practical', 'laboratory', 'seminars', 'exams']
+
 export const areAllFieldsInStreamEqual = (lessons: GroupLoadType[][]): boolean => {
   const allLessonsArr = convertLessonsForCompare(lessons)
-
-  console.log(allLessonsArr)
 
   if (allLessonsArr.length === 0) {
     return false // Пустий масив
   }
 
   const sampleObject = allLessonsArr[0]
+
+  const keys = Object.keys(sampleObject)
+
+  let compareResult
+
   for (let i = 1; i < allLessonsArr.length; i++) {
     const currentObject = allLessonsArr[i]
-    for (const _key in sampleObject) {
+
+    keys.forEach((_key) => {
       let key = _key as keyof typeof sampleObject
 
-      if (Object.hasOwnProperty.call(sampleObject, key)) {
-        if (key === "subgroupNumber" || key === "specialization") {
-          if (
-            (sampleObject[key] !== null) !== (currentObject[key] !== null) ||
-            typeof sampleObject[key] !== typeof currentObject[key]
-          ) {
-            return false // Значення поля subgroupNumber не співпадають
-          }
-        } else if (key === "stream") {
-          return (
-            sampleObject.stream === currentObject.stream ||
-            sampleObject.stream?.id === currentObject.stream?.id
-          )
-        } else if (sampleObject[key] !== currentObject[key]) {
-          return false // Значення інших полів не співпадають
+      if (lessonTypes.some((k) => k === key)) {
+        const lessonsKey = key as FieldsType
+
+        if (!currentObject[lessonsKey]) return
+
+        const isHoursTheSame = sampleObject[lessonsKey]?.hours === currentObject[lessonsKey]?.hours
+        const isStreamsTheSame = sampleObject[lessonsKey]?.stream?.id === currentObject[lessonsKey]?.stream?.id
+
+        if (!isHoursTheSame && !isStreamsTheSame) {
+          compareResult = false
         }
+
+        // compareResult = isHoursTheSame && isStreamsTheSame
+      } else if (sampleObject[key] !== currentObject[key]) {
+        compareResult = false // Значення інших полів не співпадають
       }
-    }
+    })
   }
-  return true // Усі поля однакові
+
+  if (compareResult !== false) {
+    compareResult = true
+  }
+
+  return compareResult
 }
-
-type FieldsType = "lectures" | "practical" | "laboratory" | "seminars" | "exams"
-
-// export const areFieldInStreamEqual = (lessons: GroupLoadType[][], field: FieldsType): boolean => {
-//   const allLessonsArr = convertLessonsForCompare(lessons)
-
-//   if (allLessonsArr.length === 0) {
-//     return false // Пустий масив
-//   }
-
-//   const sampleValue = allLessonsArr[0][field]
-//   for (let i = 1; i < allLessonsArr.length; i++) {
-//     if (allLessonsArr[i][field] !== sampleValue) {
-//       return false // Значення поля не співпадає зі значенням першого об'єкта
-//     }
-//   }
-//   return true // Значення поля співпадає у всіх об'єктів
-// }
 
 export const isFieldNull = (lessons: GroupLoadType[][], field: FieldsType) => {
   const array = convertLessonsForCompare(lessons)
@@ -100,7 +102,7 @@ export const isCombinedInStream = (lessons: GroupLoadType[][], field: FieldsType
   const filtredLessonsByLessonType = array.filter((el) => el[field] !== null)
 
   if (filtredLessonsByLessonType.length) {
-    return filtredLessonsByLessonType.every((obj) => obj.stream !== null)
+    return filtredLessonsByLessonType.every((obj) => obj[field]?.stream !== null)
   } else {
     return false
   }

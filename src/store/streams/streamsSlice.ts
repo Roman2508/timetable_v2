@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 import {
   getStreams,
@@ -10,12 +10,12 @@ import {
   deleteGroupFromStream,
   addLessonToStream,
   deleteLessonFromStream,
-} from "./streamsAsyncActions"
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import { StreamsInitialState, StreamsType } from "./streamsTypes"
-import { DeleteGroupFromStreamResponseType } from "../../api/apiTypes"
-import { GroupLoadType } from "../groups/groupsTypes"
+} from './streamsAsyncActions'
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import { StreamsInitialState, StreamsType } from './streamsTypes'
+import { DeleteGroupFromStreamResponseType } from '../../api/apiTypes'
+import { GroupLoadType } from '../groups/groupsTypes'
 
 const plansInitialState: StreamsInitialState = {
   streams: null,
@@ -24,7 +24,7 @@ const plansInitialState: StreamsInitialState = {
 }
 
 const plansSlice = createSlice({
-  name: "streams",
+  name: 'streams',
   initialState: plansInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -102,33 +102,38 @@ const plansSlice = createSlice({
     })
 
     /* addLessonToStream */
-    builder.addCase(
-      addLessonToStream.fulfilled,
-      (state, action: PayloadAction<GroupLoadType[]>) => {
-        if (!state.streamLessons) return
+    builder.addCase(addLessonToStream.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
+      if (!state.streamLessons) return
 
-        const lessons = state.streamLessons.map((el) => {
-          const newLesson = action.payload.find((n) => n.id === el.id)
+      const lessons = state.streamLessons.map((el) => {
+        const newLesson = action.payload.find((n) => n.id === el.id)
 
-          if (newLesson) {
-            return newLesson
-          }
+        if (newLesson) {
+          return { ...el, ...newLesson }
+        }
 
-          return el
-        })
+        return el
+      })
 
-        state.streamLessons = lessons
-      }
-    )
+      state.streamLessons = lessons
+    })
 
     /* deleteLessonFromStream */
-    builder.addCase(
-      deleteLessonFromStream.fulfilled,
-      (state, action: PayloadAction<GroupLoadType[]>) => {
-        if (!state.streamLessons) return
-        console.log(action.payload)
-      }
-    )
+    builder.addCase(deleteLessonFromStream.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
+      if (!state.streamLessons) return
+
+      const lessons = state.streamLessons.map((el) => {
+        const newLesson = action.payload.find((n) => n.id === el.id)
+
+        if (newLesson) {
+          return { ...el, ...newLesson }
+        }
+
+        return el
+      })
+
+      state.streamLessons = lessons
+    })
   },
 })
 

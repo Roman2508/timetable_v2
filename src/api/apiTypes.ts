@@ -146,10 +146,11 @@ export type DeleteLessonFromStreamPayloadType = {
   typeEn: string
   semester: number
   streamId: number
-  subgroupNumber: number
+  subgroupNumber: number | null
 }
 
 export type AddLessonsToStreamPayloadType = {
   streamId: number
+  streamName: string
   lessonsIds: number[]
 }
