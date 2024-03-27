@@ -265,7 +265,6 @@ export const streamsAPI = {
     return instanse.patch<GroupLoadType[]>(`/streams/lesson/add/${payload.streamId}`, payload)
   },
   deleteLessonFromStream(payload: DeleteLessonFromStreamPayloadType) {
-    const { streamId, ...rest } = payload
-    return instanse.patch<GroupLoadType[]>(`/streams/lesson/remove/${streamId}`, rest)
+    return instanse.patch<GroupLoadType[]>(`/streams/lesson/remove`, payload)
   },
 }

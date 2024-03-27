@@ -1,16 +1,16 @@
-import { GroupLoadType } from '../store/groups/groupsTypes'
+import { GroupLoadType } from "../store/groups/groupsTypes"
 
 type LessonType = {
   hours: number
   stream: { id: number; name: string } | null
 } | null
 
-type FieldsType = 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams'
+type FieldsType = "lectures" | "practical" | "laboratory" | "seminars" | "exams"
 
 export const convertLessonsForCompare = (lessons: GroupLoadType[][]) => {
   const allLessonsArr = lessons.map((lesson) => {
     let result = {
-      name: '',
+      name: "",
       semester: 0,
       // stream: null as null | { id: number; name: string },
       specialization: null as number | null,
@@ -44,7 +44,7 @@ export const convertLessonsForCompare = (lessons: GroupLoadType[][]) => {
   return allLessonsArr
 }
 
-const lessonTypes = ['lectures', 'practical', 'laboratory', 'seminars', 'exams']
+const lessonTypes = ["lectures", "practical", "laboratory", "seminars", "exams"]
 
 export const areAllFieldsInStreamEqual = (lessons: GroupLoadType[][]): boolean => {
   const allLessonsArr = convertLessonsForCompare(lessons)
@@ -71,7 +71,8 @@ export const areAllFieldsInStreamEqual = (lessons: GroupLoadType[][]): boolean =
         if (!currentObject[lessonsKey]) return
 
         const isHoursTheSame = sampleObject[lessonsKey]?.hours === currentObject[lessonsKey]?.hours
-        const isStreamsTheSame = sampleObject[lessonsKey]?.stream?.id === currentObject[lessonsKey]?.stream?.id
+        const isStreamsTheSame =
+          sampleObject[lessonsKey]?.stream?.id === currentObject[lessonsKey]?.stream?.id
 
         if (!isHoursTheSame && !isStreamsTheSame) {
           compareResult = false
@@ -106,4 +107,23 @@ export const isCombinedInStream = (lessons: GroupLoadType[][], field: FieldsType
   } else {
     return false
   }
+}
+
+export const getIdsByType = (selectedLessons: GroupLoadType[][], type: FieldsType): number[] => {
+  const ids: number[] = []
+
+  // Проходимося по кожному масиві у `selectedLessons`
+  selectedLessons.forEach((lessonArray) => {
+    // Проходимося по кожному об'єкту у масиві `lessonArray`
+    lessonArray.forEach((lesson) => {
+      // Якщо тип `typeEn` поточного об'єкта дорівнює переданому типу,
+      // додаємо його ідентифікатор у масив `ids`
+      if (lesson.typeEn === type) {
+        ids.push(lesson.id)
+      }
+    })
+  })
+
+  // Повертаємо масив ідентифікаторів
+  return ids
 }
