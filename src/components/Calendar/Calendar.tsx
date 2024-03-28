@@ -1,16 +1,16 @@
-import React from 'react'
-import dayjs from 'dayjs'
-import uk from 'dayjs/locale/uk'
-import updateLocale from 'dayjs/plugin/updateLocale'
-import 'react-big-calendar/lib/css/react-big-calendar.css'
-import { Calendar as CalendarComponent, dayjsLocalizer, Event, SlotInfo } from 'react-big-calendar'
+import React from "react"
+import dayjs from "dayjs"
+import uk from "dayjs/locale/uk"
+import updateLocale from "dayjs/plugin/updateLocale"
+import "react-big-calendar/lib/css/react-big-calendar.css"
+import { Calendar as CalendarComponent, dayjsLocalizer, Event, SlotInfo } from "react-big-calendar"
 
 dayjs.locale(uk)
 
 dayjs.extend(updateLocale)
 
-dayjs.updateLocale('uk', {
-  weekdaysShort: ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+dayjs.updateLocale("uk", {
+  weekdaysShort: ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
 })
 
 const localizer = dayjsLocalizer(dayjs)
@@ -29,7 +29,7 @@ const Calendar: React.FC<ICalendarProps> = ({
   events = [],
   selectable = false,
   onClick = () => {},
-  heigth = '',
+  heigth = "",
   onSelectLessonsTime,
 }) => {
   //   const isDatesOverlap = (events: Event[], selectedDate: Event) => {
@@ -50,16 +50,16 @@ const Calendar: React.FC<ICalendarProps> = ({
     // console.log(event, start, end, isSelected)
 
     const style = {
-      cursor: 'pointer',
-      backgroundColor: '#' + event.hexColor,
-      color: '#fff',
-      borderRadius: '0px',
-      fontSize: '12px',
+      cursor: "pointer",
+      backgroundColor: "#" + event.hexColor,
+      color: "#fff",
+      borderRadius: "0px",
+      fontSize: "12px",
       opacity: 0.8,
-      border: '0px',
-      display: 'block',
-      width: '100%',
-      minWidth: '100%',
+      border: "0px",
+      display: "block",
+      width: "100%",
+      minWidth: "100%",
     }
     return { style: style }
   }
@@ -89,19 +89,21 @@ const Calendar: React.FC<ICalendarProps> = ({
           //   }
         }}
         eventPropGetter={eventStyleGetter}
-        views={['week']}
+        views={["week"]}
         startAccessor="start"
         endAccessor="end"
         min={new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8)}
-        // max={new Date(today.getFullYear(), today.getMonth(), today.getDate(), 14)}
-        max={new Date(today.getFullYear(), today.getMonth(), today.getDate(), 19)}
-        culture={'fr'}
+        // max={new Date(today.getFullYear(), today.getMonth(), today.getDate(), 19)}
+        max={new Date(today.getFullYear(), today.getMonth(), today.getDate(), 14)}
+        culture={"fr"}
         messages={{
-          next: 'Наступний тиждень',
-          previous: 'Попередній тиждень',
-          today: 'Сьогодні',
-          week: 'Тиждень',
+          next: "Наступний тиждень",
+          previous: "Попередній тиждень",
+          today: "Сьогодні",
+          week: "Тиждень",
         }}
+        // timeslots={7}
+        // step={30}
       />
     </div>
   )

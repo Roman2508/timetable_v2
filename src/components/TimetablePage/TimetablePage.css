@@ -1,0 +1,46 @@
+.calendar button {
+  border: 1px solid #c0c0c0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.body {
+  display: flex;
+}
+
+.time-number {
+  width: 24px;
+  text-align: center;
+  border: 1px solid rgb(231, 231, 231);
+}
+
+.day {
+  width: calc(100% / 7);
+  /* border: 1px solid rgb(231, 231, 231); */
+}
+
+.day-name {
+  padding: 0 4px;
+}
+
+.empty-cell {
+  height: 22px;
+  border: 1px solid rgb(231, 231, 231);
+}
+
+.time-slot,
+.time-number {
+  height: 80px;
+  border: 1px solid rgb(231, 231, 231);
+  /* border-left: 0; */
+}
+
+.time-slot {
+  padding: 2px 4px;
+  cursor: pointer;
+}
