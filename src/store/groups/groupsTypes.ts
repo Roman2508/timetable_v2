@@ -1,4 +1,5 @@
 import { LoadingStatusTypes } from '../appTypes'
+import { TeachersType } from '../teachers/teachersTypes'
 
 export type GroupsInitialState = {
   groupCategories: GroupCategoriesType[] | null
@@ -57,6 +58,7 @@ export type GroupLoadType = {
     groups: { id: number; name: string }
     lessons: { id: number; name: string }
   }
+  teacher: TeachersType | null
   cmk: { id: number }
 }
 

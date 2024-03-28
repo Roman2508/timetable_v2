@@ -1,18 +1,19 @@
-import { GroupLoadType } from "../store/groups/groupsTypes"
+import { GroupLoadType } from '../store/groups/groupsTypes'
 
 type LessonType = {
   hours: number
   stream: { id: number; name: string } | null
 } | null
 
-type FieldsType = "lectures" | "practical" | "laboratory" | "seminars" | "exams"
+type FieldsType = 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams'
+
+const lessonTypes = ['lectures', 'practical', 'laboratory', 'seminars', 'exams']
 
 export const convertLessonsForCompare = (lessons: GroupLoadType[][]) => {
   const allLessonsArr = lessons.map((lesson) => {
     let result = {
-      name: "",
+      name: '',
       semester: 0,
-      // stream: null as null | { id: number; name: string },
       specialization: null as number | null,
       subgroupNumber: null as number | null,
       //
@@ -24,6 +25,8 @@ export const convertLessonsForCompare = (lessons: GroupLoadType[][]) => {
     }
 
     lesson.forEach((el) => {
+      if (el.typeEn === 'examsConsulation' || el.typeEn === 'metodologicalGuidance') return
+
       result = {
         ...result,
         name: el.name,
@@ -44,10 +47,10 @@ export const convertLessonsForCompare = (lessons: GroupLoadType[][]) => {
   return allLessonsArr
 }
 
-const lessonTypes = ["lectures", "practical", "laboratory", "seminars", "exams"]
-
 export const areAllFieldsInStreamEqual = (lessons: GroupLoadType[][]): boolean => {
   const allLessonsArr = convertLessonsForCompare(lessons)
+
+  console.log(allLessonsArr)
 
   if (allLessonsArr.length === 0) {
     return false // Пустий масив
@@ -71,8 +74,7 @@ export const areAllFieldsInStreamEqual = (lessons: GroupLoadType[][]): boolean =
         if (!currentObject[lessonsKey]) return
 
         const isHoursTheSame = sampleObject[lessonsKey]?.hours === currentObject[lessonsKey]?.hours
-        const isStreamsTheSame =
-          sampleObject[lessonsKey]?.stream?.id === currentObject[lessonsKey]?.stream?.id
+        const isStreamsTheSame = sampleObject[lessonsKey]?.stream?.id === currentObject[lessonsKey]?.stream?.id
 
         if (!isHoursTheSame && !isStreamsTheSame) {
           compareResult = false

@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 import {
   getGroup,
@@ -14,21 +14,24 @@ import {
   createSpecialization,
   updateSpecialization,
   deleteSpecialization,
-} from "./groupsAsyncActions"
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import { AttachSpecializationPayloadType } from "../../api/apiTypes"
-import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from "./groupsTypes"
+  attachTeacher,
+  unpinTeacher,
+} from './groupsAsyncActions'
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import { AttachSpecializationPayloadType } from '../../api/apiTypes'
+import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from './groupsTypes'
+import { TeachersType } from '../teachers/teachersTypes'
 
 const groupsInitialState: GroupsInitialState = {
   groupCategories: null,
   group: {
     id: 0,
-    name: "",
+    name: '',
     courseNumber: 1,
     yearOfAdmission: Number(new Date().getFullYear().toString()),
     students: 1,
-    formOfEducation: "Денна",
+    formOfEducation: 'Денна',
     specializationList: [],
     educationPlan: null,
     groupLoad: null,
@@ -39,7 +42,7 @@ const groupsInitialState: GroupsInitialState = {
 }
 
 const groupsSlice = createSlice({
-  name: "groups",
+  name: 'groups',
   initialState: groupsInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -51,38 +54,29 @@ const groupsSlice = createSlice({
   },
   extraReducers: (builder) => {
     /* getGroupCategories */
-    builder.addCase(
-      getGroupCategories.fulfilled,
-      (state, action: PayloadAction<GroupCategoriesType[]>) => {
-        state.groupCategories = action.payload
-      }
-    )
+    builder.addCase(getGroupCategories.fulfilled, (state, action: PayloadAction<GroupCategoriesType[]>) => {
+      state.groupCategories = action.payload
+    })
 
     /* createGroupCategory */
-    builder.addCase(
-      createGroupCategory.fulfilled,
-      (state, action: PayloadAction<GroupCategoriesType>) => {
-        state.groupCategories?.push(action.payload)
-      }
-    )
+    builder.addCase(createGroupCategory.fulfilled, (state, action: PayloadAction<GroupCategoriesType>) => {
+      state.groupCategories?.push(action.payload)
+    })
 
     /* updateGroupCategory */
-    builder.addCase(
-      updateGroupCategory.fulfilled,
-      (state, action: PayloadAction<GroupCategoriesType>) => {
-        if (!state.groupCategories) return
+    builder.addCase(updateGroupCategory.fulfilled, (state, action: PayloadAction<GroupCategoriesType>) => {
+      if (!state.groupCategories) return
 
-        const newCategories = state.groupCategories.map((el) => {
-          if (el.id === action.payload.id) {
-            return { ...el, ...action.payload }
-          }
+      const newCategories = state.groupCategories.map((el) => {
+        if (el.id === action.payload.id) {
+          return { ...el, ...action.payload }
+        }
 
-          return el
-        })
+        return el
+      })
 
-        state.groupCategories = newCategories
-      }
-    )
+      state.groupCategories = newCategories
+    })
 
     /* deleteGroupCategory */
     builder.addCase(deleteGroupCategory.fulfilled, (state, action: PayloadAction<number>) => {
@@ -154,23 +148,20 @@ const groupsSlice = createSlice({
     /* specialization */
 
     /* attachSpecialization */
-    builder.addCase(
-      attachSpecialization.fulfilled,
-      (state, action: PayloadAction<AttachSpecializationPayloadType>) => {
-        if (!state.group || !state.group.groupLoad) return
+    builder.addCase(attachSpecialization.fulfilled, (state, action: PayloadAction<AttachSpecializationPayloadType>) => {
+      if (!state.group || !state.group.groupLoad) return
 
-        const { groupId, planSubjectId, name } = action.payload
+      const { groupId, planSubjectId, name } = action.payload
 
-        const groupLoad = state.group.groupLoad.map((el) => {
-          if (el.group.id === groupId && el.planSubjectId.id === planSubjectId) {
-            return { ...el, specialization: name }
-          }
-          return el
-        })
+      const groupLoad = state.group.groupLoad.map((el) => {
+        if (el.group.id === groupId && el.planSubjectId.id === planSubjectId) {
+          return { ...el, specialization: name }
+        }
+        return el
+      })
 
-        state.group.groupLoad = groupLoad
-      }
-    )
+      state.group.groupLoad = groupLoad
+    })
 
     /* createSpecialization */
     builder.addCase(createSpecialization.fulfilled, (state, action: PayloadAction<string[]>) => {
@@ -203,16 +194,48 @@ const groupsSlice = createSlice({
       const lessons = state.group.groupLoad.filter((el) => {
         const { planSubjectId, typeEn, semester } = action.payload[0]
 
-        const bool =
-          el.planSubjectId.id === planSubjectId.id &&
-          el.typeEn === typeEn &&
-          el.semester === semester
+        const bool = el.planSubjectId.id === planSubjectId.id && el.typeEn === typeEn && el.semester === semester
 
         return !bool
       })
 
       state.group.groupLoad = [...lessons, ...action.payload]
     })
+
+    /* attachTeacher */
+    builder.addCase(
+      attachTeacher.fulfilled,
+      (state, action: PayloadAction<{ lessonId: number; teacher: TeachersType }>) => {
+        if (!state.group.groupLoad) return
+
+        const lessons = state.group.groupLoad.map((el) => {
+          if (el.id === action.payload.lessonId) {
+            return { ...el, teacher: action.payload.teacher }
+          }
+
+          return el
+        })
+
+        state.group.groupLoad = lessons
+      }
+    )
+
+    /* unpinTeacher */
+    builder.addCase(unpinTeacher.fulfilled, (state, action: PayloadAction<{ lessonId: number }>) => {
+      if (!state.group.groupLoad) return
+
+      const lessons = state.group.groupLoad.map((el) => {
+        if (el.id === action.payload.lessonId) {
+          return { ...el, teacher: null }
+        }
+
+        return el
+      })
+
+      state.group.groupLoad = lessons
+    })
+
+    /*  */
   },
 })
 

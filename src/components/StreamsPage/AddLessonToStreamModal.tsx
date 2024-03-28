@@ -9,21 +9,16 @@ import {
   DialogContent,
   DialogActions,
   FormControlLabel,
-} from "@mui/material"
-import { CloseOutlined } from "@ant-design/icons"
-import React, { Dispatch, SetStateAction } from "react"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
+} from '@mui/material'
+import { CloseOutlined } from '@ant-design/icons'
+import React, { Dispatch, SetStateAction } from 'react'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
-import {
-  isFieldNull,
-  getIdsByType,
-  isCombinedInStream,
-  convertLessonsForCompare,
-} from "../../utils/compateStreamFilelds"
-import { useAppDispatch } from "../../store/store"
-import { StreamsType } from "../../store/streams/streamsTypes"
-import { GroupLoadType } from "../../store/groups/groupsTypes"
-import { addLessonToStream, deleteLessonFromStream } from "../../store/streams/streamsAsyncActions"
+import { useAppDispatch } from '../../store/store'
+import { StreamsType } from '../../store/streams/streamsTypes'
+import { GroupLoadType } from '../../store/groups/groupsTypes'
+import { isFieldNull, getIdsByType, isCombinedInStream } from '../../utils/compateStreamFilelds'
+import { addLessonToStream, deleteLessonFromStream } from '../../store/streams/streamsAsyncActions'
 
 interface IAddLessonToStreamModalProps {
   open: boolean
@@ -41,18 +36,18 @@ interface IFormFields {
 }
 
 interface IinitialFormValues {
-  label: "Лекції" | "Практичні" | "Лабораторні" | "Семінари" | "Екзамени"
-  value: "lectures" | "practical" | "laboratory" | "seminars" | "exams"
+  label: 'Лекції' | 'Практичні' | 'Лабораторні' | 'Семінари' | 'Екзамени'
+  value: 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams'
   isChecked: boolean
   isDisabled: boolean
 }
 
 const initialFormValues: IinitialFormValues[] = [
-  { label: "Лекції", value: "lectures", isChecked: false, isDisabled: false },
-  { label: "Практичні", value: "practical", isChecked: false, isDisabled: false },
-  { label: "Лабораторні", value: "laboratory", isChecked: false, isDisabled: false },
-  { label: "Семінари", value: "seminars", isChecked: false, isDisabled: true },
-  { label: "Екзамени", value: "exams", isChecked: false, isDisabled: false },
+  { label: 'Лекції', value: 'lectures', isChecked: false, isDisabled: false },
+  { label: 'Практичні', value: 'practical', isChecked: false, isDisabled: false },
+  { label: 'Лабораторні', value: 'laboratory', isChecked: false, isDisabled: false },
+  { label: 'Семінари', value: 'seminars', isChecked: false, isDisabled: true },
+  { label: 'Екзамени', value: 'exams', isChecked: false, isDisabled: false },
 ]
 
 const AddLessonToStreamModal: React.FC<IAddLessonToStreamModalProps> = ({
@@ -69,7 +64,7 @@ const AddLessonToStreamModal: React.FC<IAddLessonToStreamModalProps> = ({
     control,
     formState: { isSubmitting },
     handleSubmit,
-  } = useForm<IFormFields>({ mode: "onBlur" })
+  } = useForm<IFormFields>({ mode: 'onBlur' })
 
   const handleClose = () => {
     setOpen(false)
@@ -78,13 +73,12 @@ const AddLessonToStreamModal: React.FC<IAddLessonToStreamModalProps> = ({
   const onSubmit: SubmitHandler<IFormFields> = async (data) => {
     try {
       if (!selectedStream) return
-      const allLessonkeys = Object.keys(data) as IinitialFormValues["value"][]
-      const combinedLessonKeys = allLessonkeys.filter((k) => typeof data[k] === "boolean")
+      const allLessonkeys = Object.keys(data) as IinitialFormValues['value'][]
+      const combinedLessonKeys = allLessonkeys.filter((k) => typeof data[k] === 'boolean')
 
       combinedLessonKeys.map(async (k) => {
         if (data[k]) {
           // data[k] === true = дисципліна об'єднана в потік
-
           const lessonsIds = getIdsByType(selectedLessons, k)
 
           const payload = {
@@ -108,7 +102,6 @@ const AddLessonToStreamModal: React.FC<IAddLessonToStreamModalProps> = ({
           })
         } else {
           // data[k] !== true = дисципліна НЕ об'єднана в потік
-
           const lessonsIds = getIdsByType(selectedLessons, k)
           await dispatch(deleteLessonFromStream({ lessonsIds }))
 
@@ -123,34 +116,6 @@ const AddLessonToStreamModal: React.FC<IAddLessonToStreamModalProps> = ({
 
             return newValue
           })
-
-          // const convertedLessons = convertLessonsForCompare(selectedLessons)
-
-          // convertedLessons.map(async (el) => {
-          //   const payload = {
-          //     typeEn: k,
-          //     streamId: selectedStream.id,
-          //     name: el.name,
-          //     // @ts-ignore
-          //     hours: el[k].hours,
-          //     semester: el.semester,
-          //     subgroupNumber: el.subgroupNumber,
-          //   }
-
-          //   await dispatch(deleteLessonFromStream(payload))
-
-          //   setFormData((prev) => {
-          //     const newValue = prev.map((el) => {
-          //       if (el.value === k) {
-          //         return { ...el, isChecked: false }
-          //       }
-
-          //       return el
-          //     })
-
-          //     return newValue
-          //   })
-          // })
         }
       })
     } catch (error) {
@@ -180,7 +145,7 @@ const AddLessonToStreamModal: React.FC<IAddLessonToStreamModalProps> = ({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <DialogTitle id="alert-dialog-title">{"Об'єднати в потік"}</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
@@ -189,7 +154,7 @@ const AddLessonToStreamModal: React.FC<IAddLessonToStreamModalProps> = ({
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent sx={{ padding: "0 24px 20px" }}>
+        <DialogContent sx={{ padding: '0 24px 20px' }}>
           <FormGroup>
             {formData.map((el) => (
               <Controller

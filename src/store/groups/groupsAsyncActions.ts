@@ -1,28 +1,29 @@
-import { createAsyncThunk } from "@reduxjs/toolkit"
+import { createAsyncThunk } from '@reduxjs/toolkit'
 
-import { groupsAPI } from "../../api/api"
-import { setLoadingStatus } from "./groupsSlice"
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupCategoriesType } from "./groupsTypes"
-import { setAppAlert } from "../appStatus/appStatusSlice"
 import {
+  UpdateGroupPayloadType,
+  AttachTeacherPayloadType,
+  CreateSubgroupsPayloadType,
+  UpdateEntityNamePayloadType,
   AttachSpecializationPayloadType,
   CreateSpecializationPayloadType,
-  CreateSubgroupsPayloadType,
   DeleteSpecializationPayloadType,
-  UpdateEntityNamePayloadType,
-  UpdateGroupPayloadType,
   UpdateSpecializationPayloadType,
-} from "../../api/apiTypes"
+} from '../../api/apiTypes'
+import { groupsAPI } from '../../api/api'
+import { setLoadingStatus } from './groupsSlice'
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupCategoriesType } from './groupsTypes'
+import { setAppAlert } from '../appStatus/appStatusSlice'
 
 export const getGroupCategories = createAsyncThunk(
-  "groups-categories/getGroupCategories",
+  'groups-categories/getGroupCategories',
   async (_, thunkAPI): Promise<GroupCategoriesType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     try {
       const { data } = await groupsAPI.getGroupsCategories()
-      thunkAPI.dispatch(setAppAlert({ message: "Групи завантажено", status: "success" }))
+      thunkAPI.dispatch(setAppAlert({ message: 'Групи завантажено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -33,7 +34,7 @@ export const getGroupCategories = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: "error",
+          status: 'error',
         })
       )
 
@@ -43,14 +44,14 @@ export const getGroupCategories = createAsyncThunk(
 )
 
 export const createGroupCategory = createAsyncThunk(
-  "groups-categories/createGroupCategory",
+  'groups-categories/createGroupCategory',
   async (name: string, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await groupsAPI.createGroupCategory(name)
-      thunkAPI.dispatch(setAppAlert({ message: "Категорію створено", status: "success" }))
+      thunkAPI.dispatch(setAppAlert({ message: 'Категорію створено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -58,7 +59,7 @@ export const createGroupCategory = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: "error",
+          status: 'error',
         })
       )
       throw error
@@ -67,14 +68,14 @@ export const createGroupCategory = createAsyncThunk(
 )
 
 export const updateGroupCategory = createAsyncThunk(
-  "group-categories/updateGroupCategory",
+  'group-categories/updateGroupCategory',
   async (payload: UpdateEntityNamePayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await groupsAPI.updateGroupCategory(payload)
-      thunkAPI.dispatch(setAppAlert({ message: "Категорію оновлено", status: "success" }))
+      thunkAPI.dispatch(setAppAlert({ message: 'Категорію оновлено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -82,7 +83,7 @@ export const updateGroupCategory = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: "error",
+          status: 'error',
         })
       )
       throw error
@@ -91,14 +92,14 @@ export const updateGroupCategory = createAsyncThunk(
 )
 
 export const deleteGroupCategory = createAsyncThunk(
-  "group-categories/deleteGroupCategory",
+  'group-categories/deleteGroupCategory',
   async (id: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await groupsAPI.deleteGroupCategory(id)
-      thunkAPI.dispatch(setAppAlert({ message: "Категорію видалено", status: "success" }))
+      thunkAPI.dispatch(setAppAlert({ message: 'Категорію видалено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -106,7 +107,7 @@ export const deleteGroupCategory = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: "error",
+          status: 'error',
         })
       )
       throw error
@@ -115,13 +116,13 @@ export const deleteGroupCategory = createAsyncThunk(
 )
 
 /* groups */
-export const getGroup = createAsyncThunk("group/getGroup", async (id: string, thunkAPI) => {
+export const getGroup = createAsyncThunk('group/getGroup', async (id: string, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-  thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
   try {
     const { data } = await groupsAPI.getGroup(id)
-    thunkAPI.dispatch(setAppAlert({ message: "Групу завантажено", status: "success" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Групу завантажено', status: 'success' }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
     return data
   } catch (error: any) {
@@ -129,68 +130,20 @@ export const getGroup = createAsyncThunk("group/getGroup", async (id: string, th
     thunkAPI.dispatch(
       setAppAlert({
         message: (error as any)?.response?.data?.message || error.message,
-        status: "error",
+        status: 'error',
       })
     )
     throw error
   }
 })
 
-export const createGroup = createAsyncThunk(
-  "group/createGroup",
-  async (payload: UpdateGroupPayloadType, thunkAPI) => {
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
-
-    try {
-      const { data } = await groupsAPI.createGroup(payload)
-      thunkAPI.dispatch(setAppAlert({ message: "Групу створено", status: "success" }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: "error",
-        })
-      )
-      throw error
-    }
-  }
-)
-
-export const updateGroup = createAsyncThunk(
-  "group/updateGroup",
-  async (payload: UpdateGroupPayloadType, thunkAPI) => {
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
-
-    try {
-      const { data } = await groupsAPI.updateGroup(payload)
-      thunkAPI.dispatch(setAppAlert({ message: "Групу оновлено", status: "success" }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: "error",
-        })
-      )
-      throw error
-    }
-  }
-)
-
-export const deleteGroup = createAsyncThunk("group/deleteGroup", async (id: number, thunkAPI) => {
+export const createGroup = createAsyncThunk('group/createGroup', async (payload: UpdateGroupPayloadType, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-  thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
   try {
-    const { data } = await groupsAPI.deleteGroup(id)
-    thunkAPI.dispatch(setAppAlert({ message: "Групу видалено", status: "success" }))
+    const { data } = await groupsAPI.createGroup(payload)
+    thunkAPI.dispatch(setAppAlert({ message: 'Групу створено', status: 'success' }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
     return data
   } catch (error: any) {
@@ -198,7 +151,49 @@ export const deleteGroup = createAsyncThunk("group/deleteGroup", async (id: numb
     thunkAPI.dispatch(
       setAppAlert({
         message: (error as any)?.response?.data?.message || error.message,
-        status: "error",
+        status: 'error',
+      })
+    )
+    throw error
+  }
+})
+
+export const updateGroup = createAsyncThunk('group/updateGroup', async (payload: UpdateGroupPayloadType, thunkAPI) => {
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+  try {
+    const { data } = await groupsAPI.updateGroup(payload)
+    thunkAPI.dispatch(setAppAlert({ message: 'Групу оновлено', status: 'success' }))
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
+  } catch (error: any) {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+    thunkAPI.dispatch(
+      setAppAlert({
+        message: (error as any)?.response?.data?.message || error.message,
+        status: 'error',
+      })
+    )
+    throw error
+  }
+})
+
+export const deleteGroup = createAsyncThunk('group/deleteGroup', async (id: number, thunkAPI) => {
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+  try {
+    const { data } = await groupsAPI.deleteGroup(id)
+    thunkAPI.dispatch(setAppAlert({ message: 'Групу видалено', status: 'success' }))
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
+  } catch (error: any) {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+    thunkAPI.dispatch(
+      setAppAlert({
+        message: (error as any)?.response?.data?.message || error.message,
+        status: 'error',
       })
     )
     throw error
@@ -208,14 +203,14 @@ export const deleteGroup = createAsyncThunk("group/deleteGroup", async (id: numb
 /* Specialization */
 
 export const attachSpecialization = createAsyncThunk(
-  "group/attachSpecialization",
+  'group/attachSpecialization',
   async (payload: AttachSpecializationPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await groupsAPI.attachSpecialization(payload)
-      thunkAPI.dispatch(setAppAlert({ message: "Спец. підгрупу оновлено", status: "success" }))
+      thunkAPI.dispatch(setAppAlert({ message: 'Спец. підгрупу оновлено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -223,7 +218,7 @@ export const attachSpecialization = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: "error",
+          status: 'error',
         })
       )
       throw error
@@ -232,14 +227,14 @@ export const attachSpecialization = createAsyncThunk(
 )
 
 export const createSpecialization = createAsyncThunk(
-  "group/createSpecialization",
+  'group/createSpecialization',
   async (payload: CreateSpecializationPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await groupsAPI.createSpecialization(payload)
-      thunkAPI.dispatch(setAppAlert({ message: "Спец. підгрупу створено", status: "success" }))
+      thunkAPI.dispatch(setAppAlert({ message: 'Спец. підгрупу створено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -247,7 +242,7 @@ export const createSpecialization = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: "error",
+          status: 'error',
         })
       )
       throw error
@@ -256,14 +251,14 @@ export const createSpecialization = createAsyncThunk(
 )
 
 export const updateSpecialization = createAsyncThunk(
-  "group/updateSpecialization",
+  'group/updateSpecialization',
   async (payload: UpdateSpecializationPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await groupsAPI.updateSpecialization(payload)
-      thunkAPI.dispatch(setAppAlert({ message: "Спец. підгрупу оновлено", status: "success" }))
+      thunkAPI.dispatch(setAppAlert({ message: 'Спец. підгрупу оновлено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -271,7 +266,7 @@ export const updateSpecialization = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: "error",
+          status: 'error',
         })
       )
       throw error
@@ -280,14 +275,14 @@ export const updateSpecialization = createAsyncThunk(
 )
 
 export const deleteSpecialization = createAsyncThunk(
-  "group/deleteSpecialization",
+  'group/deleteSpecialization',
   async (payload: DeleteSpecializationPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await groupsAPI.deleteSpecialization(payload)
-      thunkAPI.dispatch(setAppAlert({ message: "Спец. підгрупу видалено", status: "success" }))
+      thunkAPI.dispatch(setAppAlert({ message: 'Спец. підгрупу видалено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -295,7 +290,7 @@ export const deleteSpecialization = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: "error",
+          status: 'error',
         })
       )
       throw error
@@ -304,16 +299,15 @@ export const deleteSpecialization = createAsyncThunk(
 )
 
 /* Subgroups */
-
 export const createSubgroups = createAsyncThunk(
-  "group/createSubgroups",
+  'group/createSubgroups',
   async (payload: CreateSubgroupsPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await groupsAPI.createSubgroups(payload)
-      thunkAPI.dispatch(setAppAlert({ message: "Кількість підгруп змінено", status: "success" }))
+      thunkAPI.dispatch(setAppAlert({ message: 'Кількість підгруп змінено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -321,10 +315,57 @@ export const createSubgroups = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: "error",
+          status: 'error',
         })
       )
       throw error
     }
   }
 )
+
+/* attachTeacher */
+export const attachTeacher = createAsyncThunk(
+  'group/attachTeacher',
+  async (payload: AttachTeacherPayloadType, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+    try {
+      const { data } = await groupsAPI.attachTeacher(payload)
+      thunkAPI.dispatch(setAppAlert({ message: 'Викладача прикріплено до дисципліни', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)
+
+/* unpinTeacher */
+export const unpinTeacher = createAsyncThunk('group/unpinTeacher', async (lessonId: number, thunkAPI) => {
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+  try {
+    const { data } = await groupsAPI.unpinTeacher(lessonId)
+    thunkAPI.dispatch(setAppAlert({ message: 'Викладача відкріплено від дисципліни', status: 'success' }))
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
+  } catch (error: any) {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+    thunkAPI.dispatch(
+      setAppAlert({
+        message: (error as any)?.response?.data?.message || error.message,
+        status: 'error',
+      })
+    )
+    throw error
+  }
+})

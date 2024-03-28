@@ -141,12 +141,6 @@ export type DeleteGroupFromStreamResponseType = {
 }
 
 export type DeleteLessonFromStreamPayloadType = {
-  // name: string
-  // hours: number
-  // typeEn: string
-  // semester: number
-  // streamId: number
-  // subgroupNumber: number | null
   lessonsIds: number[]
 }
 
@@ -154,4 +148,10 @@ export type AddLessonsToStreamPayloadType = {
   streamId: number
   streamName: string
   lessonsIds: number[]
+}
+
+/* attachTeacher */
+export type AttachTeacherPayloadType = {
+  lessonId: number
+  teacherId: number
 }
