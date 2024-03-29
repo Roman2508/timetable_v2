@@ -1,38 +1,87 @@
-import React from "react"
-import "./TimetablePage.css"
+import React from 'react'
+import { Button } from '@mui/material'
 
-const Calendar = () => {
+import './TimetablePage.css'
+import { customDayjs } from '../Calendar/Calendar'
+import getCalendarWeek from '../../utils/getCalendarWeek'
+import { LessonActionsModal } from './LessonActionsModal'
+
+interface ICalendarProps {}
+
+const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд']
+
+const Calendar: React.FC<ICalendarProps> = ({}) => {
+  const [modalVisible, setModalVisible] = React.useState(false)
+  const [currentWeekNumber, setCurrentWeekNumber] = React.useState(1)
+  const [weeksCount, setWeeksCount] = React.useState(getCalendarWeek(currentWeekNumber).length)
+  const [currentWeekDays, setCurrentWeekDays] = React.useState(getCalendarWeek(currentWeekNumber))
+
+  React.useEffect(() => {
+    setCurrentWeekDays(getCalendarWeek(currentWeekNumber))
+    // setWeeksCount()
+  }, [currentWeekNumber])
+
   return (
-    <div className="calendar">
-      <div className="header">
-        <div className="header-left">
-          <button className="current">Сьогодні</button>
-          <button className="prev">Попередній тиждень</button>
-          <button className="next">Наступний тиждень</button>
+    <>
+      <LessonActionsModal open={modalVisible} setOpen={setModalVisible} />
+
+      <div className="calendar">
+        <div className="header">
+          <div className="header-left">
+            <Button variant="outlined" color="secondary" sx={{ mr: 1, padding: '0px 10px' }}>
+              Сьогодні
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              disabled={currentWeekNumber === 1}
+              sx={{ mr: 1, padding: '0px 10px' }}
+              onClick={() => setCurrentWeekNumber((prev) => prev - 1)}
+            >
+              Попередній тиждень
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              sx={{ padding: '0px 10px' }}
+              disabled={currentWeekNumber === weeksCount}
+              onClick={() => setCurrentWeekNumber((prev) => prev + 1)}
+            >
+              Наступний тиждень
+            </Button>
+          </div>
+
+          <div className="header-right" style={{ userSelect: 'none' }}>
+            {currentWeekDays[0].start} - {currentWeekDays[6].end}
+          </div>
         </div>
 
-        <div className="header-right">17 листопада - 24 листопада</div>
-      </div>
-
-      <div className="body">
-        <div className="lessons-numbers">
-          <div className="empty-cell"></div>
-          {[1, 2, 3, 4, 5, 6, 7].map((el) => (
-            <div className="time-number">{el}</div>
-          ))}
-        </div>
-
-        {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].map((day) => (
-          <div className="day">
-            <div className="day-name">{day}</div>
-
+        <div className="body">
+          <div className="lessons-numbers">
+            <div className="empty-cell"></div>
             {[1, 2, 3, 4, 5, 6, 7].map((el) => (
-              <div className="time-slot">lesson {el}</div>
+              <div className="time-number" key={el} style={{ userSelect: 'none' }}>
+                {el}
+              </div>
             ))}
           </div>
-        ))}
+
+          {currentWeekDays?.map((day, index) => (
+            <div className="day" key={day.start}>
+              <div className="day-name" style={{ userSelect: 'none' }}>
+                {dayNames[index]} {day.start}
+              </div>
+
+              {[1, 2, 3, 4, 5, 6, 7].map((el) => (
+                <div className="time-slot" key={el} onClick={() => setModalVisible(true)}>
+                  {/* lesson {el} */}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

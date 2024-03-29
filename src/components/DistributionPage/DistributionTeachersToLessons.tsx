@@ -78,6 +78,18 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
     }
   }
 
+  const sortLessonsByLessonType = (): GroupLoadType[] => {
+    if (!selectedLesson) return []
+    const sortOrder = ['ЛК', 'ПЗ', 'ЛАБ', 'СЕМ', 'ЕКЗ', 'КОНС', 'МЕТОД']
+    const lessonsCopy = JSON.parse(JSON.stringify(selectedLesson))
+
+    lessonsCopy.sort((a: GroupLoadType, b: GroupLoadType) => {
+      return sortOrder.indexOf(a.typeRu) - sortOrder.indexOf(b.typeRu)
+    })
+
+    return lessonsCopy
+  }
+
   return (
     <Grid item xs={12} sx={{ mb: 2 }}>
       <MainCard>
@@ -106,7 +118,7 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
         <form autoComplete="off">
           {!selectedLesson && <EmptyCard />}
           {selectedLesson &&
-            selectedLesson.map((lesson) => {
+            sortLessonsByLessonType().map((lesson) => {
               const stream = lesson.stream ? `${lesson.stream.name}` : ''
               const subgroup = lesson.subgroupNumber ? `підгр. ${lesson.subgroupNumber}` : ''
               const remark = (stream || subgroup) && `(${stream} ${subgroup})`
@@ -114,7 +126,11 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
               const teacher = lesson.teacher ? getLastnameAndInitials(lesson.teacher) : ''
 
               return (
-                <Stack spacing={1} sx={{ mt: 1, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <Stack
+                  spacing={1}
+                  key={lesson.id}
+                  sx={{ mt: 1, display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+                >
                   <Tooltip title={`${lesson.typeRu} ${remark}`}>
                     <InputLabel htmlFor="name" sx={{ flexGrow: 1, mt: '8px !important' }}>
                       {lesson.typeRu} {remark}
@@ -168,7 +184,11 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
               const remark = (stream || subgroup) && `(${stream} ${subgroup})`
 
               return (
-                <Stack spacing={1} sx={{ mt: 1, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <Stack
+                  spacing={1}
+                  key={lesson.id}
+                  sx={{ mt: 1, display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+                >
                   <Tooltip title={`${lesson.typeRu} ${remark}`}>
                     <InputLabel htmlFor="name" sx={{ flexGrow: 1, mt: '8px !important' }}>
                       {lesson.typeRu} {remark}

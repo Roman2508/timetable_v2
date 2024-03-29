@@ -28,8 +28,8 @@ const GroupsPage = () => {
   const { groupCategories, loadingStatus } = useSelector(groupsSelector)
 
   const [modalVisible, setModalVisible] = useState(false)
-  const [actionsModalType, setActionsModalType] = useState<'create-category' | 'update-category'>('create-category')
   const [activeGroupCategory, setActiveGroupCategory] = useState<null | GroupCategoriesType>(null)
+  const [actionsModalType, setActionsModalType] = useState<'create-category' | 'update-category'>('create-category')
 
   const onDeleteEntity = async (type: 'category' | 'group', id: number) => {
     if (type === 'category') {
