@@ -57,7 +57,8 @@ const MainLayout = () => {
           maxWidth: "1800px",
           margin: "0 auto",
           flexGrow: 1,
-          p: { xs: 2, sm: 3 },
+          // p: { xs: 2, sm: 3 },
+          p: "24px 12px",
         }}
       >
         <Toolbar />

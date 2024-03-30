@@ -1,5 +1,5 @@
-import { LoadingStatusTypes } from '../appTypes'
-import { TeachersType } from '../teachers/teachersTypes'
+import { LoadingStatusTypes } from "../appTypes"
+import { TeachersType } from "../teachers/teachersTypes"
 
 export type GroupsInitialState = {
   groupCategories: GroupCategoriesType[] | null
@@ -20,14 +20,14 @@ export type GroupsType = {
   courseNumber: number
   yearOfAdmission: number
   specializationList: string[]
-  formOfEducation: 'Денна' | 'Заочна'
+  formOfEducation: "Денна" | "Заочна"
   stream: { id: number; name: string }[]
   category: { id: number; name: string } | null
   groupLoad: GroupLoadType[] | null
   educationPlan: { id: number; name: string } | null
 }
 
-export type GroupsShortType = Pick<GroupsType, 'id' | 'name' | 'courseNumber' | 'students'>
+export type GroupsShortType = Pick<GroupsType, "id" | "name" | "courseNumber" | "students">
 
 export type GroupFormType = {
   name: string
@@ -39,25 +39,34 @@ export type GroupFormType = {
   formOfEducation: { value: string; label: string }
 }
 
+export type GroupLoadStreamType = {
+  id: number
+  name: string
+  groups: { id: number; name: string }
+  lessons: { id: number; name: string }
+}
+
 export type GroupLoadType = {
   id: number
   name: string
   semester: number
   specialization: any
-  typeRu: 'ЛК' | 'ПЗ' | 'ЛАБ' | 'СЕМ' | 'ЕКЗ' | 'КОНС' | 'МЕТОД'
-  typeEn: 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams' | 'examsConsulation' | 'metodologicalGuidance'
+  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ" | "КОНС" | "МЕТОД"
+  typeEn:
+    | "lectures"
+    | "practical"
+    | "laboratory"
+    | "seminars"
+    | "exams"
+    | "examsConsulation"
+    | "metodologicalGuidance"
   hours: number
   subgroupNumber: number
   students: number
   group: { id: number; name: string }
   planSubjectId: { id: number }
   plan: { id: number }
-  stream: {
-    id: number
-    name: string
-    groups: { id: number; name: string }
-    lessons: { id: number; name: string }
-  }
+  stream: GroupLoadStreamType | null
   teacher: TeachersType | null
   cmk: { id: number }
 }

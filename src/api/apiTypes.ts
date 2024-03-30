@@ -1,5 +1,5 @@
-import { GroupsType } from '../store/groups/groupsTypes'
-import { TeachersType } from '../store/teachers/teachersTypes'
+import { GroupsType } from "../store/groups/groupsTypes"
+import { TeachersType } from "../store/teachers/teachersTypes"
 
 /* Global */
 
@@ -43,11 +43,11 @@ export type UpdateTeacherCategoryPayloadType = {
 
 export type CreateTeacherPayloadType = {
   category: number
-} & Omit<TeachersType, 'id' | 'category'>
+} & Omit<TeachersType, "id" | "category">
 
 export type UpdateTeacherPayloadType = {
   category: number
-} & Omit<TeachersType, 'category'>
+} & Omit<TeachersType, "category">
 
 /* Plans */
 
@@ -60,10 +60,17 @@ export type CreatePlanPayloadType = {
 
 export type UpdateGroupPayloadType = Pick<
   GroupsType,
-  'id' | 'name' | 'students' | 'courseNumber' | 'yearOfAdmission' | 'formOfEducation'
+  "id" | "name" | "students" | "courseNumber" | "yearOfAdmission" | "formOfEducation"
 > & { educationPlan: number; category: number }
 
-/* plan-subjects */
+/* Groups-load */
+
+export type FindLessonsForSchedulePayloadType = {
+  semester: number
+  groupId: number
+}
+
+/* Plan-subjects */
 
 export type CreateSubjectPayloadType = {
   name: string
@@ -121,7 +128,7 @@ export type DeleteSpecializationPayloadType = CreateSpecializationPayloadType
 export type CreateSubgroupsPayloadType = {
   planSubjectId: number
   groupId: number
-  typeEn: 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams'
+  typeEn: "lectures" | "practical" | "laboratory" | "seminars" | "exams"
   subgroupsCount: number
 }
 
@@ -154,4 +161,29 @@ export type AddLessonsToStreamPayloadType = {
 export type AttachTeacherPayloadType = {
   lessonId: number
   teacherId: number
+}
+
+/* schedule lessons */
+
+export type GetScheduleLessonsPayloadType = {
+  semester: number
+  type: "group" | "teacher" | "auditory"
+  id: number
+}
+
+export type CreateScheduleLessonsPayloadType = {
+  name: string
+  date: string
+  lessonNumber: number
+  semester: number
+  students: number
+  group: number
+  teacher: number
+  auditory: number
+  stream: number | null
+}
+
+export type UpdateScheduleLessonsPayloadType = {
+  id: number
+  auditory: number
 }

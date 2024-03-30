@@ -4,20 +4,22 @@ import { configureStore } from "@reduxjs/toolkit"
 import menuSlice from "./menu/menuSlice"
 import plansSlice from "./plans/plansSlice"
 import groupsSlice from "./groups/groupsSlice"
+import streamsSlice from "./streams/streamsSlice"
 import teachersSlice from "./teachers/teachersSlice"
 import appStatusSlice from "./appStatus/appStatusSlice"
 import auditoriesSlise from "./auditories/auditoriesSlise"
-import streamsSlice from "./streams/streamsSlice"
+import scheduleLessonsSlice from "./scheduleLessons/scheduleLessonsSlice"
 
 export const store = configureStore({
   reducer: {
-    auditories: auditoriesSlise,
-    teachers: teachersSlice,
+    menu: menuSlice,
     plans: plansSlice,
     groups: groupsSlice,
     streams: streamsSlice,
+    teachers: teachersSlice,
     appStatus: appStatusSlice,
-    menu: menuSlice,
+    auditories: auditoriesSlise,
+    scheduleLessons: scheduleLessonsSlice,
   },
 })
 

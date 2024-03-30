@@ -1,262 +1,66 @@
-// material-ui
-import {
-  Grid,
-  Stack,
-  Table,
-  Button,
-  TableRow,
-  MenuItem,
-  TableBody,
-  TableCell,
-  TextField,
-  TableHead,
-  InputLabel,
-  Tooltip,
-  Typography,
-} from "@mui/material"
+import React from "react"
+import { Grid } from "@mui/material"
 
 // project import
-import React from "react"
 import MainCard from "../../components/MainCard"
-import { customDayjs } from "../../components/Calendar/Calendar"
-// import Calendar, { customDayjs } from "../../components/Calendar/Calendar"
 import Calendar from "../../components/TimetablePage/Calendar"
-
-const tableCellStypes = {
-  padding: "4px",
-  border: "1px solid rgb(235, 235, 235)",
-  "& p": {
-    fontSize: "13px",
-  },
-}
+import { GroupLoadStreamType } from "../../store/groups/groupsTypes"
+import LessonsTable from "../../components/TimetablePage/LessonsTable"
+import { TimetablePageHeader } from "../../components/TimetablePage/TimetablePageHeader"
+import { TeachersType } from "../../store/teachers/teachersTypes"
 
 // ==============================|| TIMETABLE ||============================== //
 
-const TimetablePage = () => {
-  const [slot, setSlot] = React.useState("group")
+export interface ISelectedLesson {
+  id: number
+  name: string
+  students: number
+  teacher: TeachersType
+  subgroupNumber: number | null
+  stream: GroupLoadStreamType | null
+  group: { id: number; name: string }
+  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ" | "КОНС" | "МЕТОД"
+}
 
-  const today = new Date()
+const TimetablePage = () => {
+  const [currentWeekNumber, setCurrentWeekNumber] = React.useState(1)
+  const [selectedItemId, setSelectedItemId] = React.useState<number | null>(null)
+  const [selectedLesson, setSelectedLesson] = React.useState<ISelectedLesson | null>(null)
+  const [scheduleType, setScheduleType] = React.useState<"group" | "teacher" | "auditory">("group")
 
   return (
     <>
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center", p: 0 }}>
         <Grid item xs={12}>
-          <Grid container sx={{ display: "flex", alignItems: "flex-end" }}>
-            <Grid item sx={{ flexGrow: 1, display: "flex", alignItems: "flex-end", gap: 3 }}>
-              <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="category">Структурний підрозділ</InputLabel>
-                <TextField
-                  select
-                  size="small"
-                  id="category"
-                  //   value={value}
-                  //   onChange={(e) => setValue(e.target.value)}
-                  sx={{ width: "300px" }}
-                >
-                  {[
-                    { value: "1", label: "Фармація, промислова фармація (ДФ)" },
-                    { value: "2", label: "Фармація, промислова фармація (ДФ)" },
-                    { value: "3", label: "Лабораторна діагностика (ДФ)" },
-                  ].map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Stack>
-
-              <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="category">Група</InputLabel>
-                <TextField
-                  select
-                  size="small"
-                  id="category"
-                  //   value={value}
-                  //   onChange={(e) => setValue(e.target.value)}
-                  sx={{ width: "160px" }}
-                >
-                  {[
-                    { value: "1", label: "Фармація, промислова фармація (ДФ)" },
-                    { value: "2", label: "Фармація, промислова фармація (ДФ)" },
-                    { value: "3", label: "Лабораторна діагностика (ДФ)" },
-                  ].map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Stack>
-
-              <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="category">Тиждень</InputLabel>
-                <TextField
-                  select
-                  size="small"
-                  id="category"
-                  //   value={value}
-                  //   onChange={(e) => setValue(e.target.value)}
-                  sx={{ width: "100px" }}
-                >
-                  {[
-                    { value: "1", label: "Фармація, промислова фармація (ДФ)" },
-                    { value: "2", label: "Фармація, промислова фармація (ДФ)" },
-                    { value: "3", label: "Лабораторна діагностика (ДФ)" },
-                  ].map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Stack>
-            </Grid>
-
-            <Grid item>
-              <Stack direction="row" alignItems="center" spacing={0}>
-                <Button
-                  size="small"
-                  onClick={() => setSlot("group")}
-                  sx={{ width: "100px", py: 0.674 }}
-                  color={slot === "group" ? "primary" : "secondary"}
-                  variant={slot === "group" ? "outlined" : "text"}
-                >
-                  Група
-                </Button>
-                <Button
-                  size="small"
-                  onClick={() => setSlot("teacher")}
-                  sx={{ width: "100px", py: 0.674 }}
-                  color={slot === "teacher" ? "primary" : "secondary"}
-                  variant={slot === "teacher" ? "outlined" : "text"}
-                >
-                  Викладач
-                </Button>
-                <Button
-                  size="small"
-                  onClick={() => setSlot("auditory")}
-                  sx={{ width: "100px", py: 0.674 }}
-                  color={slot === "auditory" ? "primary" : "secondary"}
-                  variant={slot === "auditory" ? "outlined" : "text"}
-                >
-                  Аудиторія
-                </Button>
-              </Stack>
-            </Grid>
-          </Grid>
+          <TimetablePageHeader
+            selectedItemId={selectedItemId}
+            scheduleType={scheduleType}
+            setScheduleType={setScheduleType}
+            setSelectedItemId={setSelectedItemId}
+            currentWeekNumber={currentWeekNumber}
+            setCurrentWeekNumber={setCurrentWeekNumber}
+          />
         </Grid>
 
-        <Grid item xs={12} sx={{ display: "flex" }}>
+        <Grid item xs={12} sx={{ display: "flex", pt: "24px !important" }}>
           <Grid item xs={4} sx={{ mr: 2 }}>
-            <MainCard sx={{ "& .MuiCardContent-root": { p: 0, overflow: "hidden" } }}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={tableCellStypes} padding="none" align="center">
-                      Дисципліна
-                    </TableCell>
-                    <TableCell sx={tableCellStypes} padding="none" align="center">
-                      Викладач
-                    </TableCell>
-                    <TableCell sx={tableCellStypes} padding="none" align="center">
-                      Примітка
-                    </TableCell>
-                    <TableCell sx={tableCellStypes} padding="none" align="center">
-                      План
-                    </TableCell>
-                    <TableCell sx={tableCellStypes} padding="none" align="center">
-                      Факт
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {Array(9)
-                    .fill(null)
-                    .map((_, index) => (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          "&:hover": { backgroundColor: "secondary.lighter", cursor: "pointer" },
-                        }}
-                      >
-                        <TableCell
-                          sx={{
-                            ...tableCellStypes,
-                            // maxWidth: '130px',
-                            // width: '100%',
-                            // whiteSpace: 'nowrap',
-                            // overflow: 'hidden',
-                            // textOverflow: 'ellipsis',
-                          }}
-                          padding="none"
-                          align="left"
-                        >
-                          <Tooltip
-                            enterDelay={1000}
-                            title="Інформаційні технології в фармації технології в фармації"
-                          >
-                            <Typography
-                              sx={{
-                                // maxWidth: '140px',
-                                maxWidth: "12vw",
-                                width: "100%",
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                              }}
-                            >
-                              Інформаційні технології в фармації технології в фармації
-                            </Typography>
-                          </Tooltip>
-                        </TableCell>
-                        <TableCell sx={tableCellStypes} padding="none" align="center">
-                          <Tooltip enterDelay={1000} title="Пташник Р.В.">
-                            <Typography
-                              sx={{
-                                maxWidth: "5vw",
-                                width: "100%",
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                              }}
-                            >
-                              Пташник Р.В.
-                            </Typography>
-                          </Tooltip>
-                        </TableCell>
-                        <TableCell sx={tableCellStypes} padding="none" align="center">
-                          1
-                        </TableCell>
-                        <TableCell sx={tableCellStypes} padding="none" align="center">
-                          1
-                        </TableCell>
-                        <TableCell sx={tableCellStypes} padding="none" align="center">
-                          1
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
+            <MainCard sx={{ pb: 0, "& .MuiCardContent-root": { p: 0, overflow: "auto" } }}>
+              <LessonsTable
+                scheduleType={scheduleType}
+                selectedItemId={selectedItemId}
+                selectedLesson={selectedLesson}
+                setSelectedLesson={setSelectedLesson}
+              />
             </MainCard>
           </Grid>
 
           <Grid item xs={8}>
             <MainCard sx={{ "& .MuiCardContent-root": { px: 1 } }}>
-              {/* <Calendar
-                onClick={(e) => console.log(e)}
-                events={[
-                  {
-                    title: "title title title title title title title title title title ",
-                    start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9),
-                    end: customDayjs(
-                      new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9)
-                    )
-                      .add(1.34, "hour")
-                      .toDate(),
-                  },
-                ]}
-              /> */}
-
-              <Calendar />
+              <Calendar
+                selectedLesson={selectedLesson}
+                currentWeekNumber={currentWeekNumber}
+                setCurrentWeekNumber={setCurrentWeekNumber}
+              />
             </MainCard>
           </Grid>
         </Grid>
@@ -266,3 +70,20 @@ const TimetablePage = () => {
 }
 
 export { TimetablePage }
+
+{
+  /* <Calendar
+      onClick={(e) => console.log(e)}
+      events={[
+        {
+          title: "title title title title title title title title title title ",
+          start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9),
+          end: customDayjs(
+            new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9)
+          )
+            .add(1.34, "hour")
+            .toDate(),
+        },
+      ]}
+    /> */
+}

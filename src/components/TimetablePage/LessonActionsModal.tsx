@@ -1,39 +1,112 @@
 import {
-  CalendarOutlined,
-  CloseOutlined,
-  EditOutlined,
-  EnvironmentOutlined,
-  FileTextOutlined,
-  PlusSquareOutlined,
+  List,
+  Dialog,
+  Tooltip,
+  IconButton,
+  Typography,
+  ListItemText,
+  DialogContent,
+  ListItemButton,
+} from "@mui/material"
+import {
   SyncOutlined,
   TeamOutlined,
   UserOutlined,
-} from '@ant-design/icons'
-import React, { Dispatch, SetStateAction } from 'react'
-import {
-  Dialog,
-  IconButton,
-  DialogTitle,
-  DialogContent,
-  Typography,
-  List,
-  ListItemButton,
-  ListItemText,
-  Tooltip,
-} from '@mui/material'
+  CloseOutlined,
+  FileTextOutlined,
+  PlusSquareOutlined,
+  EnvironmentOutlined,
+} from "@ant-design/icons"
+import React, { Dispatch, SetStateAction } from "react"
 
-import { useAppDispatch } from '../../store/store'
+import { ISelectedTimeSlot } from "./Calendar"
+import { useAppDispatch } from "../../store/store"
+import { ISelectedLesson } from "../../pages/TimetablePage/TimetablePage"
+import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
+import { useSelector } from "react-redux"
+import { auditoriesSelector } from "../../store/auditories/auditoriesSlise"
+import { createScheduleLesson } from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
+
+const dayNames = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"]
+
+const lessonsTime = [
+  "08:30 – 09:50",
+  "10:00 – 11:20",
+  "12:00 – 13:20",
+  "13:30 – 14:50",
+  "15:00 – 16:20",
+  "16:30 – 17:50",
+  "18:00 – 19:20",
+]
 
 interface ILessonActionsModalProps {
   open: boolean
+  currentWeekNumber: number
+  selectedAuditoryId: number | null
+  selectedLesson: ISelectedLesson | null
+  selectedTimeSlot: ISelectedTimeSlot | null
   setOpen: Dispatch<SetStateAction<boolean>>
+  setAuditoryModalVisible: Dispatch<SetStateAction<boolean>>
 }
 
-const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({ open, setOpen }) => {
+const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
+  open,
+  setOpen,
+  selectedLesson,
+  selectedTimeSlot,
+  currentWeekNumber,
+  selectedAuditoryId,
+  setAuditoryModalVisible,
+}) => {
   const dispatch = useAppDispatch()
+
+  const { auditoriCategories } = useSelector(auditoriesSelector)
+
+  const [selectedAuditoryName, setSelectedAuditoryName] = React.useState("")
 
   const handleClose = () => {
     setOpen(false)
+  }
+
+  React.useEffect(() => {
+    if (!auditoriCategories) return
+    let auditoryName = ""
+
+    auditoriCategories.forEach((category) => {
+      const auditory = category.auditories.find((a) => a.id === selectedAuditoryId)
+
+      if (auditory) {
+        auditoryName = auditory.name
+      }
+    })
+
+    setSelectedAuditoryName(auditoryName)
+  }, [selectedAuditoryId])
+
+  if (!selectedLesson || !selectedTimeSlot) return
+
+  const dayName =
+    selectedTimeSlot.data.day() !== 0 ? dayNames[selectedTimeSlot.data.day() - 1] : dayNames[6]
+
+  const onCreateScheduleLesson = () => {
+    if (!selectedAuditoryId) return
+    // change date
+    const date = selectedTimeSlot.data.format("YYYY-MM-DDTHH:mm:ssZ[Z]")
+    const stream = selectedLesson.stream ? selectedLesson.stream.id : null
+
+    const payload = {
+      date: "2024-03-30T18:35:55.653Z",
+      stream,
+      semester: 2,
+      name: selectedLesson.name,
+      auditory: selectedAuditoryId,
+      group: selectedLesson.group.id,
+      students: selectedLesson.students,
+      teacher: selectedLesson.teacher.id,
+      lessonNumber: selectedTimeSlot.lessonNumber,
+    }
+    alert(`${date} - "2024-03-30 20:35:55.653"`)
+    // dispatch(createScheduleLesson(payload))
   }
 
   return (
@@ -43,10 +116,17 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({ open, setOpen 
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      sx={{ '& .MuiPaper-root': { width: '400px' } }}
+      sx={{ "& .MuiPaper-root": { width: "400px" } }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
-        <Typography sx={{ ml: 2 }}>Тиждень 1</Typography>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: "8px",
+        }}
+      >
+        <Typography sx={{ ml: 2 }}>Тиждень {currentWeekNumber}</Typography>
 
         <div>
           {/* <Tooltip title="Оновити">
@@ -56,7 +136,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({ open, setOpen 
         </Tooltip> */}
 
           <Tooltip title="Зберегти">
-            <IconButton sx={{ mr: 1 }}>
+            <IconButton sx={{ mr: 1 }} onClick={onCreateScheduleLesson}>
               <PlusSquareOutlined />
             </IconButton>
           </Tooltip>
@@ -67,7 +147,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({ open, setOpen 
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Зробити заміну">
+          <Tooltip title="Закрити">
             <IconButton sx={{ mr: 1 }} onClick={handleClose}>
               <CloseOutlined />
             </IconButton>
@@ -75,43 +155,71 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({ open, setOpen 
         </div>
       </div>
 
-      <DialogContent sx={{ padding: '0', mt: 1 }}>
+      <DialogContent sx={{ padding: "0", mt: 1 }}>
         <Typography
           variant="h4"
           sx={{
-            padding: '0 16px 4px',
-            fontSize: '20px',
+            padding: "0 16px 4px",
+            fontSize: "20px",
             fontWeight: 400,
-            lineHeight: '28px',
-            color: 'rgb(60, 64, 67)',
+            lineHeight: "28px",
+            color: "rgb(60, 64, 67)",
           }}
         >
-          Інформаційні технології у фармації (ЛК) - Група 202 2 підгрупа
+          {selectedLesson.name} ({selectedLesson.typeRu}) - Група {selectedLesson.group.name}{" "}
+          {selectedLesson.subgroupNumber ? `${selectedLesson.subgroupNumber} підгрупа` : ""}{" "}
+          {selectedLesson.stream ? `| Потік: ${selectedLesson.stream.name}` : ""}
         </Typography>
-        <Typography sx={{ fontSize: '14px', fontweight: 400, letterSpacing: '.2px', padding: '0 16px 4px' }}>
-          Середа, 27 березня ⋅ 10:00 – 11:20
+        <Typography
+          sx={{ fontSize: "14px", fontweight: 400, letterSpacing: ".2px", padding: "0 16px 4px" }}
+        >
+          {dayName}, {selectedTimeSlot.data.format("DD MMMM")} ⋅{" "}
+          {lessonsTime[selectedTimeSlot.lessonNumber - 1]}
         </Typography>
 
-        <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 1 } }}>
+        <List sx={{ p: 0, "& .MuiListItemButton-root": { py: 1 } }}>
           <ListItemButton divider sx={{ mt: 1, py: 0 }} onClick={() => {}}>
             <FileTextOutlined />
-            <ListItemText primary={'Додати коментар'} sx={{ p: '0 0 0 10px' }} />
+            <ListItemText primary={"Додати коментар"} sx={{ p: "0 0 0 10px" }} />
           </ListItemButton>
 
-          <ListItemButton divider sx={{ py: 0 }} onClick={() => {}}>
+          <ListItemButton
+            divider
+            sx={{ py: 0 }}
+            onClick={() => {
+              handleClose()
+              setAuditoryModalVisible(true)
+            }}
+          >
             <EnvironmentOutlined />
-            <ListItemText primary={'Аудиторія: 217'} sx={{ p: '0 0 0 10px' }} />
+            <ListItemText
+              sx={{ p: "0 0 0 10px" }}
+              primary={`Аудиторія: ${selectedAuditoryName ? selectedAuditoryName : "не вибрана"}`}
+            />
           </ListItemButton>
 
-          <ListItemButton divider sx={{ py: 0, cursor: 'default', ':hover': { background: '#fff' } }}>
+          <ListItemButton
+            divider
+            sx={{ py: 0, cursor: "default", ":hover": { background: "#fff" } }}
+          >
             <UserOutlined />
-            <ListItemText primary={'Викладач: Пташник Р.В.'} sx={{ p: '0 0 0 10px' }} />
+            <ListItemText
+              sx={{ p: "0 0 0 10px" }}
+              primary={`Викладач: ${getLastnameAndInitials(selectedLesson.teacher)}`}
+            />
           </ListItemButton>
 
-          <ListItemButton divider disableRipple sx={{ py: 0, cursor: 'default', ':hover': { background: '#fff' } }}>
+          <ListItemButton
+            divider
+            disableRipple
+            sx={{ py: 0, cursor: "default", ":hover": { background: "#fff" } }}
+          >
             {/* <CalendarOutlined /> */}
             <TeamOutlined />
-            <ListItemText primary={'Студентів: 22'} sx={{ p: '0 0 0 10px' }} />
+            <ListItemText
+              sx={{ p: "0 0 0 10px" }}
+              primary={`Студентів: ${selectedLesson.students}`}
+            />
           </ListItemButton>
         </List>
       </DialogContent>
