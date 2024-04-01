@@ -17,6 +17,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/lab": "^5.0.0-alpha.166",
     "@mui/material": "^5.15.11",
+    "@mui/x-date-pickers": "^7.1.0",
     "@reduxjs/toolkit": "^2.2.1",
     "apexcharts": "^3.46.0",
     "axios": "^1.6.7",
