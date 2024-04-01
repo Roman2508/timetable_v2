@@ -10,6 +10,7 @@ dayjs.locale(uk)
 dayjs.extend(updateLocale)
 
 dayjs.updateLocale("uk", {
+  // formats: ["DD.MM.YYYY", "HH.mm"],
   weekdaysShort: ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
   months: [
     "Січня",

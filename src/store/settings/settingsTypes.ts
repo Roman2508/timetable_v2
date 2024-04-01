@@ -1,0 +1,44 @@
+import { LoadingStatusTypes } from "../appTypes"
+
+export type SettingsInitialStateType = {
+  settings: SettingsType | null
+  loadingStatus: LoadingStatusTypes
+}
+
+export type SettingsType = {
+  id: number
+  firstSemesterStart: string
+  firstSemesterEnd: string
+  secondSemesterStart: string
+  secondSemesterEnd: string
+  callSchedule: {
+    "1": {
+      start: string
+      end: string
+    }
+    "2": {
+      start: string
+      end: string
+    }
+    "3": {
+      start: string
+      end: string
+    }
+    "4": {
+      start: string
+      end: string
+    }
+    "5": {
+      start: string
+      end: string
+    }
+    "6": {
+      start: string
+      end: string
+    }
+    "7": {
+      start: string
+      end: string
+    }
+  }
+}

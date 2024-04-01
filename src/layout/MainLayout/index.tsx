@@ -16,13 +16,18 @@ import Breadcrumbs from "../../components/@extended/Breadcrumbs"
 import { openDrawer } from "../../store/menu/menuSlice"
 import AppAlert from "../../components/AppAlert/AppAlert"
 import MainDrawer from "../../components/Drawer/MainDrawer"
+import { settingsSelector } from "../../store/settings/settingsSlice"
+import { getSettings } from "../../store/settings/settingsAsyncActions"
+import { useAppDispatch } from "../../store/store"
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
 const MainLayout = () => {
+  const { settings } = useSelector(settingsSelector)
+
   const theme = useTheme()
   const matchDownLG = useMediaQuery(theme.breakpoints.down("lg"))
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { drawerOpen } = useSelector((state: any) => state.menu)
 
@@ -45,6 +50,12 @@ const MainLayout = () => {
     if (open !== drawerOpen) setOpen(drawerOpen)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drawerOpen])
+
+  // get settings
+  useEffect(() => {
+    if (settings) return
+    dispatch(getSettings(1))
+  }, [])
 
   return (
     <Box sx={{ display: "flex", width: "100%" }}>

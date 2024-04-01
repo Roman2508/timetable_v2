@@ -36,6 +36,7 @@ import { PlanType, PlansCategoriesType, PlansType } from "../store/plans/plansTy
 import { GroupCategoriesType, GroupLoadType, GroupsType } from "../store/groups/groupsTypes"
 import { AuditoriesTypes, AuditoryCategoriesTypes } from "../store/auditories/auditoriesTypes"
 import { ScheduleLessonType } from "../store/scheduleLessons/scheduleLessonsTypes"
+import { SettingsType } from "../store/settings/settingsTypes"
 
 const instanse = axios.create({
   baseURL: "http://localhost:7777/",
@@ -308,5 +309,15 @@ export const scheduleLessonsAPI = {
   },
   delete(id: number) {
     return instanse.delete<number>(`/schedule-lessons/${id}`)
+  },
+}
+
+export const settingsAPI = {
+  getSettings(id: number = 1) {
+    return instanse.get<SettingsType>(`/settings/${id}`)
+  },
+  updateSettings(payload: SettingsType) {
+    const { id, ...rest } = payload
+    return instanse.patch<SettingsType>(`/settings/${id}`, rest)
   },
 }

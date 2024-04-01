@@ -6,6 +6,7 @@ import plansSlice from "./plans/plansSlice"
 import groupsSlice from "./groups/groupsSlice"
 import streamsSlice from "./streams/streamsSlice"
 import teachersSlice from "./teachers/teachersSlice"
+import settingsSlice from "./settings/settingsSlice"
 import appStatusSlice from "./appStatus/appStatusSlice"
 import auditoriesSlise from "./auditories/auditoriesSlise"
 import scheduleLessonsSlice from "./scheduleLessons/scheduleLessonsSlice"
@@ -17,6 +18,7 @@ export const store = configureStore({
     groups: groupsSlice,
     streams: streamsSlice,
     teachers: teachersSlice,
+    settings: settingsSlice,
     appStatus: appStatusSlice,
     auditories: auditoriesSlise,
     scheduleLessons: scheduleLessonsSlice,
