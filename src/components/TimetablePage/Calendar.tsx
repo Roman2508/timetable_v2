@@ -13,6 +13,7 @@ import { scheduleLessonsSelector } from "../../store/scheduleLessons/scheduleLes
 import { getScheduleLessons } from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
 import { customDayjs } from "../Calendar/Calendar"
 import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
+import { settingsSelector } from "../../store/settings/settingsSlice"
 
 const dayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
 
@@ -30,15 +31,19 @@ export interface ISelectedTimeSlot {
 }
 
 interface ICalendarProps {
+  weeksCount: number
   currentWeekNumber: number
   selectedItemId: number | null
   selectedLesson: ISelectedLesson | null
   scheduleType: "group" | "teacher" | "auditory"
   setCurrentWeekNumber: Dispatch<SetStateAction<number>>
+  setWeeksCount: React.Dispatch<React.SetStateAction<number>>
 }
 
 const Calendar: React.FC<ICalendarProps> = ({
+  weeksCount,
   scheduleType,
+  setWeeksCount,
   selectedItemId,
   selectedLesson,
   currentWeekNumber,
@@ -46,12 +51,12 @@ const Calendar: React.FC<ICalendarProps> = ({
 }) => {
   const dispatch = useAppDispatch()
 
+  const { settings } = useSelector(settingsSelector)
   const { scheduleLessons } = useSelector(scheduleLessonsSelector)
 
   const [modalVisible, setModalVisible] = React.useState(false)
   const [auditoryModalVisible, setAuditoryModalVisible] = React.useState(false)
   const [selectedAuditoryId, setSelectedAuditoryId] = React.useState<number | null>(null)
-  const [weeksCount, setWeeksCount] = React.useState(getCalendarWeek(currentWeekNumber).length)
   const [selectedTimeSlot, setSelectedTimeSlot] = React.useState<ISelectedTimeSlot | null>(null)
   const [currentWeekDays, setCurrentWeekDays] = React.useState(getCalendarWeek(currentWeekNumber))
 
@@ -61,18 +66,11 @@ const Calendar: React.FC<ICalendarProps> = ({
   }, [selectedItemId])
 
   React.useEffect(() => {
-    const fetchData = async() => {}
+    if (!settings) return
+    const { firstSemesterStart, firstSemesterEnd } = settings
 
-    setCurrentWeekDays(getCalendarWeek(currentWeekNumber))
-    // setWeeksCount()
-  }, [])
-
-  React.useEffect(() => {
-    const fetchData = () => {}
-
-    setCurrentWeekDays(getCalendarWeek(currentWeekNumber))
-    // setWeeksCount()
-  }, [currentWeekNumber])
+    setCurrentWeekDays(getCalendarWeek(currentWeekNumber, firstSemesterStart, firstSemesterEnd))
+  }, [currentWeekNumber, settings])
 
   const onTimeSlotClick = (data: Dayjs, lessonNumber: number) => {
     if (!selectedLesson) return alert("Дисципліна не вибрана")
