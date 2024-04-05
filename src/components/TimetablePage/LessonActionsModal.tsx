@@ -21,7 +21,7 @@ import React, { Dispatch, SetStateAction } from 'react'
 
 import { ISelectedTimeSlot } from './Calendar'
 import { useAppDispatch } from '../../store/store'
-import { ISelectedLesson } from '../../pages/TimetablePage/TimetablePage'
+import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
 import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
 import { useSelector } from 'react-redux'
 import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
