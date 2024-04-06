@@ -1,20 +1,20 @@
-import { useSelector } from 'react-redux'
-import React, { Dispatch, SetStateAction } from 'react'
-import { Grid, Stack, Button, MenuItem, TextField, InputLabel } from '@mui/material'
+import { useSelector } from "react-redux"
+import React, { Dispatch, SetStateAction } from "react"
+import { Grid, Stack, Button, MenuItem, TextField, InputLabel } from "@mui/material"
 
-import { useAppDispatch } from '../../store/store'
-import { groupsSelector } from '../../store/groups/groupsSlice'
-import { GroupCategoriesType } from '../../store/groups/groupsTypes'
-import { teachersSelector } from '../../store/teachers/teachersSlice'
-import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
-import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
-import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
-import { getTeachersCategories } from '../../store/teachers/teachersAsyncActions'
-import { getAuditoryCategories } from '../../store/auditories/auditoriesAsyncActions'
-import { setLastSelectedDataToLocalStorage } from '../../utils/setLastSelectedDataToLocalStorage'
-import { getLastSelectedDataToLocalStorage } from '../../utils/getLastSelectedDataToLocalStorage'
-import { TeachersCategoryType } from '../../store/teachers/teachersTypes'
-import { AuditoryCategoriesTypes } from '../../store/auditories/auditoriesTypes'
+import { useAppDispatch } from "../../store/store"
+import { groupsSelector } from "../../store/groups/groupsSlice"
+import { GroupCategoriesType } from "../../store/groups/groupsTypes"
+import { teachersSelector } from "../../store/teachers/teachersSlice"
+import { getGroupCategories } from "../../store/groups/groupsAsyncActions"
+import { auditoriesSelector } from "../../store/auditories/auditoriesSlise"
+import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
+import { getTeachersCategories } from "../../store/teachers/teachersAsyncActions"
+import { getAuditoryCategories } from "../../store/auditories/auditoriesAsyncActions"
+import { setLastSelectedDataToLocalStorage } from "../../utils/setLastSelectedDataToLocalStorage"
+import { getLastSelectedDataToLocalStorage } from "../../utils/getLastSelectedDataToLocalStorage"
+import { TeachersCategoryType } from "../../store/teachers/teachersTypes"
+import { AuditoryCategoriesTypes } from "../../store/auditories/auditoriesTypes"
 
 interface IListItem {
   label: string
@@ -32,12 +32,14 @@ export const useIsMount = () => {
 
 interface ITimetablePageHeaderProps {
   weeksCount: number
+  selectedSemester: 1 | 2
   currentWeekNumber: number
   selectedItemId: number | null
-  scheduleType: 'group' | 'teacher' | 'auditory'
+  scheduleType: "group" | "teacher" | "auditory"
   setCurrentWeekNumber: Dispatch<SetStateAction<number>>
   setSelectedItemId: Dispatch<SetStateAction<number | null>>
-  setScheduleType: Dispatch<SetStateAction<'group' | 'teacher' | 'auditory'>>
+  setSelectedSemester: React.Dispatch<React.SetStateAction<1 | 2>>
+  setScheduleType: Dispatch<SetStateAction<"group" | "teacher" | "auditory">>
 }
 
 const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
@@ -45,8 +47,10 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
   scheduleType,
   selectedItemId,
   setScheduleType,
+  selectedSemester,
   currentWeekNumber,
   setSelectedItemId,
+  setSelectedSemester,
   setCurrentWeekNumber,
 }) => {
   const dispatch = useAppDispatch()
@@ -74,7 +78,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
   React.useEffect(() => {
     if (!selectedCategoryId) return
 
-    if (scheduleType === 'group') {
+    if (scheduleType === "group") {
       if (!groupCategories) return
       const categoriesList = groupCategories.map((el) => ({
         value: el.id,
@@ -86,7 +90,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
 
       setLastSelectedDataToLocalStorage({
         lastSelectedStructuralUnitId: groupCategories[0].id,
-        lastSelectedScheduleType: 'group',
+        lastSelectedScheduleType: "group",
         lastSelectedItemId: groupCategories[0].groups[0]?.id,
       })
 
@@ -95,7 +99,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
       return
     }
 
-    if (scheduleType === 'teacher') {
+    if (scheduleType === "teacher") {
       if (!teachersCategories) return
       const categoriesList = teachersCategories.map((el) => ({
         value: el.id,
@@ -107,7 +111,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
 
       setLastSelectedDataToLocalStorage({
         lastSelectedStructuralUnitId: teachersCategories[0].id,
-        lastSelectedScheduleType: 'teacher',
+        lastSelectedScheduleType: "teacher",
         lastSelectedItemId: teachersCategories[0].teachers[0]?.id,
       })
 
@@ -119,7 +123,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
       return
     }
 
-    if (scheduleType === 'auditory') {
+    if (scheduleType === "auditory") {
       if (!auditoriCategories) return
       const categoriesList = auditoriCategories.map((el) => ({
         value: el.id,
@@ -131,7 +135,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
 
       setLastSelectedDataToLocalStorage({
         lastSelectedStructuralUnitId: auditoriCategories[0].id,
-        lastSelectedScheduleType: 'auditory',
+        lastSelectedScheduleType: "auditory",
         lastSelectedItemId: auditoriCategories[0].auditories[0]?.id,
       })
 
@@ -149,7 +153,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
       const { lastSelectedStructuralUnitId, lastSelectedItemId, lastSelectedScheduleType } =
         getLastSelectedDataToLocalStorage()
 
-      setScheduleType(lastSelectedScheduleType || 'group')
+      setScheduleType(lastSelectedScheduleType || "group")
 
       const groups = await dispatch(getGroupCategories())
       const groupsPayload = groups.payload as GroupCategoriesType[]
@@ -174,12 +178,14 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
       } else {
         // if data exist in local storage
 
-        if (lastSelectedScheduleType === 'group') {
+        if (lastSelectedScheduleType === "group") {
           // if showed groups schedule
           const categoriesList = groupsPayload.map((el) => ({ value: el.id, label: el.name }))
           setCategoriesList(categoriesList)
 
-          const selectedCategory = groupsPayload.find((el) => el.id === lastSelectedStructuralUnitId)
+          const selectedCategory = groupsPayload.find(
+            (el) => el.id === lastSelectedStructuralUnitId
+          )
 
           if (selectedCategory) {
             const itemsList = selectedCategory.groups.map((el) => ({
@@ -190,12 +196,14 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
           }
 
           //
-        } else if (lastSelectedScheduleType === 'teacher') {
+        } else if (lastSelectedScheduleType === "teacher") {
           // if showed teachers schedule
           const categoriesList = teachersPayload.map((el) => ({ value: el.id, label: el.name }))
           setCategoriesList(categoriesList)
 
-          const selectedCategory = teachersPayload.find((el) => el.id === lastSelectedStructuralUnitId)
+          const selectedCategory = teachersPayload.find(
+            (el) => el.id === lastSelectedStructuralUnitId
+          )
 
           if (selectedCategory) {
             const itemsList = selectedCategory.teachers.map((el) => ({
@@ -206,12 +214,14 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
           }
 
           //
-        } else if (lastSelectedScheduleType === 'auditory') {
+        } else if (lastSelectedScheduleType === "auditory") {
           // if showed auditories schedule
           const categoriesList = auditoryPayload.map((el) => ({ value: el.id, label: el.name }))
           setCategoriesList(categoriesList)
 
-          const selectedCategory = auditoryPayload.find((el) => el.id === lastSelectedStructuralUnitId)
+          const selectedCategory = auditoryPayload.find(
+            (el) => el.id === lastSelectedStructuralUnitId
+          )
 
           if (selectedCategory) {
             const itemsList = selectedCategory.auditories.map((el) => ({
@@ -238,7 +248,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
 
     const { lastSelectedItemId, lastSelectedStructuralUnitId } = getLastSelectedDataToLocalStorage()
 
-    if (scheduleType === 'group') {
+    if (scheduleType === "group") {
       if (!groupCategories) return
       const category = groupCategories.find((el) => el.id === selectedCategoryId)
 
@@ -254,7 +264,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
       return
     }
 
-    if (scheduleType === 'teacher') {
+    if (scheduleType === "teacher") {
       if (!teachersCategories) return
       const category = teachersCategories.find((el) => el.id === selectedCategoryId)
       if (!category) return
@@ -272,7 +282,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
       return
     }
 
-    if (scheduleType === 'auditory') {
+    if (scheduleType === "auditory") {
       if (!auditoriCategories) return
       const category = auditoriCategories.find((el) => el.id === selectedCategoryId)
       if (!category) return
@@ -288,19 +298,21 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
   }, [selectedCategoryId])
 
   return (
-    <Grid container sx={{ display: 'flex', alignItems: 'flex-end' }}>
-      <Grid item sx={{ flexGrow: 1, display: 'flex', alignItems: 'flex-end', gap: 3 }}>
+    <Grid container sx={{ display: "flex", alignItems: "flex-end" }}>
+      <Grid item sx={{ flexGrow: 1, display: "flex", alignItems: "flex-end", gap: 3 }}>
         <Stack spacing={1} sx={{ mt: 2 }}>
           <InputLabel htmlFor="category">Структурний підрозділ</InputLabel>
           <TextField
             select
             size="small"
             id="category"
-            sx={{ width: '300px' }}
+            sx={{ width: "300px" }}
             value={String(selectedCategoryId)}
             onChange={(e) => {
               setSelectedCategoryId(Number(e.target.value))
-              setLastSelectedDataToLocalStorage({ lastSelectedStructuralUnitId: Number(e.target.value) })
+              setLastSelectedDataToLocalStorage({
+                lastSelectedStructuralUnitId: Number(e.target.value),
+              })
             }}
           >
             {categoriesList.map((option) => (
@@ -313,9 +325,9 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
 
         <Stack spacing={1} sx={{ mt: 2 }}>
           <InputLabel htmlFor="category">
-            {scheduleType === 'group' && 'Група'}
-            {scheduleType === 'teacher' && 'Викладач'}
-            {scheduleType === 'auditory' && 'Аудиторія'}
+            {scheduleType === "group" && "Група"}
+            {scheduleType === "teacher" && "Викладач"}
+            {scheduleType === "auditory" && "Аудиторія"}
           </InputLabel>
           <TextField
             select
@@ -328,7 +340,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
                 lastSelectedItemId: Number(e.target.value),
               })
             }}
-            sx={{ width: '160px' }}
+            sx={{ width: "160px" }}
           >
             {itemsList.map((option) => (
               <MenuItem key={option.value} value={option.value}>
@@ -344,13 +356,17 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
             select
             size="small"
             id="category"
-            value={'1'}
-            onChange={(e) => console.log(Number(e.target.value))}
-            sx={{ width: '100px' }}
+            value={selectedSemester}
+            onChange={(e) => {
+              const semester = Number(e.target.value) as 1 | 2
+              setSelectedSemester(semester)
+              setLastSelectedDataToLocalStorage({ lastOpenedSemester: semester })
+            }}
+            sx={{ width: "100px" }}
           >
             {[
-              { value: '1', label: '1' },
-              { value: '2', label: '2' },
+              { value: 1, label: 1 },
+              { value: 2, label: 2 },
             ].map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -370,7 +386,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
               setCurrentWeekNumber(Number(e.target.value))
               setLastSelectedDataToLocalStorage({ lastOpenedWeek: Number(e.target.value) })
             }}
-            sx={{ width: '100px' }}
+            sx={{ width: "100px" }}
           >
             {weeksList().map((option) => (
               <MenuItem key={option.value} value={option.value}>
@@ -385,28 +401,28 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
         <Stack direction="row" alignItems="center" spacing={0}>
           <Button
             size="small"
-            onClick={() => setScheduleType('group')}
-            sx={{ width: '100px', py: 0.674 }}
-            color={scheduleType === 'group' ? 'primary' : 'secondary'}
-            variant={scheduleType === 'group' ? 'outlined' : 'text'}
+            onClick={() => setScheduleType("group")}
+            sx={{ width: "100px", py: 0.674 }}
+            color={scheduleType === "group" ? "primary" : "secondary"}
+            variant={scheduleType === "group" ? "outlined" : "text"}
           >
             Група
           </Button>
           <Button
             size="small"
-            onClick={() => setScheduleType('teacher')}
-            sx={{ width: '100px', py: 0.674 }}
-            color={scheduleType === 'teacher' ? 'primary' : 'secondary'}
-            variant={scheduleType === 'teacher' ? 'outlined' : 'text'}
+            onClick={() => setScheduleType("teacher")}
+            sx={{ width: "100px", py: 0.674 }}
+            color={scheduleType === "teacher" ? "primary" : "secondary"}
+            variant={scheduleType === "teacher" ? "outlined" : "text"}
           >
             Викладач
           </Button>
           <Button
             size="small"
-            onClick={() => setScheduleType('auditory')}
-            sx={{ width: '100px', py: 0.674 }}
-            color={scheduleType === 'auditory' ? 'primary' : 'secondary'}
-            variant={scheduleType === 'auditory' ? 'outlined' : 'text'}
+            onClick={() => setScheduleType("auditory")}
+            sx={{ width: "100px", py: 0.674 }}
+            color={scheduleType === "auditory" ? "primary" : "secondary"}
+            variant={scheduleType === "auditory" ? "outlined" : "text"}
           >
             Аудиторія
           </Button>

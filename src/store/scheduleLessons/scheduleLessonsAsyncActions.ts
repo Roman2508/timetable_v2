@@ -1,15 +1,16 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
-import { ScheduleLessonType } from "./scheduleLessonsTypes"
-import { setLoadingStatus } from "./scheduleLessonsSlice"
-import { LoadingStatusTypes } from "../appTypes"
-import { groupLoadLessonsAPI, scheduleLessonsAPI } from "../../api/api"
-import { setAppAlert } from "../appStatus/appStatusSlice"
+
 import {
-  CreateScheduleLessonsPayloadType,
-  FindLessonsForSchedulePayloadType,
   GetScheduleLessonsPayloadType,
   UpdateScheduleLessonsPayloadType,
+  CreateScheduleLessonsPayloadType,
+  FindLessonsForSchedulePayloadType,
 } from "../../api/apiTypes"
+import { LoadingStatusTypes } from "../appTypes"
+import { setLoadingStatus } from "./scheduleLessonsSlice"
+import { setAppAlert } from "../appStatus/appStatusSlice"
+import { ScheduleLessonType } from "./scheduleLessonsTypes"
+import { groupLoadLessonsAPI, scheduleLessonsAPI } from "../../api/api"
 
 export const getScheduleLessons = createAsyncThunk(
   "schedule-lessons/getScheduleLessons",
@@ -38,6 +39,7 @@ export const getScheduleLessons = createAsyncThunk(
 export const createScheduleLesson = createAsyncThunk(
   "schedule-lessons/createScheduleLesson",
   async (payload: CreateScheduleLessonsPayloadType, thunkAPI): Promise<ScheduleLessonType> => {
+    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     try {

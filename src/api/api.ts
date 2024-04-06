@@ -52,7 +52,7 @@ const instanse = axios.create({
 instanse.interceptors.request.use((config) => {
   if (config.headers) {
     config.headers.Authorization = String(
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzA5NzM2NjgwLCJleHAiOjE3MTIzMjg2ODB9.2kHG4Wrj1jQlsyuWRiaQP1NgE6SdhCbYSnSw1A41zwA"
+      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzEyNDEyODAzLCJleHAiOjE3MTUwMDQ4MDN9.wDQIBoCmIQEDvpWIGg8uEmxZd7mJHp8cRdTfz1VKZzs"
     )
     // config.headers.Authorization = String(window.localStorage.getItem('token'))
 
