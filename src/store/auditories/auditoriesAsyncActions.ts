@@ -17,7 +17,7 @@ export const getAuditoryCategories = createAsyncThunk(
 
     try {
       const { data } = await auditoriesAPI.getAuditoryCategories()
-      thunkAPI.dispatch(setAppAlert({ message: 'Аудиторії завантажено', status: 'success' }))
+      // thunkAPI.dispatch(setAppAlert({ message: 'Аудиторії завантажено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {

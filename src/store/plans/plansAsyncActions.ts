@@ -5,8 +5,8 @@ import { LoadingStatusTypes } from '../appTypes'
 import { setAppAlert } from '../appStatus/appStatusSlice'
 import {
   CreateSubjectPayloadType,
-  UpdateSubjectHoursPayloadType,
   UpdateSubjectNamePayloadType,
+  UpdateSubjectHoursPayloadType,
 } from '../../api/apiTypes'
 
 /* category */
@@ -16,7 +16,7 @@ export const getPlansCategories = createAsyncThunk('plans/getPlansCategories', a
 
   try {
     const { data } = await plansAPI.getPlansCategories()
-    thunkAPI.dispatch(setAppAlert({ message: 'Плани завантажено', status: 'success' }))
+    // thunkAPI.dispatch(setAppAlert({ message: 'Плани завантажено', status: 'success' }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
     return data
   } catch (error: any) {

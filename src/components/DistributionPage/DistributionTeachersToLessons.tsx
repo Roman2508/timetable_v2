@@ -14,6 +14,7 @@ import { GroupLoadType } from '../../store/groups/groupsTypes'
 import { TeachersType } from '../../store/teachers/teachersTypes'
 import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
 import { attachTeacher, unpinTeacher } from '../../store/groups/groupsAsyncActions'
+import { sortLessonsByLessonType } from '../../utils/sortLessonsByLessonType'
 
 export type AttachmentTypes = 'attach-one' | 'attach-all' | 'unpin-one' | 'unpin-all'
 
@@ -78,18 +79,6 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
     }
   }
 
-  const sortLessonsByLessonType = (): GroupLoadType[] => {
-    if (!selectedLesson) return []
-    const sortOrder = ['ЛК', 'ПЗ', 'ЛАБ', 'СЕМ', 'ЕКЗ', 'КОНС', 'МЕТОД']
-    const lessonsCopy = JSON.parse(JSON.stringify(selectedLesson))
-
-    lessonsCopy.sort((a: GroupLoadType, b: GroupLoadType) => {
-      return sortOrder.indexOf(a.typeRu) - sortOrder.indexOf(b.typeRu)
-    })
-
-    return lessonsCopy
-  }
-
   return (
     <Grid item xs={12} sx={{ mb: 2 }}>
       <MainCard>
@@ -117,8 +106,9 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
 
         <form autoComplete="off">
           {!selectedLesson && <EmptyCard />}
+
           {selectedLesson &&
-            sortLessonsByLessonType().map((lesson) => {
+            sortLessonsByLessonType(selectedLesson).map((lesson) => {
               const stream = lesson.stream ? `${lesson.stream.name}` : ''
               const subgroup = lesson.subgroupNumber ? `підгр. ${lesson.subgroupNumber}` : ''
               const remark = (stream || subgroup) && `(${stream} ${subgroup})`

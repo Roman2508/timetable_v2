@@ -1,11 +1,10 @@
-import React from 'react'
-import { customDayjs } from '../components/Calendar/Calendar'
 import { Dayjs } from 'dayjs'
+import { customDayjs } from '../components/Calendar/Calendar'
 
 const testStart = '2024-01-01'
 const testEnd = '2024-03-03'
 
-type WeekType = {
+export type WeekType = {
   data: Dayjs
   start: string
   end: string

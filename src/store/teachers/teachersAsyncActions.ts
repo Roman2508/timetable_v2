@@ -19,7 +19,7 @@ export const getTeachersCategories = createAsyncThunk(
 
     try {
       const { data } = await teachersAPI.getTeachersCategories()
-      thunkAPI.dispatch(setAppAlert({ message: 'Викладачів завантажено', status: 'success' }))
+      // thunkAPI.dispatch(setAppAlert({ message: 'Викладачів завантажено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {

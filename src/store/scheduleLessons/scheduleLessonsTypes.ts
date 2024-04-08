@@ -1,11 +1,15 @@
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupLoadType } from "../groups/groupsTypes"
-import { StreamsType } from "../streams/streamsTypes"
-import { TeachersType } from "../teachers/teachersTypes"
-import { AuditoriesTypes } from "../auditories/auditoriesTypes"
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupLoadType } from '../groups/groupsTypes'
+import { StreamsType } from '../streams/streamsTypes'
+import { TeachersType } from '../teachers/teachersTypes'
+import { AuditoriesTypes } from '../auditories/auditoriesTypes'
 
 export type ScheduleLessonInitialStateType = {
   scheduleLessons: ScheduleLessonType[] | null
+
+  teacherLessons: ScheduleLessonType[] | null
+  // auditoriesLessons: ScheduleLessonType[] | null
+
   groupLoad: GroupLoadType[] | null
   loadingStatus: LoadingStatusTypes
 }
@@ -16,8 +20,8 @@ export type ScheduleLessonType = {
   date: Date
   lessonNumber: number
   semester: number
-  totalHours: number
-  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ"
+  hours: number
+  typeRu: 'ЛК' | 'ПЗ' | 'ЛАБ' | 'СЕМ' | 'ЕКЗ'
   students: number
   replacement: TeachersType
   note: string

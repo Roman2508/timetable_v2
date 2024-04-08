@@ -13,7 +13,7 @@ export const getSettings = createAsyncThunk(
 
     try {
       const { data } = await settingsAPI.getSettings(id)
-      thunkAPI.dispatch(setAppAlert({ message: "Налаштування завантажено", status: "success" }))
+      // thunkAPI.dispatch(setAppAlert({ message: "Налаштування завантажено", status: "success" }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {

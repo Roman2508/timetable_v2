@@ -6,6 +6,7 @@ import {
   deleteScheduleLesson,
   updateScheduleLesson,
   findLessonsForSchedule,
+  getTeacherLessons,
 } from './scheduleLessonsAsyncActions'
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
@@ -14,6 +15,7 @@ import { ScheduleLessonInitialStateType, ScheduleLessonType } from './scheduleLe
 
 const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
   groupLoad: null,
+  teacherLessons: null,
   scheduleLessons: null,
   loadingStatus: LoadingStatusTypes.NEVER,
 }
@@ -30,6 +32,11 @@ const scheduleLessonsSlice = createSlice({
     /* getScheduleLessons */
     builder.addCase(getScheduleLessons.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
       state.scheduleLessons = action.payload
+    })
+
+    /* getTeacherLessons */
+    builder.addCase(getTeacherLessons.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
+      state.teacherLessons = action.payload
     })
 
     /* createScheduleLesson */
