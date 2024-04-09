@@ -193,6 +193,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
           {selectedLesson.subgroupNumber ? `${selectedLesson.subgroupNumber} підгрупа` : ''}{' '}
           {selectedLesson.stream ? `| Потік: ${selectedLesson.stream.name}` : ''}
         </Typography>
+
         <Typography sx={{ fontSize: '14px', fontweight: 400, letterSpacing: '.2px', padding: '0 16px 4px' }}>
           {dayName}, {selectedTimeSlot.data.format('DD MMMM')} ⋅ {lessonsTime[selectedTimeSlot.lessonNumber - 1]}
         </Typography>
