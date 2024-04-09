@@ -1,21 +1,23 @@
-import React, { Dispatch, SetStateAction } from 'react'
-import cn from 'classnames'
-import { Dayjs } from 'dayjs'
+import React, { Dispatch, SetStateAction } from "react"
+import cn from "classnames"
+import { Dayjs } from "dayjs"
 
-import { customDayjs } from '../Calendar/Calendar'
-import { WeekType } from '../../utils/getCalendarWeek'
-import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
-import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
-import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsTypes'
+import { customDayjs } from "../Calendar/Calendar"
+import { WeekType } from "../../utils/getCalendarWeek"
+import { ISelectedLesson } from "../../pages/Timetable/TimetablePage"
+import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
+import { ScheduleLessonType } from "../../store/scheduleLessons/scheduleLessonsTypes"
+import { useAppDispatch } from "../../store/store"
+import { getAuditoryOverlay } from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
 
-const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд']
+const dayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
 
 const colors = {
-  ['ЛК']: 'rgb(232, 255, 82)',
-  ['ПЗ']: 'rgb(24, 176, 71)',
-  ['ЛАБ']: 'rgb(43, 163, 185)',
-  ['СЕМ']: 'rgb(82, 27, 172)',
-  ['ЕКЗ']: 'rgb(176, 24, 24)',
+  ["ЛК"]: "rgb(232, 255, 82)",
+  ["ПЗ"]: "rgb(24, 176, 71)",
+  ["ЛАБ"]: "rgb(43, 163, 185)",
+  ["СЕМ"]: "rgb(82, 27, 172)",
+  ["ЕКЗ"]: "rgb(176, 24, 24)",
 }
 
 interface ICalendarDayProps {
@@ -39,26 +41,34 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
   onTimeSlotClick,
   setIsAddNewLesson,
 }) => {
+  const dispatch = useAppDispatch()
+
+  const onGetAuditoryOverlay = (_date: Dayjs, lessonNumber: number) => {
+    const date = customDayjs(_date).format("YYYY.MM.DD")
+
+    dispatch(getAuditoryOverlay({ date, lessonNumber }))
+  }
+
   return (
     <div className="day">
-      <div className="day-name" style={{ userSelect: 'none' }}>
+      <div className="day-name" style={{ userSelect: "none" }}>
         {dayNames[index]} {day.start}
       </div>
 
       {[1, 2, 3, 4, 5, 6, 7].map((lessonNumber) => {
         const lesson = scheduleLessons?.find((el) => {
-          const lessonDate = customDayjs(el.date).format('DD.MM')
+          const lessonDate = customDayjs(el.date).format("DD.MM")
           return lessonDate === day.start && el.lessonNumber === lessonNumber
         })
 
         // Накладки
         const overlay = teacherLessons?.find((el) => {
-          const lessonDate = customDayjs(el.date).format('DD.MM')
+          const lessonDate = customDayjs(el.date).format("DD.MM")
           return lessonDate === day.start && el.lessonNumber === lessonNumber
         })
 
-        const teacherName = lesson ? getLastnameAndInitials(lesson.teacher) : ''
-        const overlayTeacherName = overlay ? getLastnameAndInitials(overlay.teacher) : ''
+        const teacherName = lesson ? getLastnameAndInitials(lesson.teacher) : ""
+        const overlayTeacherName = overlay ? getLastnameAndInitials(overlay.teacher) : ""
 
         const isSame =
           selectedLesson?.group?.id !== undefined &&
@@ -73,8 +83,11 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
             {/* Виставлений елемент розкладу */}
             {lesson && (
               <div
-                className={cn('time-slot', { selected: isSame })}
-                onClick={() => onEditLesson(lesson, day.data, lessonNumber)}
+                className={cn("time-slot", { selected: isSame })}
+                onClick={() => {
+                  onEditLesson(lesson, day.data, lessonNumber)
+                  onGetAuditoryOverlay(day.data, lessonNumber)
+                }}
                 style={lesson ? { backgroundColor: colors[lesson.typeRu] } : {}}
               >
                 {lesson && `${lesson.name} (${lesson.typeRu})`}
@@ -87,7 +100,7 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
 
             {/* Накладки викладача */}
             {!lesson && overlay && (
-              <div className={'time-slot'} style={{ color: 'red', cursor: 'default' }}>
+              <div className={"time-slot"} style={{ color: "red", cursor: "default" }}>
                 {`${overlay.name} (${overlay.typeRu})`}
                 <br />
                 {overlay.group.name}
@@ -101,10 +114,11 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
             {/* Пустий слот */}
             {!lesson && !overlay && (
               <div
-                className={'time-slot'}
+                className={"time-slot"}
                 onClick={() => {
                   setIsAddNewLesson(true)
                   onTimeSlotClick(day.data, lessonNumber)
+                  onGetAuditoryOverlay(day.data, lessonNumber)
                 }}
               ></div>
             )}

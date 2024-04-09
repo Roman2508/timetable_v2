@@ -7,6 +7,7 @@ import {
   updateScheduleLesson,
   findLessonsForSchedule,
   getTeacherLessons,
+  getAuditoryOverlay,
 } from "./scheduleLessonsAsyncActions"
 import { RootState } from "../store"
 import { LoadingStatusTypes } from "../appTypes"
@@ -16,6 +17,7 @@ import { ScheduleLessonInitialStateType, ScheduleLessonType } from "./scheduleLe
 const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
   groupLoad: null,
   teacherLessons: null,
+  auditoryOverlay: null,
   scheduleLessons: null,
   loadingStatus: LoadingStatusTypes.NEVER,
 }
@@ -33,44 +35,37 @@ const scheduleLessonsSlice = createSlice({
   },
   extraReducers: (builder) => {
     /* getScheduleLessons */
-    builder.addCase(
-      getScheduleLessons.fulfilled,
-      (state, action: PayloadAction<ScheduleLessonType[]>) => {
-        state.scheduleLessons = action.payload
-      }
-    )
+    builder.addCase(getScheduleLessons.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
+      state.scheduleLessons = action.payload
+    })
 
     /* getTeacherLessons */
-    builder.addCase(
-      getTeacherLessons.fulfilled,
-      (state, action: PayloadAction<ScheduleLessonType[]>) => {
-        state.teacherLessons = action.payload
-      }
-    )
+    builder.addCase(getTeacherLessons.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
+      state.teacherLessons = action.payload
+    })
+
+    /* getAuditoryOverlay */
+    builder.addCase(getAuditoryOverlay.fulfilled, (state, action: PayloadAction<{ id: number; name: string }[]>) => {
+      state.auditoryOverlay = action.payload
+    })
 
     /* createScheduleLesson */
-    builder.addCase(
-      createScheduleLesson.fulfilled,
-      (state, action: PayloadAction<ScheduleLessonType>) => {
-        if (!state.scheduleLessons) return
-        state.scheduleLessons.push(action.payload)
-      }
-    )
+    builder.addCase(createScheduleLesson.fulfilled, (state, action: PayloadAction<ScheduleLessonType>) => {
+      if (!state.scheduleLessons) return
+      state.scheduleLessons.push(action.payload)
+    })
 
     /* updateScheduleLesson */
-    builder.addCase(
-      updateScheduleLesson.fulfilled,
-      (state, action: PayloadAction<ScheduleLessonType>) => {
-        if (!state.scheduleLessons) return
-        const updatedLessons = state.scheduleLessons.map((el) => {
-          if (el.id === action.payload.id) {
-            return { ...el, ...action.payload }
-          }
-          return el
-        })
-        state.scheduleLessons = updatedLessons
-      }
-    )
+    builder.addCase(updateScheduleLesson.fulfilled, (state, action: PayloadAction<ScheduleLessonType>) => {
+      if (!state.scheduleLessons) return
+      const updatedLessons = state.scheduleLessons.map((el) => {
+        if (el.id === action.payload.id) {
+          return { ...el, ...action.payload }
+        }
+        return el
+      })
+      state.scheduleLessons = updatedLessons
+    })
 
     /* deleteScheduleLesson */
     builder.addCase(deleteScheduleLesson.fulfilled, (state, action: PayloadAction<number>) => {
@@ -80,12 +75,9 @@ const scheduleLessonsSlice = createSlice({
     })
 
     /* findLessonsForSchedule */
-    builder.addCase(
-      findLessonsForSchedule.fulfilled,
-      (state, action: PayloadAction<GroupLoadType[]>) => {
-        state.groupLoad = action.payload
-      }
-    )
+    builder.addCase(findLessonsForSchedule.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
+      state.groupLoad = action.payload
+    })
     builder.addCase(findLessonsForSchedule.rejected, (state) => {
       state.groupLoad = []
     })
