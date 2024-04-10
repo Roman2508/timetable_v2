@@ -1,124 +1,199 @@
-import React, { Dispatch, SetStateAction } from "react"
-import cn from "classnames"
-import { Dayjs } from "dayjs"
+import cn from 'classnames'
+import { Dayjs } from 'dayjs'
+import React, { Dispatch, SetStateAction } from 'react'
 
-import { customDayjs } from "../Calendar/Calendar"
-import { WeekType } from "../../utils/getCalendarWeek"
-import { ISelectedLesson } from "../../pages/Timetable/TimetablePage"
-import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
-import { ScheduleLessonType } from "../../store/scheduleLessons/scheduleLessonsTypes"
-import { useAppDispatch } from "../../store/store"
-import { getAuditoryOverlay } from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
+import { customDayjs } from '../Calendar/Calendar'
+import { useAppDispatch } from '../../store/store'
+import { WeekType } from '../../utils/getCalendarWeek'
+import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
+import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
+import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsTypes'
+import { getAuditoryOverlay } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import { useSelector } from 'react-redux'
+import { settingsSelector } from '../../store/settings/settingsSlice'
+import { SettingsType } from '../../store/settings/settingsTypes'
 
-const dayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
+const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд']
 
 const colors = {
-  ["ЛК"]: "rgb(232, 255, 82)",
-  ["ПЗ"]: "rgb(24, 176, 71)",
-  ["ЛАБ"]: "rgb(43, 163, 185)",
-  ["СЕМ"]: "rgb(82, 27, 172)",
-  ["ЕКЗ"]: "rgb(176, 24, 24)",
+  ['ЛК']: 'rgb(232, 255, 82)',
+  ['ПЗ']: 'rgb(24, 176, 71)',
+  ['ЛАБ']: 'rgb(43, 163, 185)',
+  ['СЕМ']: 'rgb(82, 27, 172)',
+  ['ЕКЗ']: 'rgb(176, 24, 24)',
 }
 
 interface ICalendarDayProps {
   index: number
   day: WeekType
+  selectedSemester: 1 | 2
+  settings: SettingsType | null
   selectedLesson: ISelectedLesson | null
   teacherLessons: ScheduleLessonType[] | null
   scheduleLessons: ScheduleLessonType[] | null
   setIsAddNewLesson: Dispatch<SetStateAction<boolean>>
   onTimeSlotClick: (data: Dayjs, lessonNumber: number) => void
   onEditLesson: (lesson: ScheduleLessonType, data: Dayjs, lessonNumber: number) => void
+  handleOpenSeveralLessonModal: (
+    scheduledElement: ScheduleLessonType,
+    date: Dayjs,
+    lessonNumber: number,
+    auditoryId: number
+  ) => void
 }
 
 const CalendarDay: React.FC<ICalendarDayProps> = ({
   day,
   index,
+  settings,
   onEditLesson,
   selectedLesson,
   teacherLessons,
   scheduleLessons,
   onTimeSlotClick,
+  selectedSemester,
   setIsAddNewLesson,
+  handleOpenSeveralLessonModal,
 }) => {
   const dispatch = useAppDispatch()
 
-  const onGetAuditoryOverlay = (_date: Dayjs, lessonNumber: number) => {
-    const date = customDayjs(_date).format("YYYY.MM.DD")
+  // if true day is outside the semester
+  const [isDayOutsideTheSemester, setIsDayOutsideTheSemester] = React.useState(false)
 
-    dispatch(getAuditoryOverlay({ date, lessonNumber }))
+  const onGetAuditoryOverlay = (_date: Dayjs, lessonNumber: number, auditoryId: number) => {
+    const date = customDayjs(_date).format('YYYY.MM.DD')
+    dispatch(getAuditoryOverlay({ date, lessonNumber, auditoryId }))
   }
+
+  const checkIsAvailable = () => {
+    // if return true day is outside the semester
+    if (!settings) return false
+
+    const semesterStart =
+      settings && selectedSemester === 1 ? settings.firstSemesterStart : settings.secondSemesterStart
+    const semesterEnd = settings && selectedSemester === 1 ? settings.firstSemesterEnd : settings.secondSemesterEnd
+
+    const isDayBeforeStartOfSemester = customDayjs(day.data).isBefore(semesterStart)
+    const isDayAfterEndOfSemester = customDayjs(day.data).isAfter(semesterEnd)
+
+    if (isDayBeforeStartOfSemester || isDayAfterEndOfSemester) return true
+    else return false
+  }
+
+  React.useEffect(() => {
+    setIsDayOutsideTheSemester(checkIsAvailable())
+  }, [selectedSemester])
 
   return (
     <div className="day">
-      <div className="day-name" style={{ userSelect: "none" }}>
+      <div className="day-name" style={{ userSelect: 'none' }}>
         {dayNames[index]} {day.start}
       </div>
 
       {[1, 2, 3, 4, 5, 6, 7].map((lessonNumber) => {
-        const lesson = scheduleLessons?.find((el) => {
-          const lessonDate = customDayjs(el.date).format("DD.MM")
+        const lesson = scheduleLessons?.filter((el) => {
+          const lessonDate = customDayjs(el.date).format('DD.MM')
           return lessonDate === day.start && el.lessonNumber === lessonNumber
         })
 
         // Накладки
         const overlay = teacherLessons?.find((el) => {
-          const lessonDate = customDayjs(el.date).format("DD.MM")
+          const lessonDate = customDayjs(el.date).format('DD.MM')
           return lessonDate === day.start && el.lessonNumber === lessonNumber
         })
 
-        const teacherName = lesson ? getLastnameAndInitials(lesson.teacher) : ""
-        const overlayTeacherName = overlay ? getLastnameAndInitials(overlay.teacher) : ""
-
-        const isSame =
-          selectedLesson?.group?.id !== undefined &&
-          selectedLesson?.group?.id === lesson?.group?.id &&
-          selectedLesson?.typeRu === lesson?.typeRu &&
-          selectedLesson?.subgroupNumber === lesson?.subgroupNumber &&
-          selectedLesson?.stream?.id === lesson?.stream?.id &&
-          selectedLesson?.name === lesson?.name
+        const overlayTeacherName = overlay ? getLastnameAndInitials(overlay.teacher) : ''
 
         return (
           <React.Fragment key={`${day.start}-${lessonNumber}`}>
             {/* Виставлений елемент розкладу */}
-            {lesson && (
+            {!!lesson?.length && (
               <div
-                className={cn("time-slot", { selected: isSame })}
+                className={cn('time-slot' /* { selected: isSame } */)}
                 onClick={() => {
-                  onEditLesson(lesson, day.data, lessonNumber)
-                  onGetAuditoryOverlay(day.data, lessonNumber)
+                  handleOpenSeveralLessonModal(lesson[0], day.data, lessonNumber, lesson[0].auditory.id)
+                  // onEditLesson(lesson, day.data, lessonNumber)
+                  // onGetAuditoryOverlay(day.data, lessonNumber, lesson.auditory.id)
                 }}
-                style={lesson ? { backgroundColor: colors[lesson.typeRu] } : {}}
+                style={lesson && lesson[0] ? { backgroundColor: colors[lesson[0].typeRu] } : {}}
               >
-                {lesson && `${lesson.name} (${lesson.typeRu})`}
-                <br />
-                {lesson && teacherName}
-                <br />
-                {lesson && lesson.auditory.name}
+                {!!lesson.length &&
+                  lesson.map((l) => {
+                    const teacherName = lesson && lesson[0] ? getLastnameAndInitials(l.teacher) : ''
+
+                    const severalLessonsClassName =
+                      lesson.length === 1
+                        ? 'lesson-1'
+                        : lesson.length === 2
+                        ? 'lesson-2'
+                        : lesson.length === 3
+                        ? 'lesson-3'
+                        : 'lesson-4'
+
+                    const isSame =
+                      selectedLesson?.group?.id !== undefined &&
+                      lesson !== undefined &&
+                      selectedLesson?.group?.id === l.group?.id &&
+                      selectedLesson?.typeRu === l.typeRu &&
+                      selectedLesson?.subgroupNumber === l.subgroupNumber &&
+                      selectedLesson?.stream?.id === l.stream?.id &&
+                      selectedLesson?.name === l.name
+
+                    return (
+                      <div
+                        className={cn(severalLessonsClassName, { selected: isSame })}
+                        style={{ backgroundColor: colors[l.typeRu] }}
+                      >
+                        <p className="time-slot-lesson-name">{l.name}</p>
+
+                        <p>
+                          {`(${l.typeRu}) 
+                          ${l.subgroupNumber ? ` підгр.${l.subgroupNumber}` : ''} 
+                          ${l.stream ? ` Потік ${l.stream.name} ` : ''}`}
+                          {l.specialization ? `${l.specialization} спец.` : ''}
+                        </p>
+
+                        <p>{teacherName}</p>
+                        <p>{l.auditory.name} ауд.</p>
+                      </div>
+                    )
+                  })}
               </div>
             )}
 
             {/* Накладки викладача */}
-            {!lesson && overlay && (
-              <div className={"time-slot"} style={{ color: "red", cursor: "default" }}>
-                {`${overlay.name} (${overlay.typeRu})`}
-                <br />
-                {overlay.group.name}
-                <br />
-                {overlayTeacherName}
-                <br />
-                {overlay.auditory.name}
+            {!lesson?.length && overlay && (
+              <div className={'time-slot'} style={{ color: 'red', cursor: 'default' }}>
+                {overlay && (
+                  <>
+                    <p className="time-slot-lesson-name">{overlay.name}</p>
+
+                    <p>
+                      {`(${overlay.typeRu}) 
+                      ${overlay.subgroupNumber ? ` підгр.${overlay.subgroupNumber}` : ''} 
+                      ${overlay.stream ? ` Потік ${overlay.stream.name} ` : ''}`}
+                      {overlay.specialization ? `${overlay.specialization} спец.` : ''}
+                    </p>
+
+                    <p>{overlayTeacherName}</p>
+                    <p>{overlay.auditory.name} ауд.</p>
+                  </>
+                )}
               </div>
             )}
 
             {/* Пустий слот */}
-            {!lesson && !overlay && (
+            {!lesson?.length && !overlay && (
               <div
-                className={"time-slot"}
+                style={isDayOutsideTheSemester ? { background: '#ededed', cursor: 'default' } : {}}
+                className={'time-slot'}
                 onClick={() => {
-                  setIsAddNewLesson(true)
-                  onTimeSlotClick(day.data, lessonNumber)
-                  onGetAuditoryOverlay(day.data, lessonNumber)
+                  // check is day outside a semester dates range
+                  if (!isDayOutsideTheSemester) {
+                    setIsAddNewLesson(true)
+                    onTimeSlotClick(day.data, lessonNumber)
+                    onGetAuditoryOverlay(day.data, lessonNumber, 0)
+                  }
                 }}
               ></div>
             )}

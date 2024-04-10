@@ -5,12 +5,14 @@ interface IgetLessonRemarkProps {
   stream: GroupLoadStreamType | StreamsType | null
   subgroupNumber: number | null
   typeRu: 'ЛК' | 'ПЗ' | 'ЛАБ' | 'СЕМ' | 'ЕКЗ' | 'КОНС' | 'МЕТОД'
+  specialization: string | null
 }
 
-const getLessonRemark = ({ stream, subgroupNumber, typeRu }: IgetLessonRemarkProps): string => {
+const getLessonRemark = ({ stream, subgroupNumber, typeRu, specialization }: IgetLessonRemarkProps): string => {
   const streamName = stream ? ` ⋅ ${stream.name}` : ''
   const subgroup = subgroupNumber ? ` ⋅ п.${subgroupNumber}` : ''
-  const remark = typeRu + streamName + subgroup
+  const spec = specialization ? ` ⋅ ${specialization} спец. ` : ''
+  const remark = typeRu + streamName + spec + subgroup
 
   return remark
 }

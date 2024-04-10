@@ -294,8 +294,8 @@ export const scheduleLessonsAPI = {
     return instanse.get<ScheduleLessonType[]>(`/schedule-lessons/${semester}/${type}/${id}`)
   },
   getAuditoryOverlay(payload: GetAuditoryOverlayPayloadType) {
-    const { date, lessonNumber } = payload
-    return instanse.get<{ id: number; name: string }[]>(`/schedule-lessons/overlay/${date}/${lessonNumber}`)
+    const { date, lessonNumber, auditoryId } = payload
+    return instanse.get<{ id: number; name: string }[]>(`/schedule-lessons/overlay/${date}/${lessonNumber}/${auditoryId}`)
   },
   create(payload: CreateScheduleLessonsPayloadType) {
     return instanse.post<ScheduleLessonType>(`/schedule-lessons`, payload)

@@ -94,6 +94,7 @@ const LessonsTable: React.FC<ILessonsTable> = ({
       totalHours: lesson.hours,
       students: lesson.students,
       subgroupNumber: lesson.subgroupNumber,
+      specialization: lesson.specialization,
       group: { id: lesson.group.id, name: lesson.group.name },
     })
     setSelectedTeacherId(lesson.teacher.id)
@@ -153,6 +154,7 @@ const LessonsTable: React.FC<ILessonsTable> = ({
             stream: lesson.stream,
             typeRu: lesson.typeRu,
             subgroupNumber: lesson.subgroupNumber,
+            specialization: lesson.specialization,
           })
 
           const exhibitedLessonsCount = findLessonsCountForLessonsTable(
@@ -169,7 +171,8 @@ const LessonsTable: React.FC<ILessonsTable> = ({
             lesson.group.id === selectedLesson?.group.id &&
             lesson.stream?.id === selectedLesson?.stream?.id &&
             lesson.subgroupNumber === selectedLesson?.subgroupNumber &&
-            lesson.typeRu === selectedLesson?.typeRu
+            lesson.typeRu === selectedLesson?.typeRu &&
+            lesson.specialization === selectedLesson?.specialization
 
           return (
             <TableRow
@@ -210,56 +213,6 @@ const LessonsTable: React.FC<ILessonsTable> = ({
             </TableRow>
           )
         })}
-
-        {/* {(groupLoad ? sortLessonsByLessonType(groupLoad) : []).map((lesson) => {
-          const teacherName = lesson.teacher && getLastnameAndInitials(lesson.teacher)
-          // const streamName = lesson.stream ? ` ⋅ ${lesson.stream.name}` : ""
-          // const subgroup = lesson.subgroupNumber ? ` ⋅ п.${lesson.subgroupNumber}` : ""
-          const remark = getLessonRemark({
-            stream: lesson.stream,
-            typeRu: lesson.typeRu,
-            subgroupNumber: lesson.subgroupNumber,
-          })
-
-          return (
-            <TableRow
-              key={lesson.id}
-              selected={lesson.id === selectedLesson?.id}
-              onClick={() => handleSelectLesson(lesson)}
-              sx={{ '&:hover': { backgroundColor: 'secondary.lighter', cursor: 'pointer' } }}
-            >
-              <TableCell sx={{ ...tableCellStyles, maxWidth: '200px' }} padding="none" align="left">
-                <Tooltip enterDelay={1000} title={lesson.name}>
-                  <Typography sx={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {lesson.name}
-                  </Typography>
-                </Tooltip>
-              </TableCell>
-
-              <TableCell padding="none" align="center" sx={{ ...tableCellStyles, maxWidth: '100px' }}>
-                <Tooltip enterDelay={1000} title="Пташник Р.В.">
-                  <Typography sx={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {teacherName}
-                  </Typography>
-                </Tooltip>
-              </TableCell>
-              <TableCell sx={{ ...tableCellStyles, maxWidth: '60px' }} padding="none" align="center">
-                <Tooltip
-                  enterDelay={1000}
-                  title={`${remark} ${scheduleType !== 'group' ? ` ⋅ Група: ${lesson.group.name}` : ''}`}
-                >
-                  <Typography sx={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>{remark}</Typography>
-                </Tooltip>
-              </TableCell>
-              <TableCell sx={tableCellStyles} padding="none" align="center">
-                {lesson.hours}
-              </TableCell>
-              <TableCell sx={tableCellStyles} padding="none" align="center">
-                1
-              </TableCell>
-            </TableRow>
-          )
-        })} */}
       </TableBody>
     </Table>
   )
