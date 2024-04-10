@@ -1,48 +1,52 @@
-import {
-  List,
-  Dialog,
-  Tooltip,
-  IconButton,
-  Typography,
-  ListItemText,
-  DialogContent,
-  ListItemButton,
-  DialogActions,
-  Button,
-} from '@mui/material'
-// import './TimetablePage.css'
-import React, { Dispatch, SetStateAction } from 'react'
-import { TeamOutlined, UserOutlined, CloseOutlined, FileTextOutlined, EnvironmentOutlined } from '@ant-design/icons'
+import { CloseOutlined } from "@ant-design/icons"
+import React, { Dispatch, SetStateAction } from "react"
+import { Dialog, Tooltip, IconButton, Typography, DialogContent, Button } from "@mui/material"
 
-import { ISelectedTimeSlot } from './Calendar'
-import { useAppDispatch } from '../../store/store'
+import { ISelectedTimeSlot } from "./Calendar"
+import { ISelectedLesson } from "../../pages/Timetable/TimetablePage"
+import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
+import { ScheduleLessonType } from "../../store/scheduleLessons/scheduleLessonsTypes"
+import { colors } from "./CalendarDay"
+import { Dayjs } from "dayjs"
 
-const dayNames = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота', 'Неділя']
+const dayNames = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"]
 
 const lessonsTime = [
-  '08:30 – 09:50',
-  '10:00 – 11:20',
-  '12:00 – 13:20',
-  '13:30 – 14:50',
-  '15:00 – 16:20',
-  '16:30 – 17:50',
-  '18:00 – 19:20',
+  "08:30 – 09:50",
+  "10:00 – 11:20",
+  "12:00 – 13:20",
+  "13:30 – 14:50",
+  "15:00 – 16:20",
+  "16:30 – 17:50",
+  "18:00 – 19:20",
 ]
 
 interface IPutSeveralLessonsAtSameTimeModalProps {
   open: boolean
+  selectedLesson: ISelectedLesson | null
+  severalLessonsList: ScheduleLessonType[]
   selectedTimeSlot: ISelectedTimeSlot | null
   setOpen: Dispatch<SetStateAction<boolean>>
+  setIsAddNewLesson: Dispatch<SetStateAction<boolean>>
+  setActionsModalVisible: Dispatch<SetStateAction<boolean>>
+  setSelectedAuditoryId: Dispatch<SetStateAction<number | null>>
+  setSelectedLesson: Dispatch<SetStateAction<ISelectedLesson | null>>
+  onGetAuditoryOverlay: (_date: Dayjs, lessonNumber: number, auditoryId: number) => void
 }
 
 const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeModalProps> = ({
   open,
   setOpen,
+  selectedLesson,
   selectedTimeSlot,
+  setSelectedLesson,
+  severalLessonsList,
+  setIsAddNewLesson,
+  onGetAuditoryOverlay,
+  setSelectedAuditoryId,
+  setActionsModalVisible,
 }) => {
-  const dispatch = useAppDispatch()
-
-  const [dayName, setDayName] = React.useState('')
+  const [dayName, setDayName] = React.useState("")
 
   React.useEffect(() => {
     if (!selectedTimeSlot) return
@@ -54,6 +58,56 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
     setOpen(false)
   }
 
+  const onSelectLesson = (lesson: ScheduleLessonType) => {
+    if (!selectedTimeSlot) return
+    onGetAuditoryOverlay(selectedTimeSlot.data, selectedTimeSlot.lessonNumber, lesson.auditory.id)
+    setSelectedAuditoryId(lesson.auditory.id)
+    setSelectedLesson({
+      id: lesson.id,
+      name: lesson.name,
+      typeRu: lesson.typeRu,
+      stream: lesson.stream,
+      teacher: lesson.teacher,
+      totalHours: lesson.hours,
+      students: lesson.students,
+      subgroupNumber: lesson.subgroupNumber,
+      specialization: lesson.specialization,
+      group: { id: lesson.group.id, name: lesson.group.name },
+    })
+    setActionsModalVisible(true)
+  }
+
+  const onAddSeveralLesson = () => {
+    if (!selectedLesson || !selectedTimeSlot) return
+    setIsAddNewLesson(true)
+    onGetAuditoryOverlay(selectedTimeSlot.data, selectedTimeSlot.lessonNumber, 0)
+    setSelectedLesson({
+      id: selectedLesson.id,
+      name: selectedLesson.name,
+      typeRu: selectedLesson.typeRu,
+      stream: selectedLesson.stream,
+      teacher: selectedLesson.teacher,
+      totalHours: selectedLesson.totalHours,
+      students: selectedLesson.students,
+      subgroupNumber: selectedLesson.subgroupNumber,
+      specialization: selectedLesson.specialization,
+      group: { id: selectedLesson.group.id, name: selectedLesson.group.name },
+    })
+    setActionsModalVisible(true)
+  }
+
+  const isDisabledAddButton = severalLessonsList.some((l) => {
+    const isSame =
+      selectedLesson?.group?.id !== undefined &&
+      l !== undefined &&
+      selectedLesson.group?.id === l.group?.id &&
+      selectedLesson.typeRu === l.typeRu &&
+      selectedLesson.subgroupNumber === l.subgroupNumber &&
+      selectedLesson.stream?.id === l.stream?.id &&
+      selectedLesson.name === l.name
+    return isSame
+  })
+
   return (
     <Dialog
       open={open}
@@ -61,18 +115,18 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      sx={{ '& .MuiPaper-root': { width: '400px' } }}
+      sx={{ "& .MuiPaper-root": { width: "400px" } }}
     >
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginTop: '8px',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: "8px",
         }}
       >
         <Typography sx={{ ml: 2 }}>
-          {dayName}, {selectedTimeSlot?.data.format('DD MMMM')} ⋅{' '}
+          {dayName}, {selectedTimeSlot?.data.format("DD MMMM")} ⋅{" "}
           {lessonsTime[selectedTimeSlot ? selectedTimeSlot.lessonNumber - 1 : 0]}
         </Typography>
 
@@ -83,31 +137,44 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
         </Tooltip>
       </div>
 
-      <DialogContent sx={{ padding: '20px 60px' }}>
-        {Array(2)
-          .fill(null)
-          .map((_, index) => (
-            <div key={index} className={'lesson-slot'} style={{ marginBottom: '10px' }} onClick={() => {}}>
-              {`${'lesson.name'} (${'lesson.typeRu'})`}
-              <br />
-              {'teacherName'}
-              <br />
-              {'lesson.auditory.name'} ауд.
-              <br />
-              {'lesson.auditory.name'} ауд.
+      <DialogContent sx={{ padding: "20px 60px" }}>
+        {severalLessonsList.map((l) => {
+          const teacherName = getLastnameAndInitials(l.teacher)
+
+          return (
+            <div
+              key={l.id}
+              className={"lesson-slot"}
+              onClick={() => onSelectLesson(l)}
+              style={{ backgroundColor: colors[l.typeRu], marginBottom: "10px" }}
+            >
+              <p className="time-slot-lesson-name">{l.name}</p>
+
+              <p>
+                {`(${l.typeRu}) 
+            ${l.subgroupNumber ? ` підгр.${l.subgroupNumber}` : ""} 
+            ${l.stream ? ` Потік ${l.stream.name} ` : ""}`}
+                {l.specialization ? `${l.specialization} спец.` : ""}
+              </p>
+
+              <p>{teacherName}</p>
+              <p>{l.auditory.name} ауд.</p>
             </div>
-          ))}
+          )
+        })}
 
         <Button
+          onClick={onAddSeveralLesson}
+          disabled={isDisabledAddButton}
           sx={{
-            width: '100%',
-            borderRadius: '4px',
-            color: '#262626',
+            width: "100%",
+            borderRadius: "4px",
+            color: "#262626",
             boxShadow:
-              'rgba(0, 0, 0, 0.32) 0px 2px 1px -1px, rgba(0, 0, 0, 0.1) 1px 1px 2px 1px, rgba(0, 0, 0, 0.22) 0px 1px 3px 0px',
-            ':hover': {
+              "rgba(0, 0, 0, 0.32) 0px 2px 1px -1px, rgba(0, 0, 0, 0.1) 1px 1px 2px 1px, rgba(0, 0, 0, 0.22) 0px 1px 3px 0px",
+            ":hover": {
               boxShadow:
-                'rgba(0, 0, 0, 0.32) 0px 2px 1px -1px, rgba(0, 0, 0, 0.1) 1px 1px 2px 1px, rgba(0, 0, 0, 0.22) 0px 1px 3px 0px',
+                "rgba(0, 0, 0, 0.32) 0px 2px 1px -1px, rgba(0, 0, 0, 0.1) 1px 1px 2px 1px, rgba(0, 0, 0, 0.22) 0px 1px 3px 0px",
             },
           }}
         >
