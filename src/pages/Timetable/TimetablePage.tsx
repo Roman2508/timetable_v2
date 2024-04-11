@@ -51,6 +51,7 @@ const TimetablePage = () => {
       const weeksCount = endDate.diff(firstSemesterStart, "week", true)
       const roundedUp = Math.ceil(weeksCount)
       setWeeksCount(roundedUp + 1)
+      setSelectedSemester(1)
       return
     }
 
@@ -61,7 +62,7 @@ const TimetablePage = () => {
       setWeeksCount(roundedUp + 1)
       setSelectedSemester(lastOpenedSemester)
     }
-  }, [settings])
+  }, [settings, selectedSemester])
 
   return (
     <>
@@ -129,3 +130,4 @@ export { TimetablePage }
 // 10. Можливість замість аудиторії ставити дистанційно
 // 11. Ставити розклад в Google Calendar
 // 12. Можливість закрити для викладача, групи або аудиторії певні дати
+// 13. Коли План === Факт треба заборонити виставляти ел. розкладу

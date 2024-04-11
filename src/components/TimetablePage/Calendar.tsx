@@ -158,8 +158,6 @@ const Calendar: React.FC<ICalendarProps> = ({
     }
   }
 
-  console.log(isAddNewLesson)
-
   return (
     <>
       <LessonActionsModal
