@@ -7,7 +7,7 @@ import {
   ListItemText,
   DialogContent,
   ListItemButton,
-} from "@mui/material"
+} from '@mui/material'
 import {
   SyncOutlined,
   TeamOutlined,
@@ -17,31 +17,32 @@ import {
   PlusSquareOutlined,
   EnvironmentOutlined,
   DeleteOutlined,
-} from "@ant-design/icons"
-import { useSelector } from "react-redux"
-import React, { Dispatch, SetStateAction } from "react"
+} from '@ant-design/icons'
+import { useSelector } from 'react-redux'
+import React, { Dispatch, SetStateAction } from 'react'
 
-import { ISelectedTimeSlot } from "./Calendar"
-import { useAppDispatch } from "../../store/store"
-import { ISelectedLesson } from "../../pages/Timetable/TimetablePage"
-import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
-import { auditoriesSelector } from "../../store/auditories/auditoriesSlise"
+import { ISelectedTimeSlot } from './Calendar'
+import { useAppDispatch } from '../../store/store'
+import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
+import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
+import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
 import {
   createScheduleLesson,
   updateScheduleLesson,
   deleteScheduleLesson,
-} from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
+} from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsTypes'
 
-const dayNames = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"]
+const dayNames = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота', 'Неділя']
 
 const lessonsTime = [
-  "08:30 – 09:50",
-  "10:00 – 11:20",
-  "12:00 – 13:20",
-  "13:30 – 14:50",
-  "15:00 – 16:20",
-  "16:30 – 17:50",
-  "18:00 – 19:20",
+  '08:30 – 09:50',
+  '10:00 – 11:20',
+  '12:00 – 13:20',
+  '13:30 – 14:50',
+  '15:00 – 16:20',
+  '16:30 – 17:50',
+  '18:00 – 19:20',
 ]
 
 interface ILessonActionsModalProps {
@@ -56,6 +57,7 @@ interface ILessonActionsModalProps {
   setIsAddNewLesson: Dispatch<SetStateAction<boolean>>
   setAuditoryModalVisible: Dispatch<SetStateAction<boolean>>
   setSeveralLessonsModalVisible: Dispatch<SetStateAction<boolean>>
+  setSeveralLessonsList: Dispatch<SetStateAction<ScheduleLessonType[]>>
 }
 
 const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
@@ -68,6 +70,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
   setIsAddNewLesson,
   currentWeekNumber,
   selectedAuditoryId,
+  setSeveralLessonsList,
   setAuditoryModalVisible,
   setSeveralLessonsModalVisible,
 }) => {
@@ -75,7 +78,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
 
   const { auditoriCategories } = useSelector(auditoriesSelector)
 
-  const [selectedAuditoryName, setSelectedAuditoryName] = React.useState("")
+  const [selectedAuditoryName, setSelectedAuditoryName] = React.useState('')
 
   const handleClose = () => {
     setOpen(false)
@@ -83,7 +86,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
 
   React.useEffect(() => {
     if (!auditoriCategories) return
-    let auditoryName = ""
+    let auditoryName = ''
 
     auditoriCategories.forEach((category) => {
       const auditory = category.auditories.find((a) => a.id === selectedAuditoryId)
@@ -100,14 +103,14 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
 
   const dayName = selectedTimeSlot.data.day() !== 0 ? dayNames[selectedTimeSlot.data.day() - 1] : dayNames[6]
 
-  const onCreateScheduleLesson = () => {
+  const onCreateScheduleLesson = async () => {
     if (!selectedAuditoryId) {
-      alert("Аудиторія не вибрана")
+      alert('Аудиторія не вибрана')
       return
     }
-    if (selectedLesson.typeRu === "КОНС" || selectedLesson.typeRu === "МЕТОД") return
+    if (selectedLesson.typeRu === 'КОНС' || selectedLesson.typeRu === 'МЕТОД') return
 
-    const date = selectedTimeSlot.data.format("YYYY-MM-DD")
+    const date = selectedTimeSlot.data.format('YYYY-MM-DD')
     const stream = selectedLesson.stream ? selectedLesson.stream.id : null
 
     const payload = {
@@ -125,14 +128,17 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
       specialization: selectedLesson.specialization,
       subgroupNumber: selectedLesson.subgroupNumber,
     }
-    dispatch(createScheduleLesson(payload))
+    const data = await dispatch(createScheduleLesson(payload))
     setOpen(false)
+    console.log(data.payload)
+    const lesson = data.payload as ScheduleLessonType
+    setSeveralLessonsList((prev) => [...prev, lesson])
   }
 
-  const onUpdateLesson = () => {
+  const onUpdateLesson = async () => {
     if (!auditoriCategories) return
     if (!selectedAuditoryId) {
-      window.alert("Виберіть аудиторію")
+      window.alert('Виберіть аудиторію')
       return
     }
     let seatsNumber
@@ -148,19 +154,36 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
     })
 
     if (!seatsNumber || !auditoryName) {
-      return alert("Error")
+      return alert('Error')
     }
 
-    dispatch(updateScheduleLesson({ id: selectedLesson.id, auditoryId: selectedAuditoryId, seatsNumber, auditoryName }))
+    const { payload } = await dispatch(
+      updateScheduleLesson({ id: selectedLesson.id, auditoryId: selectedAuditoryId, seatsNumber, auditoryName })
+    )
+
+    const lesson = payload as ScheduleLessonType
+    setSeveralLessonsList((prev) => {
+      const lessons = prev.map((el) => {
+        if (el.id === lesson.id) {
+          return { ...el, ...lesson }
+        }
+
+        return el
+      })
+
+      return lessons
+    })
+
     setSeveralLessonsModalVisible(false)
     handleClose()
   }
 
-  const onDeleteLesson = (id: number) => {
-    if (window.confirm("Ви дійсно хочете видалити урок?")) {
-      dispatch(deleteScheduleLesson(id))
+  const onDeleteLesson = async (id: number) => {
+    if (window.confirm('Ви дійсно хочете видалити урок?')) {
+      const { payload } = await dispatch(deleteScheduleLesson(id))
       handleClose()
       setIsAddNewLesson(false)
+      setSeveralLessonsList((prev) => prev.filter((el) => el.id !== payload))
     }
   }
 
@@ -174,14 +197,14 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
       }}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      sx={{ "& .MuiPaper-root": { width: "400px" } }}
+      sx={{ '& .MuiPaper-root': { width: '400px' } }}
     >
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: "8px",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: '8px',
         }}
       >
         <Typography sx={{ ml: 2 }}>Тиждень {currentWeekNumber}</Typography>
@@ -229,30 +252,30 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
         </div>
       </div>
 
-      <DialogContent sx={{ padding: "0", mt: 1 }}>
+      <DialogContent sx={{ padding: '0', mt: 1 }}>
         <Typography
           variant="h4"
           sx={{
-            padding: "0 16px 4px",
-            fontSize: "20px",
+            padding: '0 16px 4px',
+            fontSize: '20px',
             fontWeight: 400,
-            lineHeight: "28px",
-            color: "rgb(60, 64, 67)",
+            lineHeight: '28px',
+            color: 'rgb(60, 64, 67)',
           }}
         >
-          {selectedLesson.name} ({selectedLesson.typeRu}) - Група {selectedLesson.group.name}{" "}
-          {selectedLesson.subgroupNumber ? `${selectedLesson.subgroupNumber} підгрупа` : ""}{" "}
-          {selectedLesson.stream ? `| Потік: ${selectedLesson.stream.name}` : ""}
+          {selectedLesson.name} ({selectedLesson.typeRu}) - Група {selectedLesson.group.name}{' '}
+          {selectedLesson.subgroupNumber ? `${selectedLesson.subgroupNumber} підгрупа` : ''}{' '}
+          {selectedLesson.stream ? `| Потік: ${selectedLesson.stream.name}` : ''}
         </Typography>
 
-        <Typography sx={{ fontSize: "14px", fontweight: 400, letterSpacing: ".2px", padding: "0 16px 4px" }}>
-          {dayName}, {selectedTimeSlot.data.format("DD MMMM")} ⋅ {lessonsTime[selectedTimeSlot.lessonNumber - 1]}
+        <Typography sx={{ fontSize: '14px', fontweight: 400, letterSpacing: '.2px', padding: '0 16px 4px' }}>
+          {dayName}, {selectedTimeSlot.data.format('DD MMMM')} ⋅ {lessonsTime[selectedTimeSlot.lessonNumber - 1]}
         </Typography>
 
-        <List sx={{ p: 0, "& .MuiListItemButton-root": { py: 1 } }}>
+        <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 1 } }}>
           <ListItemButton divider sx={{ mt: 1, py: 0 }} onClick={() => {}}>
             <FileTextOutlined />
-            <ListItemText primary={"Додати коментар"} sx={{ p: "0 0 0 10px" }} />
+            <ListItemText primary={'Додати коментар'} sx={{ p: '0 0 0 10px' }} />
           </ListItemButton>
 
           <ListItemButton
@@ -265,23 +288,23 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
           >
             <EnvironmentOutlined />
             <ListItemText
-              sx={{ p: "0 0 0 10px" }}
-              primary={`Аудиторія: ${selectedAuditoryName ? selectedAuditoryName : "не вибрана"}`}
+              sx={{ p: '0 0 0 10px' }}
+              primary={`Аудиторія: ${selectedAuditoryName ? selectedAuditoryName : 'не вибрана'}`}
             />
           </ListItemButton>
 
-          <ListItemButton divider sx={{ py: 0, cursor: "default", ":hover": { background: "#fff" } }}>
+          <ListItemButton divider sx={{ py: 0, cursor: 'default', ':hover': { background: '#fff' } }}>
             <UserOutlined />
             <ListItemText
-              sx={{ p: "0 0 0 10px" }}
+              sx={{ p: '0 0 0 10px' }}
               primary={`Викладач: ${getLastnameAndInitials(selectedLesson.teacher)}`}
             />
           </ListItemButton>
 
-          <ListItemButton divider disableRipple sx={{ py: 0, cursor: "default", ":hover": { background: "#fff" } }}>
+          <ListItemButton divider disableRipple sx={{ py: 0, cursor: 'default', ':hover': { background: '#fff' } }}>
             {/* <CalendarOutlined /> */}
             <TeamOutlined />
-            <ListItemText sx={{ p: "0 0 0 10px" }} primary={`Студентів: ${selectedLesson.students}`} />
+            <ListItemText sx={{ p: '0 0 0 10px' }} primary={`Студентів: ${selectedLesson.students}`} />
           </ListItemButton>
         </List>
       </DialogContent>
