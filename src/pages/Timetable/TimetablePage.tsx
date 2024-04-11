@@ -1,18 +1,18 @@
-import React from "react"
-import { Grid } from "@mui/material"
-import { useSelector } from "react-redux"
+import React from 'react'
+import { Grid } from '@mui/material'
+import { useSelector } from 'react-redux'
 
 // project import
-import MainCard from "../../components/MainCard"
-import Calendar from "../../components/TimetablePage/Calendar"
-import { StreamsType } from "../../store/streams/streamsTypes"
-import { customDayjs } from "../../components/Calendar/Calendar"
-import { TeachersType } from "../../store/teachers/teachersTypes"
-import { GroupLoadStreamType } from "../../store/groups/groupsTypes"
-import { settingsSelector } from "../../store/settings/settingsSlice"
-import LessonsTable from "../../components/TimetablePage/LessonsTable"
-import { TimetablePageHeader } from "../../components/TimetablePage/TimetablePageHeader"
-import { getLastSelectedDataToLocalStorage } from "../../utils/getLastSelectedDataToLocalStorage"
+import MainCard from '../../components/MainCard'
+import Calendar from '../../components/TimetablePage/Calendar'
+import { StreamsType } from '../../store/streams/streamsTypes'
+import { customDayjs } from '../../components/Calendar/Calendar'
+import { TeachersType } from '../../store/teachers/teachersTypes'
+import { GroupLoadStreamType } from '../../store/groups/groupsTypes'
+import { settingsSelector } from '../../store/settings/settingsSlice'
+import LessonsTable from '../../components/TimetablePage/LessonsTable'
+import { TimetablePageHeader } from '../../components/TimetablePage/TimetablePageHeader'
+import { getLastSelectedDataToLocalStorage } from '../../utils/getLastSelectedDataToLocalStorage'
 
 // ==============================|| TIMETABLE ||============================== //
 
@@ -26,7 +26,7 @@ export interface ISelectedLesson {
   specialization: string | null
   group: { id: number; name: string }
   stream: GroupLoadStreamType | StreamsType | null
-  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ" | "КОНС" | "МЕТОД"
+  typeRu: 'ЛК' | 'ПЗ' | 'ЛАБ' | 'СЕМ' | 'ЕКЗ' | 'КОНС' | 'МЕТОД'
 }
 
 const TimetablePage = () => {
@@ -38,7 +38,7 @@ const TimetablePage = () => {
   const [selectedItemId, setSelectedItemId] = React.useState<number | null>(null)
   const [selectedTeacherId, setSelectedTeacherId] = React.useState<null | number>(null)
   const [selectedLesson, setSelectedLesson] = React.useState<ISelectedLesson | null>(null)
-  const [scheduleType, setScheduleType] = React.useState<"group" | "teacher" | "auditory">("group")
+  const [scheduleType, setScheduleType] = React.useState<'group' | 'teacher' | 'auditory'>('group')
 
   // set weeks count in current semester
   React.useEffect(() => {
@@ -48,7 +48,7 @@ const TimetablePage = () => {
 
     if (!lastOpenedSemester || lastOpenedSemester === 1) {
       const endDate = customDayjs(firstSemesterEnd)
-      const weeksCount = endDate.diff(firstSemesterStart, "week", true)
+      const weeksCount = endDate.diff(firstSemesterStart, 'week', true)
       const roundedUp = Math.ceil(weeksCount)
       setWeeksCount(roundedUp + 1)
       setSelectedSemester(1)
@@ -57,7 +57,7 @@ const TimetablePage = () => {
 
     if (lastOpenedSemester === 2) {
       const endDate = customDayjs(secondSemesterEnd)
-      const weeksCount = endDate.diff(secondSemesterStart, "week", true)
+      const weeksCount = endDate.diff(secondSemesterStart, 'week', true)
       const roundedUp = Math.ceil(weeksCount)
       setWeeksCount(roundedUp + 1)
       setSelectedSemester(lastOpenedSemester)
@@ -66,7 +66,7 @@ const TimetablePage = () => {
 
   return (
     <>
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center", p: 0 }}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center', p: 0 }}>
         <Grid item xs={12}>
           <TimetablePageHeader
             weeksCount={weeksCount}
@@ -81,9 +81,9 @@ const TimetablePage = () => {
           />
         </Grid>
 
-        <Grid item xs={12} sx={{ display: "flex", pt: "24px !important" }}>
+        <Grid item xs={12} sx={{ display: 'flex', pt: '24px !important' }}>
           <Grid item xs={4} sx={{ mr: 2 }}>
-            <MainCard sx={{ pb: 0, "& .MuiCardContent-root": { p: "0 !important", overflow: "auto" } }}>
+            <MainCard sx={{ pb: 0, '& .MuiCardContent-root': { p: '0 !important', overflow: 'auto' } }}>
               <LessonsTable
                 scheduleType={scheduleType}
                 selectedItemId={selectedItemId}
@@ -96,7 +96,7 @@ const TimetablePage = () => {
           </Grid>
 
           <Grid item xs={8}>
-            <MainCard sx={{ "& .MuiCardContent-root": { px: 1 } }}>
+            <MainCard sx={{ '& .MuiCardContent-root': { px: 1 } }}>
               <Calendar
                 weeksCount={weeksCount}
                 scheduleType={scheduleType}
@@ -125,7 +125,7 @@ export { TimetablePage }
 // 6. Заміна викладача
 // 7. Примітки
 // 8. Можливість ставити декілька елементів розкладу в один час, якщо це підгрупи або спец. групи
-//    - МОЖЛИВІ НАКЛАДКИ ЗАНЯТЬ !!!!
+//    - МОЖЛИВІ НАКЛАДКИ АУДИТОРІЙ (ТРЕБА ЗРОБИТИ ПЕРЕВІРКУ ЧИ АУДИТОРІЯ ВІЛЬНА)
 // 9. Кнопка "Сьогодні" в <Calendar />
 // 10. Можливість замість аудиторії ставити дистанційно
 // 11. Ставити розклад в Google Calendar
