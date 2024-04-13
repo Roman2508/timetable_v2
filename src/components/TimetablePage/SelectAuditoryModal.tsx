@@ -3,6 +3,7 @@ import {
   Dialog,
   Button,
   Divider,
+  Checkbox,
   IconButton,
   DialogTitle,
   ListItemText,
@@ -10,7 +11,6 @@ import {
   DialogContent,
   ListItemButton,
   FormControlLabel,
-  Checkbox,
 } from "@mui/material"
 import { useSelector } from "react-redux"
 import { CloseOutlined } from "@ant-design/icons"
@@ -22,15 +22,19 @@ import { scheduleLessonsSelector } from "../../store/scheduleLessons/scheduleLes
 
 interface ISelectAuditoryModalProps {
   open: boolean
+  isRemote: boolean
   selectedAuditoryId: number | null
   setOpen: Dispatch<SetStateAction<boolean>>
+  setIsRemote: Dispatch<SetStateAction<boolean>>
   setSelectedAuditoryId: Dispatch<SetStateAction<number | null>>
   setLessonActionsModalVisible: Dispatch<SetStateAction<boolean>>
 }
 
 const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
   open,
+  isRemote,
   setOpen,
+  setIsRemote,
   selectedAuditoryId,
   setSelectedAuditoryId,
   setLessonActionsModalVisible,
@@ -56,7 +60,6 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
   }
 
   const onConfirmSelection = () => {
-    if (!preConfirmationAuditoryId) return
     setSelectedAuditoryId(preConfirmationAuditoryId)
     handleClose()
   }
@@ -67,7 +70,10 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
     const freeAuditories: AuditoriesTypes[] = []
 
     auditoriesList.forEach((el) => {
-      const auditory = auditoryOverlay.find((a) => a.id === el.id)
+      const auditory = auditoryOverlay.find((a) => {
+        if (!a) return
+        return a.id === el.id
+      })
 
       if (!auditory) {
         freeAuditories.push(el)
@@ -77,16 +83,36 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
     setAuditoriesList(freeAuditories)
   }
 
+  const onClickRemote = (isChecked: boolean) => {
+    setIsRemote(isChecked)
+
+    if (isChecked) {
+      setPreConfirmationAuditoryId(null)
+    } else {
+      const firstAuditoryId = auditoriesList[0].id
+      setPreConfirmationAuditoryId(firstAuditoryId)
+    }
+  }
+
   // on first render set selected category and auditory if they exist
   React.useEffect(() => {
-    if (!auditoriCategories || !selectedAuditoryId) return
+    setPreConfirmationAuditoryId(null)
+    if (!auditoriCategories) return
+
+    if (!selectedAuditoryId) {
+      onSelectCategory(auditoriCategories[0].id)
+      return
+    }
 
     auditoriCategories.forEach((category) => {
       const auditory = category.auditories.find((el) => el.id === selectedAuditoryId)
 
       if (auditory) {
         onSelectCategory(category.id)
-        setPreConfirmationAuditoryId(auditory.id)
+
+        if (!isRemote) {
+          setPreConfirmationAuditoryId(auditory.id)
+        }
       }
     })
   }, [auditoriCategories, selectedAuditoryId])
@@ -143,7 +169,10 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
                   sx={{ py: 0 }}
                   key={auditory.id}
                   selected={auditory.id === preConfirmationAuditoryId}
-                  onClick={() => setPreConfirmationAuditoryId(auditory.id)}
+                  onClick={() => {
+                    setIsRemote(false)
+                    setPreConfirmationAuditoryId(auditory.id)
+                  }}
                 >
                   <ListItemText primary={auditory.name} sx={{ p: "0 0 0 10px" }} />
                 </ListItemButton>
@@ -154,13 +183,23 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
       </DialogContent>
 
       <DialogActions sx={{ display: "flex", justifyContent: "space-between" }}>
-        <FormControlLabel sx={{ ml: 2, mb: 1 }} control={<Checkbox defaultChecked={false} />} label={"Дистанційно"} />
+        <FormControlLabel
+          sx={{ ml: 2, mb: 1 }}
+          checked={isRemote}
+          onChange={(e) => {
+            // console.log(e.target.value)
+            // @ts-ignore
+            onClickRemote(!isRemote)
+          }}
+          control={<Checkbox defaultChecked={isRemote} checked={isRemote} />}
+          label={"Дистанційно"}
+        />
 
         <Button
           variant="contained"
           sx={{ mr: 2, mb: 1 }}
           onClick={onConfirmSelection}
-          disabled={!preConfirmationAuditoryId}
+          disabled={!preConfirmationAuditoryId && !isRemote}
         >
           Вибрати
         </Button>

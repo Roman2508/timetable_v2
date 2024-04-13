@@ -60,8 +60,10 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
 
   const onSelectLesson = (lesson: ScheduleLessonType) => {
     if (!selectedTimeSlot) return
-    onGetAuditoryOverlay(selectedTimeSlot.data, selectedTimeSlot.lessonNumber, lesson.auditory.id)
-    setSelectedAuditoryId(lesson.auditory.id)
+    const auditory = lesson.auditory ? lesson.auditory.id : null
+
+    onGetAuditoryOverlay(selectedTimeSlot.data, selectedTimeSlot.lessonNumber, auditory ? auditory : 0)
+    setSelectedAuditoryId(auditory)
     setSelectedLesson({
       id: lesson.id,
       name: lesson.name,
@@ -158,7 +160,7 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
               </p>
 
               <p>{teacherName}</p>
-              <p>{l.auditory.name} ауд.</p>
+              <p>{l.auditory ? `${l.auditory.name} ауд.` : "Дистанційно"}</p>
             </div>
           )
         })}

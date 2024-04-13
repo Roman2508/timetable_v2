@@ -36,7 +36,7 @@ interface ICalendarDayProps {
     scheduledElement: ScheduleLessonType,
     date: Dayjs,
     lessonNumber: number,
-    auditoryId: number
+    auditoryId: number | null
   ) => void
 }
 
@@ -136,7 +136,7 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
                       <div
                         onClick={() => {
                           setSeveralLessonsList(lesson)
-                          handleOpenSeveralLessonModal(l, day.data, lessonNumber, l.auditory.id)
+                          handleOpenSeveralLessonModal(l, day.data, lessonNumber, l.auditory ? l.auditory.id : null)
                         }}
                         className={cn(severalLessonsClassName, { selected: isSame })}
                         style={{ backgroundColor: colors[l.typeRu] }}
@@ -151,7 +151,7 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
                         </p>
 
                         <p>{teacherName}</p>
-                        <p>{l.auditory.name} ауд.</p>
+                        <p>{l.auditory ? `${l.auditory.name} ауд.` : "Дистанційно"}</p>
                       </div>
                     )
                   })}
@@ -173,7 +173,7 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
                     </p>
 
                     <p>{overlayTeacherName}</p>
-                    <p>{overlay.auditory.name} ауд.</p>
+                    <p>{overlay.auditory ? `${overlay.auditory.name} ауд.` : "Дистанційно"}</p>
                   </>
                 )}
               </div>

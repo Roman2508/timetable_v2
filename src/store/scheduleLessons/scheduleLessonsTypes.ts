@@ -1,8 +1,8 @@
-import { LoadingStatusTypes } from '../appTypes'
-import { GroupLoadType } from '../groups/groupsTypes'
-import { StreamsType } from '../streams/streamsTypes'
-import { TeachersType } from '../teachers/teachersTypes'
-import { AuditoriesTypes } from '../auditories/auditoriesTypes'
+import { LoadingStatusTypes } from "../appTypes"
+import { GroupLoadType } from "../groups/groupsTypes"
+import { StreamsType } from "../streams/streamsTypes"
+import { TeachersType } from "../teachers/teachersTypes"
+import { AuditoriesTypes } from "../auditories/auditoriesTypes"
 
 export type ScheduleLessonInitialStateType = {
   scheduleLessons: ScheduleLessonType[] | null
@@ -21,13 +21,14 @@ export type ScheduleLessonType = {
   lessonNumber: number
   semester: number
   hours: number
-  typeRu: 'ЛК' | 'ПЗ' | 'ЛАБ' | 'СЕМ' | 'ЕКЗ'
+  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ"
+  isRemote: boolean
   students: number
   replacement: TeachersType
   note: string
   group: { id: number; name: string }
   teacher: TeachersType
-  auditory: AuditoriesTypes
+  auditory: AuditoriesTypes | null
   stream: StreamsType
   subgroupNumber: number | null
   specialization: string | null
