@@ -1,26 +1,26 @@
-import { Dayjs } from "dayjs"
-import { Button } from "@mui/material"
-import { useSelector } from "react-redux"
-import React, { Dispatch, SetStateAction } from "react"
+import { Dayjs } from 'dayjs'
+import { Button } from '@mui/material'
+import { useSelector } from 'react-redux'
+import React, { Dispatch, SetStateAction } from 'react'
 
-import "./TimetablePage.css"
-import CalendarDay from "./CalendarDay"
-import { useAppDispatch } from "../../store/store"
-import { customDayjs } from "../Calendar/Calendar"
-import getCalendarWeek from "../../utils/getCalendarWeek"
-import { LessonActionsModal } from "./LessonActionsModal"
-import { LoadingStatusTypes } from "../../store/appTypes"
-import { SelectAuditoryModal } from "./SelectAuditoryModal"
-import { ISelectedLesson } from "../../pages/Timetable/TimetablePage"
-import { settingsSelector } from "../../store/settings/settingsSlice"
-import { ScheduleLessonType } from "../../store/scheduleLessons/scheduleLessonsTypes"
-import { PutSeveralLessonsAtSameTimeModal } from "./PutSeveralLessonsAtSameTimeModal"
-import { scheduleLessonsSelector } from "../../store/scheduleLessons/scheduleLessonsSlice"
+import './TimetablePage.css'
+import CalendarDay from './CalendarDay'
+import { useAppDispatch } from '../../store/store'
+import { customDayjs } from '../Calendar/Calendar'
+import getCalendarWeek from '../../utils/getCalendarWeek'
+import { LessonActionsModal } from './LessonActionsModal'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import { SelectAuditoryModal } from './SelectAuditoryModal'
+import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
+import { settingsSelector } from '../../store/settings/settingsSlice'
+import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsTypes'
+import { PutSeveralLessonsAtSameTimeModal } from './PutSeveralLessonsAtSameTimeModal'
+import { scheduleLessonsSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
 import {
   getAuditoryOverlay,
   getScheduleLessons,
   getTeacherLessons,
-} from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
+} from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 
 export interface ISelectedTimeSlot {
   data: Dayjs
@@ -33,8 +33,9 @@ interface ICalendarProps {
   currentWeekNumber: number
   selectedItemId: number | null
   selectedTeacherId: number | null
+  isPossibleToCreateLessons: boolean
   selectedLesson: ISelectedLesson | null
-  scheduleType: "group" | "teacher" | "auditory"
+  scheduleType: 'group' | 'teacher' | 'auditory'
   setCurrentWeekNumber: Dispatch<SetStateAction<number>>
   setSelectedLesson: Dispatch<SetStateAction<ISelectedLesson | null>>
 }
@@ -49,6 +50,7 @@ const Calendar: React.FC<ICalendarProps> = ({
   selectedTeacherId,
   setSelectedLesson,
   setCurrentWeekNumber,
+  isPossibleToCreateLessons,
 }) => {
   const dispatch = useAppDispatch()
 
@@ -72,7 +74,7 @@ const Calendar: React.FC<ICalendarProps> = ({
 
   React.useEffect(() => {
     if (!selectedTeacherId) return
-    dispatch(getTeacherLessons({ id: selectedTeacherId, semester: selectedSemester, type: "teacher" }))
+    dispatch(getTeacherLessons({ id: selectedTeacherId, semester: selectedSemester, type: 'teacher' }))
   }, [selectedTeacherId, selectedSemester])
 
   React.useEffect(() => {
@@ -89,13 +91,13 @@ const Calendar: React.FC<ICalendarProps> = ({
 
   // select date and time and open creating lessons modal
   const onTimeSlotClick = (data: Dayjs, lessonNumber: number) => {
-    if (!selectedLesson) return alert("Дисципліна не вибрана")
+    if (!selectedLesson) return alert('Дисципліна не вибрана')
     setSelectedTimeSlot({ data, lessonNumber })
     setModalVisible(true)
   }
 
   const onGetAuditoryOverlay = (_date: Dayjs, lessonNumber: number, auditoryId: number) => {
-    const date = customDayjs(_date).format("YYYY.MM.DD")
+    const date = customDayjs(_date).format('YYYY.MM.DD')
     dispatch(getAuditoryOverlay({ date, lessonNumber, auditoryId }))
   }
 
@@ -207,14 +209,14 @@ const Calendar: React.FC<ICalendarProps> = ({
       <div className="calendar">
         <div className="header">
           <div className="header-left">
-            <Button variant="outlined" color="secondary" sx={{ mr: 1, padding: "0px 10px" }}>
+            <Button variant="outlined" color="secondary" sx={{ mr: 1, padding: '0px 10px' }}>
               Сьогодні
             </Button>
             <Button
               variant="outlined"
               color="secondary"
               disabled={currentWeekNumber === 1}
-              sx={{ mr: 1, padding: "0px 10px" }}
+              sx={{ mr: 1, padding: '0px 10px' }}
               onClick={() => setCurrentWeekNumber((prev) => prev - 1)}
             >
               Попередній тиждень
@@ -222,7 +224,7 @@ const Calendar: React.FC<ICalendarProps> = ({
             <Button
               variant="outlined"
               color="secondary"
-              sx={{ padding: "0px 10px" }}
+              sx={{ padding: '0px 10px' }}
               disabled={currentWeekNumber === weeksCount}
               onClick={() => setCurrentWeekNumber((prev) => prev + 1)}
             >
@@ -230,16 +232,16 @@ const Calendar: React.FC<ICalendarProps> = ({
             </Button>
           </div>
 
-          <div className="header-right" style={{ userSelect: "none" }}>
+          <div className="header-right" style={{ userSelect: 'none' }}>
             {currentWeekDays[0].start} - {currentWeekDays[6].end}
           </div>
         </div>
 
-        <div className="body" style={loadingStatus === LoadingStatusTypes.LOADING ? { opacity: ".3" } : {}}>
+        <div className="body" style={loadingStatus === LoadingStatusTypes.LOADING ? { opacity: '.3' } : {}}>
           <div className="lessons-numbers">
             <div className="empty-cell"></div>
             {[1, 2, 3, 4, 5, 6, 7].map((el) => (
-              <div className="time-number" key={el} style={{ userSelect: "none" }}>
+              <div className="time-number" key={el} style={{ userSelect: 'none' }}>
                 {el}
               </div>
             ))}
@@ -258,6 +260,7 @@ const Calendar: React.FC<ICalendarProps> = ({
               selectedSemester={selectedSemester}
               setIsAddNewLesson={setIsAddNewLesson}
               setSeveralLessonsList={setSeveralLessonsList}
+              isPossibleToCreateLessons={isPossibleToCreateLessons}
               handleOpenSeveralLessonModal={handleOpenSeveralLessonModal}
             />
           ))}

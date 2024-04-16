@@ -33,6 +33,7 @@ interface ILessonsTable {
   selectedLesson: ISelectedLesson | null
   scheduleType: 'group' | 'teacher' | 'auditory'
   setSelectedTeacherId: Dispatch<SetStateAction<number | null>>
+  setIsPossibleToCreateLessons: Dispatch<SetStateAction<boolean>>
   setSelectedLesson: Dispatch<SetStateAction<ISelectedLesson | null>>
 }
 
@@ -43,6 +44,7 @@ const LessonsTable: React.FC<ILessonsTable> = ({
   selectedSemester,
   setSelectedLesson,
   setSelectedTeacherId,
+  setIsPossibleToCreateLessons,
 }) => {
   const dispatch = useAppDispatch()
 
@@ -84,6 +86,24 @@ const LessonsTable: React.FC<ILessonsTable> = ({
   const handleSelectLesson = (lesson: GroupLoadType | ScheduleLessonType) => {
     if (!lesson) return
     if (!lesson.teacher) return
+
+    // К-ть виставлених годин
+    const exhibitedLessonsCount = findLessonsCountForLessonsTable(
+      lesson.name,
+      lesson.group.id,
+      lesson.subgroupNumber,
+      lesson.stream?.id,
+      lesson.typeRu,
+      scheduleLessons
+    )
+
+    if (exhibitedLessonsCount === lesson.hours) {
+      // Якщо виставлено ел.розкладу стільки скільки заплановано
+      // false === заборонено створювати нові ел.розкладу
+      setIsPossibleToCreateLessons(false)
+    } else {
+      setIsPossibleToCreateLessons(true)
+    }
 
     setSelectedLesson({
       id: lesson.id,
@@ -166,6 +186,8 @@ const LessonsTable: React.FC<ILessonsTable> = ({
             scheduleLessons
           )
 
+          const isEqualPlannedAndActuallyHours = exhibitedLessonsCount === lesson.hours
+
           const isSelected =
             lesson.name === selectedLesson?.name &&
             lesson.group.id === selectedLesson?.group.id &&
@@ -179,7 +201,12 @@ const LessonsTable: React.FC<ILessonsTable> = ({
               key={lesson.id}
               selected={isSelected}
               onClick={() => handleSelectLesson(lesson)}
-              sx={{ '&:hover': { backgroundColor: 'secondary.lighter', cursor: 'pointer' } }}
+              // sx={{ '&:hover': { backgroundColor: 'secondary.lighter', cursor: 'pointer' } }}
+              sx={
+                isEqualPlannedAndActuallyHours
+                  ? { opacity: '0.4', '&:hover': { backgroundColor: 'secondary.lighter', cursor: 'pointer' } }
+                  : { '&:hover': { backgroundColor: 'secondary.lighter', cursor: 'pointer' } }
+              }
             >
               <TableCell sx={{ ...tableCellStyles, maxWidth: '200px' }} padding="none" align="left">
                 <Tooltip enterDelay={1000} title={lesson.name}>

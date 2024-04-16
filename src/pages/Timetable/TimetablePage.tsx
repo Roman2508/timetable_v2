@@ -37,6 +37,7 @@ const TimetablePage = () => {
   const [selectedSemester, setSelectedSemester] = React.useState<1 | 2>(1)
   const [selectedItemId, setSelectedItemId] = React.useState<number | null>(null)
   const [selectedTeacherId, setSelectedTeacherId] = React.useState<null | number>(null)
+  const [isPossibleToCreateLessons, setIsPossibleToCreateLessons] = React.useState(true)
   const [selectedLesson, setSelectedLesson] = React.useState<ISelectedLesson | null>(null)
   const [scheduleType, setScheduleType] = React.useState<'group' | 'teacher' | 'auditory'>('group')
 
@@ -91,6 +92,7 @@ const TimetablePage = () => {
                 selectedSemester={selectedSemester}
                 setSelectedLesson={setSelectedLesson}
                 setSelectedTeacherId={setSelectedTeacherId}
+                setIsPossibleToCreateLessons={setIsPossibleToCreateLessons}
               />
             </MainCard>
           </Grid>
@@ -107,6 +109,7 @@ const TimetablePage = () => {
                 selectedTeacherId={selectedTeacherId}
                 setSelectedLesson={setSelectedLesson}
                 setCurrentWeekNumber={setCurrentWeekNumber}
+                isPossibleToCreateLessons={isPossibleToCreateLessons}
               />
             </MainCard>
           </Grid>
@@ -130,4 +133,3 @@ export { TimetablePage }
 // 10. --------- Можливість замість аудиторії ставити дистанційно
 // 11. Ставити розклад в Google Calendar
 // 12. Можливість закрити для викладача, групи або аудиторії певні дати
-// 13. Коли План === Факт треба заборонити виставляти ел. розкладу
