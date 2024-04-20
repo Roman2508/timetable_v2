@@ -43,11 +43,11 @@ export type UpdateTeacherCategoryPayloadType = {
 
 export type CreateTeacherPayloadType = {
   category: number
-} & Omit<TeachersType, "id" | "category">
+} & Omit<TeachersType, "id" | "category" | "calendarId">
 
 export type UpdateTeacherPayloadType = {
   category: number
-} & Omit<TeachersType, "category">
+} & Omit<TeachersType, "category" | "calendarId">
 
 /* Plans */
 

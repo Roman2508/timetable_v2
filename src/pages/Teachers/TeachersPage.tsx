@@ -1,15 +1,7 @@
-// material-ui
-import { Grid, Typography } from "@mui/material"
-
-// project import
 import React from "react"
 import { useSelector } from "react-redux"
+import { Grid, Typography } from "@mui/material"
 
-import {
-  deleteTeacher,
-  deleteTeacherCategory,
-  getTeachersCategories,
-} from "../../store/teachers/teachersAsyncActions"
 import MainCard from "../../components/MainCard"
 import { useAppDispatch } from "../../store/store"
 import { LoadingStatusTypes } from "../../store/appTypes"
@@ -22,6 +14,7 @@ import UpdateTeacherModal from "../../components/TeachersPage/UpdateTeacherModal
 import { AccordionItemsList } from "../../components/AccordionItemsList/AccordionItemsList"
 import CreateTeachersCategoryForm from "../../components/TeachersPage/CreateTeachersCategoryForm"
 import UpdateTeachersCategoryForm from "../../components/TeachersPage/UpdateTeachersCategoryForm"
+import { deleteTeacher, deleteTeacherCategory, getTeachersCategories } from "../../store/teachers/teachersAsyncActions"
 
 // ==============================|| PLANS ||============================== //
 
@@ -40,7 +33,6 @@ const TeachersPage = () => {
 
   React.useEffect(() => {
     if (teachersCategories) return
-
     dispatch(getTeachersCategories())
   }, [])
 
@@ -93,18 +85,10 @@ const TeachersPage = () => {
         </Grid>
 
         <Grid item xs={12} md={10} sx={{ display: "flex", alignItems: "flex-start" }}>
-          <Grid
-            item
-            xs={8}
-            sx={{ borderRadius: "8px", border: "1px solid #e6ebf1", overflow: "hidden" }}
-          >
+          <Grid item xs={8} sx={{ borderRadius: "8px", border: "1px solid #e6ebf1", overflow: "hidden" }}>
             {/* TEACHERS LIST */}
-            {!teachersCategories && loadingStatus === LoadingStatusTypes.LOADING && (
-              <LoadingSpinner />
-            )}
-            {!teachersCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && (
-              <EmptyCard />
-            )}
+            {!teachersCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
+            {!teachersCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
             {teachersCategories?.length && (
               <AccordionItemsList
                 items={teachersCategories}
@@ -123,10 +107,7 @@ const TeachersPage = () => {
           <Grid item xs={4} sx={{ ml: 2 }}>
             <Grid item xs={12} sx={{ mb: 2 }}>
               <MainCard>
-                <Typography
-                  variant="button"
-                  sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}
-                >
+                <Typography variant="button" sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}>
                   Додати нового викладача
                 </Typography>
 
@@ -136,10 +117,7 @@ const TeachersPage = () => {
 
             <Grid item xs={12}>
               <MainCard>
-                <Typography
-                  variant="button"
-                  sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}
-                >
+                <Typography variant="button" sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}>
                   Додати нову категорію
                 </Typography>
 

@@ -1,13 +1,5 @@
 // material-ui
-import {
-  Stack,
-  Button,
-  MenuItem,
-  TextField,
-  InputLabel,
-  OutlinedInput,
-  FormHelperText,
-} from "@mui/material"
+import { Stack, Button, MenuItem, TextField, InputLabel, OutlinedInput, FormHelperText, Tooltip } from "@mui/material"
 
 // project import
 import React from "react"
@@ -25,7 +17,7 @@ interface IAuditoriesFields {
   middleName: string
   lastName: string
   email: string
-  calendarUrl: string
+  calendarId: string
   category: number
 }
 
@@ -43,7 +35,7 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
   const dispatch = useAppDispatch()
 
   const { teachersCategories } = useSelector(teachersSelector)
-
+  console.log(editingTeacher)
   const {
     reset,
     control,
@@ -51,9 +43,7 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
     handleSubmit,
   } = useForm<IAuditoriesFields>({
     mode: "onBlur",
-    defaultValues: editingTeacher
-      ? { ...editingTeacher, category: editingTeacher.category.id }
-      : {},
+    defaultValues: editingTeacher ? { ...editingTeacher, category: editingTeacher.category.id } : {},
   })
 
   const onSubmit: SubmitHandler<IAuditoriesFields> = async (data) => {
@@ -63,11 +53,11 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
         if (!editingTeacher) return
         await dispatch(updateTeacher({ ...data, id: editingTeacher.id }))
         handleClose()
-        reset({ calendarUrl: "", email: "", firstName: "", lastName: "", middleName: "" })
+        reset({ calendarId: "", email: "", firstName: "", lastName: "", middleName: "" })
       } else {
         // Якщо форму відкрито НЕ в модалці - створення викладача
         await dispatch(createTeacher(data))
-        reset({ calendarUrl: "", email: "", firstName: "", lastName: "", middleName: "" })
+        reset({ calendarId: "", email: "", firstName: "", lastName: "", middleName: "" })
       }
     } catch (error) {
       console.log(error)
@@ -169,7 +159,7 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
           }}
         />
 
-        <Controller
+        {/*  <Controller
           name="email"
           control={control}
           rules={{
@@ -200,33 +190,48 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
               </Stack>
             )
           }}
-        />
+        />  */}
 
         <Controller
-          name="calendarUrl"
+          name="calendarId"
           control={control}
           render={({ field }) => {
             return (
-              <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="calendarUrl">ID календаря</InputLabel>
-                <OutlinedInput
-                  fullWidth
-                  {...field}
-                  id="calendarUrl"
-                  type="calendarUrl"
-                  name="calendarUrl"
-                  placeholder="https://calendar.google.com"
-                  error={Boolean(errors.calendarUrl)}
-                />
-                {errors.calendarUrl && (
-                  <FormHelperText error id="helper-text-calendarUrl">
-                    {errors.calendarUrl.message}
-                  </FormHelperText>
-                )}
-              </Stack>
+              <Tooltip title={field.value}>
+                <Stack spacing={1} sx={{ mt: 2 }}>
+                  <InputLabel htmlFor="calendarId">ID календаря</InputLabel>
+                  <OutlinedInput
+                    readOnly
+                    fullWidth
+                    {...field}
+                    id="calendarId"
+                    type="calendarId"
+                    name="calendarId"
+                    placeholder="c_test@group.calendar.google.com"
+                    error={Boolean(errors.calendarId)}
+                  />
+                  {errors.calendarId && (
+                    <FormHelperText error id="helper-text-calendarId">
+                      {errors.calendarId.message}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              </Tooltip>
             )
           }}
         />
+
+        {/* <Stack spacing={1} sx={{ mt: 2 }}>
+          <InputLabel htmlFor="calendarId">ID календаря</InputLabel>
+          <OutlinedInput
+            fullWidth
+            readOnly
+            id="calendarId"
+            type="calendarId"
+            name="calendarId"
+            placeholder="https://calendar.google.com"
+          />
+        </Stack> */}
 
         <Controller
           name="category"
@@ -267,11 +272,7 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
           mt: 3,
         }}
       >
-        {isOpenInModal && !isSubmitting
-          ? "Оновити"
-          : !isSubmitting
-          ? "Створити"
-          : "Завантаження..."}
+        {isOpenInModal && !isSubmitting ? "Оновити" : !isSubmitting ? "Створити" : "Завантаження..."}
       </Button>
     </form>
   )

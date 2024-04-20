@@ -51,15 +51,9 @@ export type GroupLoadType = {
   name: string
   semester: number
   specialization: any
+  calendarId: string
   typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ" | "КОНС" | "МЕТОД"
-  typeEn:
-    | "lectures"
-    | "practical"
-    | "laboratory"
-    | "seminars"
-    | "exams"
-    | "examsConsulation"
-    | "metodologicalGuidance"
+  typeEn: "lectures" | "practical" | "laboratory" | "seminars" | "exams" | "examsConsulation" | "metodologicalGuidance"
   hours: number
   subgroupNumber: number
   students: number
