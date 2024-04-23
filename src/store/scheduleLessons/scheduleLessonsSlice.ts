@@ -32,6 +32,11 @@ const scheduleLessonsSlice = createSlice({
     clearGroupLoad(state) {
       state.groupLoad = null
     },
+    deleteTeacherOverlay(state, action: PayloadAction<number>) {
+      if (!state.teacherLessons) return
+      const lessons = state.teacherLessons.filter((el) => el.id !== action.payload)
+      state.teacherLessons = lessons
+    },
   },
   extraReducers: (builder) => {
     /* getScheduleLessons */
@@ -86,6 +91,6 @@ const scheduleLessonsSlice = createSlice({
 
 export const scheduleLessonsSelector = (state: RootState) => state.scheduleLessons
 
-export const { setLoadingStatus, clearGroupLoad } = scheduleLessonsSlice.actions
+export const { setLoadingStatus, clearGroupLoad, deleteTeacherOverlay } = scheduleLessonsSlice.actions
 
 export default scheduleLessonsSlice.reducer

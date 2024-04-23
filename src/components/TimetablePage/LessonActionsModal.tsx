@@ -32,6 +32,7 @@ import {
   deleteScheduleLesson,
 } from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
 import { ScheduleLessonType } from "../../store/scheduleLessons/scheduleLessonsTypes"
+import { deleteTeacherOverlay, scheduleLessonsSelector } from "../../store/scheduleLessons/scheduleLessonsSlice"
 
 const dayNames = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"]
 
@@ -79,6 +80,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
   const dispatch = useAppDispatch()
 
   const { auditoriCategories } = useSelector(auditoriesSelector)
+  const { auditoryOverlay } = useSelector(scheduleLessonsSelector)
 
   const [selectedAuditoryName, setSelectedAuditoryName] = React.useState("")
 
@@ -202,11 +204,13 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
   }
 
   const onDeleteLesson = async (id: number) => {
-    if (window.confirm("Ви дійсно хочете видалити урок?")) {
+    if (window.confirm("Ви дійсно хочете видалити ел. розкладу?")) {
       const { payload } = await dispatch(deleteScheduleLesson(id))
+      const deletedItemId = payload as number
+      dispatch(deleteTeacherOverlay(deletedItemId))
       handleClose()
       setIsAddNewLesson(false)
-      setSeveralLessonsList((prev) => prev.filter((el) => el.id !== payload))
+      setSeveralLessonsList((prev) => prev.filter((el) => el.id !== deletedItemId))
     }
   }
 
