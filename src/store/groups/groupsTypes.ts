@@ -1,5 +1,5 @@
-import { LoadingStatusTypes } from "../appTypes"
-import { TeachersType } from "../teachers/teachersTypes"
+import { LoadingStatusTypes } from '../appTypes'
+import { TeachersType } from '../teachers/teachersTypes'
 
 export type GroupsInitialState = {
   groupCategories: GroupCategoriesType[] | null
@@ -20,14 +20,14 @@ export type GroupsType = {
   courseNumber: number
   yearOfAdmission: number
   specializationList: string[]
-  formOfEducation: "Денна" | "Заочна"
+  formOfEducation: 'Денна' | 'Заочна'
   stream: { id: number; name: string }[]
   category: { id: number; name: string } | null
   groupLoad: GroupLoadType[] | null
   educationPlan: { id: number; name: string } | null
 }
 
-export type GroupsShortType = Pick<GroupsType, "id" | "name" | "courseNumber" | "students">
+export type GroupsShortType = Pick<GroupsType, 'id' | 'name' | 'courseNumber' | 'students'>
 
 export type GroupFormType = {
   name: string
@@ -42,8 +42,8 @@ export type GroupFormType = {
 export type GroupLoadStreamType = {
   id: number
   name: string
-  groups: { id: number; name: string }
-  lessons: { id: number; name: string }
+  groups: { id: number; name: string }[]
+  lessons: { id: number; name: string }[]
 }
 
 export type GroupLoadType = {
@@ -52,8 +52,8 @@ export type GroupLoadType = {
   semester: number
   specialization: any
   calendarId: string
-  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ" | "КОНС" | "МЕТОД"
-  typeEn: "lectures" | "practical" | "laboratory" | "seminars" | "exams" | "examsConsulation" | "metodologicalGuidance"
+  typeRu: 'ЛК' | 'ПЗ' | 'ЛАБ' | 'СЕМ' | 'ЕКЗ' | 'КОНС' | 'МЕТОД'
+  typeEn: 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams' | 'examsConsulation' | 'metodologicalGuidance'
   hours: number
   subgroupNumber: number
   students: number

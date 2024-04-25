@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 import {
   getScheduleLessons,
@@ -8,22 +8,24 @@ import {
   findLessonsForSchedule,
   getTeacherLessons,
   getAuditoryOverlay,
-} from "./scheduleLessonsAsyncActions"
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupLoadType } from "../groups/groupsTypes"
-import { ScheduleLessonInitialStateType, ScheduleLessonType } from "./scheduleLessonsTypes"
+  getGroupOverlay,
+} from './scheduleLessonsAsyncActions'
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupLoadType } from '../groups/groupsTypes'
+import { ScheduleLessonInitialStateType, ScheduleLessonType } from './scheduleLessonsTypes'
 
 const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
   groupLoad: null,
   teacherLessons: null,
   auditoryOverlay: null,
+  groupOverlay: null,
   scheduleLessons: null,
   loadingStatus: LoadingStatusTypes.NEVER,
 }
 
 const scheduleLessonsSlice = createSlice({
-  name: "scheduleLessons",
+  name: 'scheduleLessons',
   initialState: scheduleLessonsInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -37,11 +39,23 @@ const scheduleLessonsSlice = createSlice({
       const lessons = state.teacherLessons.filter((el) => el.id !== action.payload)
       state.teacherLessons = lessons
     },
+    clearTeacherOverlay(state) {
+      state.teacherLessons = []
+    },
+    clearGroupOverlay(state) {
+      state.groupOverlay = []
+    },
   },
   extraReducers: (builder) => {
     /* getScheduleLessons */
     builder.addCase(getScheduleLessons.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
       state.scheduleLessons = action.payload
+    })
+
+    /* getGroupOverlay */
+    builder.addCase(getGroupOverlay.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
+      if (!state.groupOverlay) return
+      state.groupOverlay = [...state.groupOverlay, ...action.payload]
     })
 
     /* getTeacherLessons */
@@ -91,6 +105,7 @@ const scheduleLessonsSlice = createSlice({
 
 export const scheduleLessonsSelector = (state: RootState) => state.scheduleLessons
 
-export const { setLoadingStatus, clearGroupLoad, deleteTeacherOverlay } = scheduleLessonsSlice.actions
+export const { setLoadingStatus, clearGroupLoad, deleteTeacherOverlay, clearTeacherOverlay, clearGroupOverlay } =
+  scheduleLessonsSlice.actions
 
 export default scheduleLessonsSlice.reducer

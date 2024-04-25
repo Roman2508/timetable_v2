@@ -33,10 +33,12 @@ interface ICalendarProps {
   currentWeekNumber: number
   selectedItemId: number | null
   selectedTeacherId: number | null
+  selectedAuditoryId: number | null
   isPossibleToCreateLessons: boolean
   selectedLesson: ISelectedLesson | null
   scheduleType: 'group' | 'teacher' | 'auditory'
   setCurrentWeekNumber: Dispatch<SetStateAction<number>>
+  setSelectedAuditoryId: Dispatch<SetStateAction<number | null>>
   setSelectedLesson: Dispatch<SetStateAction<ISelectedLesson | null>>
 }
 
@@ -47,21 +49,23 @@ const Calendar: React.FC<ICalendarProps> = ({
   selectedLesson,
   selectedSemester,
   currentWeekNumber,
+  selectedAuditoryId,
   selectedTeacherId,
   setSelectedLesson,
   setCurrentWeekNumber,
+  setSelectedAuditoryId,
   isPossibleToCreateLessons,
 }) => {
   const dispatch = useAppDispatch()
 
   const { settings } = useSelector(settingsSelector)
-  const { scheduleLessons, teacherLessons, loadingStatus } = useSelector(scheduleLessonsSelector)
+  const { scheduleLessons, teacherLessons, groupOverlay, loadingStatus } = useSelector(scheduleLessonsSelector)
 
   const [isRemote, setIsRemote] = React.useState(false)
   const [modalVisible, setModalVisible] = React.useState(false)
   const [isAddNewLesson, setIsAddNewLesson] = React.useState(false)
   const [auditoryModalVisible, setAuditoryModalVisible] = React.useState(false)
-  const [selectedAuditoryId, setSelectedAuditoryId] = React.useState<number | null>(null)
+
   const [severalLessonsModalVisible, setSeveralLessonsModalVisible] = React.useState(false)
   const [severalLessonsList, setSeveralLessonsList] = React.useState<ScheduleLessonType[]>([])
   const [selectedTimeSlot, setSelectedTimeSlot] = React.useState<ISelectedTimeSlot | null>(null)
@@ -233,7 +237,13 @@ const Calendar: React.FC<ICalendarProps> = ({
           </div>
 
           <div className="header-right" style={{ userSelect: 'none' }}>
-            {currentWeekDays[0].start} - {currentWeekDays[6].end}
+            <Button variant="outlined" color="secondary" sx={{ padding: '0px 10px' }} onClick={() => console.log(1)}>
+              Копіювати розклад
+            </Button>
+
+            {/* <p>
+              {currentWeekDays[0].start} - {currentWeekDays[6].end}
+            </p> */}
           </div>
         </div>
 
@@ -253,6 +263,7 @@ const Calendar: React.FC<ICalendarProps> = ({
               index={index}
               key={day.start}
               settings={settings}
+              groupOverlay={groupOverlay}
               selectedLesson={selectedLesson}
               teacherLessons={teacherLessons}
               scheduleLessons={scheduleLessons}

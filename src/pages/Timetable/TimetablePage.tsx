@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 
 // project import
 import MainCard from '../../components/MainCard'
+import { useAppDispatch } from '../../store/store'
 import Calendar from '../../components/TimetablePage/Calendar'
 import { StreamsType } from '../../store/streams/streamsTypes'
 import { customDayjs } from '../../components/Calendar/Calendar'
@@ -11,7 +12,9 @@ import { TeachersType } from '../../store/teachers/teachersTypes'
 import { GroupLoadStreamType } from '../../store/groups/groupsTypes'
 import { settingsSelector } from '../../store/settings/settingsSlice'
 import LessonsTable from '../../components/TimetablePage/LessonsTable'
+import { clearGroupOverlay } from '../../store/scheduleLessons/scheduleLessonsSlice'
 import { TimetablePageHeader } from '../../components/TimetablePage/TimetablePageHeader'
+import { getGroupOverlay } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 import { getLastSelectedDataToLocalStorage } from '../../utils/getLastSelectedDataToLocalStorage'
 
 // ==============================|| TIMETABLE ||============================== //
@@ -30,6 +33,8 @@ export interface ISelectedLesson {
 }
 
 const TimetablePage = () => {
+  const dispatch = useAppDispatch()
+
   const { settings } = useSelector(settingsSelector)
 
   const [weeksCount, setWeeksCount] = React.useState(0)
@@ -37,6 +42,7 @@ const TimetablePage = () => {
   const [selectedSemester, setSelectedSemester] = React.useState<1 | 2>(1)
   const [selectedItemId, setSelectedItemId] = React.useState<number | null>(null)
   const [selectedTeacherId, setSelectedTeacherId] = React.useState<null | number>(null)
+  const [selectedAuditoryId, setSelectedAuditoryId] = React.useState<number | null>(null)
   const [isPossibleToCreateLessons, setIsPossibleToCreateLessons] = React.useState(true)
   const [selectedLesson, setSelectedLesson] = React.useState<ISelectedLesson | null>(null)
   const [scheduleType, setScheduleType] = React.useState<'group' | 'teacher' | 'auditory'>('group')
@@ -65,6 +71,31 @@ const TimetablePage = () => {
     }
   }, [settings, selectedSemester])
 
+  React.useEffect(() => {
+    // Якщо дисципліна не об'єднана в потік
+    if (!selectedLesson) return
+
+    // Якщо група не об'єднана в потік - очищаю накладки
+    if (!selectedLesson.stream) {
+      dispatch(clearGroupOverlay())
+      return
+    }
+
+    // Якщо дисципліна об'єднана в потік і кількість груп в потоці = або < 1
+    if (selectedLesson.stream.groups.length <= 1) return
+
+    const fetchGroupsOverlay = async (groupId: number) => {
+      await dispatch(getGroupOverlay({ semester: selectedSemester, groupId }))
+    }
+
+    Promise.allSettled(
+      selectedLesson.stream.groups.map(async (group) => {
+        if (group.id === selectedLesson.group.id) return
+        await fetchGroupsOverlay(group.id)
+      })
+    )
+  }, [selectedLesson])
+
   return (
     <>
       <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center', p: 0 }}>
@@ -79,6 +110,7 @@ const TimetablePage = () => {
             currentWeekNumber={currentWeekNumber}
             setSelectedSemester={setSelectedSemester}
             setCurrentWeekNumber={setCurrentWeekNumber}
+            setSelectedAuditoryId={setSelectedAuditoryId}
           />
         </Grid>
 
@@ -108,7 +140,9 @@ const TimetablePage = () => {
                 currentWeekNumber={currentWeekNumber}
                 selectedTeacherId={selectedTeacherId}
                 setSelectedLesson={setSelectedLesson}
+                selectedAuditoryId={selectedAuditoryId}
                 setCurrentWeekNumber={setCurrentWeekNumber}
+                setSelectedAuditoryId={setSelectedAuditoryId}
                 isPossibleToCreateLessons={isPossibleToCreateLessons}
               />
             </MainCard>
@@ -128,9 +162,15 @@ export { TimetablePage }
 // 7. Примітки
 // 8. Можливість ставити декілька елементів розкладу в один час, якщо це підгрупи або спец. групи
 //    - МОЖЛИВІ НАКЛАДКИ АУДИТОРІЙ (ТРЕБА ЗРОБИТИ ПЕРЕВІРКУ ЧИ АУДИТОРІЯ ВІЛЬНА)
+//    - МОЖЛИВІ НАКЛАДКИ ВИКЛАДАЧІВ
+
 // 9. Кнопка "Сьогодні" в <Calendar />
+
 // 12. Можливість закрити для викладача, групи або аудиторії певні дати
-// 15. Не оновлюється auditory overlay коли вибирати дисципліну не з таблиці а з календаря (date slot)
-// 16. Зробити group overlay якщо група об'єднана в потік
-// 17. При виборі аудиторії, при подвійному кліку з'являються зайняті аудиторії
+// 15. Не оновлюється auditory overlay коли вибирати дисципліну не з таблиці а з календаря (date slot) ???
+
+// 17. При виборі аудиторії, при подвійному кліку з'являються зайняті аудиторії ???
 // 19. Приховувати групи/викладачів/
+
+// 20. Змінювати кількість студентів
+// 21. При зміні типу розкладу треба очищати teachers overlay

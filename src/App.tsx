@@ -1,4 +1,4 @@
-import React, { lazy } from 'react'
+import { lazy } from 'react'
 import Loadable from './components/Loadable'
 import { Route, Routes } from 'react-router-dom'
 
@@ -9,17 +9,17 @@ import ScrollTop from './components/ScrollTop'
 import 'react-toastify/dist/ReactToastify.css'
 import MinimalLayout from './layout/MinimalLayout'
 import { PlansPage } from './pages/Plans/PlansPage'
-import { TimetablePage } from './pages/Timetable/TimetablePage'
 import { GroupsPage } from './pages/Groups/GroupsPage'
 import { StreamsPage } from './pages/Streams/StreamsPage'
 import FullGroupPage from './pages/FullGroup/FullGroupPage'
 import { FullPlanPage } from './pages/FullPlan/FullPlanPage'
 import { TeachersPage } from './pages/Teachers/TeachersPage'
+import { SettingsPage } from './pages/Settings/SettingsPage'
+import { TimetablePage } from './pages/Timetable/TimetablePage'
 import { AuditoriesPage } from './pages/Auditories/AuditoriesPage'
 import AuthLogin from './pages/authentication/auth-forms/AuthLogin'
 import { DistributionPage } from './pages/Distribution/DistributionPage'
 import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
-import { SettingsPage } from './pages/Settings/SettingsPage'
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('./pages/dashboard')))
@@ -72,7 +72,5 @@ const App = () => {
     </ThemeCustomization>
   )
 }
-
-
 
 export default App
