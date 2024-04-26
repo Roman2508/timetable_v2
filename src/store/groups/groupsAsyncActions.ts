@@ -18,11 +18,11 @@ import { groupLoadLessonsAPI, groupsAPI } from '../../api/api'
 
 export const getGroupCategories = createAsyncThunk(
   'groups-categories/getGroupCategories',
-  async (_, thunkAPI): Promise<GroupCategoriesType[]> => {
+  async (isHide: boolean = false, thunkAPI): Promise<GroupCategoriesType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     try {
-      const { data } = await groupsAPI.getGroupsCategories()
+      const { data } = await groupsAPI.getGroupsCategories(isHide)
       // thunkAPI.dispatch(setAppAlert({ message: 'Групи завантажено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
@@ -186,6 +186,27 @@ export const deleteGroup = createAsyncThunk('group/deleteGroup', async (id: numb
   try {
     const { data } = await groupsAPI.deleteGroup(id)
     thunkAPI.dispatch(setAppAlert({ message: 'Групу видалено', status: 'success' }))
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
+  } catch (error: any) {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+    thunkAPI.dispatch(
+      setAppAlert({
+        message: (error as any)?.response?.data?.message || error.message,
+        status: 'error',
+      })
+    )
+    throw error
+  }
+})
+
+export const handleGroupVisible = createAsyncThunk('group/handleGroupVisible', async (id: number, thunkAPI) => {
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+  try {
+    const { data } = await groupsAPI.handleGroupVisible(id)
+    thunkAPI.dispatch(setAppAlert({ message: 'Групу оновлено', status: 'success' }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
     return data
   } catch (error: any) {

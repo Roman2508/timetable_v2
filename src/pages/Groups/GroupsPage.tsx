@@ -1,6 +1,6 @@
 // material-ui
 import { Grid, List, Typography, ListItemText, ListItemButton, IconButton, Tooltip } from '@mui/material'
-import { EditOutlined, DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import { EditOutlined, DeleteOutlined, PlusCircleOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
 
 // project import
 import React, { useState } from 'react'
@@ -28,6 +28,7 @@ const GroupsPage = () => {
   const { groupCategories, loadingStatus } = useSelector(groupsSelector)
 
   const [modalVisible, setModalVisible] = useState(false)
+  const [groupsVisible, setGroupsVisible] = useState(false)
   const [activeGroupCategory, setActiveGroupCategory] = useState<null | GroupCategoriesType>(null)
   const [actionsModalType, setActionsModalType] = useState<'create-category' | 'update-category'>('create-category')
 
@@ -59,15 +60,14 @@ const GroupsPage = () => {
   React.useEffect(() => {
     if (groupCategories) {
       setActiveGroupCategory(groupCategories[0])
-      return
     }
 
     const fetchData = async () => {
-      const { payload } = await dispatch(getGroupCategories())
+      const { payload } = await dispatch(getGroupCategories(groupsVisible))
       setActiveGroupCategory((payload as GroupCategoriesType[])[0])
     }
     fetchData()
-  }, [])
+  }, [groupsVisible])
 
   return (
     <>
@@ -96,6 +96,16 @@ const GroupsPage = () => {
                   }}
                 >
                   <PlusCircleOutlined />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title={groupsVisible ? 'Показати видимі групи' : 'Показати приховані групи'} enterDelay={1000}>
+                <IconButton
+                  onClick={() => {
+                    setGroupsVisible((prev) => !prev)
+                  }}
+                >
+                  {groupsVisible ? <EyeOutlined /> : <EyeInvisibleOutlined />}
                 </IconButton>
               </Tooltip>
             </Grid>
@@ -173,7 +183,13 @@ const GroupsPage = () => {
 
           <MainCard sx={{ mt: 2 }} content={false}>
             {loadingStatus === LoadingStatusTypes.LOADING && !activeGroupCategory && <LoadingSpinner />}
-            {activeGroupCategory && <GroupsTable groups={activeGroupCategory.groups} onDeleteEntity={onDeleteEntity} />}
+            {activeGroupCategory && (
+              <GroupsTable
+                onDeleteEntity={onDeleteEntity}
+                groups={activeGroupCategory.groups}
+                setActiveGroupCategory={setActiveGroupCategory}
+              />
+            )}
             {!activeGroupCategory?.groups.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
 
             {/* {activeGroupCategory ? (

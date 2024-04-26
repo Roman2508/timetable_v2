@@ -1,16 +1,18 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { RootState } from '../store'
+
 import {
   createTeacher,
-  createTeacherCategory,
   deleteTeacher,
+  updateTeacher,
+  createTeacherCategory,
   deleteTeacherCategory,
   getTeachersCategories,
-  updateTeacher,
   updateTeacherCategory,
+  handleTeacherVisible,
 } from './teachersAsyncActions'
-import { TeachersCategoryType, TeachersInitialState, TeachersType } from './teachersTypes'
+import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
+import { TeachersCategoryType, TeachersInitialState, TeachersType } from './teachersTypes'
 
 const teachersInitialState: TeachersInitialState = {
   teachersCategories: null,
@@ -23,6 +25,10 @@ const teachersSlice = createSlice({
   reducers: {
     setLoadingStatus(state, action) {
       state.loadingStatus = action.payload
+    },
+    clearTeachers(state) {
+      state.teachersCategories = null
+      state.loadingStatus = LoadingStatusTypes.LOADING
     },
   },
   extraReducers: (builder) => {
@@ -126,6 +132,18 @@ const teachersSlice = createSlice({
       state.loadingStatus = LoadingStatusTypes.SUCCESS
     })
 
+    /* handleTeacherVisible */
+    builder.addCase(handleTeacherVisible.fulfilled, (state, action: PayloadAction<{ id: number }>) => {
+      if (!state.teachersCategories) return
+
+      const updatedCategories = state.teachersCategories.map((el) => {
+        const newGroups = el.teachers.filter((teacher) => teacher.id !== action.payload.id)
+        return { ...el, teachers: newGroups }
+      })
+
+      state.teachersCategories = updatedCategories
+    })
+
     /* deleteTeacher */
     builder.addCase(deleteTeacher.fulfilled, (state, action: PayloadAction<number>) => {
       if (!state.teachersCategories) return
@@ -142,7 +160,7 @@ const teachersSlice = createSlice({
   },
 })
 
-export const { setLoadingStatus } = teachersSlice.actions
+export const { setLoadingStatus, clearTeachers } = teachersSlice.actions
 
 export default teachersSlice.reducer
 

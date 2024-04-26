@@ -10,8 +10,9 @@ import {
   ListItemButton,
   AccordionSummary,
   AccordionDetails,
+  Tooltip,
 } from '@mui/material'
-import { EditOutlined } from '@ant-design/icons'
+import { EditOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
 import { DeleteOutlined } from '@ant-design/icons'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
 
@@ -25,6 +26,7 @@ import { AuditoriesTypes, AuditoryCategoriesTypes } from '../../store/auditories
 interface IAccordionItemsListProps {
   selectedItemId?: number | null
   onDeleteItem?: (id: number) => void
+  onChangeVisible?: (id: number) => void
   onSelectItem?: Dispatch<SetStateAction<any>>
   onDeleteMainItem?: (id: number, itemsCount: number) => void
   setIsUpdateItemModalOpen?: Dispatch<SetStateAction<boolean>>
@@ -35,15 +37,16 @@ interface IAccordionItemsListProps {
 }
 
 const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
-  setIsUpdateCategoryModalOpen,
-  setIsUpdateItemModalOpen,
-  onDeleteMainItem,
-  onEditMainItem,
-  selectedItemId,
+  items,
+  onEditItem,
   onDeleteItem,
   onSelectItem,
-  onEditItem,
-  items,
+  selectedItemId,
+  onEditMainItem,
+  onChangeVisible,
+  onDeleteMainItem,
+  setIsUpdateItemModalOpen,
+  setIsUpdateCategoryModalOpen,
 }) => {
   const getItemsKeyName = (items: TeachersCategoryType[] | AuditoryCategoriesTypes[] | GroupCategoriesType[]) => {
     if ('teachers' in items[0]) return 'teachers'
@@ -127,41 +130,55 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                     </ListItemButton>
 
                     {setIsUpdateItemModalOpen && onEditItem && (
-                      <IconButton
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onEditItem(el)
-                          setIsUpdateItemModalOpen(true)
-                        }}
-                        sx={{ mr: '5px', display: 'none' }}
-                      >
-                        <EditOutlined />
-                      </IconButton>
+                      <Tooltip title="Редагувати">
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onEditItem(el)
+                            setIsUpdateItemModalOpen(true)
+                          }}
+                          sx={{ mr: '5px', display: 'none' }}
+                        >
+                          <EditOutlined />
+                        </IconButton>
+                      </Tooltip>
                     )}
 
                     {onDeleteItem && (
-                      <IconButton
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onDeleteItem(el.id)
-                        }}
-                        sx={{ mr: '5px', display: 'none' }}
-                      >
-                        <DeleteOutlined />
-                      </IconButton>
+                      <Tooltip title={'Видалити'}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onDeleteItem(el.id)
+                          }}
+                          sx={{ mr: '5px', display: 'none' }}
+                        >
+                          <DeleteOutlined />
+                        </IconButton>
+                      </Tooltip>
                     )}
 
                     {/* select group (streams page/distribution page) */}
                     {onSelectItem && (
-                      <IconButton
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onSelectItem(el.id)
-                        }}
-                        sx={{ mr: '5px', display: 'none' }}
-                      >
-                        <PlusOutlined />
-                      </IconButton>
+                      <Tooltip title={''}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onSelectItem(el.id)
+                          }}
+                          sx={{ mr: '5px', display: 'none' }}
+                        >
+                          <PlusOutlined />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+
+                    {onChangeVisible && (
+                      <Tooltip title={el.isHide ? 'Показати викладача' : 'Приховати викладача'}>
+                        <IconButton onClick={() => onChangeVisible(el.id)} sx={{ mr: '5px', display: 'none' }}>
+                          {el.isHide ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                        </IconButton>
+                      </Tooltip>
                     )}
                   </ListItem>
                 </div>

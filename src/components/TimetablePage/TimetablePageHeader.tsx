@@ -148,11 +148,10 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
         getLastSelectedDataToLocalStorage()
 
       setScheduleType(lastSelectedScheduleType || 'group')
-
-      const groups = await dispatch(getGroupCategories())
+      const groups = await dispatch(getGroupCategories(false))
       const groupsPayload = groups.payload as GroupCategoriesType[]
 
-      const teachers = await dispatch(getTeachersCategories())
+      const teachers = await dispatch(getTeachersCategories(false))
       const teachersPayload = teachers.payload as TeachersCategoryType[]
 
       const auditory = await dispatch(getAuditoryCategories())

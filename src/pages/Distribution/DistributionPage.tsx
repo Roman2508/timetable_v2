@@ -36,12 +36,10 @@ const DistributionPage = () => {
   const [selectedLesson, setSelectedLesson] = React.useState<null | GroupLoadType[]>(null)
 
   React.useEffect(() => {
-    if (!teachersCategories) {
-      dispatch(getTeachersCategories())
-    }
+    dispatch(getTeachersCategories(false))
 
     if (!groupCategories) {
-      dispatch(getGroupCategories())
+      dispatch(getGroupCategories(false))
     }
   }, [])
 

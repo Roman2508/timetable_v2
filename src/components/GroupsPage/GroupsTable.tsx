@@ -1,44 +1,28 @@
-import React, { useState } from "react"
-import { Link as RouterLink, useNavigate } from "react-router-dom"
+import { Link as RouterLink } from 'react-router-dom'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import { DeleteOutlined, EditOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
 
 // material-ui
 import {
   Box,
   Link,
   Table,
+  Tooltip,
   TableRow,
   TableBody,
   TableCell,
   TableHead,
+  IconButton,
   SortDirection,
   TableContainer,
-  IconButton,
-} from "@mui/material"
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons"
-import { GroupCategoriesType, GroupsShortType } from "../../store/groups/groupsTypes"
+} from '@mui/material'
+import { useAppDispatch } from '../../store/store'
+import { handleGroupVisible } from '../../store/groups/groupsAsyncActions'
+import { GroupCategoriesType, GroupsShortType } from '../../store/groups/groupsTypes'
 
-const createData = (
-  trackingNo: number,
-  name: string,
-  fat: number,
-  carbs: number,
-  protein: number
-) => {
+const createData = (trackingNo: number, name: string, fat: number, carbs: number, protein: number) => {
   return { trackingNo, name, fat, carbs, protein }
 }
-
-const rows = [
-  createData(84564564, "Camera Lens", 40, 2, 40570),
-  createData(98764564, "Laptop", 300, 0, 180139),
-  createData(98756325, "Mobile", 355, 1, 90989),
-  createData(98652366, "Handset", 50, 1, 10239),
-  createData(13286564, "Computer Accessories", 100, 1, 83348),
-  createData(86739658, "TV", 99, 0, 410780),
-  createData(13256498, "Keyboard", 125, 2, 70999),
-  createData(98753263, "Mouse", 89, 2, 10570),
-  createData(98753275, "Desktop", 185, 1, 98063),
-  createData(98753291, "Chair", 100, 0, 14001),
-]
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -51,7 +35,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === "desc"
+  return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
@@ -72,36 +56,36 @@ function stableSort(array, comparator) {
 
 interface IHeadCells {
   id: string
-  align: "center" | "left" | "right" | "inherit" | "justify"
+  align: 'center' | 'left' | 'right' | 'inherit' | 'justify'
   disablePadding: boolean
   label: string
 }
 
 const headCells: IHeadCells[] = [
   {
-    id: "trackingNo",
-    align: "center",
+    id: 'trackingNo',
+    align: 'center',
     disablePadding: false,
-    label: "Назва",
+    label: 'Назва',
   },
   {
-    id: "name",
-    align: "center",
+    id: 'name',
+    align: 'center',
     disablePadding: true,
-    label: "Курс",
+    label: 'Курс',
   },
   {
-    id: "fat",
-    align: "center",
+    id: 'fat',
+    align: 'center',
     disablePadding: false,
-    label: "Студентів",
+    label: 'Студентів',
   },
   {
-    id: "carbs",
-    align: "center",
+    id: 'carbs',
+    align: 'center',
     disablePadding: false,
 
-    label: "Дії",
+    label: 'Дії',
   },
 ]
 
@@ -120,7 +104,7 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
           <TableCell
             key={headCell.id}
             align={headCell.align}
-            padding={headCell.disablePadding ? "none" : "normal"}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
           >
             {headCell.label}
@@ -135,35 +119,49 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
 
 interface IGroupsTableProps {
   groups: GroupsShortType[]
-  onDeleteEntity: (type: "category" | "group", id: number) => void
+  onDeleteEntity: (type: 'category' | 'group', id: number) => void
+  setActiveGroupCategory: Dispatch<SetStateAction<GroupCategoriesType | null>>
 }
 
-const GroupsTable: React.FC<IGroupsTableProps> = ({ groups, onDeleteEntity }) => {
-  const [order] = useState("asc")
-  const [orderBy] = useState("trackingNo")
+const GroupsTable: React.FC<IGroupsTableProps> = ({ groups, onDeleteEntity, setActiveGroupCategory }) => {
+  const dispatch = useAppDispatch()
+
+  const [order] = useState('asc')
+  const [orderBy] = useState('trackingNo')
   const [selected] = useState([])
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1
+
+  const onChangeGroupVisible = async (id: number) => {
+    const { payload }: { payload: unknown } = await dispatch(handleGroupVisible(id))
+    const updatedGroup = payload as { id: number }
+
+    setActiveGroupCategory((prev) => {
+      if (!prev) return null
+      const groups = prev.groups.filter((group) => group.id !== updatedGroup.id)
+      return { ...prev, groups }
+    })
+  }
 
   return (
     <Box>
       <TableContainer
         sx={{
-          width: "100%",
-          overflowX: "auto",
-          position: "relative",
-          display: "block",
-          maxWidth: "100%",
-          "& td, & th": { whiteSpace: "nowrap" },
+          width: '100%',
+          overflowX: 'auto',
+          position: 'relative',
+          display: 'block',
+          maxWidth: '100%',
+          '& td, & th': { whiteSpace: 'nowrap' },
         }}
       >
         <Table
           aria-labelledby="tableTitle"
           sx={{
-            "& .MuiTableCell-root:first-of-type": {
+            '& .MuiTableCell-root:first-of-type': {
               pl: 2,
             },
-            "& .MuiTableCell-root:last-of-type": {
+            '& .MuiTableCell-root:last-of-type': {
               pr: 3,
             },
           }}
@@ -179,42 +177,43 @@ const GroupsTable: React.FC<IGroupsTableProps> = ({ groups, onDeleteEntity }) =>
                 <TableRow
                   hover
                   role="checkbox"
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   aria-checked={isItemSelected}
                   tabIndex={-1}
                   key={group.id}
                   selected={isItemSelected}
                 >
-                  <TableCell
-                    component="th"
-                    id={labelId}
-                    scope="row"
-                    align="left"
-                    sx={{ p: "4px 12px" }}
-                  >
+                  <TableCell component="th" id={labelId} scope="row" align="left" sx={{ p: '4px 12px' }}>
                     <Link color="secondary" component={RouterLink} to={`/groups/${group.id}`}>
                       {group.name}
                     </Link>
                   </TableCell>
-                  <TableCell align="center" sx={{ p: "4px 12px" }}>
+                  <TableCell align="center" sx={{ p: '4px 12px' }}>
                     {group.courseNumber}
                   </TableCell>
-                  <TableCell align="center" sx={{ p: "4px 12px" }}>
+                  <TableCell align="center" sx={{ p: '4px 12px' }}>
                     {group.students}
                   </TableCell>
-                  <TableCell align="center" sx={{ p: "4px 12px" }}>
+                  <TableCell align="center" sx={{ p: '4px 12px' }}>
                     <Link component={RouterLink} to={`/groups/${group.id}`}>
-                      <IconButton>
-                        <EditOutlined />
-                      </IconButton>
+                      <Tooltip title="Редагувати групу">
+                        <IconButton>
+                          <EditOutlined />
+                        </IconButton>
+                      </Tooltip>
                     </Link>
 
-                    <IconButton
-                      sx={{ ml: "5px" }}
-                      onClick={() => onDeleteEntity("group", group.id)}
-                    >
-                      <DeleteOutlined />
-                    </IconButton>
+                    <Tooltip title="Видалити групу">
+                      <IconButton sx={{ ml: '5px' }} onClick={() => onDeleteEntity('group', group.id)}>
+                        <DeleteOutlined />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title={group.isHide ? 'Показати групу' : 'Приховати групу'}>
+                      <IconButton sx={{ ml: '5px' }} onClick={() => onChangeGroupVisible(group.id)}>
+                        {group.isHide ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                      </IconButton>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               )

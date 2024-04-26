@@ -108,7 +108,7 @@ const FullGroupPage = () => {
       dispatch(getGroup(params.id))
     }
     if (!groupCategories) {
-      dispatch(getGroupCategories())
+      dispatch(getGroupCategories(false))
     }
     if (!plansCategories) {
       dispatch(getPlansCategories())

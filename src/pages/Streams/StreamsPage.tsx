@@ -41,7 +41,7 @@ const StreamsPage = () => {
 
   React.useEffect(() => {
     if (groupCategories) return
-    dispatch(getGroupCategories())
+    dispatch(getGroupCategories(false))
   }, [])
 
   React.useEffect(() => {

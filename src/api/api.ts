@@ -97,8 +97,8 @@ export const auditoriesAPI = {
 
 export const teachersAPI = {
   /* categories */
-  getTeachersCategories() {
-    return instanse.get<TeachersCategoryType[]>('/teacher-categories')
+  getTeachersCategories(isHide: boolean = false) {
+    return instanse.get<TeachersCategoryType[]>(`/teacher-categories/${isHide}`)
   },
   createTeacherCategory(payload: CreateTeacherCategoryPayloadType) {
     return instanse.post('/teacher-categories/', { name: payload.name })
@@ -120,6 +120,9 @@ export const teachersAPI = {
     const { id, ...rest } = payload
 
     return instanse.patch(`/teachers/${id}`, rest)
+  },
+  handleTeacherVisible(id: number) {
+    return instanse.patch<{ id: number }>(`/teachers/handle-visible/${id}`)
   },
   deleteTeacher(id: number) {
     return instanse.delete(`/teachers/${id}`)
@@ -178,8 +181,8 @@ export const planSubjectsAPI = {
 
 export const groupsAPI = {
   /* categories */
-  getGroupsCategories() {
-    return instanse.get<GroupCategoriesType[]>('/group-categories')
+  getGroupsCategories(isHide: boolean) {
+    return instanse.get<GroupCategoriesType[]>(`/group-categories/${isHide}`)
   },
   createGroupCategory(payload: string) {
     return instanse.post<GroupCategoriesType>('/group-categories', { name: payload })
@@ -207,6 +210,9 @@ export const groupsAPI = {
   },
   deleteGroup(id: number) {
     return instanse.delete<number>(`/groups/${id}`)
+  },
+  handleGroupVisible(id: number) {
+    return instanse.patch<{ id: number; isHide: boolean }>(`/groups/handle-visible/${id}`)
   },
 
   createSpecialization(payload: CreateSpecializationPayloadType) {

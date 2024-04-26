@@ -68,7 +68,7 @@ const SubjectsModal: React.FC<ISubjectsModalProps> = ({
 
   React.useEffect(() => {
     if (teachersCategories) return
-    dispatch(getTeachersCategories())
+    dispatch(getTeachersCategories(false))
   }, [])
 
   const onSubmit: SubmitHandler<{ name: string; cmk: number }> = async (data) => {

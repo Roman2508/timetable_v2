@@ -1,20 +1,26 @@
-import React from "react"
-import { useSelector } from "react-redux"
-import { Grid, Typography } from "@mui/material"
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { Grid, IconButton, Tooltip, Typography } from '@mui/material'
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
 
-import MainCard from "../../components/MainCard"
-import { useAppDispatch } from "../../store/store"
-import { LoadingStatusTypes } from "../../store/appTypes"
-import EmptyCard from "../../components/EmptyCard/EmptyCard"
-import { TeachersType } from "../../store/teachers/teachersTypes"
-import { teachersSelector } from "../../store/teachers/teachersSlice"
-import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
-import CreateTeacherForm from "../../components/TeachersPage/CreateTeacherForm"
-import UpdateTeacherModal from "../../components/TeachersPage/UpdateTeacherModal"
-import { AccordionItemsList } from "../../components/AccordionItemsList/AccordionItemsList"
-import CreateTeachersCategoryForm from "../../components/TeachersPage/CreateTeachersCategoryForm"
-import UpdateTeachersCategoryForm from "../../components/TeachersPage/UpdateTeachersCategoryForm"
-import { deleteTeacher, deleteTeacherCategory, getTeachersCategories } from "../../store/teachers/teachersAsyncActions"
+import {
+  deleteTeacher,
+  handleTeacherVisible,
+  getTeachersCategories,
+  deleteTeacherCategory,
+} from '../../store/teachers/teachersAsyncActions'
+import MainCard from '../../components/MainCard'
+import { useAppDispatch } from '../../store/store'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { TeachersType } from '../../store/teachers/teachersTypes'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import CreateTeacherForm from '../../components/TeachersPage/CreateTeacherForm'
+import UpdateTeacherModal from '../../components/TeachersPage/UpdateTeacherModal'
+import { clearTeachers, teachersSelector } from '../../store/teachers/teachersSlice'
+import { AccordionItemsList } from '../../components/AccordionItemsList/AccordionItemsList'
+import CreateTeachersCategoryForm from '../../components/TeachersPage/CreateTeachersCategoryForm'
+import UpdateTeachersCategoryForm from '../../components/TeachersPage/UpdateTeachersCategoryForm'
 
 // ==============================|| PLANS ||============================== //
 
@@ -23,6 +29,7 @@ const TeachersPage = () => {
 
   const { teachersCategories, loadingStatus } = useSelector(teachersSelector)
 
+  const [teachersVisible, setTeachersVisible] = React.useState(false)
   const [isUpdateTeacherModalOpen, setIsUpdateTeacherModalOpen] = React.useState(false)
   const [isUpdateCategoryModalOpen, setIsUpdateCategoryModalOpen] = React.useState(false)
   const [editingTeacher, setEditingTeacher] = React.useState<TeachersType | null>(null)
@@ -32,13 +39,12 @@ const TeachersPage = () => {
   } | null>(null)
 
   React.useEffect(() => {
-    if (teachersCategories) return
-    dispatch(getTeachersCategories())
-  }, [])
+    dispatch(getTeachersCategories(teachersVisible))
+  }, [teachersVisible])
 
   const onDeleteTeacher = (id: number) => {
     try {
-      if (window.confirm("Ви дійсно хочете видалити викладача?")) {
+      if (window.confirm('Ви дійсно хочете видалити викладача?')) {
         dispatch(deleteTeacher(id))
       }
     } catch (error) {
@@ -48,16 +54,20 @@ const TeachersPage = () => {
 
   const onDeleteTeacherCategory = (id: number, teachersCount: number) => {
     try {
-      if (!window.confirm("Ви дійсно хочете видалити категорію?")) return
+      if (!window.confirm('Ви дійсно хочете видалити категорію?')) return
 
       if (teachersCount > 0) {
-        alert("В категорії не повинно бути викладачів")
+        alert('В категорії не повинно бути викладачів')
       } else {
         dispatch(deleteTeacherCategory(id))
       }
     } catch (error) {
       console.error(error)
     }
+  }
+
+  const onChangeVisible = (id: number) => {
+    dispatch(handleTeacherVisible(id))
   }
 
   return (
@@ -73,28 +83,41 @@ const TeachersPage = () => {
         editingTeacherCategory={editingTeacherCategory}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
         {/* Категорії (відділення) */}
         <Grid item xs={12} md={10}>
           <Grid container>
-            <Grid item>
+            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="h5">Викладачі</Typography>
+
+              <Tooltip title={teachersVisible ? 'Показати видимих викладачів' : 'Показати прихованих викладачів'}>
+                <IconButton
+                  sx={{ ml: '10px' }}
+                  onClick={() => {
+                    dispatch(clearTeachers())
+                    setTeachersVisible((prev) => !prev)
+                  }}
+                >
+                  {teachersVisible ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                </IconButton>
+              </Tooltip>
             </Grid>
             <Grid item />
           </Grid>
         </Grid>
 
-        <Grid item xs={12} md={10} sx={{ display: "flex", alignItems: "flex-start" }}>
-          <Grid item xs={8} sx={{ borderRadius: "8px", border: "1px solid #e6ebf1", overflow: "hidden" }}>
+        <Grid item xs={12} md={10} sx={{ display: 'flex', alignItems: 'flex-start' }}>
+          <Grid item xs={8} sx={{ borderRadius: '8px', border: '1px solid #e6ebf1', overflow: 'hidden' }}>
             {/* TEACHERS LIST */}
             {!teachersCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
             {!teachersCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
-            {teachersCategories?.length && (
+            {!!teachersCategories?.length && (
               <AccordionItemsList
                 items={teachersCategories}
                 /* @ts-ignore */
                 onEditItem={setEditingTeacher}
                 onDeleteItem={onDeleteTeacher}
+                onChangeVisible={onChangeVisible}
                 onEditMainItem={setEditingTeacherCategory}
                 onDeleteMainItem={onDeleteTeacherCategory}
                 setIsUpdateItemModalOpen={setIsUpdateTeacherModalOpen}
@@ -107,7 +130,7 @@ const TeachersPage = () => {
           <Grid item xs={4} sx={{ ml: 2 }}>
             <Grid item xs={12} sx={{ mb: 2 }}>
               <MainCard>
-                <Typography variant="button" sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}>
+                <Typography variant="button" sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase' }}>
                   Додати нового викладача
                 </Typography>
 
@@ -117,7 +140,7 @@ const TeachersPage = () => {
 
             <Grid item xs={12}>
               <MainCard>
-                <Typography variant="button" sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}>
+                <Typography variant="button" sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase' }}>
                   Додати нову категорію
                 </Typography>
 

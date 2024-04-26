@@ -16,7 +16,9 @@ export type GroupCategoriesType = {
 export type GroupsType = {
   id: number
   name: string
+  isHide: boolean
   students: number
+  calendarId: string
   courseNumber: number
   yearOfAdmission: number
   specializationList: string[]
@@ -27,7 +29,7 @@ export type GroupsType = {
   educationPlan: { id: number; name: string } | null
 }
 
-export type GroupsShortType = Pick<GroupsType, 'id' | 'name' | 'courseNumber' | 'students'>
+export type GroupsShortType = Pick<GroupsType, 'id' | 'name' | 'courseNumber' | 'students' | 'isHide'>
 
 export type GroupFormType = {
   name: string
