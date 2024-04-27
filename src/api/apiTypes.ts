@@ -1,5 +1,5 @@
-import { GroupsType } from '../store/groups/groupsTypes'
-import { TeachersType } from '../store/teachers/teachersTypes'
+import { GroupsType } from "../store/groups/groupsTypes"
+import { TeachersType } from "../store/teachers/teachersTypes"
 
 /* Global */
 
@@ -43,11 +43,11 @@ export type UpdateTeacherCategoryPayloadType = {
 
 export type CreateTeacherPayloadType = {
   category: number
-} & Omit<TeachersType, 'id' | 'category' | 'calendarId'>
+} & Omit<TeachersType, "id" | "category" | "calendarId">
 
 export type UpdateTeacherPayloadType = {
   category: number
-} & Omit<TeachersType, 'category' | 'calendarId'>
+} & Omit<TeachersType, "category" | "calendarId">
 
 /* Plans */
 
@@ -60,7 +60,7 @@ export type CreatePlanPayloadType = {
 
 export type UpdateGroupPayloadType = Pick<
   GroupsType,
-  'id' | 'name' | 'students' | 'courseNumber' | 'yearOfAdmission' | 'formOfEducation'
+  "id" | "name" | "students" | "courseNumber" | "yearOfAdmission" | "formOfEducation"
 > & { educationPlan: number; category: number }
 
 /* Groups-load */
@@ -68,7 +68,7 @@ export type UpdateGroupPayloadType = Pick<
 export type FindLessonsForSchedulePayloadType = {
   semester: number
   itemId: number
-  scheduleType: 'group' | 'teacher'
+  scheduleType: "group" | "teacher"
 }
 
 /* Plan-subjects */
@@ -111,6 +111,16 @@ export type AttachSpecializationPayloadType = {
   name: string | null
 }
 
+export type ChangeStudentsCountType = {
+  id: number
+  students: number
+  typeRu: string
+  name: string
+  semester: number
+  subgroupNumber: number | null
+  specialization: string | null
+}
+
 export type CreateSpecializationPayloadType = {
   groupId: number
   name: string
@@ -129,7 +139,7 @@ export type DeleteSpecializationPayloadType = CreateSpecializationPayloadType
 export type CreateSubgroupsPayloadType = {
   planSubjectId: number
   groupId: number
-  typeEn: 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams'
+  typeEn: "lectures" | "practical" | "laboratory" | "seminars" | "exams"
   subgroupsCount: number
 }
 
@@ -168,7 +178,7 @@ export type AttachTeacherPayloadType = {
 
 export type GetScheduleLessonsPayloadType = {
   semester: number
-  type: 'group' | 'teacher' | 'auditory'
+  type: "group" | "teacher" | "auditory"
   id: number
 }
 
@@ -176,7 +186,7 @@ export type CreateScheduleLessonsPayloadType = {
   name: string
   date: string
   subgroupNumber: number | null
-  typeRu: 'ЛК' | 'ПЗ' | 'ЛАБ' | 'СЕМ' | 'ЕКЗ'
+  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ"
   lessonNumber: number
   isRemote: boolean
   semester: number

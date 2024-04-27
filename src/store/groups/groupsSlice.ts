@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 import {
   getGroup,
@@ -17,24 +17,25 @@ import {
   updateSpecialization,
   deleteSpecialization,
   handleGroupVisible,
-} from './groupsAsyncActions'
-import { RootState } from '../store'
-import { LoadingStatusTypes } from '../appTypes'
-import { TeachersType } from '../teachers/teachersTypes'
-import { AttachSpecializationPayloadType } from '../../api/apiTypes'
-import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from './groupsTypes'
+  changeStudentsCount,
+} from "./groupsAsyncActions"
+import { RootState } from "../store"
+import { LoadingStatusTypes } from "../appTypes"
+import { TeachersType } from "../teachers/teachersTypes"
+import { AttachSpecializationPayloadType, ChangeStudentsCountType } from "../../api/apiTypes"
+import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from "./groupsTypes"
 
 const groupsInitialState: GroupsInitialState = {
   groupCategories: null,
   group: {
     id: 0,
-    name: '',
+    name: "",
     courseNumber: 1,
     yearOfAdmission: Number(new Date().getFullYear().toString()),
     students: 1,
     isHide: false,
-    calendarId: '',
-    formOfEducation: 'Денна',
+    calendarId: "",
+    formOfEducation: "Денна",
     specializationList: [],
     educationPlan: null,
     groupLoad: null,
@@ -45,7 +46,7 @@ const groupsInitialState: GroupsInitialState = {
 }
 
 const groupsSlice = createSlice({
-  name: 'groups',
+  name: "groups",
   initialState: groupsInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -250,7 +251,28 @@ const groupsSlice = createSlice({
       state.group.groupLoad = lessons
     })
 
-    /*  */
+    /* changeStudentsCount */
+    builder.addCase(changeStudentsCount.fulfilled, (state, action: PayloadAction<ChangeStudentsCountType>) => {
+      if (!state.group.groupLoad) return
+
+      const { name, typeRu, semester, specialization, subgroupNumber, students } = action.payload
+
+      const lessons = state.group.groupLoad.map((el) => {
+        if (
+          el.name === name &&
+          el.typeRu === typeRu &&
+          el.semester === semester &&
+          el.specialization === specialization &&
+          el.subgroupNumber === subgroupNumber
+        ) {
+          return { ...el, students }
+        }
+
+        return el
+      })
+
+      state.group.groupLoad = lessons
+    })
   },
 })
 
