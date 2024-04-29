@@ -39,6 +39,7 @@ interface ICalendarProps {
   scheduleType: 'group' | 'teacher' | 'auditory'
   setCurrentWeekNumber: Dispatch<SetStateAction<number>>
   setSelectedAuditoryId: Dispatch<SetStateAction<number | null>>
+  setCopyTheScheduleModalVisible: Dispatch<SetStateAction<boolean>>
   setSelectedLesson: Dispatch<SetStateAction<ISelectedLesson | null>>
 }
 
@@ -55,6 +56,7 @@ const Calendar: React.FC<ICalendarProps> = ({
   setCurrentWeekNumber,
   setSelectedAuditoryId,
   isPossibleToCreateLessons,
+  setCopyTheScheduleModalVisible,
 }) => {
   const dispatch = useAppDispatch()
 
@@ -213,7 +215,7 @@ const Calendar: React.FC<ICalendarProps> = ({
       <div className="calendar">
         <div className="header">
           <div className="header-left">
-            <Button variant="outlined" color="secondary" sx={{ mr: 1, padding: '0px 10px' }}>
+            <Button variant="outlined" color="secondary" sx={{ mr: 1, padding: '0px 10px' }} disabled>
               Сьогодні
             </Button>
             <Button
@@ -237,7 +239,12 @@ const Calendar: React.FC<ICalendarProps> = ({
           </div>
 
           <div className="header-right" style={{ userSelect: 'none' }}>
-            <Button variant="outlined" color="secondary" sx={{ padding: '0px 10px' }} onClick={() => console.log(1)}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              sx={{ padding: '0px 10px' }}
+              onClick={() => setCopyTheScheduleModalVisible(true)}
+            >
               Копіювати розклад
             </Button>
 
