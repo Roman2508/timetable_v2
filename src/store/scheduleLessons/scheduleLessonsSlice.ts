@@ -9,6 +9,8 @@ import {
   getTeacherLessons,
   getAuditoryOverlay,
   getGroupOverlay,
+  copyWeekSchedule,
+  copyDaySchedule,
 } from './scheduleLessonsAsyncActions'
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
@@ -72,6 +74,19 @@ const scheduleLessonsSlice = createSlice({
     builder.addCase(createScheduleLesson.fulfilled, (state, action: PayloadAction<ScheduleLessonType>) => {
       if (!state.scheduleLessons) return
       state.scheduleLessons.push(action.payload)
+    })
+
+    /* copyWeekSchedule */
+
+    builder.addCase(copyWeekSchedule.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
+      if (!state.scheduleLessons) return
+      state.scheduleLessons = [...state.scheduleLessons, ...action.payload]
+    })
+
+    /* copyDaySchedule */
+    builder.addCase(copyDaySchedule.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
+      if (!state.scheduleLessons) return
+      state.scheduleLessons = [...state.scheduleLessons, ...action.payload]
     })
 
     /* updateScheduleLesson */

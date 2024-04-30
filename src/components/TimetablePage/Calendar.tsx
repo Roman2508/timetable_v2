@@ -239,14 +239,16 @@ const Calendar: React.FC<ICalendarProps> = ({
           </div>
 
           <div className="header-right" style={{ userSelect: 'none' }}>
-            <Button
-              variant="outlined"
-              color="secondary"
-              sx={{ padding: '0px 10px' }}
-              onClick={() => setCopyTheScheduleModalVisible(true)}
-            >
-              Копіювати розклад
-            </Button>
+            {scheduleType === 'group' && (
+              <Button
+                variant="outlined"
+                color="secondary"
+                sx={{ padding: '0px 10px' }}
+                onClick={() => setCopyTheScheduleModalVisible(true)}
+              >
+                Копіювати розклад
+              </Button>
+            )}
 
             {/* <p>
               {currentWeekDays[0].start} - {currentWeekDays[6].end}

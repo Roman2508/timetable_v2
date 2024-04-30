@@ -7,6 +7,8 @@ import {
   CreateScheduleLessonsPayloadType,
   FindLessonsForSchedulePayloadType,
   GetGroupOverlayPayloadType,
+  CopyWeekSchedulePayloadType,
+  CopyDaySchedulePayloadType,
 } from '../../api/apiTypes'
 import { LoadingStatusTypes } from '../appTypes'
 import { setLoadingStatus } from './scheduleLessonsSlice'
@@ -117,6 +119,56 @@ export const createScheduleLesson = createAsyncThunk(
     try {
       const { data } = await scheduleLessonsAPI.create(payload)
       thunkAPI.dispatch(setAppAlert({ message: 'Додано елемент розкладу', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)
+
+export const copyWeekSchedule = createAsyncThunk(
+  'schedule-lessons/copyWeekSchedule',
+  async (payload: CopyWeekSchedulePayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+    try {
+      const { data } = await scheduleLessonsAPI.copyWeekSchedule(payload)
+      thunkAPI.dispatch(setAppAlert({ message: 'Розклад скопійовано', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)
+
+export const copyDaySchedule = createAsyncThunk(
+  'schedule-lessons/copyDaySchedule',
+  async (payload: CopyDaySchedulePayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+    try {
+      const { data } = await scheduleLessonsAPI.copyDaySchedule(payload)
+      thunkAPI.dispatch(setAppAlert({ message: 'Розклад скопійовано', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
