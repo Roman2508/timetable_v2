@@ -98,24 +98,31 @@ const CopyTheScheduleModal: React.FC<ICopyTheScheduleModalProps> = ({
     if (!groupId) return
     if (!copyDates.copyFrom || !copyDates.copyTo) return
 
-    // copy week
-    if (activeTabIndex === 0) {
-      const payload = { groupId, copyFromStartDay: copyDates.copyFrom, copyToStartDay: copyDates.copyTo }
-      dispatch(copyWeekSchedule(payload))
-    }
+    const start = customDayjs(copyDates.copyFrom, 'DD.MM.YYYY').format('MM.DD.YYYY')
+    const end = customDayjs(copyDates.copyTo, 'DD.MM.YYYY').format('MM.DD.YYYY')
 
-    // copy day
-    if (activeTabIndex === 1) {
-      const payload = { groupId, copyFromDay: copyDates.copyFrom, copyToDay: copyDates.copyTo }
-      dispatch(copyDaySchedule(payload))
+    try {
+      // copy week
+      if (activeTabIndex === 0) {
+        const payload = { groupId, copyFromStartDay: start, copyToStartDay: end }
+        dispatch(copyWeekSchedule(payload))
+      }
+
+      // copy day
+      if (activeTabIndex === 1) {
+        const payload = { groupId, copyFromDay: start, copyToDay: end }
+        dispatch(copyDaySchedule(payload))
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setOpen(false)
     }
   }
 
   const handleClose = () => {
     setOpen(false)
   }
-
-  console.log(copyDates)
 
   return (
     <Dialog
@@ -207,7 +214,7 @@ const CopyTheScheduleModal: React.FC<ICopyTheScheduleModalProps> = ({
             label="Копіювати з:"
             setValue={(date) => {
               setCopyDates((prev) => {
-                const copyFrom = customDayjs(date).format('MM.DD.YYYY')
+                const copyFrom = customDayjs(date, 'DD.MM.YYYY').format('DD.MM.YYYY')
                 return { ...prev, copyFrom }
               })
             }}
@@ -221,7 +228,7 @@ const CopyTheScheduleModal: React.FC<ICopyTheScheduleModalProps> = ({
             label="Копіювати на:"
             setValue={(date) =>
               setCopyDates((prev) => {
-                const copyTo = customDayjs(date).format('MM.DD.YYYY')
+                const copyTo = customDayjs(date, 'DD.MM.YYYY').format('DD.MM.YYYY')
                 return { ...prev, copyTo }
               })
             }
@@ -235,8 +242,8 @@ const CopyTheScheduleModal: React.FC<ICopyTheScheduleModalProps> = ({
       <DialogActions sx={{ p: 2, display: 'flex', justifyContent: 'space-between' }}>
         <Typography>
           {copyDates.copyFrom && copyDates.copyTo
-            ? `Копіювати з ${copyDates.copyFrom.split('.')[1]}.${copyDates.copyFrom.split('.')[0]} 
-            на ${copyDates.copyTo.split('.')[1]}.${copyDates.copyTo.split('.')[0]}`
+            ? `Копіювати з ${copyDates.copyFrom.split('.')[0]}.${copyDates.copyFrom.split('.')[1]} 
+            на ${copyDates.copyTo.split('.')[0]}.${copyDates.copyTo.split('.')[1]}`
             : ''}
         </Typography>
 

@@ -1,24 +1,24 @@
-import { CloseOutlined } from "@ant-design/icons"
-import React, { Dispatch, SetStateAction } from "react"
-import { Dialog, Tooltip, IconButton, Typography, DialogContent, Button } from "@mui/material"
+import { CloseOutlined } from '@ant-design/icons'
+import React, { Dispatch, SetStateAction } from 'react'
+import { Dialog, Tooltip, IconButton, Typography, DialogContent, Button } from '@mui/material'
 
-import { ISelectedTimeSlot } from "./Calendar"
-import { ISelectedLesson } from "../../pages/Timetable/TimetablePage"
-import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
-import { ScheduleLessonType } from "../../store/scheduleLessons/scheduleLessonsTypes"
-import { colors } from "./CalendarDay"
-import { Dayjs } from "dayjs"
+import { ISelectedTimeSlot } from './Calendar'
+import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
+import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
+import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsTypes'
+import { colors } from './CalendarDay'
+import { Dayjs } from 'dayjs'
 
-const dayNames = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"]
+const dayNames = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота', 'Неділя']
 
 const lessonsTime = [
-  "08:30 – 09:50",
-  "10:00 – 11:20",
-  "12:00 – 13:20",
-  "13:30 – 14:50",
-  "15:00 – 16:20",
-  "16:30 – 17:50",
-  "18:00 – 19:20",
+  '08:30 – 09:50',
+  '10:00 – 11:20',
+  '12:00 – 13:20',
+  '13:30 – 14:50',
+  '15:00 – 16:20',
+  '16:30 – 17:50',
+  '18:00 – 19:20',
 ]
 
 interface IPutSeveralLessonsAtSameTimeModalProps {
@@ -46,7 +46,7 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
   setSelectedAuditoryId,
   setActionsModalVisible,
 }) => {
-  const [dayName, setDayName] = React.useState("")
+  const [dayName, setDayName] = React.useState('')
 
   React.useEffect(() => {
     if (!selectedTimeSlot) return
@@ -110,6 +110,8 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
     return isSame
   })
 
+  console.log('severalLessonsList', severalLessonsList)
+
   return (
     <Dialog
       open={open}
@@ -117,18 +119,18 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      sx={{ "& .MuiPaper-root": { width: "400px" } }}
+      sx={{ '& .MuiPaper-root': { width: '400px' } }}
     >
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: "8px",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: '8px',
         }}
       >
         <Typography sx={{ ml: 2 }}>
-          {dayName}, {selectedTimeSlot?.data.format("DD MMMM")} ⋅{" "}
+          {dayName}, {selectedTimeSlot?.data.format('DD MMMM')} ⋅{' '}
           {lessonsTime[selectedTimeSlot ? selectedTimeSlot.lessonNumber - 1 : 0]}
         </Typography>
 
@@ -139,28 +141,28 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
         </Tooltip>
       </div>
 
-      <DialogContent sx={{ padding: "20px 60px" }}>
+      <DialogContent sx={{ padding: '20px 60px' }}>
         {severalLessonsList.map((l) => {
-          const teacherName = getLastnameAndInitials(l.teacher)
+          const teacherName = l.teacher ? getLastnameAndInitials(l.teacher) : ''
 
           return (
             <div
               key={l.id}
-              className={"lesson-slot"}
+              className={'lesson-slot'}
               onClick={() => onSelectLesson(l)}
-              style={{ backgroundColor: colors[l.typeRu], marginBottom: "10px" }}
+              style={{ backgroundColor: colors[l.typeRu], marginBottom: '10px' }}
             >
               <p className="time-slot-lesson-name">{l.name}</p>
 
               <p>
                 {`(${l.typeRu}) 
-            ${l.subgroupNumber ? ` підгр.${l.subgroupNumber}` : ""} 
-            ${l.stream ? ` Потік ${l.stream.name} ` : ""}`}
-                {l.specialization ? `${l.specialization} спец.` : ""}
+                ${l.subgroupNumber ? ` підгр.${l.subgroupNumber}` : ''} 
+                ${l.stream ? ` Потік ${l.stream.name} ` : ''}`}
+                {l.specialization ? `${l.specialization} спец.` : ''}
               </p>
 
               <p>{teacherName}</p>
-              <p>{l.auditory ? `${l.auditory.name} ауд.` : "Дистанційно"}</p>
+              <p>{l.auditory ? `${l.auditory.name} ауд.` : 'Дистанційно'}</p>
             </div>
           )
         })}
@@ -169,14 +171,14 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
           onClick={onAddSeveralLesson}
           disabled={isDisabledAddButton}
           sx={{
-            width: "100%",
-            borderRadius: "4px",
-            color: "#262626",
+            width: '100%',
+            borderRadius: '4px',
+            color: '#262626',
             boxShadow:
-              "rgba(0, 0, 0, 0.32) 0px 2px 1px -1px, rgba(0, 0, 0, 0.1) 1px 1px 2px 1px, rgba(0, 0, 0, 0.22) 0px 1px 3px 0px",
-            ":hover": {
+              'rgba(0, 0, 0, 0.32) 0px 2px 1px -1px, rgba(0, 0, 0, 0.1) 1px 1px 2px 1px, rgba(0, 0, 0, 0.22) 0px 1px 3px 0px',
+            ':hover': {
               boxShadow:
-                "rgba(0, 0, 0, 0.32) 0px 2px 1px -1px, rgba(0, 0, 0, 0.1) 1px 1px 2px 1px, rgba(0, 0, 0, 0.22) 0px 1px 3px 0px",
+                'rgba(0, 0, 0, 0.32) 0px 2px 1px -1px, rgba(0, 0, 0, 0.1) 1px 1px 2px 1px, rgba(0, 0, 0, 0.22) 0px 1px 3px 0px',
             },
           }}
         >

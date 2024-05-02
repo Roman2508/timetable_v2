@@ -135,7 +135,9 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
     const data = await dispatch(createScheduleLesson(payload))
     setOpen(false)
     const lesson = data.payload as ScheduleLessonType
-    setSeveralLessonsList((prev) => [...prev, lesson])
+    if (lesson) {
+      setSeveralLessonsList((prev) => [...prev, lesson])
+    }
     setIsAddNewLesson(false)
   }
 
