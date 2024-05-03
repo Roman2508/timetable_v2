@@ -21,6 +21,7 @@ import {
   getScheduleLessons,
   getTeacherLessons,
 } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import { SelectTeacherModal } from './SelectTeacherModal'
 
 export interface ISelectedTimeSlot {
   data: Dayjs
@@ -66,6 +67,7 @@ const Calendar: React.FC<ICalendarProps> = ({
   const [isRemote, setIsRemote] = React.useState(false)
   const [modalVisible, setModalVisible] = React.useState(false)
   const [isAddNewLesson, setIsAddNewLesson] = React.useState(false)
+  const [teacherModalVisible, setTeacherModalVisible] = React.useState(false)
   const [auditoryModalVisible, setAuditoryModalVisible] = React.useState(false)
 
   const [severalLessonsModalVisible, setSeveralLessonsModalVisible] = React.useState(false)
@@ -185,6 +187,7 @@ const Calendar: React.FC<ICalendarProps> = ({
         setIsAddNewLesson={setIsAddNewLesson}
         selectedAuditoryId={selectedAuditoryId}
         setSeveralLessonsList={setSeveralLessonsList}
+        setTeacherModalVisible={setTeacherModalVisible}
         setAuditoryModalVisible={setAuditoryModalVisible}
         setSeveralLessonsModalVisible={setSeveralLessonsModalVisible}
       />
@@ -194,6 +197,14 @@ const Calendar: React.FC<ICalendarProps> = ({
         setIsRemote={setIsRemote}
         open={auditoryModalVisible}
         setOpen={setAuditoryModalVisible}
+        selectedAuditoryId={selectedAuditoryId}
+        setSelectedAuditoryId={setSelectedAuditoryId}
+        setLessonActionsModalVisible={setModalVisible}
+      />
+
+      <SelectTeacherModal
+        open={teacherModalVisible}
+        setOpen={setTeacherModalVisible}
         selectedAuditoryId={selectedAuditoryId}
         setSelectedAuditoryId={setSelectedAuditoryId}
         setLessonActionsModalVisible={setModalVisible}

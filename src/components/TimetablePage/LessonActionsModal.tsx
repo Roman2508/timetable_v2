@@ -13,24 +13,23 @@ import {
   TeamOutlined,
   UserOutlined,
   CloseOutlined,
-  FileTextOutlined,
+  DeleteOutlined,
   PlusSquareOutlined,
   EnvironmentOutlined,
-  DeleteOutlined,
 } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
 import React, { Dispatch, SetStateAction } from 'react'
 
-import { ISelectedTimeSlot } from './Calendar'
-import { useAppDispatch } from '../../store/store'
-import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
-import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
-import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
 import {
   createScheduleLesson,
   updateScheduleLesson,
   deleteScheduleLesson,
 } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import { ISelectedTimeSlot } from './Calendar'
+import { useAppDispatch } from '../../store/store'
+import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
+import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
+import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
 import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsTypes'
 import { deleteTeacherOverlay } from '../../store/scheduleLessons/scheduleLessonsSlice'
 
@@ -57,6 +56,7 @@ interface ILessonActionsModalProps {
   selectedTimeSlot: ISelectedTimeSlot | null
   setOpen: Dispatch<SetStateAction<boolean>>
   setIsAddNewLesson: Dispatch<SetStateAction<boolean>>
+  setTeacherModalVisible: Dispatch<SetStateAction<boolean>>
   setAuditoryModalVisible: Dispatch<SetStateAction<boolean>>
   setSeveralLessonsModalVisible: Dispatch<SetStateAction<boolean>>
   setSeveralLessonsList: Dispatch<SetStateAction<ScheduleLessonType[]>>
@@ -74,6 +74,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
   currentWeekNumber,
   selectedAuditoryId,
   setSeveralLessonsList,
+  setTeacherModalVisible,
   setAuditoryModalVisible,
   setSeveralLessonsModalVisible,
 }) => {
@@ -260,11 +261,11 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
             </Tooltip>
           )}
 
-          <Tooltip title="Зробити заміну">
+          {/* <Tooltip title="Зробити заміну">
             <IconButton sx={{ mr: 1 }}>
               <SyncOutlined />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
 
           <Tooltip title="Закрити">
             <IconButton
@@ -301,10 +302,12 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
         </Typography>
 
         <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 1 } }}>
-          <ListItemButton divider sx={{ mt: 1, py: 0 }} onClick={() => {}}>
-            <FileTextOutlined />
-            <ListItemText primary={'Додати коментар'} sx={{ p: '0 0 0 10px' }} />
-          </ListItemButton>
+          {!isAddNewLesson && (
+            <ListItemButton divider sx={{ mt: 1, py: 0 }} onClick={() => setTeacherModalVisible(true)}>
+              <SyncOutlined />
+              <ListItemText primary={'Зробити заміну'} sx={{ p: '0 0 0 10px' }} />
+            </ListItemButton>
+          )}
 
           <ListItemButton
             divider
@@ -320,7 +323,6 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
               primary={`Аудиторія: ${
                 selectedAuditoryName ? selectedAuditoryName : isRemote ? 'Дистанційно' : 'не вибрана'
               }`}
-              // primary={`Аудиторія: ${selectedAuditoryName ? selectedAuditoryName : "не вибрана"}`}
             />
           </ListItemButton>
 
@@ -333,7 +335,6 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
           </ListItemButton>
 
           <ListItemButton divider disableRipple sx={{ py: 0, cursor: 'default', ':hover': { background: '#fff' } }}>
-            {/* <CalendarOutlined /> */}
             <TeamOutlined />
             <ListItemText sx={{ p: '0 0 0 10px' }} primary={`Студентів: ${selectedLesson.students}`} />
           </ListItemButton>
