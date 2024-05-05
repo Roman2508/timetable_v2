@@ -1,21 +1,22 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 import {
+  getGroupOverlay,
+  copyDaySchedule,
+  copyWeekSchedule,
+  getTeacherLessons,
+  createReplacement,
+  getAuditoryOverlay,
   getScheduleLessons,
   createScheduleLesson,
   deleteScheduleLesson,
   updateScheduleLesson,
   findLessonsForSchedule,
-  getTeacherLessons,
-  getAuditoryOverlay,
-  getGroupOverlay,
-  copyWeekSchedule,
-  copyDaySchedule,
-} from './scheduleLessonsAsyncActions'
-import { RootState } from '../store'
-import { LoadingStatusTypes } from '../appTypes'
-import { GroupLoadType } from '../groups/groupsTypes'
-import { ScheduleLessonInitialStateType, ScheduleLessonType } from './scheduleLessonsTypes'
+} from "./scheduleLessonsAsyncActions"
+import { RootState } from "../store"
+import { LoadingStatusTypes } from "../appTypes"
+import { GroupLoadType } from "../groups/groupsTypes"
+import { ScheduleLessonInitialStateType, ScheduleLessonType } from "./scheduleLessonsTypes"
 
 const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
   groupLoad: null,
@@ -27,7 +28,7 @@ const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
 }
 
 const scheduleLessonsSlice = createSlice({
-  name: 'scheduleLessons',
+  name: "scheduleLessons",
   initialState: scheduleLessonsInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -87,6 +88,19 @@ const scheduleLessonsSlice = createSlice({
     builder.addCase(copyDaySchedule.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
       if (!state.scheduleLessons) return
       state.scheduleLessons = [...state.scheduleLessons, ...action.payload]
+    })
+
+    /* createReplacement */
+    builder.addCase(createReplacement.fulfilled, (state, action: PayloadAction<ScheduleLessonType>) => {
+      if (!state.scheduleLessons) return
+
+      const updatedLessons = state.scheduleLessons.map((el) => {
+        if (el.id === action.payload.id) {
+          return { ...el, ...action.payload }
+        }
+        return el
+      })
+      state.scheduleLessons = updatedLessons
     })
 
     /* updateScheduleLesson */

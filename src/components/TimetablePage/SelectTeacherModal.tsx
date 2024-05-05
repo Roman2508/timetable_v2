@@ -9,31 +9,37 @@ import {
   DialogActions,
   DialogContent,
   ListItemButton,
-} from '@mui/material'
-import { useSelector } from 'react-redux'
-import { CloseOutlined } from '@ant-design/icons'
-import React, { Dispatch, SetStateAction } from 'react'
+} from "@mui/material"
+import { useSelector } from "react-redux"
+import { CloseOutlined } from "@ant-design/icons"
+import React, { Dispatch, SetStateAction } from "react"
 
-import { TeachersType } from '../../store/teachers/teachersTypes'
-import { teachersSelector } from '../../store/teachers/teachersSlice'
-import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
-import { scheduleLessonsSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
+import { useAppDispatch } from "../../store/store"
+import { TeachersType } from "../../store/teachers/teachersTypes"
+import { teachersSelector } from "../../store/teachers/teachersSlice"
+import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
+import { scheduleLessonsSelector } from "../../store/scheduleLessons/scheduleLessonsSlice"
+import { createReplacement, deleteReplacement } from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
 
 interface ISelectTeacherModalProps {
   open: boolean
-  selectedAuditoryId: number | null
+  selectedLessonId: number | null
+  replacementTeacherId: number | null
   setOpen: Dispatch<SetStateAction<boolean>>
-  setSelectedAuditoryId: Dispatch<SetStateAction<number | null>>
   setLessonActionsModalVisible: Dispatch<SetStateAction<boolean>>
+  setReplacementTeacherId: Dispatch<SetStateAction<number | null>>
 }
 
 const SelectTeacherModal: React.FC<ISelectTeacherModalProps> = ({
   open,
   setOpen,
-  selectedAuditoryId,
-  setSelectedAuditoryId,
+  selectedLessonId,
+  replacementTeacherId,
+  setReplacementTeacherId,
   setLessonActionsModalVisible,
 }) => {
+  const dispatch = useAppDispatch()
+
   const { teachersCategories } = useSelector(teachersSelector)
   const { auditoryOverlay } = useSelector(scheduleLessonsSelector)
 
@@ -55,7 +61,7 @@ const SelectTeacherModal: React.FC<ISelectTeacherModalProps> = ({
   }
 
   const onConfirmSelection = () => {
-    setSelectedAuditoryId(preConfirmationTeacherId)
+    setReplacementTeacherId(preConfirmationTeacherId)
     handleClose()
   }
 
@@ -78,25 +84,40 @@ const SelectTeacherModal: React.FC<ISelectTeacherModalProps> = ({
     setTeachersList(freeAuditories)
   }
 
+  // pre confirmation не треба бо зразу при кліку на кнопку "Вибрати" створюється заміна
+  const onCreateReplacement = async () => {
+    if (!preConfirmationTeacherId || !selectedLessonId) return
+    await dispatch(createReplacement({ lessonId: selectedLessonId, teacherId: preConfirmationTeacherId }))
+    handleClose()
+  }
+
+  const onDeleteReplacement = async () => {
+    if (!selectedLessonId) return
+    if (!window.confirm("Ви дійсно хочете видалити заміну?")) return
+
+    await dispatch(deleteReplacement(selectedLessonId))
+    handleClose()
+  }
+
   // on first render set selected category and auditory if they exist
   React.useEffect(() => {
     setPreConfirmationTeacgerId(null)
     if (!teachersCategories) return
 
-    if (!selectedAuditoryId) {
+    if (!replacementTeacherId) {
       onSelectCategory(teachersCategories[0].id)
       return
     }
 
     teachersCategories.forEach((category) => {
-      const auditory = category.teachers.find((el) => el.id === selectedAuditoryId)
+      const auditory = category.teachers.find((el) => el.id === replacementTeacherId)
 
       if (auditory) {
         onSelectCategory(category.id)
         setPreConfirmationTeacgerId(auditory.id)
       }
     })
-  }, [teachersCategories, selectedAuditoryId])
+  }, [teachersCategories, replacementTeacherId])
 
   // check all free auditories
   React.useEffect(() => {
@@ -110,9 +131,9 @@ const SelectTeacherModal: React.FC<ISelectTeacherModalProps> = ({
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      sx={{ '& .MuiPaper-root': { width: '100%' } }}
+      sx={{ "& .MuiPaper-root": { width: "100%" } }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <DialogTitle id="alert-dialog-title">Викладачі</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
@@ -120,10 +141,10 @@ const SelectTeacherModal: React.FC<ISelectTeacherModalProps> = ({
         </IconButton>
       </div>
 
-      <DialogContent sx={{ padding: '0 24px 20px' }}>
+      <DialogContent sx={{ padding: "0 24px 20px" }}>
         <div className="auditory-modal-wrapper">
           <div className="auditory-modal__categories">
-            <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 1 } }}>
+            <List sx={{ p: 0, "& .MuiListItemButton-root": { py: 1 } }}>
               {teachersCategories?.map((category) => (
                 <ListItemButton
                   divider
@@ -132,18 +153,18 @@ const SelectTeacherModal: React.FC<ISelectTeacherModalProps> = ({
                   onClick={() => onSelectCategory(category.id)}
                   selected={category.id === selectedCategoryId}
                 >
-                  <ListItemText primary={category.name} sx={{ p: '0 0 0 10px' }} />
+                  <ListItemText primary={category.name} sx={{ p: "0 0 0 10px" }} />
                 </ListItemButton>
               ))}
             </List>
           </div>
 
           <div>
-            <Divider orientation="vertical" sx={{ height: '100% !important' }} />
+            <Divider orientation="vertical" sx={{ height: "100% !important" }} />
           </div>
 
           <div className="auditory-modal__list">
-            <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 1 } }}>
+            <List sx={{ p: 0, "& .MuiListItemButton-root": { py: 1 } }}>
               {teachersList.map((teacher) => (
                 <ListItemButton
                   divider
@@ -152,7 +173,7 @@ const SelectTeacherModal: React.FC<ISelectTeacherModalProps> = ({
                   selected={teacher.id === preConfirmationTeacherId}
                   onClick={() => setPreConfirmationTeacgerId(teacher.id)}
                 >
-                  <ListItemText primary={getLastnameAndInitials(teacher)} sx={{ p: '0 0 0 10px' }} />
+                  <ListItemText primary={getLastnameAndInitials(teacher)} sx={{ p: "0 0 0 10px" }} />
                 </ListItemButton>
               ))}
             </List>
@@ -160,11 +181,15 @@ const SelectTeacherModal: React.FC<ISelectTeacherModalProps> = ({
         </div>
       </DialogContent>
 
-      <DialogActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <DialogActions sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Button variant="outlined" color="secondary" sx={{ ml: 2, mb: 1 }} onClick={onDeleteReplacement}>
+          Видалити заміну
+        </Button>
+
         <Button
           variant="contained"
           sx={{ mr: 2, mb: 1 }}
-          onClick={onConfirmSelection}
+          onClick={onCreateReplacement}
           disabled={!preConfirmationTeacherId}
         >
           Вибрати
