@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 import {
   getGroupOverlay,
@@ -12,23 +12,26 @@ import {
   deleteScheduleLesson,
   updateScheduleLesson,
   findLessonsForSchedule,
-} from "./scheduleLessonsAsyncActions"
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupLoadType } from "../groups/groupsTypes"
-import { ScheduleLessonInitialStateType, ScheduleLessonType } from "./scheduleLessonsTypes"
+  getTeacherOverlay,
+} from './scheduleLessonsAsyncActions'
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupLoadType } from '../groups/groupsTypes'
+import { ScheduleLessonInitialStateType, ScheduleLessonType } from './scheduleLessonsTypes'
+import { TeachersType } from '../teachers/teachersTypes'
 
 const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
   groupLoad: null,
   teacherLessons: null,
   auditoryOverlay: null,
   groupOverlay: null,
+  teacherOverlay: null,
   scheduleLessons: null,
   loadingStatus: LoadingStatusTypes.NEVER,
 }
 
 const scheduleLessonsSlice = createSlice({
-  name: "scheduleLessons",
+  name: 'scheduleLessons',
   initialState: scheduleLessonsInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -42,11 +45,14 @@ const scheduleLessonsSlice = createSlice({
       const lessons = state.teacherLessons.filter((el) => el.id !== action.payload)
       state.teacherLessons = lessons
     },
-    clearTeacherOverlay(state) {
-      state.teacherLessons = []
-    },
+    // clearTeacherOverlay(state) {
+    //   state.teacherLessons = []
+    // },
     clearGroupOverlay(state) {
       state.groupOverlay = []
+    },
+    clearTeacherOverlay(state) {
+      state.teacherOverlay = []
     },
   },
   extraReducers: (builder) => {
@@ -69,6 +75,11 @@ const scheduleLessonsSlice = createSlice({
     /* getAuditoryOverlay */
     builder.addCase(getAuditoryOverlay.fulfilled, (state, action: PayloadAction<{ id: number; name: string }[]>) => {
       state.auditoryOverlay = action.payload
+    })
+
+    /* getTeacherOverlay */
+    builder.addCase(getTeacherOverlay.fulfilled, (state, action: PayloadAction<TeachersType[]>) => {
+      state.teacherOverlay = action.payload
     })
 
     /* createScheduleLesson */
