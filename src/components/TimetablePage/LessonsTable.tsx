@@ -108,6 +108,7 @@ const LessonsTable: React.FC<ILessonsTable> = ({
     setSelectedLesson({
       id: lesson.id,
       name: lesson.name,
+      replacement: null,
       typeRu: lesson.typeRu,
       stream: lesson.stream,
       teacher: lesson.teacher,

@@ -1,4 +1,4 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import {
   GetAuditoryOverlayPayloadType,
@@ -9,15 +9,16 @@ import {
   GetGroupOverlayPayloadType,
   CopyWeekSchedulePayloadType,
   CopyDaySchedulePayloadType,
-} from '../../api/apiTypes'
-import { LoadingStatusTypes } from '../appTypes'
-import { setLoadingStatus } from './scheduleLessonsSlice'
-import { setAppAlert } from '../appStatus/appStatusSlice'
-import { ScheduleLessonType } from './scheduleLessonsTypes'
-import { groupLoadLessonsAPI, scheduleLessonsAPI } from '../../api/api'
+  CreateReplacementPayloadType,
+} from "../../api/apiTypes"
+import { LoadingStatusTypes } from "../appTypes"
+import { setLoadingStatus } from "./scheduleLessonsSlice"
+import { setAppAlert } from "../appStatus/appStatusSlice"
+import { ScheduleLessonType } from "./scheduleLessonsTypes"
+import { groupLoadLessonsAPI, scheduleLessonsAPI } from "../../api/api"
 
 export const getScheduleLessons = createAsyncThunk(
-  'schedule-lessons/getScheduleLessons',
+  "schedule-lessons/getScheduleLessons",
   async (payload: GetScheduleLessonsPayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
@@ -32,7 +33,7 @@ export const getScheduleLessons = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
+          status: "error",
         })
       )
       throw error
@@ -41,7 +42,7 @@ export const getScheduleLessons = createAsyncThunk(
 )
 
 export const getGroupOverlay = createAsyncThunk(
-  'schedule-lessons/getGroupOverlay',
+  "schedule-lessons/getGroupOverlay",
   async (payload: GetGroupOverlayPayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
@@ -55,7 +56,7 @@ export const getGroupOverlay = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
+          status: "error",
         })
       )
       throw error
@@ -64,7 +65,7 @@ export const getGroupOverlay = createAsyncThunk(
 )
 
 export const getTeacherLessons = createAsyncThunk(
-  'schedule-lessons/getTeacherLessons',
+  "schedule-lessons/getTeacherLessons",
   async (payload: GetScheduleLessonsPayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
@@ -79,7 +80,7 @@ export const getTeacherLessons = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
+          status: "error",
         })
       )
       throw error
@@ -88,7 +89,7 @@ export const getTeacherLessons = createAsyncThunk(
 )
 
 export const getAuditoryOverlay = createAsyncThunk(
-  'schedule-lessons/getAuditoryOverlay',
+  "schedule-lessons/getAuditoryOverlay",
   async (payload: GetAuditoryOverlayPayloadType, thunkAPI): Promise<{ id: number; name: string }[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
@@ -102,7 +103,7 @@ export const getAuditoryOverlay = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
+          status: "error",
         })
       )
       throw error
@@ -111,14 +112,14 @@ export const getAuditoryOverlay = createAsyncThunk(
 )
 
 export const createScheduleLesson = createAsyncThunk(
-  'schedule-lessons/createScheduleLesson',
+  "schedule-lessons/createScheduleLesson",
   async (payload: CreateScheduleLessonsPayloadType, thunkAPI): Promise<ScheduleLessonType> => {
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     try {
       const { data } = await scheduleLessonsAPI.create(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Додано елемент розкладу', status: 'success' }))
+      thunkAPI.dispatch(setAppAlert({ message: "Додано елемент розкладу", status: "success" }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -127,7 +128,7 @@ export const createScheduleLesson = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
+          status: "error",
         })
       )
       throw error
@@ -135,15 +136,16 @@ export const createScheduleLesson = createAsyncThunk(
   }
 )
 
+/* copy schedule */
 export const copyWeekSchedule = createAsyncThunk(
-  'schedule-lessons/copyWeekSchedule',
+  "schedule-lessons/copyWeekSchedule",
   async (payload: CopyWeekSchedulePayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     try {
       const { data } = await scheduleLessonsAPI.copyWeekSchedule(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Розклад скопійовано', status: 'success' }))
+      thunkAPI.dispatch(setAppAlert({ message: "Розклад скопійовано", status: "success" }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -152,7 +154,7 @@ export const copyWeekSchedule = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
+          status: "error",
         })
       )
       throw error
@@ -161,14 +163,14 @@ export const copyWeekSchedule = createAsyncThunk(
 )
 
 export const copyDaySchedule = createAsyncThunk(
-  'schedule-lessons/copyDaySchedule',
+  "schedule-lessons/copyDaySchedule",
   async (payload: CopyDaySchedulePayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     try {
       const { data } = await scheduleLessonsAPI.copyDaySchedule(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Розклад скопійовано', status: 'success' }))
+      thunkAPI.dispatch(setAppAlert({ message: "Розклад скопійовано", status: "success" }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -177,7 +179,58 @@ export const copyDaySchedule = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
+          status: "error",
+        })
+      )
+      throw error
+    }
+  }
+)
+
+/* replacement */
+export const createReplacement = createAsyncThunk(
+  "schedule-lessons/createReplacement",
+  async (payload: CreateReplacementPayloadType, thunkAPI): Promise<ScheduleLessonType> => {
+    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+    try {
+      const { data } = await scheduleLessonsAPI.createReplacement(payload)
+      thunkAPI.dispatch(setAppAlert({ message: "Зроблено заміну", status: "success" }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: "error",
+        })
+      )
+      throw error
+    }
+  }
+)
+
+export const deleteReplacement = createAsyncThunk(
+  "schedule-lessons/deleteReplacement",
+  async (id: number, thunkAPI): Promise<number> => {
+    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+    try {
+      const { data } = await scheduleLessonsAPI.deleteReplacement(id)
+      thunkAPI.dispatch(setAppAlert({ message: "Зроблено заміну", status: "success" }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: "error",
         })
       )
       throw error
@@ -186,13 +239,13 @@ export const copyDaySchedule = createAsyncThunk(
 )
 
 export const updateScheduleLesson = createAsyncThunk(
-  'schedule-lessons/updateScheduleLesson',
+  "schedule-lessons/updateScheduleLesson",
   async (payload: UpdateScheduleLessonsPayloadType, thunkAPI): Promise<ScheduleLessonType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     try {
       const { data } = await scheduleLessonsAPI.update(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Оновлено елемент розкладу', status: 'success' }))
+      thunkAPI.dispatch(setAppAlert({ message: "Оновлено елемент розкладу", status: "success" }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -201,7 +254,7 @@ export const updateScheduleLesson = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
+          status: "error",
         })
       )
       throw error
@@ -210,13 +263,13 @@ export const updateScheduleLesson = createAsyncThunk(
 )
 
 export const deleteScheduleLesson = createAsyncThunk(
-  'schedule-lessons/deleteScheduleLesson',
+  "schedule-lessons/deleteScheduleLesson",
   async (id: number, thunkAPI): Promise<number> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     try {
       const { data } = await scheduleLessonsAPI.delete(id)
-      thunkAPI.dispatch(setAppAlert({ message: 'Видалено елемент розкладу', status: 'success' }))
+      thunkAPI.dispatch(setAppAlert({ message: "Видалено елемент розкладу", status: "success" }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -225,7 +278,7 @@ export const deleteScheduleLesson = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
+          status: "error",
         })
       )
       throw error
@@ -235,14 +288,14 @@ export const deleteScheduleLesson = createAsyncThunk(
 
 /* findLessonsForSchedule */
 export const findLessonsForSchedule = createAsyncThunk(
-  'group/findLessonsForSchedule',
+  "group/findLessonsForSchedule",
   async (payload: FindLessonsForSchedulePayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
 
     try {
       const { data } = await groupLoadLessonsAPI.findLessonsForSchedule(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Розклад завантажено', status: 'success' }))
+      thunkAPI.dispatch(setAppAlert({ message: "Розклад завантажено", status: "success" }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -250,7 +303,7 @@ export const findLessonsForSchedule = createAsyncThunk(
       thunkAPI.dispatch(
         setAppAlert({
           message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
+          status: "error",
         })
       )
       throw error
