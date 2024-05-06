@@ -27,6 +27,7 @@ interface ISelectTeacherModalProps {
   setLessonActionsModalVisible: Dispatch<SetStateAction<boolean>>
 }
 
+// Заміна викладача
 const SelectTeacherModal: React.FC<ISelectTeacherModalProps> = ({
   open,
   setOpen,

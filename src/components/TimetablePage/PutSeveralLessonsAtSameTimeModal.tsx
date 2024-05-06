@@ -110,8 +110,6 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
     return isSame
   })
 
-  console.log('severalLessonsList', severalLessonsList)
-
   return (
     <Dialog
       open={open}

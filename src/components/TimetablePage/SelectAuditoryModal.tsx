@@ -30,6 +30,7 @@ interface ISelectAuditoryModalProps {
   setLessonActionsModalVisible: Dispatch<SetStateAction<boolean>>
 }
 
+// Вибір аудиторії для уроку
 const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
   open,
   setOpen,
