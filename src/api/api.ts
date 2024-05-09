@@ -3,18 +3,24 @@ import axios from 'axios'
 import {
   CreatePlanPayloadType,
   UpdateGroupPayloadType,
+  ChangeStudentsCountType,
   CreateSubjectPayloadType,
   CreateTeacherPayloadType,
   UpdateTeacherPayloadType,
   AttachTeacherPayloadType,
   CreateAuditoryPayloadType,
   UpdateAuditoryPayloadType,
+  GetGroupOverlayPayloadType,
   CreateSubgroupsPayloadType,
+  CopyDaySchedulePayloadType,
+  CopyWeekSchedulePayloadType,
   AddGroupToStreamPayloadType,
   UpdateEntityNamePayloadType,
+  CreateReplacementPayloadType,
   UpdateSubjectNamePayloadType,
   AddLessonsToStreamPayloadType,
   UpdateSubjectHoursPayloadType,
+  GetTeachersOverlayPayloadType,
   GetScheduleLessonsPayloadType,
   GetAuditoryOverlayPayloadType,
   AttachSpecializationPayloadType,
@@ -30,12 +36,6 @@ import {
   DeleteLessonFromStreamPayloadType,
   DeleteGroupFromStreamResponseType,
   FindLessonsForSchedulePayloadType,
-  GetGroupOverlayPayloadType,
-  ChangeStudentsCountType,
-  CopyWeekSchedulePayloadType,
-  CopyDaySchedulePayloadType,
-  CreateReplacementPayloadType,
-  GetTeachersOverlayPayloadType,
 } from './apiTypes'
 import { StreamsType } from '../store/streams/streamsTypes'
 import { SettingsType } from '../store/settings/settingsTypes'
@@ -59,7 +59,7 @@ const instanse = axios.create({
 instanse.interceptors.request.use((config) => {
   if (config.headers) {
     config.headers.Authorization = String(
-      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzEyNDEyODAzLCJleHAiOjE3MTUwMDQ4MDN9.wDQIBoCmIQEDvpWIGg8uEmxZd7mJHp8cRdTfz1VKZzs'
+      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzE1MDg1OTY4LCJleHAiOjE3MTc2Nzc5Njh9.uDgTJ51GLU5mVPigPIjTDXreo_REY_ZNSPM_DD7iMAs'
     )
     // config.headers.Authorization = String(window.localStorage.getItem('token'))
 

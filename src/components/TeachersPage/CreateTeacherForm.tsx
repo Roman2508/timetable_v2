@@ -35,7 +35,7 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
   const dispatch = useAppDispatch()
 
   const { teachersCategories } = useSelector(teachersSelector)
-  console.log(editingTeacher)
+
   const {
     reset,
     control,

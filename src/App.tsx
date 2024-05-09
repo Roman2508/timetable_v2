@@ -20,6 +20,8 @@ import { AuditoriesPage } from './pages/Auditories/AuditoriesPage'
 import AuthLogin from './pages/authentication/auth-forms/AuthLogin'
 import { DistributionPage } from './pages/Distribution/DistributionPage'
 import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
+import { StudentsAccounts } from './pages/StudentsAccounts/StudentsAccounts'
+import { StudentsDivide } from './pages/StudentsDivide/StudentsDivide'
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('./pages/dashboard')))
@@ -54,6 +56,9 @@ const App = () => {
             <Route element={<SettingsPage />} path="/settings" />
 
             <Route element={<DashboardDefault />} path="/test" />
+
+            <Route element={<StudentsAccounts />} path="/students/accounts" />
+            <Route element={<StudentsDivide />} path="/students/divide" />
 
             {/*  */}
             <Route element={<Color />} path="/color" />

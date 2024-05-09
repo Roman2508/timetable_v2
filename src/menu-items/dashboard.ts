@@ -116,14 +116,6 @@ const dashboard = {
       breadcrumbs: false,
     },
     /*  */
-    {
-      id: 'students',
-      title: 'Студенти',
-      type: 'item',
-      url: '/students',
-      icon: icons.UserOutlined,
-      breadcrumbs: false,
-    },
 
     {
       id: 'settings',
