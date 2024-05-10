@@ -215,7 +215,7 @@ const StudentsForm: React.FC<IStudentsProps> = ({ isOpenInModal, editingTeacher,
                 >
                   {[
                     { label: 'Навчається', value: 'studying' },
-                    { label: 'Відраховано', value: 'suspended' },
+                    { label: 'Відраховано', value: 'expelled' },
                     { label: 'Академічна відпустка', value: 'academic-leave' },
                   ].map((option) => (
                     <MenuItem key={option.value} value={option.value}>

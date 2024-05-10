@@ -39,7 +39,8 @@
     "react-toastify": "^10.0.4",
     "redux": "^5.0.1",
     "simplebar": "^5.3.8",
-    "simplebar-react": "^2.4.1"
+    "simplebar-react": "^2.4.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^20.11.24",

@@ -1,25 +1,14 @@
-import {
-  Grid,
-  List,
-  Paper,
-  Select,
-  Divider,
-  Collapse,
-  Typography,
-  FormControl,
-  ListItemText,
-  ListItemButton,
-  ListItem,
-} from '@mui/material'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { DownOutlined, UpOutlined } from '@ant-design/icons'
+import { Grid, List, Paper, Divider, Collapse, ListItem, Typography, ListItemText, ListItemButton } from '@mui/material'
 
 import { useAppDispatch } from '../../store/store'
 import { groupsSelector } from '../../store/groups/groupsSlice'
 import { GroupsShortType } from '../../store/groups/groupsTypes'
 import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
 import { StudentsForm } from '../../components/StudentsAccounts/StudentsForm'
+import { UploadStudents } from '../../components/StudentsAccounts/UploadStudents'
 
 const names = [
   'Oliver Hansen',
@@ -153,7 +142,11 @@ const StudentsAccounts = () => {
 
         <Grid item xs={4}>
           <Paper sx={{ p: 2 }}>
-            <Typography sx={{ textAlign: 'center' }}>ДОДАТИ НОВОГО СТУДЕНТА</Typography>
+            <div style={{ position: 'relative' }}>
+              <Typography sx={{ textAlign: 'center' }}>ДОДАТИ НОВОГО СТУДЕНТА</Typography>
+
+              <UploadStudents />
+            </div>
 
             <StudentsForm editingTeacher={null} />
           </Paper>
