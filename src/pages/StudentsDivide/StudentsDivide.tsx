@@ -96,58 +96,61 @@ const StudentsDivide = () => {
   return (
     <>
       <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center', mb: 3 }}>
-        <Grid item xs={12}>
-          <Grid container>
+        <Grid item xs={11.4}>
+          <Grid container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Grid item>
               <Typography variant="h5">Поділ на підгрупи</Typography>
             </Grid>
-            <Grid item />
+
+            <Grid>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="group" sx={{ textAlign: 'right' }}>
+                  Група*
+                </InputLabel>
+                <TextField
+                  select
+                  fullWidth
+                  id="group"
+                  sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem', width: '140px' } }}
+                >
+                  {(!groupCategories ? [] : groupCategories).map((category) => (
+                    <>
+                      <ListSubheader
+                        key={category.id}
+                        value={category.id}
+                        sx={{ fontWeight: 700, color: 'rgba(38, 38, 38, .9)', lineHeight: '40px' }}
+                      >
+                        {category.name}
+                      </ListSubheader>
+
+                      {category.groups.map((group) => (
+                        <MenuItem key={group.id} value={group.id}>
+                          {group.name}
+                        </MenuItem>
+                      ))}
+                    </>
+                  ))}
+                </TextField>
+              </Stack>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
 
       <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Grid item xs={4}>
+        <Grid item xs={3.8}>
           <Paper sx={{ p: 2 }}>
-            <Stack spacing={1} sx={{ mb: 4 }}>
-              <div
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}
-              >
-                <Typography>ЗДОБУВАЧІ</Typography>
+            <div
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}
+            >
+              <Typography>ЗДОБУВАЧІ</Typography>
 
-                <Tooltip title="Додати вибраних студентів до підгрупи">
-                  <IconButton>
-                    <RightSquareOutlined />
-                  </IconButton>
-                </Tooltip>
-              </div>
-
-              <InputLabel htmlFor="group">Група*</InputLabel>
-              <TextField
-                select
-                fullWidth
-                id="group"
-                sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
-              >
-                {(!groupCategories ? [] : groupCategories).map((category) => (
-                  <>
-                    <ListSubheader
-                      key={category.id}
-                      value={category.id}
-                      sx={{ fontWeight: 700, color: 'rgba(38, 38, 38, .9)', lineHeight: '40px' }}
-                    >
-                      {category.name}
-                    </ListSubheader>
-
-                    {category.groups.map((group) => (
-                      <MenuItem key={group.id} value={group.id}>
-                        {group.name}
-                      </MenuItem>
-                    ))}
-                  </>
-                ))}
-              </TextField>
-            </Stack>
+              <Tooltip title="Додати вибраних студентів до підгрупи">
+                <IconButton>
+                  <RightSquareOutlined />
+                </IconButton>
+              </Tooltip>
+            </div>
 
             <FormControl
               sx={{
@@ -173,7 +176,7 @@ const StudentsDivide = () => {
           </Paper>
         </Grid>
 
-        <Grid item xs={4}>
+        <Grid item xs={3.8}>
           <Paper sx={{ pt: 2 }}>
             <Typography sx={{ mb: 2, textAlign: 'center' }}>ДИСЦИПЛІНИ</Typography>
 
@@ -216,7 +219,7 @@ const StudentsDivide = () => {
           </Paper>
         </Grid>
 
-        <Grid item xs={4}>
+        <Grid item xs={3.8}>
           <Paper sx={{ p: 2 }}>
             <div
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}
