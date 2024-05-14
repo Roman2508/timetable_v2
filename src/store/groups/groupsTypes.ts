@@ -17,7 +17,7 @@ export type GroupsType = {
   id: number
   name: string
   isHide: boolean
-  students: number
+  students: { id: number }[]
   calendarId: string
   courseNumber: number
   yearOfAdmission: number

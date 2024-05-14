@@ -60,7 +60,7 @@ export type CreatePlanPayloadType = {
 
 export type UpdateGroupPayloadType = Pick<
   GroupsType,
-  'id' | 'name' | 'students' | 'courseNumber' | 'yearOfAdmission' | 'formOfEducation'
+  'id' | 'name' | 'courseNumber' | 'yearOfAdmission' | 'formOfEducation'
 > & { educationPlan: number; category: number }
 
 /* Groups-load */
