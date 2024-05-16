@@ -1,14 +1,14 @@
 .blur-logo-bg {
   left: 0;
-  transform: translate(-50%, -10%) rotate(15deg);
+  transform: translate(20%, 10%) rotate(15deg);
   position: absolute;
   z-index: 0;
-  filter: blur(4px);
+  filter: blur(10px);
   bottom: 0px;
 }
 
 .blur-logo-bg img {
-  height: calc(90vh);
+  height: calc(150vh);
   width: auto;
 }
 

@@ -84,36 +84,38 @@ const StudentsAccounts = () => {
                 <Typography sx={{ mb: 2, textAlign: 'center' }}>ГРУПИ</Typography>
 
                 <List>
-                  {groupCategories
-                    ? groupCategories.map((category) => {
-                        return (
-                          <React.Fragment key={category.id}>
-                            <Divider />
-                            <ListItemButton onClick={() => handleOpenCategory(category.id)}>
-                              <ListItemText primary={category.name} sx={{ mr: 1 }} />
-                              {category.id === openCategoryId ? <UpOutlined /> : <DownOutlined />}
-                            </ListItemButton>
-                            <Divider />
-                            <Collapse in={category.id === openCategoryId} timeout="auto" unmountOnExit>
-                              <List component="div" disablePadding>
-                                {category.groups.map((group) => (
-                                  <React.Fragment key={group.id}>
-                                    <ListItemButton
-                                      sx={{ py: '4px', pl: 5 }}
-                                      selected={group.id === selectedGroup?.id}
-                                      onClick={() => setSelectedGroup(group)}
-                                    >
-                                      <ListItemText primary={group.name} />
-                                    </ListItemButton>
-                                    <Divider />
-                                  </React.Fragment>
-                                ))}
-                              </List>
-                            </Collapse>
-                          </React.Fragment>
-                        )
-                      })
-                    : 'Loading...'}
+                  {groupCategories ? (
+                    groupCategories.map((category) => {
+                      return (
+                        <React.Fragment key={category.id}>
+                          <Divider />
+                          <ListItemButton onClick={() => handleOpenCategory(category.id)}>
+                            <ListItemText primary={category.name} sx={{ mr: 1 }} />
+                            {category.id === openCategoryId ? <UpOutlined /> : <DownOutlined />}
+                          </ListItemButton>
+                          <Divider />
+                          <Collapse in={category.id === openCategoryId} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                              {category.groups.map((group) => (
+                                <React.Fragment key={group.id}>
+                                  <ListItemButton
+                                    sx={{ py: '4px', pl: 5 }}
+                                    selected={group.id === selectedGroup?.id}
+                                    onClick={() => setSelectedGroup(group)}
+                                  >
+                                    <ListItemText primary={group.name} />
+                                  </ListItemButton>
+                                  <Divider />
+                                </React.Fragment>
+                              ))}
+                            </List>
+                          </Collapse>
+                        </React.Fragment>
+                      )
+                    })
+                  ) : (
+                    <LoadingSpinner />
+                  )}
                 </List>
               </Grid>
             </Grid>
@@ -127,10 +129,9 @@ const StudentsAccounts = () => {
             </Typography>
 
             <List sx={{ maxHeight: '575px', overflow: 'auto' }}>
-              {!students && loadingStatus === LoadingStatusTypes.LOADING ? (
+              {loadingStatus === LoadingStatusTypes.LOADING ? (
                 <LoadingSpinner />
-              ) : (!students && loadingStatus === LoadingStatusTypes.SUCCESS) ||
-                (!students && loadingStatus === LoadingStatusTypes.NEVER) ? (
+              ) : !students || !students.length ? (
                 <EmptyCard />
               ) : students ? (
                 students.map((student, index) => (
@@ -171,7 +172,12 @@ const StudentsAccounts = () => {
               <UploadStudents />
             </div>
 
-            <StudentsForm editingsStudent={selectedStudent} setSelectedStudent={setSelectedStudent} editMode={editMode} setEditMode={setEditMode} />
+            <StudentsForm
+              editingsStudent={selectedStudent}
+              setSelectedStudent={setSelectedStudent}
+              editMode={editMode}
+              setEditMode={setEditMode}
+            />
           </Paper>
         </Grid>
       </Grid>

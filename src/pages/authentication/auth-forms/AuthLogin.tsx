@@ -16,6 +16,7 @@ import {
   OutlinedInput,
   Stack,
   Typography,
+  Chip,
 } from '@mui/material'
 
 // third party
@@ -94,6 +95,46 @@ const AuthLogin = () => {
             )
           }}
         /> */}
+
+        <Stack spacing={1} sx={{ mt: 2 }}>
+          <InputLabel htmlFor="name">Логін*</InputLabel>
+          <OutlinedInput
+            id="name"
+            type="text"
+            name="name"
+            placeholder="test"
+            sx={{ mt: '2px !important' }}
+            fullWidth
+            error={Boolean(errors.name)}
+          />
+          {errors.name && (
+            <FormHelperText error id="helper-text-name">
+              {errors.name.message}
+            </FormHelperText>
+          )}
+        </Stack>
+
+        <Stack spacing={1} sx={{ mt: 2 }}>
+          <InputLabel htmlFor="name">Пароль*</InputLabel>
+          <OutlinedInput
+            id="name"
+            type="password"
+            sx={{ mt: '2px !important' }}
+            name="name"
+            placeholder="test"
+            fullWidth
+            error={Boolean(errors.name)}
+          />
+          {errors.name && (
+            <FormHelperText error id="helper-text-name">
+              {errors.name.message}
+            </FormHelperText>
+          )}
+        </Stack>
+
+        <Divider sx={{ mt: 3 }}>
+          <Chip label={'Або'} size="medium" sx={{ userSelect: 'none' }} />
+        </Divider>
 
         <Button
           variant="contained"

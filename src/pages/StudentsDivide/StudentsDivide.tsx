@@ -102,11 +102,9 @@ const StudentsDivide = () => {
               <Typography variant="h5">Поділ на підгрупи</Typography>
             </Grid>
 
-            <Grid>
+            <Grid sx={{ display: 'flex', gap: 3 }}>
               <Stack spacing={1}>
-                <InputLabel htmlFor="group" sx={{ textAlign: 'right' }}>
-                  Група*
-                </InputLabel>
+                <InputLabel htmlFor="group">Група*</InputLabel>
                 <TextField
                   select
                   fullWidth
@@ -129,6 +127,23 @@ const StudentsDivide = () => {
                         </MenuItem>
                       ))}
                     </>
+                  ))}
+                </TextField>
+              </Stack>
+
+              <Stack spacing={1}>
+                <InputLabel htmlFor="group">Семестр*</InputLabel>
+                <TextField
+                  select
+                  fullWidth
+                  id="group"
+                  defaultValue={1}
+                  sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem', width: '70px' } }}
+                >
+                  {[1, 2, 3, 4, 5, 6].map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
                   ))}
                 </TextField>
               </Stack>

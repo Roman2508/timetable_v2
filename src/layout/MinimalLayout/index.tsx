@@ -11,6 +11,8 @@ const MinimalLayout = () => (
   <div
     style={{
       height: '100vh',
+      maxHeight: '100vh',
+      overflow: 'hidden',
       position: 'relative',
       display: 'flex',
       justifyContent: 'center',

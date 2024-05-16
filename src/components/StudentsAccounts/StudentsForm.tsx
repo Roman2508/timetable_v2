@@ -56,7 +56,8 @@ const StudentsForm: React.FC<IStudentsProps> = ({ editMode, setEditMode, editing
       if (editMode === 'update') {
         if (!editingsStudent) return
         const { payload } = await dispatch(updateStudent({ ...data, id: editingsStudent.id }))
-        setSelectedStudent(payload)
+        const newStudent = payload as StudentType
+        setSelectedStudent(newStudent)
         return
       }
 
