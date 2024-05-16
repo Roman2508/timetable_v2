@@ -1,89 +1,89 @@
-// material-ui
-import {
-  Stack,
-  Button,
-  MenuItem,
-  TextField,
-  InputLabel,
-  OutlinedInput,
-  FormHelperText,
-  Tooltip,
-  Typography,
-} from '@mui/material'
-
-// project import
-import React from 'react'
 import { useSelector } from 'react-redux'
+import React, { Dispatch, SetStateAction } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { Stack, Button, MenuItem, TextField, InputLabel, OutlinedInput, FormHelperText } from '@mui/material'
 
 import { useAppDispatch } from '../../store/store'
 import { emailRegex } from '../../utils/emailRegex'
-import { TeachersType } from '../../store/teachers/teachersTypes'
-import { teachersSelector } from '../../store/teachers/teachersSlice'
+import { groupsSelector } from '../../store/groups/groupsSlice'
+import { StudentType } from '../../store/students/studentsTypes'
+import { createStudent, updateStudent } from '../../store/students/studentsAsyncActions'
 
-interface IAuditoriesFields {
+interface IStudentFields {
   name: string
-
   login: string
   password: string
   email: string
-  status: string
-  category: number
+  status: 'Навчається' | 'Відраховано' | 'Академічна відпустка'
+  group: number
 }
 
 interface IStudentsProps {
-  isOpenInModal?: boolean
-  handleClose?: () => void
-  editingTeacher: TeachersType | null
+  editMode: 'create' | 'update'
+  editingsStudent: StudentType | null
+  setEditMode: Dispatch<SetStateAction<'create' | 'update'>>
+  setSelectedStudent: Dispatch<SetStateAction<StudentType | null>>
 }
 
-const StudentsForm: React.FC<IStudentsProps> = ({ isOpenInModal, editingTeacher, handleClose = () => {} }) => {
+const defaultValues = {
+  status: 'Навчається',
+  email: '',
+  login: '',
+  name: '',
+  password: '',
+  group: 0,
+} as const
+
+const StudentsForm: React.FC<IStudentsProps> = ({ editMode, setEditMode, editingsStudent, setSelectedStudent }) => {
   const dispatch = useAppDispatch()
 
-  const { teachersCategories } = useSelector(teachersSelector)
+  const { groupCategories } = useSelector(groupsSelector)
 
   const {
     reset,
     control,
-    formState: { errors, isSubmitting },
+    setValue,
     handleSubmit,
-  } = useForm<IAuditoriesFields>({
+    formState: { errors, isSubmitting },
+  } = useForm<IStudentFields>({
     mode: 'onBlur',
-    defaultValues: editingTeacher ? { ...editingTeacher, category: editingTeacher.category.id } : {},
+    defaultValues: editingsStudent ? { ...editingsStudent, group: editingsStudent.group.id } : defaultValues,
   })
 
-  const onSubmit: SubmitHandler<IAuditoriesFields> = async (data) => {
+  const onSubmit: SubmitHandler<IStudentFields> = async (data) => {
     try {
-      // Якщо форму відкрито в модалці - оновлення викладача
-      if (isOpenInModal) {
-        if (!editingTeacher) return
-        alert('await dispatch(updateTeacher({ ...data, id: editingTeacher.id }))')
-        handleClose()
-        reset({ status: '', email: '', login: '', name: '', password: '' })
-      } else {
-        // Якщо форму відкрито НЕ в модалці - створення викладача
-        alert('await dispatch(createTeacher(data))')
-        reset({ status: '', email: '', login: '', name: '', password: '' })
+      // Якщо editMode === 'update' - оновлення викладача
+      if (editMode === 'update') {
+        if (!editingsStudent) return
+        const { payload } = await dispatch(updateStudent({ ...data, id: editingsStudent.id }))
+        setSelectedStudent(payload)
+        return
+      }
+
+      if (editMode === 'create') {
+        // Якщо editMode === 'create' - створення викладача
+        const { status, ...rest } = data
+        await dispatch(createStudent(rest))
+        reset(defaultValues)
       }
     } catch (error) {
       console.log(error)
     }
   }
 
+  React.useEffect(() => {
+    if (!editingsStudent) return
+    setValue('name', editingsStudent.name)
+    setValue('login', editingsStudent.login)
+    setValue('password', editingsStudent.password)
+    setValue('email', editingsStudent.email)
+    setValue('status', editingsStudent.status)
+    setValue('group', editingsStudent.group.id)
+  }, [editingsStudent])
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div
-        style={
-          isOpenInModal
-            ? {
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gridTemplateRows: 'repeat(2, 1fr)',
-                gap: '0 20px',
-              }
-            : {}
-        }
-      >
+      <div>
         <Controller
           name="name"
           control={control}
@@ -150,7 +150,6 @@ const StudentsForm: React.FC<IStudentsProps> = ({ isOpenInModal, editingTeacher,
                   fullWidth
                   {...field}
                   id="password"
-                  type="password"
                   name="password"
                   placeholder="Пароль"
                   error={Boolean(errors.password)}
@@ -198,56 +197,56 @@ const StudentsForm: React.FC<IStudentsProps> = ({ isOpenInModal, editingTeacher,
           }}
         />
 
+        {editMode === 'update' && (
+          <Controller
+            name="status"
+            control={control}
+            rules={{ required: "Це обов'язкове поле" }}
+            render={({ field }) => {
+              return (
+                <Stack spacing={1} sx={{ mt: 2 }}>
+                  <InputLabel htmlFor="status">Статус*</InputLabel>
+                  <TextField
+                    select
+                    fullWidth
+                    {...field}
+                    id="status"
+                    sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
+                  >
+                    {['Навчається', 'Відраховано', 'Академічна відпустка'].map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Stack>
+              )
+            }}
+          />
+        )}
+
         <Controller
-          name="status"
+          name="group"
           control={control}
           rules={{ required: "Це обов'язкове поле" }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="status">Статус*</InputLabel>
+                <InputLabel htmlFor="group">Група*</InputLabel>
                 <TextField
                   select
                   fullWidth
                   {...field}
-                  id="status"
+                  id="group"
                   sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
                 >
-                  {[
-                    { label: 'Навчається', value: 'studying' },
-                    { label: 'Відраховано', value: 'expelled' },
-                    { label: 'Академічна відпустка', value: 'academic-leave' },
-                  ].map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Stack>
-            )
-          }}
-        />
-
-        <Controller
-          name="category"
-          control={control}
-          rules={{ required: 'Вкажіть категорію' }}
-          render={({ field }) => {
-            return (
-              <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="category">Група*</InputLabel>
-                <TextField
-                  select
-                  fullWidth
-                  {...field}
-                  id="category"
-                  sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
-                >
-                  {(!teachersCategories ? [] : teachersCategories).map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
+                  {(!groupCategories ? [] : groupCategories).map((category) =>
+                    category.groups.map((group) => (
+                      <MenuItem key={group.id} value={group.id} sx={{ width: '100%' }}>
+                        {group.name}
+                      </MenuItem>
+                    ))
+                  )}
                 </TextField>
               </Stack>
             )
@@ -255,22 +254,74 @@ const StudentsForm: React.FC<IStudentsProps> = ({ isOpenInModal, editingTeacher,
         />
       </div>
 
-      <Button
-        variant="contained"
-        color="primary"
-        type="submit"
-        disabled={isSubmitting}
-        sx={{
-          textTransform: 'capitalize',
-          width: '100%',
-          p: '7.44px 15px',
-          mt: 3,
-        }}
-      >
-        {isOpenInModal && !isSubmitting ? 'Оновити' : !isSubmitting ? 'Створити' : 'Завантаження...'}
-      </Button>
+      <div style={{ display: 'flex', marginTop: '24px' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          disabled={isSubmitting}
+          sx={{
+            textTransform: 'capitalize',
+            p: '7.44px 15px',
+            width: editMode === 'update' ? '50%' : '100%',
+            mr: editMode === 'update' ? 1 : 0,
+          }}
+        >
+          {editMode === 'update' && !isSubmitting
+            ? 'Оновити'
+            : editMode === 'create' && !isSubmitting
+            ? 'Створити'
+            : 'Завантаження...'}
+        </Button>
+
+        {editMode === 'update' && (
+          <Button
+            variant="outlined"
+            sx={{ width: '50%', ml: 1 }}
+            onClick={() => {
+              reset(defaultValues)
+              setEditMode('create')
+              setSelectedStudent(null)
+            }}
+          >
+            Відмінити
+          </Button>
+        )}
+      </div>
     </form>
   )
 }
 
 export { StudentsForm }
+
+/* 
+                  {(!groupCategories ? [] : groupCategories).map((category) => (
+                    <MenuItem
+                      disableRipple
+                      disableGutters
+                      disableTouchRipple
+                      component={'li'}
+                      key={category.id}
+                      sx={{
+                        cursor: 'default',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        '&:hover': { backgroundColor: '#fff' },
+                      }}
+                    >
+                      <ListSubheader
+                        sx={{ fontWeight: 700, color: 'rgba(38, 38, 38, .9)', lineHeight: '40px', cursor: 'default' }}
+                      >
+                        {category.name}
+                      </ListSubheader>
+
+                      <ul>
+                        {category.groups.map((group) => (
+                          <MenuItem key={group.id} value={group.id} sx={{ width: '100%' }}>
+                            {group.name}
+                          </MenuItem>
+                        ))}
+                      </ul>
+                    </MenuItem>
+                  ))}
+*/

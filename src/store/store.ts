@@ -1,15 +1,16 @@
-import { useDispatch } from "react-redux"
-import { configureStore } from "@reduxjs/toolkit"
+import { useDispatch } from 'react-redux'
+import { configureStore } from '@reduxjs/toolkit'
 
-import menuSlice from "./menu/menuSlice"
-import plansSlice from "./plans/plansSlice"
-import groupsSlice from "./groups/groupsSlice"
-import streamsSlice from "./streams/streamsSlice"
-import teachersSlice from "./teachers/teachersSlice"
-import settingsSlice from "./settings/settingsSlice"
-import appStatusSlice from "./appStatus/appStatusSlice"
-import auditoriesSlise from "./auditories/auditoriesSlise"
-import scheduleLessonsSlice from "./scheduleLessons/scheduleLessonsSlice"
+import menuSlice from './menu/menuSlice'
+import plansSlice from './plans/plansSlice'
+import groupsSlice from './groups/groupsSlice'
+import streamsSlice from './streams/streamsSlice'
+import teachersSlice from './teachers/teachersSlice'
+import settingsSlice from './settings/settingsSlice'
+import studentsSlice from './students/studentsSlice'
+import appStatusSlice from './appStatus/appStatusSlice'
+import auditoriesSlise from './auditories/auditoriesSlise'
+import scheduleLessonsSlice from './scheduleLessons/scheduleLessonsSlice'
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     plans: plansSlice,
     groups: groupsSlice,
     streams: streamsSlice,
+    students: studentsSlice,
     teachers: teachersSlice,
     settings: settingsSlice,
     appStatus: appStatusSlice,

@@ -238,3 +238,19 @@ export type GetGroupOverlayPayloadType = {
   groupId: number
   semester: number
 }
+
+/* students */
+
+export type CreateStudentsPayloadType = {
+  name: string
+  login: string
+  password: string
+  email: string
+  group: number | string
+}
+
+export type UpdateStudentsPayloadType = Omit<CreateStudentsPayloadType, 'group'> & {
+  status: 'Навчається' | 'Відраховано' | 'Академічна відпустка'
+  group: number
+  id: number
+}

@@ -2,9 +2,15 @@ import React from 'react'
 import * as XLSX from 'xlsx'
 import { UploadOutlined } from '@ant-design/icons'
 import { Tooltip, IconButton } from '@mui/material'
+import { useAppDispatch } from '../../store/store'
+import { createStudent } from '../../store/students/studentsAsyncActions'
+import { CreateStudentsPayloadType } from '../../api/apiTypes'
 
 const UploadStudents = () => {
+  const dispatch = useAppDispatch()
+
   const fileRef = React.useRef<HTMLInputElement | null>(null)
+  const [disabledUploadButton, setDisabledUploadButton] = React.useState(false)
 
   const onClickUpload = () => {
     if (!fileRef.current) return
@@ -38,45 +44,31 @@ const UploadStudents = () => {
 
           const element = el as string[]
 
-          const obj = {
-            name: element[0] || 0,
-            login: element[1] || '-',
-            password: element[2] || '-',
-            email: element[3] || '-',
-            group: element[4] || '-',
+          const obj: CreateStudentsPayloadType = {
+            name: element[0],
+            login: element[1],
+            password: element[2],
+            email: element[3],
+            group: element[4],
           }
 
           return obj
         })
         .filter((el) => !!el)
 
-      console.log(newStudents)
-
-      //   Promise.all(
-      //     newStudents.map(async (el: any) => {
-      //       try {
-      //         setButtonDisabled((prev) => ({ ...prev, uploadPharmacies: true }))
-      //         await gql.CreatePharmacy(el)
-      //         setAlert({
-      //           isShow: true,
-      //           message: 'Бази практик успішно завантажені',
-      //           severity: 'success',
-      //         })
-      //       } catch (err) {
-      //         setAlert({
-      //           isShow: true,
-      //           message: 'Помилка при завантажені баз практик',
-      //           severity: 'error',
-      //         })
-      //         console.log(err)
-      //       } finally {
-      //         setButtonDisabled((prev) => ({ ...prev, uploadPharmacies: false }))
-      //         setTimeout(() => {
-      //           setAlert((prev) => ({ ...prev, isShow: false }))
-      //         }, 3000)
-      //       }
-      //     })
-      //   )
+      Promise.all(
+        newStudents.map(async (el) => {
+          if (!el) return
+          try {
+            setDisabledUploadButton(true)
+            dispatch(createStudent(el))
+          } catch (err) {
+            console.log(err)
+          } finally {
+            setDisabledUploadButton(false)
+          }
+        })
+      )
     }
     reader.readAsBinaryString(f)
   }
@@ -85,7 +77,7 @@ const UploadStudents = () => {
     <div style={{ position: 'absolute', top: '-6px', right: 0 }}>
       <input type="file" ref={fileRef} onChange={handleChangeUpload} style={{ display: 'none' }} />
       <Tooltip title="Завантажити студентів">
-        <IconButton onClick={onClickUpload}>
+        <IconButton onClick={onClickUpload} disabled={disabledUploadButton}>
           <UploadOutlined style={{ width: '32px', height: '32px', padding: '6px' }} />
         </IconButton>
       </Tooltip>

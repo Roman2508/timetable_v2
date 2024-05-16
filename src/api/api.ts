@@ -36,6 +36,8 @@ import {
   DeleteLessonFromStreamPayloadType,
   DeleteGroupFromStreamResponseType,
   FindLessonsForSchedulePayloadType,
+  CreateStudentsPayloadType,
+  UpdateStudentsPayloadType,
 } from './apiTypes'
 import { StreamsType } from '../store/streams/streamsTypes'
 import { SettingsType } from '../store/settings/settingsTypes'
@@ -44,6 +46,7 @@ import { TeachersCategoryType, TeachersType } from '../store/teachers/teachersTy
 import { PlanType, PlansCategoriesType, PlansType } from '../store/plans/plansTypes'
 import { GroupCategoriesType, GroupLoadType, GroupsType } from '../store/groups/groupsTypes'
 import { AuditoriesTypes, AuditoryCategoriesTypes } from '../store/auditories/auditoriesTypes'
+import { StudentType } from '../store/students/studentsTypes'
 
 const instanse = axios.create({
   baseURL: 'http://localhost:7777/',
@@ -358,5 +361,21 @@ export const settingsAPI = {
   updateSettings(payload: SettingsType) {
     const { id, ...rest } = payload
     return instanse.patch<SettingsType>(`/settings/${id}`, rest)
+  },
+}
+
+export const studentsAPI = {
+  getByGroupId(id: number) {
+    return instanse.get<StudentType[]>(`/students/${id}`)
+  },
+  create(payload: CreateStudentsPayloadType) {
+    return instanse.post<StudentType>('/students', payload)
+  },
+  update(payload: UpdateStudentsPayloadType) {
+    const { id, ...rest } = payload
+    return instanse.patch<StudentType>(`/students/${id}`, rest)
+  },
+  delete(id: number) {
+    return instanse.delete<number>(`/students/${id}`)
   },
 }
