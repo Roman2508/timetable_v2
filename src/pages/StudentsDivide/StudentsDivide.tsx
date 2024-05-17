@@ -18,6 +18,8 @@ import {
   ListSubheader,
   ListItemButton,
   Tooltip,
+  ToggleButtonGroup,
+  ToggleButton,
 } from '@mui/material'
 
 import { useAppDispatch } from '../../store/store'
@@ -92,6 +94,15 @@ const StudentsDivide = () => {
   React.useEffect(() => {
     dispatch(getGroupCategories(false))
   }, [])
+
+  /* TEST */
+
+  const [alignment, setAlignment] = React.useState('web')
+
+  const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
+    setAlignment(newAlignment)
+  }
+  /* TEST */
 
   return (
     <>
@@ -195,12 +206,78 @@ const StudentsDivide = () => {
           <Paper sx={{ pt: 2 }}>
             <Typography sx={{ mb: 2, textAlign: 'center' }}>ДИСЦИПЛІНИ</Typography>
 
+            <Grid container>
+              <Grid item xs={6}>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={alignment}
+                  exclusive
+                  onChange={handleChange}
+                  aria-label="Platform"
+                  orientation="vertical"
+                >
+                  <ToggleButton value="lectures">Лекції</ToggleButton>
+                  <ToggleButton value="practical">Практичні</ToggleButton>
+                  <ToggleButton value="laboratory">Лабораторні</ToggleButton>
+                  <ToggleButton value="seminars">Семінари</ToggleButton>
+                  <ToggleButton value="exams">Екзамен</ToggleButton>
+                  <ToggleButton value="examsConsultation">Консультація до екзамену</ToggleButton>
+                </ToggleButtonGroup>
+              </Grid>
+
+              <Grid item xs={6}>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={alignment}
+                  exclusive
+                  onChange={handleChange}
+                  aria-label="Platform1"
+                  orientation="vertical"
+                  sx={{ width: '100%' }}
+                >
+                  <ToggleButton value="all">Вся група</ToggleButton>
+                  <ToggleButton value="1">Підгрупа 1</ToggleButton>
+                  <ToggleButton value="2">Підгрупа 2</ToggleButton>
+                  <ToggleButton value="3">Підгрупа 3</ToggleButton>
+                  <ToggleButton value="4">Підгрупа 4</ToggleButton>
+                </ToggleButtonGroup>
+              </Grid>
+            </Grid>
+
             <List>
-              <ListItemButton sx={{ backgroundColor: '#fafafa' }}>
+              <ListItemButton sx={{ backgroundColor: '#fafafa' }} disableRipple>
                 <ListItemText primary="Загальний" sx={{ mr: 1 }} />
+
+                <IconButton>
+                  <UpOutlined />
+                </IconButton>
+
+                <IconButton>
+                  <DownOutlined />
+                </IconButton>
               </ListItemButton>
               {[
-                { id: 1, name: 'Інформатика', types: ['Лекції', 'Практичні'] },
+                {
+                  id: 1,
+                  name: 'Інформатика',
+                  types: [
+                    'Лекції',
+                    'Практичні',
+                    'Практичні (п.1)',
+                    'Практичні (п.2)',
+                    'Практичні (п.3)',
+                    'Лабораторні',
+                    'Лабораторні (п.1)',
+                    'Лабораторні (п.2)',
+                    'Лабораторні (п.3)',
+                    'Семінари',
+                    'Семінари (п.1)',
+                    'Семінари (п.2)',
+                    'Семінари (п.3)',
+                    'Екзамен',
+                    'Консультація до екзамену',
+                  ],
+                },
                 { id: 2, name: 'Біологія', types: ['Лекції', 'Практичні', 'Екзамен'] },
                 { id: 3, name: 'Ділова іноземна мова', types: ['Лекції', 'Практичні', 'Семінар'] },
                 { id: 4, name: 'Інформаційні технології в фармації', types: ['Лекції', 'Практичні'] },
