@@ -1,5 +1,3 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
 import {
   List,
   Grid,
@@ -7,6 +5,7 @@ import {
   Stack,
   Select,
   Divider,
+  Tooltip,
   Collapse,
   MenuItem,
   TextField,
@@ -14,13 +13,14 @@ import {
   Typography,
   InputLabel,
   FormControl,
+  ToggleButton,
   ListItemText,
   ListSubheader,
   ListItemButton,
-  Tooltip,
   ToggleButtonGroup,
-  ToggleButton,
 } from '@mui/material'
+import React from 'react'
+import { useSelector } from 'react-redux'
 
 import { useAppDispatch } from '../../store/store'
 import { groupsSelector } from '../../store/groups/groupsSlice'
@@ -62,6 +62,7 @@ const names = [
 
 const StudentsDivide = () => {
   const dispatch = useAppDispatch()
+  
   const [openedLessonsIds, setOpenedLessonsIds] = React.useState<number[]>([])
 
   const { groupCategories } = useSelector(groupsSelector)
@@ -97,9 +98,9 @@ const StudentsDivide = () => {
 
   /* TEST */
 
-  const [alignment, setAlignment] = React.useState('web')
+  const [alignment, setAlignment] = React.useState('all')
 
-  const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
+  const handleChange = (_: React.MouseEvent<HTMLElement>, newAlignment: string) => {
     setAlignment(newAlignment)
   }
   /* TEST */
@@ -114,6 +115,42 @@ const StudentsDivide = () => {
             </Grid>
 
             <Grid sx={{ display: 'flex', gap: 3 }}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="group">Вид навантаження*</InputLabel>
+                <TextField
+                  select
+                  fullWidth
+                  id="group"
+                  defaultValue={'Лекції'}
+                  sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem', width: '140px' } }}
+                >
+                  {['Лекції', 'Практичні', 'Лабораторні', 'Семінари', 'Екзамен', 'Консультації до екзамену'].map(
+                    (option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    )
+                  )}
+                </TextField>
+              </Stack>
+
+              <Stack spacing={1}>
+                <InputLabel htmlFor="group">Група/Підгрупа*</InputLabel>
+                <TextField
+                  select
+                  fullWidth
+                  id="group"
+                  defaultValue={1}
+                  sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem', width: '140px' } }}
+                >
+                  {['Вся група', 'підгр. 1', 'підгр. 2', 'підгр. 3', 'підгр. 4'].map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Stack>
+
               <Stack spacing={1}>
                 <InputLabel htmlFor="group">Група*</InputLabel>
                 <TextField
@@ -205,57 +242,23 @@ const StudentsDivide = () => {
         <Grid item xs={3.8}>
           <Paper sx={{ pt: 2 }}>
             <Typography sx={{ mb: 2, textAlign: 'center' }}>ДИСЦИПЛІНИ</Typography>
-
-            <Grid container>
-              <Grid item xs={6}>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={alignment}
-                  exclusive
-                  onChange={handleChange}
-                  aria-label="Platform"
-                  orientation="vertical"
-                >
-                  <ToggleButton value="lectures">Лекції</ToggleButton>
-                  <ToggleButton value="practical">Практичні</ToggleButton>
-                  <ToggleButton value="laboratory">Лабораторні</ToggleButton>
-                  <ToggleButton value="seminars">Семінари</ToggleButton>
-                  <ToggleButton value="exams">Екзамен</ToggleButton>
-                  <ToggleButton value="examsConsultation">Консультація до екзамену</ToggleButton>
-                </ToggleButtonGroup>
-              </Grid>
-
-              <Grid item xs={6}>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={alignment}
-                  exclusive
-                  onChange={handleChange}
-                  aria-label="Platform1"
-                  orientation="vertical"
-                  sx={{ width: '100%' }}
-                >
-                  <ToggleButton value="all">Вся група</ToggleButton>
-                  <ToggleButton value="1">Підгрупа 1</ToggleButton>
-                  <ToggleButton value="2">Підгрупа 2</ToggleButton>
-                  <ToggleButton value="3">Підгрупа 3</ToggleButton>
-                  <ToggleButton value="4">Підгрупа 4</ToggleButton>
-                </ToggleButtonGroup>
-              </Grid>
-            </Grid>
-
             <List>
-              <ListItemButton sx={{ backgroundColor: '#fafafa' }} disableRipple>
-                <ListItemText primary="Загальний" sx={{ mr: 1 }} />
+              <ToggleButtonGroup
+                exclusive
+                color="primary"
+                value={alignment}
+                onChange={handleChange}
+                orientation="vertical"
+                sx={{ width: '100%', flexDirection: 'row' }}
+              >
+                <ToggleButton value="all" sx={{ width: '50%' }}>
+                  Всі дисципліни
+                </ToggleButton>
+                <ToggleButton value="one" sx={{ width: '50%' }}>
+                  Одна дисципліна
+                </ToggleButton>
+              </ToggleButtonGroup>
 
-                <IconButton>
-                  <UpOutlined />
-                </IconButton>
-
-                <IconButton>
-                  <DownOutlined />
-                </IconButton>
-              </ListItemButton>
               {[
                 {
                   id: 1,
@@ -284,7 +287,11 @@ const StudentsDivide = () => {
               ].map((lesson) => (
                 <React.Fragment key={lesson.id}>
                   <Divider />
-                  <ListItemButton onClick={() => handleOpenLesson(lesson.id)} sx={{ backgroundColor: '#fafafa' }}>
+                  <ListItemButton
+                    disabled={alignment === 'all'}
+                    sx={{ backgroundColor: '#fafafa' }}
+                    onClick={() => handleOpenLesson(lesson.id)}
+                  >
                     <ListItemText primary={lesson.name} sx={{ mr: 1 }} />
                     {openedLessonsIds.includes(lesson.id) ? <UpOutlined /> : <DownOutlined />}
                   </ListItemButton>

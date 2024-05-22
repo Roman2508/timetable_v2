@@ -22,6 +22,7 @@ import { StudentsDivide } from './pages/StudentsDivide/StudentsDivide'
 import { DistributionPage } from './pages/Distribution/DistributionPage'
 import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
 import { StudentsAccounts } from './pages/StudentsAccounts/StudentsAccounts'
+import GradeBookPage from './pages/GradeBook/GradeBookPage'
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('./pages/dashboard')))
@@ -59,6 +60,8 @@ const App = () => {
 
             <Route element={<StudentsAccounts />} path="/students/accounts" />
             <Route element={<StudentsDivide />} path="/students/divide" />
+
+            <Route element={<GradeBookPage />} path="/grade-book" />
 
             {/*  */}
             <Route element={<Color />} path="/color" />
