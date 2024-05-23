@@ -1,7 +1,6 @@
 import React from 'react'
 import {
   Grid,
-  Paper,
   Table,
   Stack,
   Button,
@@ -16,9 +15,11 @@ import {
   InputLabel,
   ListSubheader,
   TableContainer,
+  Checkbox,
 } from '@mui/material'
 import { useSelector } from 'react-redux'
 
+import HIcon from '../../assets/images/icons/letter-h.svg'
 import { useAppDispatch } from '../../store/store'
 import { groupsSelector } from '../../store/groups/groupsSlice'
 import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
@@ -48,6 +49,30 @@ const students = [
   },
   {
     _id: '664dfc7a11c1584e358b540d',
+    name: 'Clara Ashley',
+  },
+  {
+    _id: '664dfc7aa2132d12d243763ac23a',
+    name: 'Rosalyn Strong',
+  },
+  {
+    _id: '664dfc7aadc532256bdadca3dd4',
+    name: 'Delacruz Chen',
+  },
+  {
+    _id: '664dfc7ad53123114aeb28c100',
+    name: 'Harding Lawson',
+  },
+  {
+    _id: '664dfc7a03dc312c1b2664865e',
+    name: 'Stark Collier',
+  },
+  {
+    _id: '664dfc7a9f8a126594f3df27ba',
+    name: 'Althea Vaughan',
+  },
+  {
+    _id: '664dfc7a11c151284e358b540d',
     name: 'Clara Ashley',
   },
   {
@@ -88,7 +113,7 @@ const GradeBookPage = () => {
   return (
     <>
       <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center', mb: 3 }}>
-        <Grid item xs={11.4}>
+        <Grid item xs={12}>
           <Grid container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Grid item>
               <Typography variant="h5">Електронний журнал</Typography>
@@ -204,7 +229,7 @@ const GradeBookPage = () => {
           <TableHead>
             <TableRow>
               <TableCell
-                sx={{ ...cellStyles, backgroundColor: '#fff !important' }}
+                sx={{ ...cellStyles, position: 'sticky', left: 0, zIndex: 99, background: '#fff' }}
                 align="center"
                 rowSpan={3}
                 padding="none"
@@ -214,11 +239,11 @@ const GradeBookPage = () => {
             </TableRow>
 
             <TableRow>
-              {Array(15)
+              {Array(25)
                 .fill(null)
                 .map((lessonNumber, index) => (
                   <TableCell
-                    sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
+                    sx={{ ...cellStyles, p: 1, position: 'sticky', top: 0, zIndex: 69, background: '#fff' }}
                     align="center"
                     padding="none"
                   >
@@ -250,8 +275,11 @@ const GradeBookPage = () => {
                   <TableCell
                     sx={{
                       ...cellStyles,
-                      position: 'relative',
-                      ':hover *': { display: 'flex !important' },
+                      p: 0,
+                      position: 'sticky',
+                      left: 0,
+                      zIndex: 99,
+                      background: '#fff',
                     }}
                     component="th"
                     id={labelId}
@@ -261,7 +289,7 @@ const GradeBookPage = () => {
                     <Typography sx={{ flexGrow: 1 }}>{student.name}</Typography>
                   </TableCell>
 
-                  {Array(15)
+                  {Array(25)
                     .fill(null)
                     .map((_, index) => {
                       return (
@@ -271,11 +299,53 @@ const GradeBookPage = () => {
                           sx={{
                             ...cellStyles,
                             cursor: 'pointer',
+                            p: '0 !important',
+                            // display: 'flex',
+                            verticalAlign: 'middle',
+                            // alignItems: 'center',
+                            borderRight: '1px solid black',
                             ':hover': { background: 'rgba(0, 0, 0, 0.05);' },
                           }}
                           align="center"
                         >
-                          12
+                          <Checkbox
+                            // defaultChecked
+                            size="medium"
+                            sx={{
+                              marginTop: '5px',
+                              '& .MuiSvgIcon-root': { fontSize: 20, width: '18px', height: '18px' },
+                            }}
+                            checkedIcon={
+                              <svg
+                                width="18px"
+                                height="18px"
+                                viewBox="0 0 128 128"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                                role="img"
+                                className="iconify iconify--noto"
+                                preserveAspectRatio="xMidYMid meet"
+                              >
+                                <path
+                                  d="M109.48 16.34H84.84c-1.28 0-2.33 1.04-2.33 2.33v36.27H45.5V18.68c0-1.29-1.04-2.33-2.34-2.33H18.53a2.34 2.34 0 0 0-2.34 2.33v99.96c0 1.29 1.05 2.33 2.34 2.33h24.63a2.34 2.34 0 0 0 2.34-2.33V76.15h37.02v42.48c0 1.29 1.05 2.33 2.33 2.33h24.64c1.29 0 2.33-1.05 2.33-2.33V18.68a2.35 2.35 0 0 0-2.34-2.34z"
+                                  fill="#1677ff"
+                                ></path>
+                              </svg>
+                            }
+                          />
+
+                          <TextField
+                            sx={{
+                              p: 0,
+                              border: 0,
+                              width: '50%',
+                              '& *': { p: 0 },
+                              textAlign: 'center',
+                              '& input': { p: '12px 0 12px 6px', border: 0 },
+                            }}
+                            type="number"
+                          />
+                          {/* <HIcon /> */}
                         </TableCell>
                       )
                     })}
