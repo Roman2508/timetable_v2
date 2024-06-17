@@ -1,0 +1,54 @@
+.grade-book__table-container {
+  overflow-x: auto;
+}
+
+.grade-book__table-head {
+  top: 0;
+  z-index: 2;
+  display: flex;
+  position: sticky;
+  background-color: #fff;
+  border-bottom: 1px solid gray;
+}
+
+.grade-book__table-cell {
+  padding: 4px;
+  display: flex;
+  min-width: 100px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid gray;
+  border-left: 1px solid gray;
+}
+
+.grade-book__table-head .grade-book__table-cell {
+  z-index: 2;
+  flex-direction: column;
+}
+
+.grade-book__table-cell.first-col {
+  left: 0;
+  z-index: 1;
+  padding: 4px;
+  min-width: 200px;
+  position: sticky;
+  background-color: #fff;
+  border-right: 1px solid gray;
+}
+
+.grade-book__table-cell p {
+  margin: 3px 0;
+}
+
+.grade-book__table-body {
+  max-height: calc(100vh - 310px);
+}
+
+.grade-book__table_row {
+  display: flex;
+}
+
+.grade-book__table_row:hover {
+  background-color: rgb(216, 233, 255);
+}
