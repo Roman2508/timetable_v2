@@ -1,6 +1,7 @@
 import React from "react"
 import { GroupCategoriesType } from "../../store/groups/groupsTypes"
-import { Stack, Button, MenuItem, TextField, InputLabel, ListSubheader } from "@mui/material"
+import { Stack, Button, MenuItem, TextField, InputLabel, ListSubheader, IconButton, Tooltip } from "@mui/material"
+import { FilterOutlined } from "@ant-design/icons"
 
 interface IGradeBookFilterProps {
   groupCategories: GroupCategoriesType[] | null
@@ -9,7 +10,7 @@ interface IGradeBookFilterProps {
 const GradeBookFilter: React.FC<IGradeBookFilterProps> = ({ groupCategories }) => {
   return (
     <>
-      <Stack spacing={1}>
+      {/* <Stack spacing={1}>
         <InputLabel htmlFor="group">Рік*</InputLabel>
         <TextField
           select
@@ -90,7 +91,7 @@ const GradeBookFilter: React.FC<IGradeBookFilterProps> = ({ groupCategories }) =
 
       <Button type="submit" color="primary" variant="outlined" sx={{ height: "40.91px" }}>
         Показати
-      </Button>
+      </Button> */}
     </>
   )
 }

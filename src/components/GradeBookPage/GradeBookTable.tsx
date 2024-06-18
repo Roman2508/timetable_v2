@@ -13,14 +13,13 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ students }) => {
     <Paper>
       <div className="grade-book__table-container">
         <div className="grade-book__table-head">
-          <div className="grade-book__table-cell first-col">Дисципліна</div>
+          <div className="grade-book__table-cell first-col corner-cell"></div>
           {Array(24)
             .fill(null)
             .map((_: null, index: number) => (
               <div className="grade-book__table-cell">
                 <p>{index + 1}</p>
                 <p>22.05</p>
-                <p>217 ауд.</p>
               </div>
             ))}
         </div>
@@ -39,24 +38,23 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ students }) => {
                       // defaultChecked
                       size="medium"
                       sx={{
-                        marginTop: "5px",
+                        color: "gray",
+                        padding: "6px",
+                        "& svg path": { opacity: 0 },
                         "& .MuiSvgIcon-root": { fontSize: 20, width: "18px", height: "18px" },
-                        "& span": {
-                          padding: "0 !important",
-                          margin: "0 !important",
-                        },
+                        "& span": { padding: "0 !important", margin: "0 !important" },
                       }}
                       checkedIcon={<img src={HIcon} alt="mySvgImage" width={18} height={18} />}
                     />
 
                     <TextField
+                      variant="standard"
                       sx={{
-                        p: 0,
-                        border: 0,
                         width: "50%",
-                        "& *": { p: 0 },
                         textAlign: "center",
-                        "& input": { p: "6px 0 6px 6px", border: 0 },
+                        "& input": { p: "6px 0 6px 6px" },
+                        "& :after": { height: "0 !important", border: "0 !important" },
+                        "& :before": { height: "0 !important", border: "0 !important" },
                       }}
                       type="number"
                     />

@@ -10,9 +10,12 @@ import {
   TableHead,
   Typography,
   TableContainer,
+  Tooltip,
+  IconButton,
 } from "@mui/material"
 import { useSelector } from "react-redux"
 
+import { FilterOutlined } from "@ant-design/icons"
 import { useAppDispatch } from "../../store/store"
 import HIcon from "../../assets/images/icons/letter-h.svg"
 import { groupsSelector } from "../../store/groups/groupsSlice"
@@ -108,11 +111,19 @@ const GradeBookPage = () => {
 
   return (
     <>
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center", mb: 3 }}>
+      <Grid container sx={{ justifyContent: "center", mb: 2, pt: 0, ".MuiGrid-root>.MuiGrid-item": { pt: 0 } }}>
         <Grid item xs={12}>
           <Grid container sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Grid item>
-              <Typography variant="h5">Електронний журнал</Typography>
+            <Grid item sx={{ display: "flex", alignItems: "center" }}>
+              <Typography variant="h5" sx={{ mr: 1 }}>
+                Електронний журнал
+              </Typography>
+
+              <Tooltip title="Знайти групу">
+                <IconButton>
+                  <FilterOutlined />
+                </IconButton>
+              </Tooltip>
             </Grid>
 
             <Grid sx={{ display: "flex", gap: 3, alignItems: "flex-end" }}>
