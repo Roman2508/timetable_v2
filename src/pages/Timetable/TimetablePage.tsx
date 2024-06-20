@@ -12,11 +12,10 @@ import { TeachersType } from '../../store/teachers/teachersTypes'
 import { GroupLoadStreamType } from '../../store/groups/groupsTypes'
 import { settingsSelector } from '../../store/settings/settingsSlice'
 import LessonsTable from '../../components/TimetablePage/LessonsTable'
-import { clearGroupOverlay } from '../../store/scheduleLessons/scheduleLessonsSlice'
 import { TimetablePageHeader } from '../../components/TimetablePage/TimetablePageHeader'
 import { getGroupOverlay } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 import { CopyTheScheduleModal } from '../../components/TimetablePage/CopyTheScheduleModal'
-import { getLastSelectedDataToLocalStorage } from '../../utils/getLastSelectedDataToLocalStorage'
+import { clearGroupOverlay, lastSelectedDataSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
 
 // ==============================|| TIMETABLE ||============================== //
 
@@ -38,23 +37,22 @@ const TimetablePage = () => {
   const dispatch = useAppDispatch()
 
   const { settings } = useSelector(settingsSelector)
+  const { lastOpenedSemester, lastOpenedWeek } = useSelector(lastSelectedDataSelector)
 
   const [weeksCount, setWeeksCount] = React.useState(0)
-  const [currentWeekNumber, setCurrentWeekNumber] = React.useState(1)
+  // const [currentWeekNumber, setCurrentWeekNumber] = React.useState(1)
   const [selectedSemester, setSelectedSemester] = React.useState<1 | 2>(1)
-  const [selectedItemId, setSelectedItemId] = React.useState<number | null>(null)
+  const [slectedGroupId, setSlectedGroupId] = React.useState<number | null>(null)
   const [selectedTeacherId, setSelectedTeacherId] = React.useState<null | number>(null)
   const [selectedAuditoryId, setSelectedAuditoryId] = React.useState<number | null>(null)
   const [isPossibleToCreateLessons, setIsPossibleToCreateLessons] = React.useState(true)
   const [selectedLesson, setSelectedLesson] = React.useState<ISelectedLesson | null>(null)
   const [copyTheScheduleModalVisible, setCopyTheScheduleModalVisible] = React.useState(false)
-  const [scheduleType, setScheduleType] = React.useState<'group' | 'teacher' | 'auditory'>('group')
 
   // set weeks count in current semester
   React.useEffect(() => {
     if (!settings) return
     const { firstSemesterStart, firstSemesterEnd, secondSemesterStart, secondSemesterEnd } = settings
-    const { lastOpenedSemester } = getLastSelectedDataToLocalStorage()
 
     if (!lastOpenedSemester || lastOpenedSemester === 1) {
       const endDate = customDayjs(firstSemesterEnd)
@@ -72,7 +70,7 @@ const TimetablePage = () => {
       setWeeksCount(roundedUp + 1)
       setSelectedSemester(lastOpenedSemester)
     }
-  }, [settings, selectedSemester])
+  }, [settings, lastOpenedSemester])
 
   React.useEffect(() => {
     // Якщо дисципліна не об'єднана в потік
@@ -103,9 +101,9 @@ const TimetablePage = () => {
     <>
       <CopyTheScheduleModal
         settings={settings}
-        groupId={selectedItemId}
+        groupId={slectedGroupId}
         open={copyTheScheduleModalVisible}
-        selectedSemester={selectedSemester}
+        selectedSemester={lastOpenedSemester}
         setOpen={setCopyTheScheduleModalVisible}
       />
 
@@ -113,14 +111,10 @@ const TimetablePage = () => {
         <Grid item xs={12}>
           <TimetablePageHeader
             weeksCount={weeksCount}
-            scheduleType={scheduleType}
-            selectedItemId={selectedItemId}
-            setScheduleType={setScheduleType}
-            selectedSemester={selectedSemester}
-            setSelectedItemId={setSelectedItemId}
-            currentWeekNumber={currentWeekNumber}
-            setSelectedSemester={setSelectedSemester}
-            setCurrentWeekNumber={setCurrentWeekNumber}
+            setSlectedGroupId={setSlectedGroupId}
+            selectedSemester={lastOpenedSemester}
+            currentWeekNumber={lastOpenedWeek}
+            setSelectedTeacherId={setSelectedTeacherId}
             setSelectedAuditoryId={setSelectedAuditoryId}
           />
         </Grid>
@@ -129,10 +123,8 @@ const TimetablePage = () => {
           <Grid item xs={4} sx={{ mr: 2 }}>
             <MainCard sx={{ pb: 0, '& .MuiCardContent-root': { p: '0 !important', overflow: 'auto' } }}>
               <LessonsTable
-                scheduleType={scheduleType}
-                selectedItemId={selectedItemId}
                 selectedLesson={selectedLesson}
-                selectedSemester={selectedSemester}
+                selectedSemester={lastOpenedSemester}
                 setSelectedLesson={setSelectedLesson}
                 setSelectedTeacherId={setSelectedTeacherId}
                 setIsPossibleToCreateLessons={setIsPossibleToCreateLessons}
@@ -144,15 +136,14 @@ const TimetablePage = () => {
             <MainCard sx={{ '& .MuiCardContent-root': { px: 1 } }}>
               <Calendar
                 weeksCount={weeksCount}
-                scheduleType={scheduleType}
-                selectedItemId={selectedItemId}
+                slectedGroupId={slectedGroupId}
                 selectedLesson={selectedLesson}
-                selectedSemester={selectedSemester}
-                currentWeekNumber={currentWeekNumber}
+                selectedSemester={lastOpenedSemester}
+                currentWeekNumber={lastOpenedWeek}
                 selectedTeacherId={selectedTeacherId}
                 setSelectedLesson={setSelectedLesson}
                 selectedAuditoryId={selectedAuditoryId}
-                setCurrentWeekNumber={setCurrentWeekNumber}
+                // setCurrentWeekNumber={setCurrentWeekNumber}
                 setSelectedAuditoryId={setSelectedAuditoryId}
                 isPossibleToCreateLessons={isPossibleToCreateLessons}
                 setCopyTheScheduleModalVisible={setCopyTheScheduleModalVisible}
@@ -166,25 +157,3 @@ const TimetablePage = () => {
 }
 
 export { TimetablePage }
-
-// TODO:
-// 4. При зміні selectedItemId <Calendar /> 2 рази підвантажується
-// 6. Заміна викладача
-// 8. Можливість ставити декілька елементів розкладу в один час, якщо це підгрупи або спец. групи
-//    - МОЖЛИВІ НАКЛАДКИ АУДИТОРІЙ (ТРЕБА ЗРОБИТИ ПЕРЕВІРКУ ЧИ АУДИТОРІЯ ВІЛЬНА)
-//    - МОЖЛИВІ НАКЛАДКИ ВИКЛАДАЧІВ
-
-// 9. Кнопка "Сьогодні" в <Calendar />
-
-// 12. Можливість закрити для викладача, групи або аудиторії певні дати
-// 15. Не оновлюється auditory overlay коли вибирати дисципліну не з таблиці а з календаря (date slot) ???
-
-// 17. При виборі аудиторії, при подвійному кліку з'являються зайняті аудиторії ???
-// 21. При зміні типу розкладу треба очищати teachers overlay
-// 22. Екз.конс. треба дозволити ставити в розклад
-// 23. Не правильно видаляються з redux store ел.розкладу які поділені на підгрупи
-// 24. При копіюванні підгруп, які стоять в один час вставлється лише 1 підгрупа 2 рази
-// 25. Якщо у викладача стоїть заміна - треба заборонити ставити йому інші пари в той час
-// 26. При зміні типу розкладу (group | teacher | auditory) треба очищати overlay
-// 27. При зміні групи в розкладі треба очищати список всіх виставлених уроків
-// 28. Якщо в списку спец.груп вибрано, що дисципліна не читається - треба приховати її в schedule-lessons

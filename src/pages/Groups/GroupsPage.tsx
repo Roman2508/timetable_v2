@@ -115,7 +115,7 @@ const GroupsPage = () => {
             {loadingStatus === LoadingStatusTypes.LOADING && !groupCategories && <LoadingSpinner />}
             {loadingStatus !== LoadingStatusTypes.LOADING && !groupCategories && <EmptyCard />}
             {groupCategories && (
-              <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 2 } }}>
+              <List sx={{ p: 0, '& .MuiListItemButton-root': { py: '12px' } }}>
                 {groupCategories.map((el) => (
                   <ListItemButton
                     divider

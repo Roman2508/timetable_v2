@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 
 import {
   getGroupOverlay,
@@ -17,7 +17,7 @@ import {
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
 import { GroupLoadType } from '../groups/groupsTypes'
-import { ScheduleLessonInitialStateType, ScheduleLessonType } from './scheduleLessonsTypes'
+import { ILastSelectedData, ScheduleLessonInitialStateType, ScheduleLessonType } from './scheduleLessonsTypes'
 import { TeachersType } from '../teachers/teachersTypes'
 
 const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
@@ -27,6 +27,13 @@ const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
   groupOverlay: null,
   teacherOverlay: null,
   scheduleLessons: null,
+
+  lastOpenedSemester: 1,
+  lastOpenedWeek: 1,
+  lastSelectedItemId: 7,
+  lastSelectedScheduleType: 'group',
+  lastSelectedStructuralUnitId: 1,
+
   loadingStatus: LoadingStatusTypes.NEVER,
 }
 
@@ -53,6 +60,23 @@ const scheduleLessonsSlice = createSlice({
     },
     clearTeacherOverlay(state) {
       state.teacherOverlay = []
+    },
+    setLastSelectedData(state, action: PayloadAction<ILastSelectedData>) {
+      if (action.payload.lastSelectedScheduleType) {
+        state.lastSelectedScheduleType = action.payload.lastSelectedScheduleType
+      }
+      if (action.payload.lastOpenedSemester) {
+        state.lastOpenedSemester = action.payload.lastOpenedSemester
+      }
+      if (action.payload.lastOpenedWeek) {
+        state.lastOpenedWeek = action.payload.lastOpenedWeek
+      }
+      if (action.payload.lastSelectedItemId) {
+        state.lastSelectedItemId = action.payload.lastSelectedItemId
+      }
+      if (action.payload.lastSelectedStructuralUnitId) {
+        state.lastSelectedStructuralUnitId = action.payload.lastSelectedStructuralUnitId
+      }
     },
   },
   extraReducers: (builder) => {
@@ -145,7 +169,21 @@ const scheduleLessonsSlice = createSlice({
 
 export const scheduleLessonsSelector = (state: RootState) => state.scheduleLessons
 
-export const { setLoadingStatus, clearGroupLoad, deleteTeacherOverlay, clearTeacherOverlay, clearGroupOverlay } =
-  scheduleLessonsSlice.actions
+export const lastSelectedDataSelector = createSelector([scheduleLessonsSelector], (scheduleLessons) => ({
+  lastOpenedSemester: scheduleLessons.lastOpenedSemester,
+  lastOpenedWeek: scheduleLessons.lastOpenedWeek,
+  lastSelectedItemId: scheduleLessons.lastSelectedItemId,
+  lastSelectedScheduleType: scheduleLessons.lastSelectedScheduleType,
+  lastSelectedStructuralUnitId: scheduleLessons.lastSelectedStructuralUnitId,
+}))
+
+export const {
+  setLoadingStatus,
+  clearGroupLoad,
+  deleteTeacherOverlay,
+  clearTeacherOverlay,
+  clearGroupOverlay,
+  setLastSelectedData,
+} = scheduleLessonsSlice.actions
 
 export default scheduleLessonsSlice.reducer

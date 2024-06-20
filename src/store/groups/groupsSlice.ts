@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 import {
   getGroup,
@@ -18,24 +18,24 @@ import {
   deleteSpecialization,
   handleGroupVisible,
   changeStudentsCount,
-} from "./groupsAsyncActions"
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import { TeachersType } from "../teachers/teachersTypes"
-import { AttachSpecializationPayloadType, ChangeStudentsCountType } from "../../api/apiTypes"
-import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from "./groupsTypes"
+} from './groupsAsyncActions'
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import { TeachersType } from '../teachers/teachersTypes'
+import { AttachSpecializationPayloadType, ChangeStudentsCountType } from '../../api/apiTypes'
+import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from './groupsTypes'
 
 const groupsInitialState: GroupsInitialState = {
   groupCategories: null,
   group: {
     id: 0,
-    name: "",
+    name: '',
     courseNumber: 1,
     yearOfAdmission: Number(new Date().getFullYear().toString()),
-    students: 1,
+    students: [],
     isHide: false,
-    calendarId: "",
-    formOfEducation: "Денна",
+    calendarId: '',
+    formOfEducation: 'Денна',
     specializationList: [],
     educationPlan: null,
     groupLoad: null,
@@ -46,7 +46,7 @@ const groupsInitialState: GroupsInitialState = {
 }
 
 const groupsSlice = createSlice({
-  name: "groups",
+  name: 'groups',
   initialState: groupsInitialState,
   reducers: {
     setLoadingStatus(state, action) {

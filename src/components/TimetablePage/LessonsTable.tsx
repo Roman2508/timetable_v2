@@ -1,6 +1,6 @@
-import { Table, Tooltip, TableRow, TableBody, TableCell, TableHead, Typography } from '@mui/material'
 import { useSelector } from 'react-redux'
 import React, { Dispatch, SetStateAction } from 'react'
+import { Table, Tooltip, TableRow, TableBody, TableCell, TableHead, Typography } from '@mui/material'
 
 import EmptyCard from '../EmptyCard/EmptyCard'
 import { useAppDispatch } from '../../store/store'
@@ -10,12 +10,16 @@ import { getLessonRemark } from '../../utils/getLessonRemark'
 import { GroupLoadType } from '../../store/groups/groupsTypes'
 import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
 import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
-import { clearGroupLoad, scheduleLessonsSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
-import { findLessonsForSchedule } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 import { sortLessonsByLessonType } from '../../utils/sortLessonsByLessonType'
 import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsTypes'
 import { groupAndSortAuditoryLessons } from '../../utils/groupAndSortAuditoryLessons'
 import { findLessonsCountForLessonsTable } from '../../utils/findLessonsCountForLessonsTable'
+import { findLessonsForSchedule } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import {
+  clearGroupLoad,
+  scheduleLessonsSelector,
+  lastSelectedDataSelector,
+} from '../../store/scheduleLessons/scheduleLessonsSlice'
 
 const tableCellStyles = {
   fontSize: '13px',
@@ -29,17 +33,17 @@ const tableCellStyles = {
 
 interface ILessonsTable {
   selectedSemester: 1 | 2
-  selectedItemId: number | null
+  // selectedItemId: number | null
   selectedLesson: ISelectedLesson | null
-  scheduleType: 'group' | 'teacher' | 'auditory'
+  // scheduleType: 'group' | 'teacher' | 'auditory'
   setSelectedTeacherId: Dispatch<SetStateAction<number | null>>
   setIsPossibleToCreateLessons: Dispatch<SetStateAction<boolean>>
   setSelectedLesson: Dispatch<SetStateAction<ISelectedLesson | null>>
 }
 
 const LessonsTable: React.FC<ILessonsTable> = ({
-  scheduleType,
-  selectedItemId,
+  // scheduleType,
+  // selectedItemId,
   selectedLesson,
   selectedSemester,
   setSelectedLesson,
@@ -48,20 +52,34 @@ const LessonsTable: React.FC<ILessonsTable> = ({
 }) => {
   const dispatch = useAppDispatch()
 
+  const {
+    // lastOpenedWeek,
+    // lastOpenedSemester,
+    lastSelectedItemId,
+    lastSelectedScheduleType,
+    // lastSelectedStructuralUnitId,
+  } = useSelector(lastSelectedDataSelector)
+
   const { groupLoad, loadingStatus, scheduleLessons } = useSelector(scheduleLessonsSelector)
 
   React.useEffect(() => {
-    if (!selectedItemId) return
+    if (!lastSelectedItemId) return
 
-    if (scheduleType === 'group' || scheduleType === 'teacher') {
+    if (lastSelectedScheduleType === 'group' || lastSelectedScheduleType === 'teacher') {
       dispatch(clearGroupLoad())
-      dispatch(findLessonsForSchedule({ semester: selectedSemester, itemId: selectedItemId, scheduleType }))
+      dispatch(
+        findLessonsForSchedule({
+          semester: selectedSemester,
+          itemId: lastSelectedItemId,
+          scheduleType: lastSelectedScheduleType,
+        })
+      )
     }
-  }, [selectedItemId, scheduleType, selectedSemester])
+  }, [lastSelectedItemId, lastSelectedScheduleType, selectedSemester])
 
   // При першому рендері вибираю з таблиці LessonsTable перший елемент
   React.useEffect(() => {
-    if (scheduleType !== 'auditory') {
+    if (lastSelectedScheduleType !== 'auditory') {
       if (!groupLoad) return
       const sortedGroupLoad = sortLessonsByLessonType(groupLoad)
       const firstLesson = sortedGroupLoad[0]
@@ -122,7 +140,9 @@ const LessonsTable: React.FC<ILessonsTable> = ({
   }
 
   const isEmptyTable =
-    scheduleType !== 'auditory' ? !groupLoad || !groupLoad.length : !scheduleLessons || !scheduleLessons.length
+    lastSelectedScheduleType !== 'auditory'
+      ? !groupLoad || !groupLoad.length
+      : !scheduleLessons || !scheduleLessons.length
 
   return (
     <Table>
@@ -161,7 +181,7 @@ const LessonsTable: React.FC<ILessonsTable> = ({
           </TableRow>
         ) : null}
 
-        {(scheduleType !== 'auditory'
+        {(lastSelectedScheduleType !== 'auditory'
           ? groupLoad
             ? sortLessonsByLessonType(groupLoad)
             : []
@@ -227,7 +247,7 @@ const LessonsTable: React.FC<ILessonsTable> = ({
               <TableCell sx={{ ...tableCellStyles, maxWidth: '60px' }} padding="none" align="center">
                 <Tooltip
                   enterDelay={1000}
-                  title={`${remark} ${scheduleType !== 'group' ? ` ⋅ Група: ${lesson.group.name}` : ''}`}
+                  title={`${remark} ${lastSelectedScheduleType !== 'group' ? ` ⋅ Група: ${lesson.group.name}` : ''}`}
                 >
                   <Typography sx={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>{remark}</Typography>
                 </Tooltip>

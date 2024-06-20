@@ -21,6 +21,13 @@ export type ScheduleLessonInitialStateType = {
   // Навантаження (все)
   groupLoad: GroupLoadType[] | null
   loadingStatus: LoadingStatusTypes
+
+  // last selected filter
+  lastOpenedWeek: number
+  lastOpenedSemester: 1 | 2
+  lastSelectedItemId: number
+  lastSelectedScheduleType: 'group' | 'teacher' | 'auditory'
+  lastSelectedStructuralUnitId: number
 }
 
 export type ScheduleLessonType = {
@@ -41,4 +48,12 @@ export type ScheduleLessonType = {
   stream: StreamsType
   subgroupNumber: number | null
   specialization: string | null
+}
+
+export interface ILastSelectedData {
+  lastOpenedSemester?: 1 | 2
+  lastOpenedWeek?: number
+  lastSelectedItemId?: number
+  lastSelectedStructuralUnitId?: number
+  lastSelectedScheduleType?: 'group' | 'teacher' | 'auditory'
 }

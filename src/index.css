@@ -17,6 +17,11 @@ html,
 body {
   min-height: 100vh;
   overflow-x: hidden;
+  padding-right: 0 !important;
+}
+
+header {
+  padding-right: 0 !important;
 }
 
 * {

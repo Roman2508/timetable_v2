@@ -1,23 +1,23 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 import {
+  GetGroupOverlayPayloadType,
+  CopyDaySchedulePayloadType,
+  CopyWeekSchedulePayloadType,
+  CreateReplacementPayloadType,
+  GetTeachersOverlayPayloadType,
   GetAuditoryOverlayPayloadType,
   GetScheduleLessonsPayloadType,
   UpdateScheduleLessonsPayloadType,
   CreateScheduleLessonsPayloadType,
   FindLessonsForSchedulePayloadType,
-  GetGroupOverlayPayloadType,
-  CopyWeekSchedulePayloadType,
-  CopyDaySchedulePayloadType,
-  CreateReplacementPayloadType,
-  GetTeachersOverlayPayloadType,
 } from '../../api/apiTypes'
 import { LoadingStatusTypes } from '../appTypes'
+import { TeachersType } from '../teachers/teachersTypes'
 import { setLoadingStatus } from './scheduleLessonsSlice'
 import { setAppAlert } from '../appStatus/appStatusSlice'
 import { ScheduleLessonType } from './scheduleLessonsTypes'
 import { groupLoadLessonsAPI, scheduleLessonsAPI } from '../../api/api'
-import { TeachersType } from '../teachers/teachersTypes'
 
 export const getScheduleLessons = createAsyncThunk(
   'schedule-lessons/getScheduleLessons',

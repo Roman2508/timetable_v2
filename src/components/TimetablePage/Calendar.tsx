@@ -22,7 +22,11 @@ import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
 import { settingsSelector } from '../../store/settings/settingsSlice'
 import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsTypes'
 import { PutSeveralLessonsAtSameTimeModal } from './PutSeveralLessonsAtSameTimeModal'
-import { scheduleLessonsSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
+import {
+  lastSelectedDataSelector,
+  scheduleLessonsSelector,
+  setLastSelectedData,
+} from '../../store/scheduleLessons/scheduleLessonsSlice'
 
 export interface ISelectedTimeSlot {
   data: Dayjs
@@ -33,13 +37,12 @@ interface ICalendarProps {
   weeksCount: number
   selectedSemester: 1 | 2
   currentWeekNumber: number
-  selectedItemId: number | null
+  slectedGroupId: number | null
   selectedTeacherId: number | null
   selectedAuditoryId: number | null
   isPossibleToCreateLessons: boolean
   selectedLesson: ISelectedLesson | null
-  scheduleType: 'group' | 'teacher' | 'auditory'
-  setCurrentWeekNumber: Dispatch<SetStateAction<number>>
+  // setCurrentWeekNumber: Dispatch<SetStateAction<number>>
   setSelectedAuditoryId: Dispatch<SetStateAction<number | null>>
   setCopyTheScheduleModalVisible: Dispatch<SetStateAction<boolean>>
   setSelectedLesson: Dispatch<SetStateAction<ISelectedLesson | null>>
@@ -47,15 +50,14 @@ interface ICalendarProps {
 
 const Calendar: React.FC<ICalendarProps> = ({
   weeksCount,
-  scheduleType,
-  selectedItemId,
+  slectedGroupId,
   selectedLesson,
   selectedSemester,
   currentWeekNumber,
   selectedAuditoryId,
   selectedTeacherId,
   setSelectedLesson,
-  setCurrentWeekNumber,
+  // setCurrentWeekNumber,
   setSelectedAuditoryId,
   isPossibleToCreateLessons,
   setCopyTheScheduleModalVisible,
@@ -63,6 +65,7 @@ const Calendar: React.FC<ICalendarProps> = ({
   const dispatch = useAppDispatch()
 
   const { settings } = useSelector(settingsSelector)
+  const { lastSelectedScheduleType, lastSelectedItemId } = useSelector(lastSelectedDataSelector)
   const { scheduleLessons, teacherLessons, groupOverlay, loadingStatus } = useSelector(scheduleLessonsSelector)
 
   const [isRemote, setIsRemote] = React.useState(false)
@@ -78,9 +81,11 @@ const Calendar: React.FC<ICalendarProps> = ({
   const [currentWeekDays, setCurrentWeekDays] = React.useState(getCalendarWeek(currentWeekNumber))
 
   React.useEffect(() => {
-    if (!selectedItemId) return
-    dispatch(getScheduleLessons({ id: selectedItemId, semester: selectedSemester, type: scheduleType }))
-  }, [selectedItemId, selectedSemester, scheduleType])
+    if (!lastSelectedItemId) return
+    dispatch(getScheduleLessons({ id: lastSelectedItemId, semester: selectedSemester, type: lastSelectedScheduleType }))
+    // if (!slectedGroupId) return
+    // dispatch(getScheduleLessons({ id: slectedGroupId, semester: selectedSemester, type: lastSelectedScheduleType }))
+  }, [slectedGroupId, selectedSemester, lastSelectedScheduleType, lastSelectedItemId])
 
   React.useEffect(() => {
     if (!selectedTeacherId) return
@@ -247,7 +252,8 @@ const Calendar: React.FC<ICalendarProps> = ({
               color="secondary"
               disabled={currentWeekNumber === 1}
               sx={{ mr: 1, padding: '0px 10px' }}
-              onClick={() => setCurrentWeekNumber((prev) => prev - 1)}
+              onClick={() => dispatch(setLastSelectedData({ lastOpenedWeek: currentWeekNumber - 1 }))}
+              // onClick={() => setCurrentWeekNumber((prev) => prev - 1)}
             >
               Попередній тиждень
             </Button>
@@ -256,14 +262,15 @@ const Calendar: React.FC<ICalendarProps> = ({
               color="secondary"
               sx={{ padding: '0px 10px' }}
               disabled={currentWeekNumber === weeksCount}
-              onClick={() => setCurrentWeekNumber((prev) => prev + 1)}
+              onClick={() => dispatch(setLastSelectedData({ lastOpenedWeek: currentWeekNumber + 1 }))}
+              // onClick={() => setCurrentWeekNumber((prev) => prev + 1)}
             >
               Наступний тиждень
             </Button>
           </div>
 
           <div className="header-right" style={{ userSelect: 'none' }}>
-            {scheduleType === 'group' && (
+            {lastSelectedScheduleType === 'group' && (
               <Button
                 variant="outlined"
                 color="secondary"

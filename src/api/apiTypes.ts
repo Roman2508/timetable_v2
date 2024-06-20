@@ -68,7 +68,8 @@ export type UpdateGroupPayloadType = Pick<
 export type FindLessonsForSchedulePayloadType = {
   semester: number
   itemId: number
-  scheduleType: 'group' | 'teacher'
+  scheduleType: 'group' | 'teacher' | 'auditory'
+  // scheduleType: 'group' | 'teacher'
 }
 
 /* Plan-subjects */
