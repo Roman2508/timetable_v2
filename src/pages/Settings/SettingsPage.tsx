@@ -116,4 +116,4 @@ const SettingsPage = () => {
   )
 }
 
-export { SettingsPage }
+export default SettingsPage 

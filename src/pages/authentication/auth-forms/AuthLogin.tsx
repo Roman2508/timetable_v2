@@ -132,10 +132,6 @@ const AuthLogin = () => {
           )}
         </Stack>
 
-        <Divider sx={{ mt: 3 }}>
-          <Chip label={'Або'} size="medium" sx={{ userSelect: 'none' }} />
-        </Divider>
-
         <Button
           variant="contained"
           color="primary"
@@ -146,7 +142,24 @@ const AuthLogin = () => {
             mt: 3,
           }}
         >
-          {'Увійти за допомогою google'}
+          Увійти
+        </Button>
+
+        <Divider sx={{ mt: 1.5 }}>
+          <Chip label={'Або'} size="medium" sx={{ userSelect: 'none' }} />
+        </Divider>
+
+        <Button
+          variant="outlined"
+          color="primary"
+          sx={{
+            textTransform: 'capitalize',
+            width: '100%',
+            p: '7.44px 15px',
+            mt: 1.5,
+          }}
+        >
+          Google
         </Button>
       </form>
       {/* <Formik

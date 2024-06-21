@@ -360,4 +360,4 @@ const StudentsDivide = () => {
   )
 }
 
-export { StudentsDivide }
+export default StudentsDivide 

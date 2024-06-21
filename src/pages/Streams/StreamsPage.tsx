@@ -180,4 +180,4 @@ const StreamsPage = () => {
   )
 }
 
-export { StreamsPage }
+export default StreamsPage 

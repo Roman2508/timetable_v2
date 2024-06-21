@@ -137,4 +137,4 @@ const FullPlanPage = () => {
   )
 }
 
-export { FullPlanPage }
+export default FullPlanPage 

@@ -1,66 +1,69 @@
-.grade-book__table-container {
-  overflow-x: auto;
+.table-container {
+  width: 100%;
+  overflow: auto;
+  position: relative;
+  max-height: calc(100vh - 160px);
+  border: 1px solid #ddd;
+  transition: all 0.3s linear;
 }
 
-.grade-book__table-head {
-  top: 0;
-  z-index: 2;
-  display: flex;
+.grades-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.grades-table thead th {
   position: sticky;
-}
-
-.grade-book__table-cell {
-  /* padding: 4px; */
-  display: flex;
-  min-width: 85px;
-  /* min-width: 100px; */
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  border-left: 1px solid rgb(200, 200, 200);
-}
-
-.grade-book__table-head .grade-book__table-cell {
-  z-index: 2;
-  flex-direction: column;
-  background-color: #fff;
-  border-bottom: 1px solid rgb(200, 200, 200);
-}
-
-.grade-book__table-cell.first-col {
-  left: 0;
+  top: -1px;
+  background-color: #f3f3f3;
   z-index: 1;
-  border-left: 0;
-  min-width: 200px;
+  text-align: center;
+  padding: 4px 0;
+}
+
+.grades-table thead th p {
+  margin: 0;
+}
+.grades-table thead th:first-child {
   position: sticky;
-  background-color: #fff;
-  border-right: 1px solid rgb(200, 200, 200);
+  top: -1px;
+  left: 0;
+  background-color: #f3f3f3;
+  z-index: 3;
+  border-bottom: 1px solid #ddd;
 }
 
-.grade-book__table-cell.first-col.corner-cell {
-  border-right: 0;
+.grades-table tbody td:first-child {
+  position: sticky;
+  left: 0;
+  background-color: #f3f3f3;
+  z-index: 2;
+  min-width: 200px;
+  max-width: 200px;
 }
 
-.grade-book__table-cell p {
-  margin: 3px 0;
+.grades-table tbody tr:hover {
+  background-color: #f3f3f3;
 }
 
-.grade-book__table-cell:hover svg path {
-  opacity: 1;
+.grades-table th,
+.grades-table td {
+  border: 1px solid #ddd;
+  padding: 0px;
+  text-align: left;
 }
 
-.grade-book__table-body {
-  max-height: calc(100vh - 230px);
+.grades-table td {
+  padding: 0px 8px;
 }
 
-.grade-book__table-body .grade-book__table-cell {
-  border-top: 1px solid rgb(200, 200, 200);
-}
-
-.grade-book__table_row {
+.grades-table tr th div {
+  width: 85px;
+  height: 32px;
   display: flex;
+  align-items: center;
 }
 
-.grade-book__table_row:has(.grade-book__table-cell:hover) .grade-book__table-cell:not(:first-child) {
-  background-color: rgb(216, 233, 255);
-}
+/* .grades-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+} */

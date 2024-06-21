@@ -1,22 +1,22 @@
 // material-ui
-import { Grid, Stack, Divider, Tooltip, TextField, Typography, IconButton, InputLabel } from "@mui/material"
+import { Grid, Stack, Divider, Tooltip, TextField, Typography, IconButton, InputLabel } from '@mui/material'
 // ant-design
-import { CheckOutlined, LeftSquareOutlined } from "@ant-design/icons"
+import { CheckOutlined, LeftSquareOutlined } from '@ant-design/icons'
 
 // project import
-import React, { Dispatch, SetStateAction } from "react"
+import React, { Dispatch, SetStateAction } from 'react'
 
-import EmptyCard from "../EmptyCard/EmptyCard"
-import MainCard from "../../components/MainCard"
-import { useAppDispatch } from "../../store/store"
-import DistributionActions from "./DistributionActions"
-import { GroupLoadType } from "../../store/groups/groupsTypes"
-import { TeachersType } from "../../store/teachers/teachersTypes"
-import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
-import { attachTeacher, changeStudentsCount, unpinTeacher } from "../../store/groups/groupsAsyncActions"
-import { sortLessonsByLessonType } from "../../utils/sortLessonsByLessonType"
+import EmptyCard from '../EmptyCard/EmptyCard'
+import MainCard from '../../components/MainCard'
+import { useAppDispatch } from '../../store/store'
+import DistributionActions from './DistributionActions'
+import { GroupLoadType } from '../../store/groups/groupsTypes'
+import { TeachersType } from '../../store/teachers/teachersTypes'
+import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
+import { attachTeacher, changeStudentsCount, unpinTeacher } from '../../store/groups/groupsAsyncActions'
+import { sortLessonsByLessonType } from '../../utils/sortLessonsByLessonType'
 
-export type AttachmentTypes = "attach-one" | "attach-all" | "unpin-one" | "unpin-all"
+export type AttachmentTypes = 'attach-one' | 'attach-all' | 'unpin-one' | 'unpin-all'
 
 type ChangeStudentsCountType = {
   typeRu: string
@@ -37,15 +37,15 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
 }) => {
   const dispatch = useAppDispatch()
 
-  const [attachmentType, setAttachmentType] = React.useState<AttachmentTypes>("attach-one")
+  const [attachmentType, setAttachmentType] = React.useState<AttachmentTypes>('attach-one')
   const [changedStudentsCount, setChangedStudentsCount] = React.useState<ChangeStudentsCountType>({
-    typeRu: "",
+    typeRu: '',
     students: 0,
-    remark: "",
+    remark: '',
   })
 
   const onAttachTeacher = async (lessonId: number) => {
-    if (!selectedTeacherId) return alert("Виберіть викладача")
+    if (!selectedTeacherId) return alert('Виберіть викладача')
     const { payload } = await dispatch(attachTeacher({ lessonId, teacherId: selectedTeacherId }))
     const data = payload as { lessonId: number; teacher: TeachersType }
     setSelectedLesson((prev) => {
@@ -80,11 +80,11 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
   }
 
   const onClickActionButton = async (lessonId: number) => {
-    if (attachmentType === "attach-one") {
+    if (attachmentType === 'attach-one') {
       onAttachTeacher(lessonId)
       return
     }
-    if (attachmentType === "unpin-one") {
+    if (attachmentType === 'unpin-one') {
       onUnpinTeacher(lessonId)
       return
     }
@@ -109,13 +109,13 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
         <Typography
           variant="button"
           sx={{
-            textAlign: "center",
-            display: "block",
-            textTransform: "uppercase",
+            textAlign: 'center',
+            display: 'block',
+            textTransform: 'uppercase',
             mb: 2.6,
           }}
         >
-          {selectedLesson ? selectedLesson[0].name : "Виберіть дисципліну"}
+          {selectedLesson ? selectedLesson[0].name : 'Виберіть дисципліну'}
         </Typography>
 
         <Divider />
@@ -133,21 +133,21 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
 
           {selectedLesson &&
             sortLessonsByLessonType(selectedLesson).map((lesson) => {
-              const stream = lesson.stream ? `${lesson.stream.name} ` : ""
-              const subgroup = lesson.subgroupNumber ? `підгр. ${lesson.subgroupNumber}` : ""
-              const specialization = lesson.specialization ? `${lesson.specialization} спец. ` : ""
+              const stream = lesson.stream ? `${lesson.stream.name} ` : ''
+              const subgroup = lesson.subgroupNumber ? `підгр. ${lesson.subgroupNumber}` : ''
+              const specialization = lesson.specialization ? `${lesson.specialization} спец. ` : ''
               const remark = (stream || specialization || subgroup) && `(${stream}${specialization}${subgroup})`
 
-              const teacher = lesson.teacher ? getLastnameAndInitials(lesson.teacher) : ""
+              const teacher = lesson.teacher ? getLastnameAndInitials(lesson.teacher) : ''
 
               return (
                 <Stack
                   spacing={1}
                   key={lesson.id}
-                  sx={{ mt: 1, display: "flex", flexDirection: "row", alignItems: "center" }}
+                  sx={{ mt: 1, display: 'flex', flexDirection: 'row', alignItems: 'center' }}
                 >
                   <Tooltip title={`${lesson.typeRu} ${remark}`}>
-                    <InputLabel htmlFor="name" sx={{ flexGrow: 1, mt: "8px !important" }}>
+                    <InputLabel htmlFor="name" sx={{ flexGrow: 1, mt: '8px !important' }}>
                       {lesson.typeRu} {remark}
                     </InputLabel>
                   </Tooltip>
@@ -158,10 +158,10 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
                     value={lesson.hours}
                     InputProps={{ readOnly: true, disableUnderline: true }}
                     sx={{
-                      maxWidth: "45px",
-                      mr: "8px !important",
-                      "& .MuiInputBase-root": { p: 0 },
-                      "& input": { textAlign: "center", cursor: "default" },
+                      maxWidth: '45px',
+                      mr: '8px !important',
+                      '& .MuiInputBase-root': { p: 0 },
+                      '& input': { textAlign: 'center', cursor: 'default' },
                     }}
                   />
                   <TextField
@@ -171,11 +171,11 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
                     size="small"
                     placeholder=""
                     value={teacher}
-                    sx={{ maxWidth: "140px", mr: "8px !important", "& .MuiInputBase-root": { p: 0 } }}
+                    sx={{ maxWidth: '140px', mr: '8px !important', '& .MuiInputBase-root': { p: 0 } }}
                   />
                   <IconButton
                     onClick={() => onClickActionButton(lesson.id)}
-                    disabled={attachmentType === "unpin-one" && !teacher}
+                    disabled={attachmentType === 'unpin-one' && !teacher}
                   >
                     <LeftSquareOutlined />
                   </IconButton>
@@ -186,7 +186,11 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
       </MainCard>
 
       <MainCard sx={{ mt: 2 }}>
-        <Typography variant="button" sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}>
+        <Typography
+          variant="button"
+          color={'red'}
+          sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase' }}
+        >
           Кількість студентів
         </Typography>
 
@@ -194,19 +198,19 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
           {!selectedLesson && <EmptyCard />}
           {selectedLesson &&
             sortLessonsByLessonType(selectedLesson).map((lesson) => {
-              const stream = lesson.stream ? `${lesson.stream.name} ` : ""
-              const subgroup = lesson.subgroupNumber ? `підгр. ${lesson.subgroupNumber}` : ""
-              const specialization = lesson.specialization ? `${lesson.specialization} спец. ` : ""
+              const stream = lesson.stream ? `${lesson.stream.name} ` : ''
+              const subgroup = lesson.subgroupNumber ? `підгр. ${lesson.subgroupNumber}` : ''
+              const specialization = lesson.specialization ? `${lesson.specialization} спец. ` : ''
               const remark = (stream || specialization || subgroup) && `(${stream}${specialization}${subgroup})`
 
               return (
                 <Stack
                   spacing={1}
                   key={lesson.id}
-                  sx={{ mt: 1, display: "flex", flexDirection: "row", alignItems: "center" }}
+                  sx={{ mt: 1, display: 'flex', flexDirection: 'row', alignItems: 'center' }}
                 >
                   <Tooltip title={`${lesson.typeRu} ${remark}`}>
-                    <InputLabel htmlFor="name" sx={{ flexGrow: 1, mt: "8px !important" }}>
+                    <InputLabel htmlFor="name" sx={{ flexGrow: 1, mt: '8px !important' }}>
                       {lesson.typeRu} {remark}
                     </InputLabel>
                   </Tooltip>
@@ -220,7 +224,7 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
                     placeholder=""
                     defaultValue={lesson.students}
                     // value={lesson.students}
-                    sx={{ maxWidth: "140px", mr: "8px !important", "& .MuiInputBase-root": { p: 0 } }}
+                    sx={{ maxWidth: '140px', mr: '8px !important', '& .MuiInputBase-root': { p: 0 } }}
                     onChange={(e) =>
                       setChangedStudentsCount({
                         students: Number(e.target.value),

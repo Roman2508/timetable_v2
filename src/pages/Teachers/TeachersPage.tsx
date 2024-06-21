@@ -154,4 +154,4 @@ const TeachersPage = () => {
   )
 }
 
-export { TeachersPage }
+export default TeachersPage

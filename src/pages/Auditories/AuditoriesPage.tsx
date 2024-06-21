@@ -152,4 +152,4 @@ const AuditoriesPage = () => {
   )
 }
 
-export { AuditoriesPage }
+export default AuditoriesPage 

@@ -204,4 +204,4 @@ const GroupsPage = () => {
   )
 }
 
-export { GroupsPage }
+export default GroupsPage

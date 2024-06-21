@@ -9,14 +9,14 @@ import {
   FormHelperText,
 } from "@mui/material"
 import React from "react"
+import { useSelector } from "react-redux"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 
 // project import
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
-import { AuditoriesTypes } from "../../store/auditories/auditoriesTypes"
 import { useAppDispatch } from "../../store/store"
-import { createAuditory, updateAuditory } from "../../store/auditories/auditoriesAsyncActions"
+import { AuditoriesTypes } from "../../store/auditories/auditoriesTypes"
 import { auditoriesSelector } from "../../store/auditories/auditoriesSlise"
-import { useSelector } from "react-redux"
+import { createAuditory, updateAuditory } from "../../store/auditories/auditoriesAsyncActions"
 
 interface IAuditoriesFields {
   name: string

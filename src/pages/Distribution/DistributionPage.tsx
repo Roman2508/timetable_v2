@@ -146,4 +146,4 @@ const DistributionPage = () => {
   )
 }
 
-export { DistributionPage }
+export default DistributionPage 

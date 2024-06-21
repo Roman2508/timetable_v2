@@ -185,4 +185,4 @@ const StudentsAccounts = () => {
   )
 }
 
-export { StudentsAccounts }
+export default StudentsAccounts 

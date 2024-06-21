@@ -1,13 +1,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Grid, Typography, Tooltip, IconButton } from '@mui/material'
+import { Grid, Typography, Tooltip, IconButton, Divider } from '@mui/material'
 
-import { FilterOutlined } from '@ant-design/icons'
+import { ColumnWidthOutlined, FilterOutlined } from '@ant-design/icons'
 import { useAppDispatch } from '../../store/store'
 import { groupsSelector } from '../../store/groups/groupsSlice'
 import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
 import GradeBookTable from '../../components/GradeBookPage/GradeBookTable'
-import GradeBookFilter from '../../components/GradeBookPage/GradeBookFilter'
+import GradeBookFilter from '../../components/GradeBookPage/GradeBookFilterModal'
 
 const students = [
   {
@@ -20,6 +20,54 @@ const students = [
   },
   {
     _id: '664dfc7ad533114aeb28c100',
+    name: 'Harding Lawson',
+  },
+  {
+    _id: '664dfc7a03dc3c1b2664865e',
+    name: 'Stark Collier',
+  },
+  {
+    _id: '664dfc7a9f8a6594f3df27ba',
+    name: 'Althea Vaughan',
+  },
+  {
+    _id: '664dfc7a11c1584e358b540d',
+    name: 'Clara Ashley',
+  },
+  {
+    _id: '664dfc7aa2132d12d243763ac23a',
+    name: 'Rosalyn Strong',
+  },
+  {
+    _id: '664dfc7aadc532256bdadca3dd4',
+    name: 'Delacruz Chen',
+  },
+  {
+    _id: '664dfc7ad53123114aeb28c100',
+    name: 'Harding Lawson',
+  },
+  {
+    _id: '664dfc7a03dc3c1b2664865e',
+    name: 'Stark Collier',
+  },
+  {
+    _id: '664dfc7a9f8a6594f3df27ba',
+    name: 'Althea Vaughan',
+  },
+  {
+    _id: '664dfc7a11c1584e358b540d',
+    name: 'Clara Ashley',
+  },
+  {
+    _id: '664dfc7aa2132d12d243763ac23a',
+    name: 'Rosalyn Strong',
+  },
+  {
+    _id: '664dfc7aadc532256bdadca3dd4',
+    name: 'Delacruz Chen',
+  },
+  {
+    _id: '664dfc7ad53123114aeb28c100',
     name: 'Harding Lawson',
   },
   {
@@ -87,6 +135,8 @@ const students = [
 const GradeBookPage = () => {
   const dispatch = useAppDispatch()
 
+  const [isOpenFilterModal, setIsOpenFilterModal] = React.useState(false)
+
   const { groupCategories } = useSelector(groupsSelector)
 
   React.useEffect(() => {
@@ -95,6 +145,8 @@ const GradeBookPage = () => {
 
   return (
     <>
+      <GradeBookFilter open={isOpenFilterModal} setOpen={setIsOpenFilterModal} />
+
       <Grid container sx={{ justifyContent: 'center', mb: 2, pt: 0, '.MuiGrid-root>.MuiGrid-item': { pt: 0 } }}>
         <Grid item xs={12}>
           <Grid container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -103,15 +155,21 @@ const GradeBookPage = () => {
                 Електронний журнал
               </Typography>
 
+              <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 1 }} />
+
               <Tooltip title="Знайти групу">
-                <IconButton>
+                <IconButton onClick={() => setIsOpenFilterModal(true)}>
                   <FilterOutlined />
                 </IconButton>
               </Tooltip>
-            </Grid>
 
-            <Grid sx={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
-              <GradeBookFilter groupCategories={groupCategories} />
+              <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 1 }} />
+
+              <Tooltip title="Divide lessons">
+                <IconButton>
+                  <ColumnWidthOutlined />
+                </IconButton>
+              </Tooltip>
             </Grid>
           </Grid>
         </Grid>
