@@ -2,6 +2,8 @@ import {
   Stack,
   Dialog,
   Button,
+  MenuItem,
+  TextField,
   IconButton,
   InputLabel,
   DialogTitle,
@@ -9,12 +11,11 @@ import {
   DialogActions,
   OutlinedInput,
   FormHelperText,
-  TextField,
-  MenuItem,
 } from '@mui/material'
 import { CloseOutlined } from '@ant-design/icons'
 import React, { Dispatch, SetStateAction } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+
 import { customDayjs } from '../Calendar/Calendar'
 
 interface IGradeBookFilterModalProps {
@@ -191,7 +192,9 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
       </DialogContent>
 
       <DialogActions>
-        <Button variant="contained">Вибрати</Button>
+        <Button variant="contained" disabled={isSubmitting}>
+          Вибрати
+        </Button>
       </DialogActions>
     </Dialog>
   )

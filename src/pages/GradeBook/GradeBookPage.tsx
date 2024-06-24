@@ -2,11 +2,12 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Grid, Typography, Tooltip, IconButton, Divider } from '@mui/material'
 
-import { ColumnWidthOutlined, FilterOutlined } from '@ant-design/icons'
 import { useAppDispatch } from '../../store/store'
 import { groupsSelector } from '../../store/groups/groupsSlice'
+import { ColumnWidthOutlined, FilterOutlined } from '@ant-design/icons'
 import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
 import GradeBookTable from '../../components/GradeBookPage/GradeBookTable'
+import AddSummaryModal from '../../components/GradeBookPage/AddSummaryModal'
 import GradeBookFilter from '../../components/GradeBookPage/GradeBookFilterModal'
 
 const students = [
@@ -136,6 +137,7 @@ const GradeBookPage = () => {
   const dispatch = useAppDispatch()
 
   const [isOpenFilterModal, setIsOpenFilterModal] = React.useState(false)
+  const [isOpenSummaryModal, setIsOpenSummaryModal] = React.useState(false)
 
   const { groupCategories } = useSelector(groupsSelector)
 
@@ -146,11 +148,19 @@ const GradeBookPage = () => {
   return (
     <>
       <GradeBookFilter open={isOpenFilterModal} setOpen={setIsOpenFilterModal} />
+      <AddSummaryModal open={isOpenSummaryModal} setOpen={setIsOpenSummaryModal} />
 
-      <Grid container sx={{ justifyContent: 'center', mb: 2, pt: 0, '.MuiGrid-root>.MuiGrid-item': { pt: 0 } }}>
+      <Grid
+        container
+        sx={{
+          justifyContent: 'center',
+          mb: 2,
+          pt: 0,
+        }}
+      >
         <Grid item xs={12}>
           <Grid container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid item style={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="h5" sx={{ mr: 1 }}>
                 Електронний журнал
               </Typography>
@@ -165,11 +175,15 @@ const GradeBookPage = () => {
 
               <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 1 }} />
 
-              <Tooltip title="Divide lessons">
-                <IconButton>
+              <Tooltip title="Додати підсумок">
+                <IconButton onClick={() => setIsOpenSummaryModal(true)}>
                   <ColumnWidthOutlined />
                 </IconButton>
               </Tooltip>
+            </Grid>
+
+            <Grid item>
+              <Typography variant="h5">{`Інформатика ІІ семестр. Група: PH-23-1. Викладач: Пташник Р.В.`}</Typography>
             </Grid>
           </Grid>
         </Grid>

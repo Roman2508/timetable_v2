@@ -79,9 +79,14 @@ const GroupsPage = () => {
         setActiveGroupCategory={setActiveGroupCategory}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ m: '0 auto', maxWidth: '1200px' }}>
+      <Grid
+        container
+        // rowSpacing={4.5}
+        // columnSpacing={2.75}
+        sx={{ m: '0 auto', maxWidth: '1200px' /* paddingRight: '20px' */ }}
+      >
         {/* Категорії (відділення) */}
-        <Grid item xs={12} md={5} lg={5}>
+        <Grid item xs={12} md={5} lg={5} sx={{ paddingRight: '20px' }}>
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="h5" sx={{ mr: '10px' }}>

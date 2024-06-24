@@ -20,37 +20,37 @@ import { useAppDispatch } from '../../store/store'
 import { handleGroupVisible } from '../../store/groups/groupsAsyncActions'
 import { GroupCategoriesType, GroupsShortType } from '../../store/groups/groupsTypes'
 
-const createData = (trackingNo: number, name: string, fat: number, carbs: number, protein: number) => {
-  return { trackingNo, name, fat, carbs, protein }
-}
+// const createData = (trackingNo: number, name: string, fat: number, carbs: number, protein: number) => {
+//   return { trackingNo, name, fat, carbs, protein }
+// }
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1
-  }
-  return 0
-}
+// function descendingComparator(a, b, orderBy) {
+//   if (b[orderBy] < a[orderBy]) {
+//     return -1
+//   }
+//   if (b[orderBy] > a[orderBy]) {
+//     return 1
+//   }
+//   return 0
+// }
 
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy)
-}
+// function getComparator(order, orderBy) {
+//   return order === 'desc'
+//     ? (a, b) => descendingComparator(a, b, orderBy)
+//     : (a, b) => -descendingComparator(a, b, orderBy)
+// }
 
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index])
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0])
-    if (order !== 0) {
-      return order
-    }
-    return a[1] - b[1]
-  })
-  return stabilizedThis.map((el) => el[0])
-}
+// function stableSort(array, comparator) {
+//   const stabilizedThis = array.map((el, index) => [el, index])
+//   stabilizedThis.sort((a, b) => {
+//     const order = comparator(a[0], b[0])
+//     if (order !== 0) {
+//       return order
+//     }
+//     return a[1] - b[1]
+//   })
+//   return stabilizedThis.map((el) => el[0])
+// }
 
 // ==============================|| ORDER TABLE - HEADER CELL ||============================== //
 
@@ -130,6 +130,7 @@ const GroupsTable: React.FC<IGroupsTableProps> = ({ groups, onDeleteEntity, setA
   const [orderBy] = useState('trackingNo')
   const [selected] = useState([])
 
+  // @ts-ignore
   const isSelected = (id: number) => selected.indexOf(id) !== -1
 
   const onChangeGroupVisible = async (id: number) => {
@@ -172,7 +173,7 @@ const GroupsTable: React.FC<IGroupsTableProps> = ({ groups, onDeleteEntity, setA
             {groups.map((group, index) => {
               const isItemSelected = isSelected(group.id)
               const labelId = `enhanced-table-checkbox-${index}`
-
+           
               return (
                 <TableRow
                   hover
@@ -192,7 +193,7 @@ const GroupsTable: React.FC<IGroupsTableProps> = ({ groups, onDeleteEntity, setA
                     {group.courseNumber}
                   </TableCell>
                   <TableCell align="center" sx={{ p: '4px 12px' }}>
-                    {group.students}
+                    {group.students?.length}
                   </TableCell>
                   <TableCell align="center" sx={{ p: '4px 12px' }}>
                     <Link component={RouterLink} to={`/groups/${group.id}`}>

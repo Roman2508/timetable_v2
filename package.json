@@ -25,6 +25,7 @@
     "dayjs": "^1.11.10",
     "framer-motion": "^11.0.8",
     "lodash": "^4.17.21",
+    "mui-color-input": "^2.0.3",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
     "react-big-calendar": "^1.11.1",
