@@ -13,8 +13,6 @@ import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
 import { AuditoryCategoriesTypes } from '../../store/auditories/auditoriesTypes'
 import { getTeachersCategories } from '../../store/teachers/teachersAsyncActions'
 import { getAuditoryCategories } from '../../store/auditories/auditoriesAsyncActions'
-import { setLastSelectedDataToLocalStorage } from '../../utils/setLastSelectedDataToLocalStorage'
-import { getLastSelectedDataToLocalStorage } from '../../utils/getLastSelectedDataToLocalStorage'
 import { lastSelectedDataSelector, setLastSelectedData } from '../../store/scheduleLessons/scheduleLessonsSlice'
 
 interface IListItem {
@@ -26,28 +24,16 @@ interface ITimetablePageHeaderProps {
   weeksCount: number
   selectedSemester: 1 | 2
   currentWeekNumber: number
-  // selectedItemId: number | null
-  // scheduleType: 'group' | 'teacher' | 'auditory'
-  // setCurrentWeekNumber: Dispatch<SetStateAction<number>>
-  // setSelectedItemId: Dispatch<SetStateAction<number | null>>
   setSlectedGroupId: Dispatch<SetStateAction<number | null>>
   setSelectedTeacherId: Dispatch<SetStateAction<number | null>>
   setSelectedAuditoryId: Dispatch<SetStateAction<number | null>>
-  // setSelectedSemester: React.Dispatch<React.SetStateAction<1 | 2>>
-  // setScheduleType: Dispatch<SetStateAction<'group' | 'teacher' | 'auditory'>>
 }
 
 const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
   weeksCount,
-  // scheduleType,
-  // selectedItemId,
-  // setScheduleType,
   selectedSemester,
   currentWeekNumber,
   setSlectedGroupId,
-  // setSelectedItemId,
-  // setSelectedSemester,
-  // setCurrentWeekNumber,
   setSelectedTeacherId,
   setSelectedAuditoryId,
 }) => {
@@ -63,7 +49,6 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
 
   const [itemsList, setItemsList] = React.useState<IListItem[]>([])
   const [categoriesList, setCategoriesList] = React.useState<IListItem[]>([])
-  // const [selectedCategoryId, setSelectedCategoryId] = React.useState<number | null>(null)
 
   const weeksList = () => {
     const weeks: { value: string; label: string }[] = []

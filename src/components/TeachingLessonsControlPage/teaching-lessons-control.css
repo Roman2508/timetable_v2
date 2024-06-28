@@ -1,0 +1,16 @@
+.lessons-control-table {
+  margin-top: 20px;
+  width: 100%;
+  /* border: 1px solid #ddd; */
+}
+
+.lessons-control-table td,
+.lessons-control-table th {
+  border: 1px solid #ddd;
+  padding: 4px;
+  text-align: center;
+}
+
+.lessons-control-table tbody tr:hover {
+  background-color: #f3f3f3;
+}

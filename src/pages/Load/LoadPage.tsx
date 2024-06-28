@@ -6,10 +6,8 @@ import { Grid, Typography, Tooltip, IconButton, Divider } from '@mui/material'
 import { useAppDispatch } from '../../store/store'
 import { menuSelector } from '../../store/menu/menuSlice'
 import { groupsSelector } from '../../store/groups/groupsSlice'
+import LoadPageTable from '../../components/LoadPage/LoadPageTable'
 import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
-import GradeBookTable from '../../components/GradeBookPage/GradeBookTable'
-import AddSummaryModal from '../../components/GradeBookPage/AddSummaryModal'
-import GradeBookFilter from '../../components/GradeBookPage/GradeBookFilterModal'
 
 const students = [
   {
@@ -134,7 +132,7 @@ const students = [
   },
 ]
 
-const GradeBookPage = () => {
+const LoadPage = () => {
   const dispatch = useAppDispatch()
 
   const { drawerOpen } = useSelector(menuSelector)
@@ -150,15 +148,12 @@ const GradeBookPage = () => {
 
   return (
     <>
-      <GradeBookFilter open={isOpenFilterModal} setOpen={setIsOpenFilterModal} />
-      <AddSummaryModal open={isOpenSummaryModal} setOpen={setIsOpenSummaryModal} />
-
       <Grid container sx={{ mb: 2, pt: 0 }}>
         <Grid item xs={12}>
           <Grid container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Grid item style={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="h5" sx={{ mr: 1 }}>
-                Електронний журнал
+                Навантаження
               </Typography>
 
               <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 1 }} />
@@ -179,15 +174,17 @@ const GradeBookPage = () => {
             </Grid>
 
             <Grid item>
-              <Typography variant="h5">{`Інформатика ІІ семестр. Група: PH-23-1. Викладач: Пташник Р.В.`}</Typography>
+              <Typography variant="h5">{`Група: PH-23-1. Cеместр 2`}</Typography>
+            </Grid>
+
+            <Grid item sx={{ overflow: 'hidden' }}>
+              <LoadPageTable />
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-
-      <GradeBookTable students={students} drawerOpen={drawerOpen} />
     </>
   )
 }
 
-export default GradeBookPage
+export default LoadPage

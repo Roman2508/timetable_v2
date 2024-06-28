@@ -1,7 +1,8 @@
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 import React, { Dispatch, SetStateAction } from 'react'
-import { groupLessonsByFields } from '../../utils/groupLessonsByFields'
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
+
 import { GroupLoadType } from '../../store/groups/groupsTypes'
+import { groupLessonsByFields } from '../../utils/groupLessonsByFields'
 
 interface IDistributionLessonsTableProps {
   groupLoad: GroupLoadType[] | null

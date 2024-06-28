@@ -7,12 +7,12 @@
   transition: all 0.3s linear;
 }
 
-.grades-table {
+.load-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.grades-table thead th {
+.load-table thead th {
   position: sticky;
   top: -1px;
   background-color: #f3f3f3;
@@ -21,50 +21,49 @@
   padding: 4px 0;
 }
 
-.grades-table thead th p {
+.load-table thead th p {
   margin: 0;
 }
-
-.grades-table thead th:first-child {
+.load-table thead th:first-child {
   position: sticky;
-  left: 0;
   top: -1px;
-  z-index: 3;
+  left: 0;
   background-color: #f3f3f3;
+  z-index: 3;
   border-bottom: 1px solid #ddd;
 }
 
-.grades-table tbody td:first-child {
+.load-table tbody td:first-child {
   position: sticky;
-  left: -1px;
+  left: 0;
   background-color: #f3f3f3;
   z-index: 2;
   min-width: 200px;
   max-width: 200px;
 }
 
-.grades-table tbody tr:hover {
+.load-table tbody tr:hover {
   background-color: #f3f3f3;
 }
 
-.grades-table th,
-.grades-table td {
+.load-table th,
+.load-table td {
   border: 1px solid #ddd;
   padding: 0px;
   text-align: left;
 }
 
-.grades-table td {
+.load-table td {
   padding: 0px 8px;
 }
 
-.grades-table tr th div {
+.load-table tr th div {
   width: 85px;
   height: 32px;
   display: flex;
   align-items: center;
 }
 
-/* .grades-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-} */
+/* .load-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  } */

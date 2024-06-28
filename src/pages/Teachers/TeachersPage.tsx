@@ -83,7 +83,7 @@ const TeachersPage = () => {
         editingTeacherCategory={editingTeacherCategory}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
+      <Grid container rowSpacing={2.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
         {/* Категорії (відділення) */}
         <Grid item xs={12} md={10}>
           <Grid container>

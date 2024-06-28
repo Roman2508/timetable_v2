@@ -28,6 +28,7 @@ interface IAccordionItemsListProps {
   onDeleteItem?: (id: number) => void
   onChangeVisible?: (id: number) => void
   onSelectItem?: Dispatch<SetStateAction<any>>
+  getSelectedItemName?: Dispatch<SetStateAction<any>>
   onDeleteMainItem?: (id: number, itemsCount: number) => void
   setIsUpdateItemModalOpen?: Dispatch<SetStateAction<boolean>>
   setIsUpdateCategoryModalOpen?: Dispatch<SetStateAction<boolean>>
@@ -45,6 +46,7 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
   onEditMainItem,
   onChangeVisible,
   onDeleteMainItem,
+  getSelectedItemName,
   setIsUpdateItemModalOpen,
   setIsUpdateCategoryModalOpen,
 }) => {
@@ -59,8 +61,12 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
   return (
     <>
       {items.map((mainItem) => (
-        <Accordion key={mainItem.id} sx={{ boxShadow: 0, border: '' }} disableGutters>
-          <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={<DownOutlined />}>
+        <Accordion
+          key={mainItem.id}
+          sx={{ boxShadow: 0, border: '', '&:not(:first-of-type)': { borderTop: '1px solid #eaeaea' } }}
+          disableGutters
+        >
+          <AccordionSummary expandIcon={<DownOutlined />}>
             <Typography
               sx={{
                 flexGrow: 1,
@@ -123,9 +129,20 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                     key={el.id}
                     disablePadding
                     selected={selectedItemId === el.id}
-                    sx={{ '&:hover .MuiButtonBase-root': { display: 'block' } }}
+                    sx={{
+                      '&:hover .MuiButtonBase-root': { display: 'block' },
+                      '&:hover': { backgroundColor: '#f3f3f3' },
+                      '& div:hover': { backgroundColor: '#f3f3f3' },
+                      '&.MuiListItem-root.Mui-selected': { backgroundColor: '#ECF4FF ' },
+                      '&.MuiListItem-root.Mui-selected .MuiButtonBase-root:hover': {
+                        backgroundColor: '#ECF4FF',
+                      },
+                      '&.MuiListItem-root.Mui-selected .MuiListItemText-root:hover': {
+                        backgroundColor: '#ECF4FF',
+                      },
+                    }}
                   >
-                    <ListItemButton>
+                    <ListItemButton disableRipple sx={{ cursor: 'default' }}>
                       <ListItemText primary={el.name ? el.name : getLastnameAndInitials(el)} />
                     </ListItemButton>
 
@@ -165,6 +182,7 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                           onClick={(e) => {
                             e.stopPropagation()
                             onSelectItem(el.id)
+                            getSelectedItemName && getSelectedItemName(el?.name)
                           }}
                           sx={{ mr: '5px', display: 'none' }}
                         >

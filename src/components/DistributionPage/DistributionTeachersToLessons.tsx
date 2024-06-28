@@ -184,67 +184,6 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
             })}
         </form>
       </MainCard>
-
-      <MainCard sx={{ mt: 2 }}>
-        <Typography
-          variant="button"
-          color={'red'}
-          sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase' }}
-        >
-          Кількість студентів
-        </Typography>
-
-        <form autoComplete="off">
-          {!selectedLesson && <EmptyCard />}
-          {selectedLesson &&
-            sortLessonsByLessonType(selectedLesson).map((lesson) => {
-              const stream = lesson.stream ? `${lesson.stream.name} ` : ''
-              const subgroup = lesson.subgroupNumber ? `підгр. ${lesson.subgroupNumber}` : ''
-              const specialization = lesson.specialization ? `${lesson.specialization} спец. ` : ''
-              const remark = (stream || specialization || subgroup) && `(${stream}${specialization}${subgroup})`
-
-              return (
-                <Stack
-                  spacing={1}
-                  key={lesson.id}
-                  sx={{ mt: 1, display: 'flex', flexDirection: 'row', alignItems: 'center' }}
-                >
-                  <Tooltip title={`${lesson.typeRu} ${remark}`}>
-                    <InputLabel htmlFor="name" sx={{ flexGrow: 1, mt: '8px !important' }}>
-                      {lesson.typeRu} {remark}
-                    </InputLabel>
-                  </Tooltip>
-
-                  <TextField
-                    fullWidth
-                    id="name"
-                    name="name"
-                    size="small"
-                    type="number"
-                    placeholder=""
-                    defaultValue={lesson.students}
-                    // value={lesson.students}
-                    sx={{ maxWidth: '140px', mr: '8px !important', '& .MuiInputBase-root': { p: 0 } }}
-                    onChange={(e) =>
-                      setChangedStudentsCount({
-                        students: Number(e.target.value),
-                        typeRu: lesson.typeRu,
-                        remark,
-                      })
-                    }
-                  />
-
-                  <IconButton
-                    disabled={changedStudentsCount.typeRu !== lesson.typeRu || changedStudentsCount.remark !== remark}
-                    onClick={() => onChangeStudentsCount(lesson)}
-                  >
-                    <CheckOutlined />
-                  </IconButton>
-                </Stack>
-              )
-            })}
-        </form>
-      </MainCard>
     </Grid>
   )
 }

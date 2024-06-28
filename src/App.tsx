@@ -22,6 +22,7 @@ import AuthLogin from './pages/authentication/auth-forms/AuthLogin'
 // import { StudentsDivide } from './pages/StudentsDivide/StudentsDivide'
 // import { DistributionPage } from './pages/Distribution/DistributionPage'
 import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
+// import TeachingLessonsControl from './pages/TeachingLessonsControl/TeachingLessonsControl'
 // import { StudentsAccounts } from './pages/StudentsAccounts/StudentsAccounts'
 
 // render - dashboard
@@ -47,6 +48,8 @@ const StreamsPage = Loadable(lazy(() => import('./pages/Streams/StreamsPage')))
 const SettingsPage = Loadable(lazy(() => import('./pages/Settings/SettingsPage')))
 const StudentsAccounts = Loadable(lazy(() => import('./pages/StudentsAccounts/StudentsAccounts')))
 const StudentsDivide = Loadable(lazy(() => import('./pages/StudentsDivide/StudentsDivide')))
+const TeachingLessonsControl = Loadable(lazy(() => import('./pages/TeachingLessonsControl/TeachingLessonsControl')))
+const LoadPage = Loadable(lazy(() => import('./pages/Load/LoadPage')))
 
 const App = () => {
   return (
@@ -61,8 +64,12 @@ const App = () => {
 
             <Route element={<PlansPage />} path="/plans" />
             <Route element={<FullPlanPage />} path="/plans/:id" />
-            <Route element={<AuditoriesPage />} path="/auditories" />
             <Route element={<TeachersPage />} path="/teachers" />
+            <Route element={<AuditoriesPage />} path="/auditories" />
+
+            <Route element={<LoadPage />} path="/load" />
+            <Route element={<TeachingLessonsControl />} path="/controls" />
+
             <Route element={<DistributionPage />} path="/distribution" />
             <Route element={<StreamsPage />} path="/streams" />
             <Route element={<TimetablePage />} path="/timetable" />
@@ -120,9 +127,19 @@ export default App
 // 16. Треба дозволити об'єднувати в потік групи в яких різні назви дисциплін, при цьому години повинні бути однаковими
 // 17. Якщо в викладача вже був виставлений розклад і після цього прикріплюється google calendar id треба знайти
 //     всі виставлені уроки і додати їх до календаря
+// 18. Треба зробити можливість ставити в розклад (поза планом, тобто не йде в навантаження) практики або інші види діяльності
 
 // ========================================================
 // ================== Електронний журнал ==================
 // ========================================================
 // 1. Треба добавити можливість ділити уроки на модулі, окремо додати колонку для модульного контролю
 // 2. Треба рахувати середній бал по модулям і по всій дисципліні (окремо по студентам)
+
+// ========================================================
+// ========================= all ==========================
+// ========================================================
+// 1. Можливо треба додати можливість друку списку студентів групи
+// 2. Можливо треба додати рейтинг здобувачів, який буде формуватись по електронному журналу
+// 3. Треба зробити друк відомостей
+// 4. Індивідуальні плани роботи викладача && Звіт викладача
+// 5. При створенні викладачів треба додавати логін та пароль і перевіряти унікалькість логіна

@@ -1,16 +1,14 @@
 import React from 'react'
 import './grade-book.css'
-import { useSelector } from 'react-redux'
-
-import { menuSelector } from '../../store/menu/menuSlice'
 import HIcon from '../../assets/images/icons/letter-h.svg'
 import { Checkbox, Paper, TextField } from '@mui/material'
 
 interface IGradeBookTablePops {
   students: any[]
+  drawerOpen: boolean
 }
 
-const lessonsCount = 16
+const lessonsCount = 26
 
 const studentGradeBook = {
   id: 1,
@@ -49,19 +47,17 @@ const cellInitialState = {
   rating: 0,
 }
 
-const GradeBookTable: React.FC<IGradeBookTablePops> = ({ students }) => {
-  const { drawerOpen } = useSelector(menuSelector)
-
+const GradeBookTable: React.FC<IGradeBookTablePops> = ({ students, drawerOpen }) => {
   const [cellData, setCellData] = React.useState(cellInitialState)
   const [hoveredCell, setHoveredSell] = React.useState({ col: 0, row: 0 })
 
   return (
     <Paper>
-      <div className="table-container" style={drawerOpen ? { width: 'calc(100% - 260px)' } : { width: '100%' }}>
+      <div className="table-container">
         <table className="grades-table">
           <thead>
             <tr>
-              <th>Student Name</th>
+              <th>ПІБ студента</th>
               {Array(lessonsCount)
                 .fill(null)
                 .map((el, index) => (
@@ -71,7 +67,7 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ students }) => {
                   </th>
                 ))}
 
-              <th style={{ padding: '0 8px' }}>Average</th>
+              <th style={{ padding: '0 8px' }}>Семестрова</th>
             </tr>
           </thead>
           <tbody>

@@ -14,6 +14,7 @@ interface ISelectGroupModalProps {
 
 const SelectGroupModal: React.FC<ISelectGroupModalProps> = ({ open, setOpen, groupCategories, setSelectedGroupId }) => {
   const [groupId, setGroupId] = React.useState<number | null>(null)
+  const [groupName, setGroupName] = React.useState<string | null>(null)
 
   const handleClose = () => {
     setOpen(false)
@@ -38,7 +39,9 @@ const SelectGroupModal: React.FC<ISelectGroupModalProps> = ({ open, setOpen, gro
       sx={{ '& .MuiPaper-root': { width: '100%' } }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <DialogTitle id="alert-dialog-title">{'Відкрити навантаження групи:'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{`Відкрити навантаження групи: ${
+          groupName ? groupName : ''
+        }`}</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
           <CloseOutlined />
@@ -49,7 +52,11 @@ const SelectGroupModal: React.FC<ISelectGroupModalProps> = ({ open, setOpen, gro
         <AccordionItemsList
           selectedItemId={groupId}
           items={groupCategories ? groupCategories : []}
-          onSelectItem={(groupId) => setGroupId(groupId)}
+          onSelectItem={(groupId) => {
+            setGroupName(null)
+            setGroupId(groupId)
+          }}
+          getSelectedItemName={(name) => setGroupName(name)}
         />
       </DialogContent>
 
