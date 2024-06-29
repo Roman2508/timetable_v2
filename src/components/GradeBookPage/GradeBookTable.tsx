@@ -1,7 +1,7 @@
-import React from 'react'
-import './grade-book.css'
-import HIcon from '../../assets/images/icons/letter-h.svg'
-import { Checkbox, Paper, TextField } from '@mui/material'
+import React from "react"
+import "./grade-book.css"
+import HIcon from "../../assets/images/icons/letter-h.svg"
+import { Checkbox, Paper, TextField } from "@mui/material"
 
 interface IGradeBookTablePops {
   students: any[]
@@ -15,10 +15,10 @@ const studentGradeBook = {
   group: { id: 1 },
   teacher: { id: 1 },
   students: [
-    { id: 1, name: 'test 1' },
-    { id: 2, name: 'test 2' },
+    { id: 1, name: "test 1" },
+    { id: 2, name: "test 2" },
   ],
-  summary: [{ afterLesson: 4, type: 'mudule-rating', value: 8.7 }],
+  summary: [{ afterLesson: 4, type: "module-rating", value: 8.7 }],
   studentsRating: [
     { id: 1, student: { id: 7 }, lessonNumber: 11, isAbsence: false, rating: 6 },
     { id: 2, student: { id: 7 }, lessonNumber: 12, isAbsence: false, rating: 11 },
@@ -27,15 +27,41 @@ const studentGradeBook = {
 
 const studentRating = {
   id: 1,
-  name: 'Інформатика',
+  name: "Інформатика",
   student: { id: 7 },
-  typeRu: 'ЛК',
+  typeRu: "ЛК",
   subgroupNumber: 1,
   specialization: null,
   lessonNumber: 11,
   isAbsence: false,
   rating: null,
-  lessonDate: '06-11-2024',
+  lessonDate: "06-11-2024",
+  year: 2024,
+  semester: 2,
+}
+
+const studRate = {
+  id: 1,
+  name: "Інформатика",
+  student: { id: 7, name: "abc" },
+  group: { id: 11, name: "abc" },
+  typeRu: "ЛК",
+  subgroupNumber: 1,
+  specialization: null,
+  rating: [
+    {
+      lessonNumber: 11,
+      isAbsence: false,
+      rating: null,
+      lessonDate: "06-11-2024",
+    },
+    {
+      lessonNumber: 12,
+      isAbsence: false,
+      rating: 10,
+      lessonDate: "18-11-2024",
+    },
+  ],
   year: 2024,
   semester: 2,
 }
@@ -67,7 +93,7 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ students, drawerOpen })
                   </th>
                 ))}
 
-              <th style={{ padding: '0 8px' }}>Семестрова</th>
+              <th style={{ padding: "0 8px" }}>Семестрова</th>
             </tr>
           </thead>
           <tbody>
@@ -94,11 +120,11 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ students, drawerOpen })
                                 size="medium"
                                 sx={{
                                   ml: 1,
-                                  color: 'gray',
-                                  padding: '6px',
-                                  '& svg path': { opacity: 0 },
-                                  '& .MuiSvgIcon-root': { fontSize: 20, width: '18px', height: '18px' },
-                                  '& span': { padding: '0 !important', margin: '0 !important' },
+                                  color: "gray",
+                                  padding: "6px",
+                                  "& svg path": { opacity: 0 },
+                                  "& .MuiSvgIcon-root": { fontSize: 20, width: "18px", height: "18px" },
+                                  "& span": { padding: "0 !important", margin: "0 !important" },
                                 }}
                                 value={cellData.isAbsence}
                                 checked={cellData.isAbsence}
@@ -108,11 +134,11 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ students, drawerOpen })
                               <TextField
                                 variant="standard"
                                 sx={{
-                                  width: '50%',
-                                  textAlign: 'center',
-                                  '& input': { p: '6px 0 6px 6px', width: '50%', ml: 2 },
-                                  '& :after': { height: '0 !important', border: '0 !important' },
-                                  '& :before': { height: '0 !important', border: '0 !important' },
+                                  width: "50%",
+                                  textAlign: "center",
+                                  "& input": { p: "6px 0 6px 6px", width: "50%", ml: 2 },
+                                  "& :after": { height: "0 !important", border: "0 !important" },
+                                  "& :before": { height: "0 !important", border: "0 !important" },
                                 }}
                                 value={cellData.rating}
                                 type="number"
@@ -125,10 +151,10 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ students, drawerOpen })
                                 alt="mySvgImage"
                                 width={18}
                                 height={18}
-                                style={{ margin: '0 10px 0 13px' }}
+                                style={{ margin: "0 10px 0 13px" }}
                               />
 
-                              <span style={{ fontWeight: '400' }}>12</span>
+                              <span style={{ fontWeight: "400" }}>12</span>
                             </div>
                           )}
                         </div>
@@ -136,7 +162,7 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ students, drawerOpen })
                     )
                   })}
 
-                <td style={{ textAlign: 'center' }}>8.7</td>
+                <td style={{ textAlign: "center" }}>8.7</td>
               </tr>
             ))}
           </tbody>
