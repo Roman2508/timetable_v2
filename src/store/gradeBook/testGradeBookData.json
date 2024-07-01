@@ -14,15 +14,15 @@
     "summary": [
       {
         "afterLesson": 5,
-        "type": "MODULE_RATING"
+        "type": "MODULE_AVERAGE"
       },
       {
         "afterLesson": 10,
-        "type": "MODULE_RATING"
+        "type": "MODULE_AVERAGE"
       },
       {
         "afterLesson": 15,
-        "type": "MODULE_RATING"
+        "type": "MODULE_SUM"
       }
     ],
     "grades": [

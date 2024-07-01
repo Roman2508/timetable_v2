@@ -4,13 +4,12 @@ import { ColumnWidthOutlined, FilterOutlined } from '@ant-design/icons'
 import { Grid, Typography, Tooltip, IconButton, Divider } from '@mui/material'
 
 import { useAppDispatch } from '../../store/store'
-import { menuSelector } from '../../store/menu/menuSlice'
 import { groupsSelector } from '../../store/groups/groupsSlice'
+import { gradeBookSelector } from '../../store/gradeBook/gradeBookSlice'
 import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
 import GradeBookTable from '../../components/GradeBookPage/GradeBookTable'
 import AddSummaryModal from '../../components/GradeBookPage/AddSummaryModal'
 import GradeBookFilter from '../../components/GradeBookPage/GradeBookFilterModal'
-import { gradeBookSelector } from '../../store/gradeBook/gradeBookSlice'
 
 const students = [
   {

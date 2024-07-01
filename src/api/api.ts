@@ -1,13 +1,21 @@
 import axios from "axios"
 
 import {
+  GetGradesPayloadType,
   CreatePlanPayloadType,
+  GetGradesResponceType,
   UpdateGroupPayloadType,
+  UpdateGradePayloadType,
+  AddSummaryResponceType,
+  GetGradeBookPayloadType,
   ChangeStudentsCountType,
   CreateSubjectPayloadType,
   CreateTeacherPayloadType,
   UpdateTeacherPayloadType,
   AttachTeacherPayloadType,
+  UpdateGradesResponceType,
+  CreateStudentsPayloadType,
+  UpdateStudentsPayloadType,
   CreateAuditoryPayloadType,
   UpdateAuditoryPayloadType,
   GetGroupOverlayPayloadType,
@@ -23,6 +31,7 @@ import {
   GetTeachersOverlayPayloadType,
   GetScheduleLessonsPayloadType,
   GetAuditoryOverlayPayloadType,
+  AddGradeBookSummaryPayloadType,
   AttachSpecializationPayloadType,
   CreateSpecializationPayloadType,
   UpdateSpecializationPayloadType,
@@ -36,17 +45,17 @@ import {
   DeleteLessonFromStreamPayloadType,
   DeleteGroupFromStreamResponseType,
   FindLessonsForSchedulePayloadType,
-  CreateStudentsPayloadType,
-  UpdateStudentsPayloadType,
+  DeleteGradeBookSummaryPayloadType,
 } from "./apiTypes"
 import { StreamsType } from "../store/streams/streamsTypes"
+import { StudentType } from "../store/students/studentsTypes"
 import { SettingsType } from "../store/settings/settingsTypes"
+import { GradeBookType } from "../store/gradeBook/gradeBookTypes"
 import { ScheduleLessonType } from "../store/scheduleLessons/scheduleLessonsTypes"
 import { TeachersCategoryType, TeachersType } from "../store/teachers/teachersTypes"
 import { PlanType, PlansCategoriesType, PlansType } from "../store/plans/plansTypes"
 import { GroupCategoriesType, GroupLoadType, GroupsType } from "../store/groups/groupsTypes"
 import { AuditoriesTypes, AuditoryCategoriesTypes } from "../store/auditories/auditoriesTypes"
-import { StudentType } from "../store/students/studentsTypes"
 
 const instanse = axios.create({
   baseURL: "http://localhost:7777/",
@@ -377,5 +386,32 @@ export const studentsAPI = {
   },
   delete(id: number) {
     return instanse.delete<number>(`/students/${id}`)
+  },
+}
+
+export const gradeBookAPI = {
+  get(payload: GetGradeBookPayloadType) {
+    const { group, lesson, semester, type, year } = payload
+    return instanse.get<GradeBookType>(`/grade-book/${year}/${semester}/${group}/${lesson}/${type}`)
+  },
+
+  addSummary(payload: AddGradeBookSummaryPayloadType) {
+    const { id, ...data } = payload
+    return instanse.patch<AddSummaryResponceType>(`/grade-book/summary/add/${id}`, data)
+  },
+
+  deleteSummary(payload: DeleteGradeBookSummaryPayloadType) {
+    const { id, ...data } = payload
+    return instanse.patch<AddSummaryResponceType>(`/grade-book/summary/delete/${id}`, data)
+  },
+
+  getGrades(payload: GetGradesPayloadType) {
+    const { studentId, semester, year } = payload
+    return instanse.get<GetGradesResponceType>(`/grades/${year}/${semester}/${studentId}`)
+  },
+
+  updateGrade(payload: UpdateGradePayloadType) {
+    const { id, ...data } = payload
+    return instanse.patch<UpdateGradesResponceType>(`/grades/${id}`, data)
   },
 }

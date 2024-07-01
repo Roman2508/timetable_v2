@@ -1,5 +1,7 @@
-import { GroupsType } from '../store/groups/groupsTypes'
-import { TeachersType } from '../store/teachers/teachersTypes'
+import { GradeBookSummaryTypes, GradeType } from "../store/gradeBook/gradeBookTypes"
+import { GroupsType } from "../store/groups/groupsTypes"
+import { LessonsTypeRu } from "../store/scheduleLessons/scheduleLessonsTypes"
+import { TeachersType } from "../store/teachers/teachersTypes"
 
 /* Global */
 
@@ -43,11 +45,11 @@ export type UpdateTeacherCategoryPayloadType = {
 
 export type CreateTeacherPayloadType = {
   category: number
-} & Omit<TeachersType, 'id' | 'category' | 'calendarId'>
+} & Omit<TeachersType, "id" | "category" | "calendarId">
 
 export type UpdateTeacherPayloadType = {
   category: number
-} & Omit<TeachersType, 'category' | 'calendarId'>
+} & Omit<TeachersType, "category" | "calendarId">
 
 /* Plans */
 
@@ -60,7 +62,7 @@ export type CreatePlanPayloadType = {
 
 export type UpdateGroupPayloadType = Pick<
   GroupsType,
-  'id' | 'name' | 'courseNumber' | 'yearOfAdmission' | 'formOfEducation'
+  "id" | "name" | "courseNumber" | "yearOfAdmission" | "formOfEducation"
 > & { educationPlan: number; category: number }
 
 /* Groups-load */
@@ -68,7 +70,7 @@ export type UpdateGroupPayloadType = Pick<
 export type FindLessonsForSchedulePayloadType = {
   semester: number
   itemId: number
-  scheduleType: 'group' | 'teacher' | 'auditory'
+  scheduleType: "group" | "teacher" | "auditory"
   // scheduleType: 'group' | 'teacher'
 }
 
@@ -140,7 +142,7 @@ export type DeleteSpecializationPayloadType = CreateSpecializationPayloadType
 export type CreateSubgroupsPayloadType = {
   planSubjectId: number
   groupId: number
-  typeEn: 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams'
+  typeEn: "lectures" | "practical" | "laboratory" | "seminars" | "exams"
   subgroupsCount: number
 }
 
@@ -179,7 +181,7 @@ export type AttachTeacherPayloadType = {
 
 export type GetScheduleLessonsPayloadType = {
   semester: number
-  type: 'group' | 'teacher' | 'auditory'
+  type: "group" | "teacher" | "auditory"
   id: number
 }
 
@@ -192,7 +194,7 @@ export type CreateScheduleLessonsPayloadType = {
   name: string
   date: string
   subgroupNumber: number | null
-  typeRu: 'ЛК' | 'ПЗ' | 'ЛАБ' | 'СЕМ' | 'ЕКЗ'
+  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ"
   lessonNumber: number
   isRemote: boolean
   semester: number
@@ -241,7 +243,6 @@ export type GetGroupOverlayPayloadType = {
 }
 
 /* students */
-
 export type CreateStudentsPayloadType = {
   name: string
   login: string
@@ -250,8 +251,59 @@ export type CreateStudentsPayloadType = {
   group: number | string
 }
 
-export type UpdateStudentsPayloadType = Omit<CreateStudentsPayloadType, 'group'> & {
-  status: 'Навчається' | 'Відраховано' | 'Академічна відпустка'
+export type UpdateStudentsPayloadType = Omit<CreateStudentsPayloadType, "group"> & {
+  status: "Навчається" | "Відраховано" | "Академічна відпустка"
   group: number
   id: number
+}
+
+/* grade book */
+export type GetGradeBookPayloadType = {
+  year: number
+  semester: number
+  group: number
+  lesson: number
+  type: LessonsTypeRu
+}
+
+export type AddGradeBookSummaryPayloadType = {
+  id: number
+  afterLesson: number
+  type: GradeBookSummaryTypes
+}
+
+export type DeleteGradeBookSummaryPayloadType = AddGradeBookSummaryPayloadType
+
+export type GetGradesPayloadType = {
+  studentId: number
+  year: number
+  semester: number
+}
+
+export type UpdateGradePayloadType = {
+  id: number
+  studentId: number
+  gradeBookId: number
+}
+
+export type DeleteGradePayloadType = {
+  lessonId: number
+  studentId: number
+}
+
+export type AddSummaryResponceType = {
+  id: number
+  summary: { afterLesson: number; type: GradeBookSummaryTypes }[]
+}
+
+export type GetGradesResponceType = {
+  id: number
+  grades: GradeType[]
+  student: { id: number; name: string }
+  gradeBook: { id: number }
+}
+
+export type UpdateGradesResponceType = {
+  id: number
+  grades: GradeType
 }
