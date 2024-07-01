@@ -4,6 +4,14 @@ import { StreamsType } from '../streams/streamsTypes'
 import { TeachersType } from '../teachers/teachersTypes'
 import { AuditoriesTypes } from '../auditories/auditoriesTypes'
 
+export enum LessonsTypeRu {
+  LECTURES = 'ЛК',
+  PRACTICAL = 'ПЗ',
+  LABORATORY = 'ЛАБ',
+  SEMINARS = 'СЕМ',
+  EXAMS = 'ЕКЗ',
+}
+
 export type ScheduleLessonInitialStateType = {
   // Виставлені ел. розкладу
   scheduleLessons: ScheduleLessonType[] | null

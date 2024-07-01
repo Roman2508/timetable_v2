@@ -11,6 +11,7 @@ import teachersSlice from './teachers/teachersSlice'
 import settingsSlice from './settings/settingsSlice'
 import studentsSlice from './students/studentsSlice'
 import appStatusSlice from './appStatus/appStatusSlice'
+import gradeBookSlice from './gradeBook/gradeBookSlice'
 import auditoriesSlise from './auditories/auditoriesSlise'
 import scheduleLessonsSlice from './scheduleLessons/scheduleLessonsSlice'
 
@@ -33,7 +34,6 @@ const groupsPersistConfig = {
 }
 
 const rootReducer = combineReducers({
-  menu: persistReducer(menuPersistConfig, menuSlice),
   plans: plansSlice,
   groups: groupsSlice,
   streams: streamsSlice,
@@ -41,7 +41,9 @@ const rootReducer = combineReducers({
   teachers: teachersSlice,
   settings: settingsSlice,
   appStatus: appStatusSlice,
+  gradeBook: gradeBookSlice,
   auditories: auditoriesSlise,
+  menu: persistReducer(menuPersistConfig, menuSlice),
   scheduleLessons: persistReducer(groupsPersistConfig, scheduleLessonsSlice),
 })
 // export const persistor = persistReducer(rootPersistConfig, rootReducer)

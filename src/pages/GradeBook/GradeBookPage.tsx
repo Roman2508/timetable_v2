@@ -10,6 +10,7 @@ import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
 import GradeBookTable from '../../components/GradeBookPage/GradeBookTable'
 import AddSummaryModal from '../../components/GradeBookPage/AddSummaryModal'
 import GradeBookFilter from '../../components/GradeBookPage/GradeBookFilterModal'
+import { gradeBookSelector } from '../../store/gradeBook/gradeBookSlice'
 
 const students = [
   {
@@ -137,7 +138,7 @@ const students = [
 const GradeBookPage = () => {
   const dispatch = useAppDispatch()
 
-  const { drawerOpen } = useSelector(menuSelector)
+  const { gradeBook } = useSelector(gradeBookSelector)
 
   const [isOpenFilterModal, setIsOpenFilterModal] = React.useState(false)
   const [isOpenSummaryModal, setIsOpenSummaryModal] = React.useState(false)
@@ -185,7 +186,7 @@ const GradeBookPage = () => {
         </Grid>
       </Grid>
 
-      <GradeBookTable students={students} drawerOpen={drawerOpen} />
+      <GradeBookTable students={students} gradeBook={gradeBook} />
     </>
   )
 }
