@@ -12,7 +12,7 @@ const icons = {
 // ==============================|| MENU ITEMS - GRADE PAGES ||============================== //
 
 const grade = {
-  id: 'students',
+  id: 'grade-book',
   title: 'Журнал',
   type: 'group',
   children: [

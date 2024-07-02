@@ -8,6 +8,7 @@ import {
   GetTeachersOverlayPayloadType,
   GetAuditoryOverlayPayloadType,
   GetScheduleLessonsPayloadType,
+  FindLessonStudentsPayloadType,
   UpdateScheduleLessonsPayloadType,
   CreateScheduleLessonsPayloadType,
   FindLessonsForSchedulePayloadType,
@@ -321,6 +322,31 @@ export const findLessonsForSchedule = createAsyncThunk(
     try {
       const { data } = await groupLoadLessonsAPI.findLessonsForSchedule(payload)
       thunkAPI.dispatch(setAppAlert({ message: 'Розклад завантажено', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)
+
+/* findLessonStudents */
+export const findLessonStudents = createAsyncThunk(
+  'group/findLessonStudents',
+  async (payload: FindLessonStudentsPayloadType, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+    try {
+      const { data } = await groupLoadLessonsAPI.findLessonStudents(payload)
+      thunkAPI.dispatch(setAppAlert({ message: 'Завантажено', status: 'success' }))
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {

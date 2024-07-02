@@ -9,14 +9,19 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  OutlinedInput,
-  FormHelperText,
 } from '@mui/material'
+import { useSelector } from 'react-redux'
 import { CloseOutlined } from '@ant-design/icons'
 import React, { Dispatch, SetStateAction } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
-import { customDayjs } from '../Calendar/Calendar'
+import { useAppDispatch } from '../../store/store'
+import { groupsListSelector } from '../../store/groups/groupsSlice'
+import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
+import { findLessonsForSchedule } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import { lessonsForGradeBookSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
+import { getGradeBook } from '../../store/gradeBook/gradeBookAsyncActions'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
 
 interface IGradeBookFilterModalProps {
   open: boolean
@@ -24,24 +29,18 @@ interface IGradeBookFilterModalProps {
 }
 
 interface IGradeBookFilterFields {
-  year: number
   semester: number
   group: number
-  lessonName: string
+  lesson: string
 }
 
 const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setOpen }) => {
-  const getAvailableYears = (): number[] => {
-    const years: number[] = []
-    const currentYear = customDayjs().year()
-    Array(5)
-      .fill(null)
-      .map((_, index) => {
-        const year = currentYear - index
-        years.push(year)
-      })
-    return years.reverse()
-  }
+  const dispatch = useAppDispatch()
+
+  const { groups } = useSelector(groupsListSelector)
+  const { lessons } = useSelector(lessonsForGradeBookSelector)
+
+  const [selectedLessonType, setSelectedLessonType] = React.useState<null | string>(null)
 
   const handleClose = () => {
     setOpen(false)
@@ -49,6 +48,7 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
 
   const {
     reset,
+    watch,
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -56,10 +56,36 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
 
   const onSubmit: SubmitHandler<IGradeBookFilterFields> = async (data) => {
     try {
+      if (!selectedLessonType) return alert('Виберіть дисципліну')
+      dispatch(
+        getGradeBook({
+          group: Number(data.group),
+          lesson: Number(data.lesson),
+          semester: Number(data.lesson),
+          // @ts-ignore
+          type: selectedLessonType,
+        })
+      )
     } catch (error) {
       console.log(error)
     }
   }
+
+  React.useEffect(() => {
+    if (groups.length) return
+    dispatch(getGroupCategories(false))
+  }, [])
+
+  React.useEffect(() => {
+    if (!watch('semester') || !watch('group')) return
+    dispatch(findLessonsForSchedule({ semester: watch('semester'), itemId: watch('group'), scheduleType: 'group' }))
+  }, [watch('group'), watch('semester')])
+
+  React.useEffect(() => {
+    if (!watch('lesson')) return
+    const findedLesson = lessons.find((el) => el.id === Number(watch('lesson')))
+    if (findedLesson) setSelectedLessonType(findedLesson.typeRu)
+  }, [watch('lesson')])
 
   return (
     <Dialog
@@ -77,34 +103,8 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
         </IconButton>
       </div>
 
-      <DialogContent sx={{ padding: '0 24px 20px', maxWidth: '295px' }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Controller
-            name="year"
-            control={control}
-            rules={{ required: 'Виберіть рік' }}
-            render={({ field }) => {
-              return (
-                <Stack spacing={1} sx={{ mt: 2 }}>
-                  <InputLabel htmlFor="year">Рік*</InputLabel>
-                  <TextField
-                    select
-                    fullWidth
-                    {...field}
-                    id="year"
-                    sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
-                  >
-                    {getAvailableYears().map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Stack>
-              )
-            }}
-          />
-
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent sx={{ padding: '0 24px 20px', maxWidth: '295px' }}>
           <Controller
             name="semester"
             control={control}
@@ -120,7 +120,7 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
                     id="semestr"
                     sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
                   >
-                    {[1, 2].map((option) => (
+                    {[1, 2, 3, 4, 5, 6].map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
                       </MenuItem>
@@ -146,9 +146,9 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
                     id="group"
                     sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
                   >
-                    {['LD-23-1', 'PH-22-1', 'PH-23-1', 'PH-24-1'].map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
+                    {groups.map((option) => (
+                      <MenuItem key={option.id} value={option.id}>
+                        {option.name}
                       </MenuItem>
                     ))}
                   </TextField>
@@ -158,44 +158,42 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
           />
 
           <Controller
-            name="lessonName"
+            name="lesson"
             control={control}
             rules={{ required: 'Виберіть дисципліну' }}
             render={({ field }) => {
               return (
                 <Stack spacing={1} sx={{ mt: 2 }}>
-                  <InputLabel htmlFor="lessonName">Дисципліна*</InputLabel>
+                  <InputLabel htmlFor="lesson">Дисципліна*</InputLabel>
                   <TextField
                     select
                     fullWidth
                     {...field}
-                    id="lessonName"
+                    id="lesson"
                     sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
                   >
-                    {[
-                      'ПЗ / Інформатика (1 підгрупа)',
-                      'ПЗ / Інформатика (2 підгрупа)',
-                      'ЛК / Інформаційні технології у фармації (Вся група)',
-                      'ПЗ / Інформаційні технології у фармації (1 підгрупа)',
-                      'ПЗ / Інформаційні технології у фармації (2 підгрупа)',
-                    ].map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
+                    {lessons.map((option) => {
+                      const unitInfo = option.subgroupNumber ? `(${option.subgroupNumber} підгрупа)` : '(Вся група)'
+
+                      return (
+                        <MenuItem key={option.id} value={option.id}>
+                          {`${option.typeRu} / ${option.name} ${unitInfo}`}
+                        </MenuItem>
+                      )
+                    })}
                   </TextField>
                 </Stack>
               )
             }}
           />
-        </form>
-      </DialogContent>
+        </DialogContent>
 
-      <DialogActions>
-        <Button variant="contained" disabled={isSubmitting}>
-          Вибрати
-        </Button>
-      </DialogActions>
+        <DialogActions>
+          <Button type="submit" variant="contained" disabled={isSubmitting || !selectedLessonType}>
+            {isSubmitting ? <LoadingSpinner /> : 'Вибрати'}
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   )
 }

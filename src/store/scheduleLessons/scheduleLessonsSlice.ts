@@ -13,6 +13,7 @@ import {
   updateScheduleLesson,
   findLessonsForSchedule,
   getTeacherOverlay,
+  findLessonStudents,
 } from './scheduleLessonsAsyncActions'
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
@@ -164,6 +165,11 @@ const scheduleLessonsSlice = createSlice({
     builder.addCase(findLessonsForSchedule.rejected, (state) => {
       state.groupLoad = []
     })
+
+    /* findLessonStudents */
+    builder.addCase(findLessonStudents.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
+      state.groupLoad = action.payload
+    })
   },
 })
 
@@ -176,6 +182,30 @@ export const lastSelectedDataSelector = createSelector([scheduleLessonsSelector]
   lastSelectedScheduleType: scheduleLessons.lastSelectedScheduleType,
   lastSelectedStructuralUnitId: scheduleLessons.lastSelectedStructuralUnitId,
 }))
+
+export const lessonsForGradeBookSelector = createSelector(
+  (state: RootState) => state.scheduleLessons.groupLoad,
+  (groupLoad): { lessons: GroupLoadType[] } => {
+    if (!groupLoad) return { lessons: [] }
+
+    const lessons = groupLoad.filter(
+      (el) => el.typeRu === 'ЛК' || el.typeRu === 'ПЗ' || el.typeRu === 'ЛАБ' || el.typeRu === 'СЕМ'
+    )
+
+    const lessonsCopy = JSON.parse(JSON.stringify(lessons))
+
+    const typeOrder = ['ЛК', 'ПЗ', 'ЛАБ', 'СЕМ']
+
+    lessonsCopy.sort((a: GroupLoadType, b: GroupLoadType) => {
+      if (a.name < b.name) return -1
+      if (a.name > b.name) return 1
+
+      return typeOrder.indexOf(a.typeRu) - typeOrder.indexOf(b.typeRu)
+    })
+
+    return { lessons: lessonsCopy }
+  }
+)
 
 export const {
   setLoadingStatus,

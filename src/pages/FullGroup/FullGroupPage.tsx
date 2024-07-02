@@ -338,11 +338,10 @@ const FullGroupPage = () => {
                 <Controller
                   name="students"
                   control={control}
-                  rules={{ required: 'Вкажіть кількість студентів в групі' }}
                   render={({ field }) => {
                     return (
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="students">Кількість студентів*</InputLabel>
+                        <InputLabel htmlFor="students">Кількість студентів</InputLabel>
                         <OutlinedInput
                           readOnly
                           disabled
@@ -351,7 +350,6 @@ const FullGroupPage = () => {
                           type="number"
                           id="students"
                           name="students"
-                          placeholder="30"
                           error={Boolean(errors.students)}
                         />
                         {errors.students && (

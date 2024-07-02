@@ -18,7 +18,7 @@ import scheduleLessonsSlice from './scheduleLessons/scheduleLessonsSlice'
 const menuPersistConfig = {
   key: 'menu',
   storage: storage,
-  // whitelist: ['menu'],
+  whitelist: ['drawerOpen'],
 }
 
 const groupsPersistConfig = {

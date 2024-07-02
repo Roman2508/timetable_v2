@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 
 import {
   getGroup,
@@ -23,7 +23,7 @@ import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
 import { TeachersType } from '../teachers/teachersTypes'
 import { AttachSpecializationPayloadType, ChangeStudentsCountType } from '../../api/apiTypes'
-import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsType } from './groupsTypes'
+import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsShortType, GroupsType } from './groupsTypes'
 
 const groupsInitialState: GroupsInitialState = {
   groupCategories: null,
@@ -277,6 +277,19 @@ const groupsSlice = createSlice({
 })
 
 export const groupsSelector = (state: RootState) => state.groups
+
+export const groupsListSelector = createSelector(
+  (state: RootState) => state.groups.groupCategories,
+  (groupCategories) => {
+    const groups: GroupsShortType[] = []
+
+    groupCategories?.forEach((category) => {
+      category.groups.forEach((group) => groups.push(group))
+    })
+
+    return { groups }
+  }
+)
 
 export const { setLoadingStatus, clearGroupData } = groupsSlice.actions
 

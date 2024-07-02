@@ -24,5 +24,5 @@ export const groupLessonsByFields = (lessons: GroupLoadType[], groupBy: IGroupBy
 
     groupedLessons[key].push(subject)
   })
-  return Object.values(groupedLessons)
+  return Object.values(groupedLessons) || []
 }

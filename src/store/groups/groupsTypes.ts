@@ -1,4 +1,5 @@
 import { LoadingStatusTypes } from '../appTypes'
+import { StudentType } from '../students/studentsTypes'
 import { TeachersType } from '../teachers/teachersTypes'
 
 export type GroupsInitialState = {
@@ -17,7 +18,7 @@ export type GroupsType = {
   id: number
   name: string
   isHide: boolean
-  students: { id: number }[]
+  students: { id: number; name: string; status: 'Навчається' | 'Відраховано' | 'Академічна відпустка' }[]
   calendarId: string
   courseNumber: number
   yearOfAdmission: number
@@ -58,7 +59,9 @@ export type GroupLoadType = {
   typeEn: 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams' | 'examsConsulation' | 'metodologicalGuidance'
   hours: number
   subgroupNumber: number
-  students: number
+
+  students: StudentType[]
+  // students: number
   group: { id: number; name: string }
   planSubjectId: { id: number }
   plan: { id: number }
