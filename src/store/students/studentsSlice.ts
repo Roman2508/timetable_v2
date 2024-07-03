@@ -3,7 +3,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
 import { StudentType, StudentsInitialState } from './studentsTypes'
-import { createStudent, deleteStudent, getStudentsByGroupId, updateStudent } from './studentsAsyncActions'
+import { createStudent, deleteStudent, updateStudent, getStudentsByGroupId } from './studentsAsyncActions'
 
 const plansInitialState: StudentsInitialState = {
   students: null,

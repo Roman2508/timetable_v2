@@ -2,6 +2,7 @@ import {
   List,
   Paper,
   Divider,
+  Tooltip,
   Collapse,
   Typography,
   ToggleButton,
@@ -14,9 +15,11 @@ import { useSelector } from 'react-redux'
 import { DownOutlined, UpOutlined } from '@ant-design/icons'
 
 import EmptyCard from '../EmptyCard/EmptyCard'
+import { useAppDispatch } from '../../store/store'
 import { GroupLoadType } from '../../store/groups/groupsTypes'
 import { groupLessonsByFields } from '../../utils/groupLessonsByFields'
-import { lessonsForGradeBookSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
+import { getLessonStudents } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import { clearLessonStudents, lessonsForGradeBookSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
 
 interface IStudentsDivideLessonsProps {
   dividingType: 'all' | 'one'
@@ -31,12 +34,14 @@ const StudentsDivideLessons: React.FC<IStudentsDivideLessonsProps> = ({
   selectedLesson,
   setSelectedLesson,
 }) => {
+  const dispatch = useAppDispatch()
+
   const { lessons } = useSelector(lessonsForGradeBookSelector)
 
   const [openedLessonsIds, setOpenedLessonsIds] = React.useState<string[]>([])
 
   const groupLoadLessons = groupLessonsByFields(lessons, { lessonName: true })
-  console.log(groupLoadLessons)
+
   const handleOpenLesson = (id: string) => {
     setOpenedLessonsIds((prev) => {
       const isExist = prev.find((el) => el === id)
@@ -47,6 +52,14 @@ const StudentsDivideLessons: React.FC<IStudentsDivideLessonsProps> = ({
         return prev.filter((el) => el !== id)
       }
     })
+  }
+
+  const handleSelectLesson = async (id: number) => {
+    try {
+      await dispatch(getLessonStudents(id))
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const handleChange = (_: React.MouseEvent<HTMLElement>, newdividingType: 'all' | 'one') => {
@@ -75,6 +88,7 @@ const StudentsDivideLessons: React.FC<IStudentsDivideLessonsProps> = ({
               onClick={() => {
                 setOpenedLessonsIds([])
                 setSelectedLesson(null)
+                dispatch(clearLessonStudents())
               }}
             >
               Всі дисципліни
@@ -107,9 +121,28 @@ const StudentsDivideLessons: React.FC<IStudentsDivideLessonsProps> = ({
                         <ListItemButton
                           sx={{ py: '4px', pl: 5 }}
                           selected={type.id === selectedLesson?.id}
-                          onClick={() => setSelectedLesson(type)}
+                          onClick={() => {
+                            if (selectedLesson?.id !== type.id) {
+                              handleSelectLesson(type.id)
+                              setSelectedLesson(type)
+                            }
+                          }}
                         >
-                          <ListItemText primary={`${type.typeRu}. ${type.name} (${unitInfo})`} />
+                          <Tooltip title={`${type.typeRu}. ${type.name} (${unitInfo})`} enterDelay={1500}>
+                            <ListItemText
+                              sx={{
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: '100%',
+                                '& .MuiTypography-root': {
+                                  textOverflow: 'ellipsis',
+                                  overflow: 'hidden',
+                                },
+                              }}
+                              primary={`${type.typeRu}. ${type.name} (${unitInfo})`}
+                            />
+                          </Tooltip>
                         </ListItemButton>
                         <Divider />
                       </React.Fragment>

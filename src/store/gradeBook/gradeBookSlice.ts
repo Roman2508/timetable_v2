@@ -1,11 +1,11 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import testInitialData from "./testGradeBookData.json"
-import { addSummary, deleteSummary, getGradeBook, getGrades, updateGrade } from "./gradeBookAsyncActions"
-import { GradeBookInitialStateType, GradeBookType } from "./gradeBookTypes"
-import { AddSummaryResponceType, GetGradesResponceType, UpdateGradesResponceType } from "../../api/apiTypes"
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import testInitialData from './testGradeBookData.json'
+import { GradeBookInitialStateType, GradeBookType } from './gradeBookTypes'
+import { addSummary, deleteSummary, getGradeBook, getGrades, updateGrade } from './gradeBookAsyncActions'
+import { AddSummaryResponceType, GetGradesResponceType, UpdateGradesResponceType } from '../../api/apiTypes'
 
 const gradeBookInitialState: GradeBookInitialStateType = {
   // @ts-ignore
@@ -14,7 +14,7 @@ const gradeBookInitialState: GradeBookInitialStateType = {
 }
 
 export const gradeBookSlice = createSlice({
-  name: "gradeBook",
+  name: 'gradeBook',
   initialState: gradeBookInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -51,7 +51,7 @@ export const gradeBookSlice = createSlice({
       /*  */
       /*  */
       /*  */
-      alert("ckeck console")
+      alert('ckeck console')
       console.log(action.payload)
       /*  */
       /*  */

@@ -1,24 +1,24 @@
-import { useSelector } from 'react-redux'
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Stack, Button, MenuItem, TextField, InputLabel } from '@mui/material'
 
 import { useAppDispatch } from '../../store/store'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
 import { groupsListSelector } from '../../store/groups/groupsSlice'
 import { getGroup, getGroupCategories } from '../../store/groups/groupsAsyncActions'
-import { getGrades } from '../../store/gradeBook/gradeBookAsyncActions'
-import { lessonsForGradeBookSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
-import { findLessonStudents, findLessonsForSchedule } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
-import { groupLessonsByFields } from '../../utils/groupLessonsByFields'
+import { findLessonsForSchedule } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 
-interface IStudentsDivideFilterProps {}
+interface IStudentsDivideFilterProps {
+  setFilter: React.Dispatch<React.SetStateAction<{ groupId: number; semester: number }>>
+}
 
 interface IGradeBookFilterFields {
   semester: number
   group: number
 }
 
-const StudentsDivideFilter: React.FC<IStudentsDivideFilterProps> = ({}) => {
+const StudentsDivideFilter: React.FC<IStudentsDivideFilterProps> = ({ setFilter }) => {
   const dispatch = useAppDispatch()
 
   const { groups } = useSelector(groupsListSelector)
@@ -32,14 +32,20 @@ const StudentsDivideFilter: React.FC<IStudentsDivideFilterProps> = ({}) => {
 
   const onSubmit: SubmitHandler<IGradeBookFilterFields> = async (data) => {
     try {
-      dispatch(findLessonStudents({ semester: data.semester, groupId: data.group }))
+      // dispatch(findLessonStudents({ semester: data.semester, groupId: data.group }))
+      await dispatch(findLessonsForSchedule({ semester: data.semester, itemId: data.group, scheduleType: 'group' }))
 
+      // !important
       // CREATE GET_GROUP_SHORT METHOD AND REPLACE THIS:
-      dispatch(getGroup(String(data.group)))
+      await dispatch(getGroup(String(data.group)))
     } catch (error) {
       console.log(error)
     }
   }
+
+  React.useEffect(() => {
+    setFilter({ groupId: watch('group'), semester: watch('semester') })
+  }, [watch('group'), watch('semester')])
 
   React.useEffect(() => {
     if (groups.length) return
@@ -55,7 +61,7 @@ const StudentsDivideFilter: React.FC<IStudentsDivideFilterProps> = ({}) => {
         defaultValue={0}
         render={({ field }) => {
           return (
-            <Stack spacing={1} sx={{ mt: 2 }}>
+            <Stack spacing={1}>
               <InputLabel htmlFor="group">Група*</InputLabel>
               <TextField
                 select
@@ -108,9 +114,9 @@ const StudentsDivideFilter: React.FC<IStudentsDivideFilterProps> = ({}) => {
         color="primary"
         variant="outlined"
         disabled={isSubmitting || !watch('group') || !watch('semester')}
-        sx={{ textTransform: 'capitalize', width: '100%', p: '7.44px 15px', mt: 1.5 }}
+        sx={{ textTransform: 'capitalize', p: '7.44px 15px', mt: 1.5, width: '80px', height: '41px' }}
       >
-        Знайти
+        {isSubmitting ? <LoadingSpinner size={20} disablePadding /> : 'Знайти'}
       </Button>
     </form>
   )

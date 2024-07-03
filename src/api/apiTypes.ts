@@ -74,11 +74,6 @@ export type FindLessonsForSchedulePayloadType = {
   // scheduleType: 'group' | 'teacher'
 }
 
-export type FindLessonStudentsPayloadType = {
-  semester: number
-  groupId: number
-}
-
 /* Plan-subjects */
 
 export type CreateSubjectPayloadType = {
@@ -119,15 +114,18 @@ export type AttachSpecializationPayloadType = {
   name: string | null
 }
 
-export type ChangeStudentsCountType = {
-  id: number
-  students: number
-  typeRu: string
-  name: string
-  semester: number
-  subgroupNumber: number | null
-  specialization: string | null
+export type AddStudentToLessonType = {
+  studentIds: number[]
+  lessonId: number
 }
+export type DeleteStudentFromLessonType = AddStudentToLessonType
+
+export type AddStudentsToAllGroupLessonsType = {
+  studentIds: number[]
+  groupId: number
+  semester: number
+}
+export type DeleteStudentsFromAllGroupLessonsType = AddStudentsToAllGroupLessonsType
 
 export type CreateSpecializationPayloadType = {
   groupId: number
@@ -283,16 +281,18 @@ export type GetGradesPayloadType = {
   semester: number
 }
 
+export type CreateGradesPayloadType = {
+  studentIds: number[]
+  lessonId: number
+}
+
 export type UpdateGradePayloadType = {
   id: number
   studentId: number
   gradeBookId: number
 }
 
-export type DeleteGradePayloadType = {
-  lessonId: number
-  studentId: number
-}
+export type DeleteGradesPayloadType = CreateGradesPayloadType
 
 export type AddSummaryResponceType = {
   id: number

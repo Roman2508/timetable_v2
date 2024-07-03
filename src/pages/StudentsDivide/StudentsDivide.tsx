@@ -4,56 +4,41 @@ import { LeftSquareOutlined, RightSquareOutlined } from '@ant-design/icons'
 import { Grid, Paper, Select, Tooltip, IconButton, Typography, FormControl } from '@mui/material'
 
 import { useAppDispatch } from '../../store/store'
-import StudentsDivideFilter from '../../components/StudentsDividePage/StudentsDivideFilter'
-import StudentsDivideLessons from '../../components/StudentsDividePage/StudentsDivideLessons'
-import { groupsSelector } from '../../store/groups/groupsSlice'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import { GroupLoadType } from '../../store/groups/groupsTypes'
-
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-  'Oliver Hansen1',
-  'Oliver Hansen2',
-  'Van Henry1',
-  'Van Henry2',
-  'April Tucker1',
-  'April Tucker2',
-  'Ralph Hubbard1',
-  'Ralph Hubbard2',
-  'Omar Alexander1',
-  'Omar Alexander2',
-  'Carlos Abbott1',
-  'Carlos Abbott2',
-  'Miriam Wagner1',
-  'Miriam Wagner2',
-  'Bradley Wilkerson1',
-  'Bradley Wilkerson2',
-  'Virginia Andrews1',
-  'Virginia Andrews2',
-  'Kelly Snyder1',
-  'Kelly Snyder2',
-]
+import { groupsSelector } from '../../store/groups/groupsSlice'
+import { scheduleLessonsSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
+import StudentsDivideFilter from '../../components/StudentsDividePage/StudentsDivideFilter'
+import {
+  addStudentToLesson,
+  addStudentsToAllGroupLessons,
+  deleteStudentFromLesson,
+  deleteStudentsFromAllGroupLessons,
+} from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import StudentsDivideLessons from '../../components/StudentsDividePage/StudentsDivideLessons'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 
 const StudentsDivide = () => {
   const dispatch = useAppDispatch()
 
   const { group } = useSelector(groupsSelector)
+  const { lessonStudents, loadingStatus } = useSelector(scheduleLessonsSelector)
 
-  const [a, setA] = React.useState<number[]>([])
-  const [personName, setPersonName] = React.useState<string[]>([])
+  const [studentsToAdd, setStudentsToAdd] = React.useState<string[]>([])
+  const [filter, setFilter] = React.useState({ groupId: 0, semester: 0 })
+  const [studentsToDelete, setStudentsToDelete] = React.useState<string[]>([])
   const [dividingType, setDividingType] = React.useState<'all' | 'one'>('all')
   const [selectedLesson, setSelectedLesson] = React.useState<GroupLoadType | null>(null)
+  const [isActionButtonsDisabled, setIsActionButtonsDisabled] = React.useState({ add: false, delete: false })
 
-  const handleChangeMultiple = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const selectedLessonText = selectedLesson
+    ? `${selectedLesson.typeRu}. ${selectedLesson.name} ${
+        selectedLesson.subgroupNumber ? `(підгрупа ${selectedLesson.subgroupNumber})` : '(вся група)'
+      }`
+    : ''
+
+  const handleChangeMultiple = (event: React.ChangeEvent<HTMLSelectElement>, type: 'add' | 'delete') => {
     const { options } = event.target
     const value: string[] = []
     for (let i = 0, l = options.length; i < l; i += 1) {
@@ -61,7 +46,62 @@ const StudentsDivide = () => {
         value.push(options[i].value)
       }
     }
-    setPersonName(value)
+    if (type === 'add') setStudentsToAdd(value)
+    if (type === 'delete') setStudentsToDelete(value)
+  }
+
+  const onAddStudentsToLesson = async () => {
+    try {
+      if (!selectedLesson) return alert('Виберіть дисципліну')
+      setIsActionButtonsDisabled((prev) => ({ ...prev, add: true }))
+      const studentIds = studentsToAdd.map((el) => Number(el))
+      await dispatch(addStudentToLesson({ lessonId: selectedLesson.id, studentIds }))
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsActionButtonsDisabled((prev) => ({ ...prev, add: false }))
+    }
+  }
+
+  const onDeleteStudentsFromLesson = async () => {
+    try {
+      if (!selectedLesson) return alert('Виберіть дисципліну')
+      setIsActionButtonsDisabled((prev) => ({ ...prev, delete: true }))
+      const studentIds = studentsToDelete.map((el) => Number(el))
+      await dispatch(deleteStudentFromLesson({ lessonId: selectedLesson.id, studentIds }))
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsActionButtonsDisabled((prev) => ({ ...prev, true: false }))
+    }
+  }
+
+  const onAddStudentsToAllGroupLessons = async () => {
+    try {
+      if (!filter.groupId || !filter.semester) return alert('Виберіть групу та семестр')
+      setIsActionButtonsDisabled((prev) => ({ ...prev, add: true }))
+      const studentIds = studentsToAdd.map((el) => Number(el))
+      await dispatch(addStudentsToAllGroupLessons({ groupId: filter.groupId, semester: filter.semester, studentIds }))
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsActionButtonsDisabled((prev) => ({ ...prev, add: false }))
+    }
+  }
+
+  const onDeleteStudentsFromAllGroupLessons = async () => {
+    try {
+      if (!filter.groupId || !filter.semester) return alert('Виберіть групу та семестр')
+      setIsActionButtonsDisabled((prev) => ({ ...prev, delete: true }))
+      const studentIds = studentsToDelete.map((el) => Number(el))
+      await dispatch(
+        deleteStudentsFromAllGroupLessons({ groupId: filter.groupId, semester: filter.semester, studentIds })
+      )
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsActionButtonsDisabled((prev) => ({ ...prev, delete: false }))
+    }
   }
 
   return (
@@ -74,7 +114,7 @@ const StudentsDivide = () => {
             </Grid>
 
             <Grid sx={{ display: 'flex', gap: 3 }}>
-              <StudentsDivideFilter />
+              <StudentsDivideFilter setFilter={setFilter} />
             </Grid>
           </Grid>
         </Grid>
@@ -89,7 +129,13 @@ const StudentsDivide = () => {
               <Typography>ЗДОБУВАЧІ</Typography>
 
               <Tooltip title="Додати вибраних студентів до підгрупи">
-                <IconButton>
+                <IconButton
+                  disabled={isActionButtonsDisabled.add}
+                  onClick={() => {
+                    if (dividingType === 'one') onAddStudentsToLesson()
+                    if (dividingType === 'all') onAddStudentsToAllGroupLessons()
+                  }}
+                >
                   <RightSquareOutlined />
                 </IconButton>
               </Tooltip>
@@ -107,10 +153,9 @@ const StudentsDivide = () => {
                 <Select<string[]>
                   native
                   multiple
-                  value={personName}
+                  value={studentsToAdd}
                   // @ts-ignore Typings are not considering `native`
-                  onChange={handleChangeMultiple}
-                  inputProps={{ id: 'select-multiple-native' }}
+                  onChange={(e) => handleChangeMultiple(e, 'add')}
                 >
                   {group.students.map((student, i) => (
                     <option key={student.id} value={student.id} style={{ padding: '2px 0' }}>
@@ -137,16 +182,32 @@ const StudentsDivide = () => {
             <div
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}
             >
-              <Typography sx={{ textTransform: 'uppercase' }}>
-                {selectedLesson
-                  ? `${selectedLesson.name} ${
-                      selectedLesson.subgroupNumber && `(підгрупа ${selectedLesson.subgroupNumber})`
-                    }`
-                  : 'Всі дисципліни'}
-              </Typography>
+              <Tooltip title={selectedLessonText} enterDelay={1500}>
+                <Typography
+                  sx={{
+                    textTransform: 'uppercase',
+                    userSelect: 'none',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '100%',
+                  }}
+                >
+                  {selectedLesson
+                    ? `${selectedLesson.typeRu}. ${selectedLesson.name} 
+                  ${selectedLesson.subgroupNumber ? `(${selectedLesson.subgroupNumber} підгрупа)` : '(вся група)'}`
+                    : 'Всі дисципліни'}
+                </Typography>
+              </Tooltip>
 
               <Tooltip title="Вилучити вибраних студентів зі складу підгрупи">
-                <IconButton>
+                <IconButton
+                  disabled={isActionButtonsDisabled.delete}
+                  onClick={() => {
+                    if (dividingType === 'one') onDeleteStudentsFromLesson()
+                    if (dividingType === 'all') onDeleteStudentsFromAllGroupLessons()
+                  }}
+                >
                   <LeftSquareOutlined />
                 </IconButton>
               </Tooltip>
@@ -161,22 +222,35 @@ const StudentsDivide = () => {
                   '& select': { height: '100%', minHeight: '540px', p: '10px 14px 8px 12px' },
                 }}
               >
-                <Select<string[]>
-                  native
-                  multiple
-                  value={personName}
-                  // @ts-ignore Typings are not considering `native`
-                  onChange={handleChangeMultiple}
-                  inputProps={{ id: 'select-multiple-native' }}
-                >
-                  {(dividingType === 'all' ? group.students : selectedLesson ? selectedLesson.students : []).map(
-                    (student, i) => (
-                      <option key={student.id} value={student.id} style={{ padding: '2px 0' }}>
-                        {`${i + 1}. ${student.name}`}
-                      </option>
-                    )
-                  )}
-                </Select>
+                {dividingType === 'one' && !lessonStudents?.length && loadingStatus !== LoadingStatusTypes.LOADING ? (
+                  <div style={{ height: '558px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Typography sx={{ marginTop: '-60px' }}>
+                      {!selectedLesson ? 'Виберіть дисципліну' : 'Студенти не зараховані на дисципліну'}
+                    </Typography>
+                  </div>
+                ) : loadingStatus === LoadingStatusTypes.LOADING ? (
+                  <div style={{ height: '558px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <div style={{ marginTop: '-60px' }}>
+                      <LoadingSpinner />
+                    </div>
+                  </div>
+                ) : (
+                  <Select<string[]>
+                    native
+                    multiple
+                    value={studentsToDelete}
+                    // @ts-ignore Typings are not considering `native`
+                    onChange={(e) => handleChangeMultiple(e, 'delete')}
+                  >
+                    {(dividingType === 'all' ? group.students : lessonStudents ? lessonStudents : []).map(
+                      (student, i) => (
+                        <option key={student.id} value={student.id} style={{ padding: '2px 0' }}>
+                          {`${i + 1}. ${student.name}`}
+                        </option>
+                      )
+                    )}
+                  </Select>
+                )}
               </FormControl>
             )}
           </Paper>

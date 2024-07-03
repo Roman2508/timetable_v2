@@ -1,6 +1,7 @@
 import { LoadingStatusTypes } from '../appTypes'
 import { GroupLoadType } from '../groups/groupsTypes'
 import { StreamsType } from '../streams/streamsTypes'
+import { StudentType } from '../students/studentsTypes'
 import { TeachersType } from '../teachers/teachersTypes'
 import { AuditoriesTypes } from '../auditories/auditoriesTypes'
 
@@ -29,6 +30,8 @@ export type ScheduleLessonInitialStateType = {
   // Навантаження (все)
   groupLoad: GroupLoadType[] | null
   loadingStatus: LoadingStatusTypes
+
+  lessonStudents: StudentType[] | null
 
   // last selected filter
   lastOpenedWeek: number

@@ -1,9 +1,21 @@
-import { CircularProgress } from "@mui/material"
+import { CircularProgress } from '@mui/material'
+import React from 'react'
 
-const LoadingSpinner = () => {
+interface ILoadingSpinnerProps {
+  size?: number
+  disablePadding?: boolean
+}
+
+const LoadingSpinner: React.FC<ILoadingSpinnerProps> = ({ size, disablePadding }) => {
   return (
-    <div style={{ padding: "15px", display: "flex", justifyContent: "center" }}>
-      <CircularProgress />
+    <div
+      style={{
+        padding: disablePadding ? '0' : '15px',
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
+      <CircularProgress size={size} />
     </div>
   )
 }

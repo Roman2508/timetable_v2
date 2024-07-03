@@ -2,6 +2,7 @@ import { LoadingStatusTypes } from '../appTypes'
 
 export type StudentsInitialState = {
   students: StudentType[] | null
+  // lessonStudents: StudentType[] | null
   loadingStatus: LoadingStatusTypes
 }
 

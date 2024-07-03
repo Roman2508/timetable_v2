@@ -6,20 +6,23 @@ import {
   copyWeekSchedule,
   getTeacherLessons,
   createReplacement,
+  getTeacherOverlay,
   getAuditoryOverlay,
   getScheduleLessons,
+  addStudentToLesson,
   createScheduleLesson,
   deleteScheduleLesson,
   updateScheduleLesson,
   findLessonsForSchedule,
-  getTeacherOverlay,
-  findLessonStudents,
+  deleteStudentFromLesson,
+  getLessonStudents,
 } from './scheduleLessonsAsyncActions'
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
 import { GroupLoadType } from '../groups/groupsTypes'
-import { ILastSelectedData, ScheduleLessonInitialStateType, ScheduleLessonType } from './scheduleLessonsTypes'
 import { TeachersType } from '../teachers/teachersTypes'
+import { ILastSelectedData, ScheduleLessonInitialStateType, ScheduleLessonType } from './scheduleLessonsTypes'
+import { StudentType } from '../students/studentsTypes'
 
 const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
   groupLoad: null,
@@ -28,6 +31,8 @@ const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
   groupOverlay: null,
   teacherOverlay: null,
   scheduleLessons: null,
+
+  lessonStudents: null,
 
   lastOpenedSemester: 1,
   lastOpenedWeek: 1,
@@ -53,9 +58,9 @@ const scheduleLessonsSlice = createSlice({
       const lessons = state.teacherLessons.filter((el) => el.id !== action.payload)
       state.teacherLessons = lessons
     },
-    // clearTeacherOverlay(state) {
-    //   state.teacherLessons = []
-    // },
+    clearLessonStudents(state) {
+      state.lessonStudents = []
+    },
     clearGroupOverlay(state) {
       state.groupOverlay = []
     },
@@ -166,9 +171,26 @@ const scheduleLessonsSlice = createSlice({
       state.groupLoad = []
     })
 
-    /* findLessonStudents */
-    builder.addCase(findLessonStudents.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
-      state.groupLoad = action.payload
+    /* getLessonStudents */
+    builder.addCase(getLessonStudents.fulfilled, (state, action: PayloadAction<StudentType[]>) => {
+      state.lessonStudents = action.payload
+    })
+
+    /* students */
+
+    /* addStudentToLesson */
+    builder.addCase(addStudentToLesson.fulfilled, (state, action: PayloadAction<StudentType[]>) => {
+      state.lessonStudents = action.payload
+    })
+
+    /* deleteStudentFromLesson */
+    builder.addCase(deleteStudentFromLesson.fulfilled, (state, action: PayloadAction<StudentType[]>) => {
+      if (!state.lessonStudents) return
+      const students = state.lessonStudents.filter((el) => {
+        return action.payload.some((s) => s.id === el.id)
+      })
+
+      state.lessonStudents = students
     })
   },
 })
@@ -208,12 +230,13 @@ export const lessonsForGradeBookSelector = createSelector(
 )
 
 export const {
-  setLoadingStatus,
   clearGroupLoad,
-  deleteTeacherOverlay,
-  clearTeacherOverlay,
+  setLoadingStatus,
   clearGroupOverlay,
+  clearTeacherOverlay,
   setLastSelectedData,
+  clearLessonStudents,
+  deleteTeacherOverlay,
 } = scheduleLessonsSlice.actions
 
 export default scheduleLessonsSlice.reducer

@@ -8,7 +8,7 @@ import {
   UpdateGradePayloadType,
   AddSummaryResponceType,
   GetGradeBookPayloadType,
-  ChangeStudentsCountType,
+  AddStudentToLessonType,
   CreateSubjectPayloadType,
   CreateTeacherPayloadType,
   UpdateTeacherPayloadType,
@@ -21,6 +21,7 @@ import {
   GetGroupOverlayPayloadType,
   CreateSubgroupsPayloadType,
   CopyDaySchedulePayloadType,
+  DeleteStudentFromLessonType,
   CopyWeekSchedulePayloadType,
   AddGroupToStreamPayloadType,
   UpdateEntityNamePayloadType,
@@ -46,7 +47,8 @@ import {
   DeleteGroupFromStreamResponseType,
   FindLessonsForSchedulePayloadType,
   DeleteGradeBookSummaryPayloadType,
-  FindLessonStudentsPayloadType,
+  AddStudentsToAllGroupLessonsType,
+  DeleteStudentsFromAllGroupLessonsType,
 } from './apiTypes'
 import { StreamsType } from '../store/streams/streamsTypes'
 import { StudentType } from '../store/students/studentsTypes'
@@ -253,8 +255,20 @@ export const groupLoadLessonsAPI = {
   },
 
   /* Students */
-  changeStudentsCount(payload: ChangeStudentsCountType) {
-    return instanse.patch<ChangeStudentsCountType>('/group-load-lessons/students', payload)
+  addStudentsToLesson(payload: AddStudentToLessonType) {
+    return instanse.patch<StudentType[]>('/group-load-lessons/students/add', payload)
+  },
+
+  deleteStudentsFromLesson(payload: DeleteStudentFromLessonType) {
+    return instanse.patch<StudentType[]>('/group-load-lessons/students/delete', payload)
+  },
+
+  addStudentsToAllGroupLessons(payload: AddStudentsToAllGroupLessonsType) {
+    return instanse.patch<StudentType[]>('/group-load-lessons/students/all/add', payload)
+  },
+
+  deleteStudentsFromAllGroupLessons(payload: DeleteStudentsFromAllGroupLessonsType) {
+    return instanse.patch<StudentType[]>('/group-load-lessons/students/all/delete', payload)
   },
 
   /* Subgroups */
@@ -279,9 +293,8 @@ export const groupLoadLessonsAPI = {
     return instanse.get<GroupLoadType[]>(`/group-load-lessons/${semester}/${scheduleType}/${itemId}`)
   },
 
-  findLessonStudents(payload: FindLessonStudentsPayloadType) {
-    const { semester, groupId } = payload
-    return instanse.get<GroupLoadType[]>(`/group-load-lessons/students/${semester}/${groupId}`)
+  getLessonStudents(id: number) {
+    return instanse.get<StudentType[]>(`/group-load-lessons/students/get/${id}`)
   },
 }
 
@@ -416,8 +429,16 @@ export const gradeBookAPI = {
     return instanse.get<GetGradesResponceType>(`/grades/${semester}/${studentId}`)
   },
 
+  // createGrades(payload: CreateGradesPayloadType) {
+  //   return instanse.post<GetGradesResponceType[]>(`/grades`, payload)
+  // },
+
   updateGrade(payload: UpdateGradePayloadType) {
     const { id, ...data } = payload
     return instanse.patch<UpdateGradesResponceType>(`/grades/${id}`, data)
   },
+
+  // deleteGrades(payload: DeleteGradesPayloadType) {
+  //   return instanse.patch<GetGradesResponceType[]>(`/grades/delete`, payload)
+  // },
 }

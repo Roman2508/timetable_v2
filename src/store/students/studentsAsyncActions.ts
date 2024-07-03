@@ -1,29 +1,24 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { StudentType } from './studentsTypes'
-import { setLoadingStatus } from './studentsSlice'
-import { LoadingStatusTypes } from '../appTypes'
-import { setAppAlert } from '../appStatus/appStatusSlice'
+
 import { studentsAPI } from '../../api/api'
+import { StudentType } from './studentsTypes'
+import { LoadingStatusTypes } from '../appTypes'
+import { setLoadingStatus } from './studentsSlice'
+import { setAppAlert } from '../appStatus/appStatusSlice'
 import { CreateStudentsPayloadType, UpdateStudentsPayloadType } from '../../api/apiTypes'
 
 export const getStudentsByGroupId = createAsyncThunk(
   'students/getStudentsByGroupId',
   async (id: number, thunkAPI): Promise<StudentType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-
     try {
       const { data } = await studentsAPI.getByGroupId(id)
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
-        })
-      )
-
+      const message = (error as any)?.response?.data?.message || error.message
+      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
       throw error
     }
   }
@@ -34,7 +29,6 @@ export const createStudent = createAsyncThunk(
   async (payload: CreateStudentsPayloadType, thunkAPI): Promise<StudentType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
-
     try {
       const { data } = await studentsAPI.create(payload)
       thunkAPI.dispatch(setAppAlert({ message: 'Студента створено', status: 'success' }))
@@ -42,13 +36,8 @@ export const createStudent = createAsyncThunk(
       return data
     } catch (error: any) {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
-        })
-      )
-
+      const message = (error as any)?.response?.data?.message || error.message
+      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
       throw error
     }
   }
@@ -59,7 +48,6 @@ export const updateStudent = createAsyncThunk(
   async (payload: UpdateStudentsPayloadType, thunkAPI): Promise<StudentType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
-
     try {
       const { data } = await studentsAPI.update(payload)
       thunkAPI.dispatch(setAppAlert({ message: 'Студента оновлено', status: 'success' }))
@@ -67,13 +55,8 @@ export const updateStudent = createAsyncThunk(
       return data
     } catch (error: any) {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
-        })
-      )
-
+      const message = (error as any)?.response?.data?.message || error.message
+      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
       throw error
     }
   }
@@ -84,7 +67,6 @@ export const deleteStudent = createAsyncThunk(
   async (id: number, thunkAPI): Promise<number> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
-
     try {
       const { data } = await studentsAPI.delete(id)
       thunkAPI.dispatch(setAppAlert({ message: 'Студента видалено', status: 'success' }))
@@ -92,13 +74,8 @@ export const deleteStudent = createAsyncThunk(
       return data
     } catch (error: any) {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
-        })
-      )
-
+      const message = (error as any)?.response?.data?.message || error.message
+      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
       throw error
     }
   }
