@@ -49,6 +49,7 @@ import {
   DeleteGradeBookSummaryPayloadType,
   AddStudentsToAllGroupLessonsType,
   DeleteStudentsFromAllGroupLessonsType,
+  FindGroupLoadLessonsByGroupIdAndSemesterPayloadType,
 } from './apiTypes'
 import { StreamsType } from '../store/streams/streamsTypes'
 import { StudentType } from '../store/students/studentsTypes'
@@ -291,6 +292,11 @@ export const groupLoadLessonsAPI = {
   findLessonsForSchedule(payload: FindLessonsForSchedulePayloadType) {
     const { semester, itemId, scheduleType } = payload
     return instanse.get<GroupLoadType[]>(`/group-load-lessons/${semester}/${scheduleType}/${itemId}`)
+  },
+
+  findGroupLoadLessonsByGroupIdAndSemester(payload: FindGroupLoadLessonsByGroupIdAndSemesterPayloadType) {
+    const { semester, groupId } = payload
+    return instanse.get<GroupLoadType[]>(`/group-load-lessons/${semester}/${groupId}`)
   },
 
   getLessonStudents(id: number) {

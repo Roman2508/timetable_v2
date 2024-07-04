@@ -72,7 +72,7 @@ const StudentsDivide = () => {
     } catch (error) {
       console.log(error)
     } finally {
-      setIsActionButtonsDisabled((prev) => ({ ...prev, true: false }))
+      setIsActionButtonsDisabled((prev) => ({ ...prev, delete: false }))
     }
   }
 
@@ -128,7 +128,7 @@ const StudentsDivide = () => {
             >
               <Typography>ЗДОБУВАЧІ</Typography>
 
-              <Tooltip title="Додати вибраних студентів до підгрупи">
+              <Tooltip title="Зарахувати вибраних студентів на дисципліну">
                 <IconButton
                   disabled={isActionButtonsDisabled.add}
                   onClick={() => {
@@ -200,7 +200,7 @@ const StudentsDivide = () => {
                 </Typography>
               </Tooltip>
 
-              <Tooltip title="Вилучити вибраних студентів зі складу підгрупи">
+              <Tooltip title="Вилучити вибраних студентів зі складу дисципліни">
                 <IconButton
                   disabled={isActionButtonsDisabled.delete}
                   onClick={() => {

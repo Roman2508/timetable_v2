@@ -16,6 +16,7 @@ import {
   findLessonsForSchedule,
   deleteStudentFromLesson,
   getLessonStudents,
+  findGroupLoadLessonsByGroupIdAndSemester,
 } from './scheduleLessonsAsyncActions'
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
@@ -170,6 +171,14 @@ const scheduleLessonsSlice = createSlice({
     builder.addCase(findLessonsForSchedule.rejected, (state) => {
       state.groupLoad = []
     })
+
+    /* findGroupLoadLessonsByGroupIdAndSemester */
+    builder.addCase(
+      findGroupLoadLessonsByGroupIdAndSemester.fulfilled,
+      (state, action: PayloadAction<GroupLoadType[]>) => {
+        state.groupLoad = action.payload
+      }
+    )
 
     /* getLessonStudents */
     builder.addCase(getLessonStudents.fulfilled, (state, action: PayloadAction<StudentType[]>) => {

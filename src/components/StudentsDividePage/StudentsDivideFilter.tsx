@@ -7,7 +7,10 @@ import { useAppDispatch } from '../../store/store'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
 import { groupsListSelector } from '../../store/groups/groupsSlice'
 import { getGroup, getGroupCategories } from '../../store/groups/groupsAsyncActions'
-import { findLessonsForSchedule } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import {
+  findGroupLoadLessonsByGroupIdAndSemester,
+  findLessonsForSchedule,
+} from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 
 interface IStudentsDivideFilterProps {
   setFilter: React.Dispatch<React.SetStateAction<{ groupId: number; semester: number }>>
@@ -33,7 +36,7 @@ const StudentsDivideFilter: React.FC<IStudentsDivideFilterProps> = ({ setFilter 
   const onSubmit: SubmitHandler<IGradeBookFilterFields> = async (data) => {
     try {
       // dispatch(findLessonStudents({ semester: data.semester, groupId: data.group }))
-      await dispatch(findLessonsForSchedule({ semester: data.semester, itemId: data.group, scheduleType: 'group' }))
+      await dispatch(findGroupLoadLessonsByGroupIdAndSemester({ semester: data.semester, groupId: data.group }))
 
       // !important
       // CREATE GET_GROUP_SHORT METHOD AND REPLACE THIS:

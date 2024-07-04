@@ -74,6 +74,11 @@ export type FindLessonsForSchedulePayloadType = {
   // scheduleType: 'group' | 'teacher'
 }
 
+export type FindGroupLoadLessonsByGroupIdAndSemesterPayloadType = {
+  semester: number
+  groupId: number
+}
+
 /* Plan-subjects */
 
 export type CreateSubjectPayloadType = {

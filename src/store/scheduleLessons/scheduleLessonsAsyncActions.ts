@@ -15,6 +15,7 @@ import {
   FindLessonsForSchedulePayloadType,
   AddStudentsToAllGroupLessonsType,
   DeleteStudentsFromAllGroupLessonsType,
+  FindGroupLoadLessonsByGroupIdAndSemesterPayloadType,
 } from '../../api/apiTypes'
 import { LoadingStatusTypes } from '../appTypes'
 import { TeachersType } from '../teachers/teachersTypes'
@@ -361,6 +362,31 @@ export const getLessonStudents = createAsyncThunk('group/getLessonStudents', asy
     throw error
   }
 })
+
+/* get all semester lessons for students divide */
+export const findGroupLoadLessonsByGroupIdAndSemester = createAsyncThunk(
+  'group/findGroupLoadLessonsByGroupIdAndSemester',
+  async (payload: FindGroupLoadLessonsByGroupIdAndSemesterPayloadType, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+    try {
+      const { data } = await groupLoadLessonsAPI.findGroupLoadLessonsByGroupIdAndSemester(payload)
+      thunkAPI.dispatch(setAppAlert({ message: 'Завантажено', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)
 
 /* add/delete students to/from lesson */
 export const addStudentToLesson = createAsyncThunk(
