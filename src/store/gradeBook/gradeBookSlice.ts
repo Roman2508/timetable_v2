@@ -1,24 +1,64 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
-import { RootState } from '../store'
-import { LoadingStatusTypes } from '../appTypes'
-import testInitialData from './testGradeBookData.json'
-import { GradeBookInitialStateType, GradeBookType } from './gradeBookTypes'
-import { addSummary, deleteSummary, getGradeBook, getGrades, updateGrade } from './gradeBookAsyncActions'
-import { AddSummaryResponceType, GetGradesResponceType, UpdateGradesResponceType } from '../../api/apiTypes'
+import { RootState } from "../store"
+import { LoadingStatusTypes } from "../appTypes"
+import { GradeBookInitialStateType, GradeBookType } from "./gradeBookTypes"
+import { addSummary, deleteSummary, getGradeBook, getGrades, updateGrade } from "./gradeBookAsyncActions"
+import { AddSummaryResponceType, GetGradesResponceType, UpdateGradesResponceType } from "../../api/apiTypes"
 
 const gradeBookInitialState: GradeBookInitialStateType = {
   // @ts-ignore
-  gradeBook: testInitialData[0],
+  // gradeBook: testInitialData[0],
+  gradeBook: null,
   loadingStatus: LoadingStatusTypes.NEVER,
 }
 
 export const gradeBookSlice = createSlice({
-  name: 'gradeBook',
+  name: "gradeBook",
   initialState: gradeBookInitialState,
   reducers: {
     setLoadingStatus(state, action) {
       state.loadingStatus = action.payload
+    },
+    updateGradesLocally(
+      state,
+      action: PayloadAction<{ id: number; rating: number; isAbsence: boolean; lessonNumber: number }>
+    ) {
+      if (!state.gradeBook) return
+
+      const isGradesExist = state.gradeBook.grades.find((el) => el.id === action.payload.id)
+      const isLessonExist = isGradesExist?.grades.find((el) => el.lessonNumber === action.payload.lessonNumber)
+      if (!isLessonExist) {
+        const newGrades = state.gradeBook.grades.map((el) => {
+          if (el.id === action.payload.id) {
+            const { id, ...rest } = action.payload
+            return { ...el, grades: [...el.grades, rest] }
+          } else {
+            return el
+          }
+        })
+
+        state.gradeBook.grades = newGrades
+        return
+      }
+
+      const allLessonGrades = state.gradeBook.grades.map((el) => {
+        if (el.id === action.payload.id) {
+          //
+          const studentGrades = el.grades.map((grade) => {
+            if (grade.lessonNumber === action.payload.lessonNumber) {
+              return action.payload
+            } else {
+              return grade
+            }
+          })
+          return { ...el, grades: studentGrades }
+          //
+        } else {
+          return el
+        }
+      })
+      state.gradeBook.grades = allLessonGrades
     },
   },
   extraReducers: (builder) => {
@@ -48,15 +88,8 @@ export const gradeBookSlice = createSlice({
       /*  */
       /*  */
       /*  */
-      /*  */
-      /*  */
-      /*  */
-      alert('ckeck console')
+      alert("ckeck console")
       console.log(action.payload)
-      /*  */
-      /*  */
-      /*  */
-      /*  */
       /*  */
       /*  */
       /*  */
@@ -76,6 +109,7 @@ export const gradeBookSlice = createSlice({
               return grade
             }
           })
+
           return { ...el, grades: studentGrades }
           //
         } else {
@@ -87,7 +121,7 @@ export const gradeBookSlice = createSlice({
   },
 })
 
-export const { setLoadingStatus } = gradeBookSlice.actions
+export const { setLoadingStatus, updateGradesLocally } = gradeBookSlice.actions
 
 export default gradeBookSlice.reducer
 

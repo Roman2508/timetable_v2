@@ -9,19 +9,19 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-} from '@mui/material'
-import { useSelector } from 'react-redux'
-import { CloseOutlined } from '@ant-design/icons'
-import React, { Dispatch, SetStateAction } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+} from "@mui/material"
+import { useSelector } from "react-redux"
+import { CloseOutlined } from "@ant-design/icons"
+import React, { Dispatch, SetStateAction } from "react"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 
-import { useAppDispatch } from '../../store/store'
-import { groupsListSelector } from '../../store/groups/groupsSlice'
-import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
-import { findLessonsForSchedule } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
-import { lessonsForGradeBookSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
-import { getGradeBook } from '../../store/gradeBook/gradeBookAsyncActions'
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import { useAppDispatch } from "../../store/store"
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"
+import { groupsListSelector } from "../../store/groups/groupsSlice"
+import { getGradeBook } from "../../store/gradeBook/gradeBookAsyncActions"
+import { getGroupCategories } from "../../store/groups/groupsAsyncActions"
+import { findLessonsForSchedule } from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
+import { lessonsForGradeBookSelector } from "../../store/scheduleLessons/scheduleLessonsSlice"
 
 interface IGradeBookFilterModalProps {
   open: boolean
@@ -50,24 +50,26 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
     reset,
     watch,
     control,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
     handleSubmit,
-  } = useForm<IGradeBookFilterFields>({ mode: 'onBlur' })
+  } = useForm<IGradeBookFilterFields>({ mode: "onBlur" })
 
   const onSubmit: SubmitHandler<IGradeBookFilterFields> = async (data) => {
     try {
-      if (!selectedLessonType) return alert('Виберіть дисципліну')
-      dispatch(
+      if (!selectedLessonType) return alert("Виберіть дисципліну")
+      await dispatch(
         getGradeBook({
           group: Number(data.group),
           lesson: Number(data.lesson),
-          semester: Number(data.lesson),
+          semester: Number(data.semester),
           // @ts-ignore
           type: selectedLessonType,
         })
       )
+      setOpen(false)
     } catch (error) {
       console.log(error)
+    } finally {
     }
   }
 
@@ -77,15 +79,15 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
   }, [])
 
   React.useEffect(() => {
-    if (!watch('semester') || !watch('group')) return
-    dispatch(findLessonsForSchedule({ semester: watch('semester'), itemId: watch('group'), scheduleType: 'group' }))
-  }, [watch('group'), watch('semester')])
+    if (!watch("semester") || !watch("group")) return
+    dispatch(findLessonsForSchedule({ semester: watch("semester"), itemId: watch("group"), scheduleType: "group" }))
+  }, [watch("group"), watch("semester")])
 
   React.useEffect(() => {
-    if (!watch('lesson')) return
-    const findedLesson = lessons.find((el) => el.id === Number(watch('lesson')))
+    if (!watch("lesson")) return
+    const findedLesson = lessons.find((el) => el.id === Number(watch("lesson")))
     if (findedLesson) setSelectedLessonType(findedLesson.typeRu)
-  }, [watch('lesson')])
+  }, [watch("lesson")])
 
   return (
     <Dialog
@@ -95,7 +97,7 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <DialogTitle id="alert-dialog-title">Знайти електронний журнал:</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
@@ -104,11 +106,11 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent sx={{ padding: '0 24px 20px', maxWidth: '295px' }}>
+        <DialogContent sx={{ padding: "0 24px 20px", maxWidth: "295px" }}>
           <Controller
             name="semester"
             control={control}
-            rules={{ required: 'Виберіть семестр' }}
+            rules={{ required: "Виберіть семестр" }}
             render={({ field }) => {
               return (
                 <Stack spacing={1} sx={{ mt: 2 }}>
@@ -118,7 +120,7 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
                     fullWidth
                     {...field}
                     id="semestr"
-                    sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
+                    sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}
                   >
                     {[1, 2, 3, 4, 5, 6].map((option) => (
                       <MenuItem key={option} value={option}>
@@ -134,7 +136,7 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
           <Controller
             name="group"
             control={control}
-            rules={{ required: 'Виберіть групу' }}
+            rules={{ required: "Виберіть групу" }}
             render={({ field }) => {
               return (
                 <Stack spacing={1} sx={{ mt: 2 }}>
@@ -144,7 +146,7 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
                     fullWidth
                     {...field}
                     id="group"
-                    sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
+                    sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}
                   >
                     {groups.map((option) => (
                       <MenuItem key={option.id} value={option.id}>
@@ -160,7 +162,7 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
           <Controller
             name="lesson"
             control={control}
-            rules={{ required: 'Виберіть дисципліну' }}
+            rules={{ required: "Виберіть дисципліну" }}
             render={({ field }) => {
               return (
                 <Stack spacing={1} sx={{ mt: 2 }}>
@@ -170,10 +172,10 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
                     fullWidth
                     {...field}
                     id="lesson"
-                    sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
+                    sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}
                   >
                     {lessons.map((option) => {
-                      const unitInfo = option.subgroupNumber ? `(${option.subgroupNumber} підгрупа)` : '(Вся група)'
+                      const unitInfo = option.subgroupNumber ? `(${option.subgroupNumber} підгрупа)` : "(Вся група)"
 
                       return (
                         <MenuItem key={option.id} value={option.id}>
@@ -189,8 +191,14 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
         </DialogContent>
 
         <DialogActions>
-          <Button type="submit" variant="contained" disabled={isSubmitting || !selectedLessonType}>
-            {isSubmitting ? <LoadingSpinner /> : 'Вибрати'}
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isSubmitting || !selectedLessonType}
+            sx={{ width: "89.3px", height: "36.5px" }}
+          >
+            {isSubmitting ? <LoadingSpinner size={10} /> : "Вибрати"}
+            {/* <LoadingSpinner size={10} /> */}
           </Button>
         </DialogActions>
       </form>

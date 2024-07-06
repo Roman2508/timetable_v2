@@ -29,6 +29,7 @@
   position: sticky;
   left: 0;
   top: -1px;
+  left: -1px;
   z-index: 3;
   background-color: #f3f3f3;
   border-bottom: 1px solid #ddd;
