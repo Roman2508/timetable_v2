@@ -1,13 +1,15 @@
-import React from 'react'
-import { Checkbox, Paper, TextField } from '@mui/material'
+import React from "react"
+import { Checkbox, Paper, TextField } from "@mui/material"
 
-import './grade-book.css'
-import { useAppDispatch } from '../../store/store'
-import HIcon from '../../assets/images/icons/letter-h.svg'
-import { gradeBookSummary } from '../../utils/gradeBookSummary'
-import { updateGrade } from '../../store/gradeBook/gradeBookAsyncActions'
-import { updateGradesLocally } from '../../store/gradeBook/gradeBookSlice'
-import { GradeBookSummaryTypes, GradeBookType, StudentGradesType } from '../../store/gradeBook/gradeBookTypes'
+import "./grade-book.css"
+import { useAppDispatch } from "../../store/store"
+import HIcon from "../../assets/images/icons/letter-h.svg"
+import { gradeBookSummary } from "../../utils/gradeBookSummary"
+import { updateGrade } from "../../store/gradeBook/gradeBookAsyncActions"
+import { updateGradesLocally } from "../../store/gradeBook/gradeBookSlice"
+import { GradeBookSummaryTypes, GradeBookType, StudentGradesType } from "../../store/gradeBook/gradeBookTypes"
+import GradeBookTableHead from "./GradeBookTableHead"
+import GradeBookTableCell from "./GradeBookTableCell"
 
 interface IGradeBookTablePops {
   gradeBook: GradeBookType
@@ -39,6 +41,18 @@ const cellInitialState = {
 // Треба підвантажувати екзамен дисципліни (якщо він є) в кінець журналу останньою колонкою
 // Треба підвантажувати екзамен дисципліни (якщо він є) в кінець журналу останньою колонкою
 // Треба підвантажувати екзамен дисципліни (якщо він є) в кінець журналу останньою колонкою
+
+// Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
+// Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
+// Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
+// Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
+// Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
+// Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
+// Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
+// Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
+// Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
+
+// on press Esc need to return cell data to previous value
 
 const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
   const dispatch = useAppDispatch()
@@ -75,61 +89,7 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
     <Paper>
       <div className="table-container">
         <table className="grades-table">
-          <thead>
-            <tr>
-              <th>ПІБ студента</th>
-              {Array(gradeBook ? gradeBook.lesson.hours : 0)
-                .fill(null)
-                .map((_, index) => {
-                  return (
-                    <React.Fragment key={index}>
-                      {gradeBook.summary.find((el) => el.afterLesson === index && el.type === 'MODULE_AVERAGE') && (
-                        <th style={{ padding: '4px' }}>
-                          <p>Тематична</p>
-                        </th>
-                      )}
-
-                      {gradeBook.summary.find((el) => el.afterLesson === index && el.type === 'MODULE_SUM') && (
-                        <th style={{ padding: '4px' }}>
-                          <p>Рейтинг</p>
-                          <p style={{ whiteSpace: 'nowrap' }}>з модуля</p>
-                        </th>
-                      )}
-
-                      {gradeBook.summary.find((el) => el.afterLesson === index && el.type === 'MODULE_TEST') && (
-                        <th style={{ padding: '4px' }}>
-                          <p>Модульний</p>
-                          <p style={{ whiteSpace: 'nowrap' }}>контроль</p>
-                        </th>
-                      )}
-
-                      {gradeBook.summary.find((el) => el.afterLesson === index && el.type === 'ADDITIONAL_RATE') && (
-                        <th style={{ padding: '4px' }}>
-                          <p>Додатковий</p>
-                          <p style={{ whiteSpace: 'nowrap' }}>рейтинг</p>
-                        </th>
-                      )}
-
-                      <th>
-                        <p>{index + 1}</p>
-                        <p>22.02</p>
-                      </th>
-                    </React.Fragment>
-                  )
-                })}
-
-              {gradeBook.summary.find((el) => el.type === GradeBookSummaryTypes.LESSON_AVERAGE) && (
-                <th style={{ padding: '0 8px' }}>Семестрова</th>
-              )}
-
-              {gradeBook.summary.find((el) => el.type === GradeBookSummaryTypes.LESSON_SUM) && (
-                <th style={{ padding: '0 8px' }}>
-                  <p>Рейтинг</p>
-                  <p style={{ whiteSpace: 'nowrap' }}>з модуля</p>
-                </th>
-              )}
-            </tr>
-          </thead>
+          <GradeBookTableHead gradeBook={gradeBook} />
 
           <tbody>
             {JSON.parse(JSON.stringify(gradeBook?.grades))
@@ -150,62 +110,95 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
                       const currentCellData = grade.grades.find((el) => el.lessonNumber === colIndex + 1)
 
                       const moduleAvarage = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex && el.type === 'MODULE_AVERAGE'
+                        (el) => el.afterLesson === colIndex && el.type === "MODULE_AVERAGE"
                       )
 
                       const moduleSum = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex && el.type === 'MODULE_SUM'
+                        (el) => el.afterLesson === colIndex && el.type === "MODULE_SUM"
                       )
 
                       const moduleTest = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex && el.type === 'MODULE_TEST'
+                        (el) => el.afterLesson === colIndex && el.type === "MODULE_TEST"
                       )
 
                       const additionalRate = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex && el.type === 'ADDITIONAL_RATE'
+                        (el) => el.afterLesson === colIndex && el.type === "ADDITIONAL_RATE"
                       )
 
                       return (
                         <React.Fragment key={colIndex}>
                           {moduleAvarage && (
-                            <th style={{ backgroundColor: '#f3f3f3' }}>
-                              <p style={{ textAlign: 'center', margin: 0 }}>
+                            <th style={{ backgroundColor: "#f3f3f3" }}>
+                              <p style={{ textAlign: "center", margin: 0 }}>
                                 {gradeBookSummary.getModuleRate(
                                   gradeBook ? gradeBook.summary : [],
                                   grade.grades,
                                   moduleAvarage.afterLesson,
-                                  'average'
+                                  "average"
                                 )}
                               </p>
                             </th>
                           )}
 
                           {moduleSum && (
-                            <th style={{ backgroundColor: '#f3f3f3' }}>
-                              <p style={{ textAlign: 'center', margin: 0 }}>
+                            <th style={{ backgroundColor: "#f3f3f3" }}>
+                              <p style={{ textAlign: "center", margin: 0 }}>
                                 {gradeBookSummary.getModuleRate(
                                   gradeBook ? gradeBook.summary : [],
                                   grade.grades,
                                   moduleSum.afterLesson,
-                                  'sum'
+                                  "sum"
                                 )}
                               </p>
                             </th>
                           )}
 
                           {moduleTest && (
-                            <th style={{ backgroundColor: '#f3f3f3' }}>
-                              <p style={{ textAlign: 'center', margin: 0 }}>test</p>
-                            </th>
+                            <GradeBookTableCell
+                              gradeId={grade.id}
+                              colIndex={colIndex}
+                              rowIndex={rowIndex}
+                              cellData={cellData}
+                              backgroundColor="#f3f3f3"
+                              setCellData={setCellData}
+                              hoveredCell={hoveredCell}
+                              updageGrade={updageGrade}
+                              setHoveredSell={setHoveredSell}
+                              setBackupGrade={setBackupGrade}
+                              currentCellData={currentCellData}
+                            />
                           )}
 
                           {additionalRate && (
-                            <th style={{ backgroundColor: '#f3f3f3' }}>
-                              <p style={{ textAlign: 'center', margin: 0 }}>additional rate</p>
-                            </th>
+                            <GradeBookTableCell
+                              gradeId={grade.id}
+                              colIndex={colIndex}
+                              rowIndex={rowIndex}
+                              cellData={cellData}
+                              backgroundColor="#f3f3f3"
+                              setCellData={setCellData}
+                              hoveredCell={hoveredCell}
+                              updageGrade={updageGrade}
+                              setHoveredSell={setHoveredSell}
+                              setBackupGrade={setBackupGrade}
+                              currentCellData={currentCellData}
+                            />
                           )}
 
-                          <th style={{ overflow: 'hidden' }}>
+                          <GradeBookTableCell
+                            gradeId={grade.id}
+                            colIndex={colIndex}
+                            rowIndex={rowIndex}
+                            cellData={cellData}
+                            setCellData={setCellData}
+                            hoveredCell={hoveredCell}
+                            updageGrade={updageGrade}
+                            setHoveredSell={setHoveredSell}
+                            setBackupGrade={setBackupGrade}
+                            currentCellData={currentCellData}
+                          />
+
+                          {/* <th style={{ overflow: "hidden" }}>
                             <div
                               onMouseEnter={() => {
                                 setHoveredSell({ col: colIndex, row: rowIndex })
@@ -231,6 +224,9 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
                                 }
                               }}
                               onMouseLeave={updageGrade}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") updageGrade()
+                              }}
                             >
                               {hoveredCell.col === colIndex && hoveredCell.row === rowIndex ? (
                                 <>
@@ -238,11 +234,11 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
                                     size="medium"
                                     sx={{
                                       ml: 1,
-                                      color: 'gray',
-                                      padding: '6px',
-                                      '& svg path': { opacity: 0 },
-                                      '& .MuiSvgIcon-root': { fontSize: 20, width: '18px', height: '18px' },
-                                      '& span': { padding: '0 !important', margin: '0 !important' },
+                                      color: "gray",
+                                      padding: "6px",
+                                      "& svg path": { opacity: 0 },
+                                      "& .MuiSvgIcon-root": { fontSize: 20, width: "18px", height: "18px" },
+                                      "& span": { padding: "0 !important", margin: "0 !important" },
                                     }}
                                     value={cellData.isAbsence}
                                     checked={cellData.isAbsence}
@@ -264,13 +260,13 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
                                   <TextField
                                     variant="standard"
                                     sx={{
-                                      width: '50%',
-                                      textAlign: 'center',
-                                      '& input': { p: '6px 0 6px 6px', width: '50%', ml: 2 },
-                                      '& :after': { height: '0 !important', border: '0 !important' },
-                                      '& :before': { height: '0 !important', border: '0 !important' },
+                                      width: "50%",
+                                      textAlign: "center",
+                                      "& input": { p: "6px 0 6px 6px", width: "50%", ml: 2 },
+                                      "& :after": { height: "0 !important", border: "0 !important" },
+                                      "& :before": { height: "0 !important", border: "0 !important" },
                                     }}
-                                    value={cellData.rating !== 0 ? cellData.rating : ''}
+                                    value={cellData.rating !== 0 ? cellData.rating : ""}
                                     onChange={(e) =>
                                       setCellData((prev) => ({ ...prev, rating: Number(e.target.value) }))
                                     }
@@ -286,31 +282,31 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
                                     alt="absence image"
                                     style={
                                       currentCellData?.isAbsence
-                                        ? { margin: '0 10px 0 13px', opacity: 1 }
-                                        : { margin: '0 10px 0 13px', opacity: 0.1 }
+                                        ? { margin: "0 10px 0 13px", opacity: 1 }
+                                        : { margin: "0 10px 0 13px", opacity: 0.1 }
                                     }
                                   />
 
-                                  <span style={{ fontWeight: '400' }}>
-                                    {currentCellData?.rating ? currentCellData?.rating : ''}
+                                  <span style={{ fontWeight: "400" }}>
+                                    {currentCellData?.rating ? currentCellData?.rating : ""}
                                   </span>
                                 </>
                               )}
                             </div>
-                          </th>
+                          </th> */}
                         </React.Fragment>
                       )
                     })}
 
                   {gradeBook?.summary.find((el) => el.type === GradeBookSummaryTypes.LESSON_AVERAGE) && (
-                    <td style={{ textAlign: 'center', backgroundColor: '#f3f3f3' }}>
-                      {gradeBookSummary.getTotalRate(grade.grades, 'average')}
+                    <td style={{ textAlign: "center", backgroundColor: "#f3f3f3" }}>
+                      {gradeBookSummary.getTotalRate(grade.grades, "average")}
                     </td>
                   )}
 
                   {gradeBook?.summary.find((el) => el.type === GradeBookSummaryTypes.LESSON_SUM) && (
-                    <td style={{ textAlign: 'center', backgroundColor: '#f3f3f3' }}>
-                      {gradeBookSummary.getTotalRate(grade.grades, 'sum')}
+                    <td style={{ textAlign: "center", backgroundColor: "#f3f3f3" }}>
+                      {gradeBookSummary.getTotalRate(grade.grades, "sum")}
                     </td>
                   )}
                 </tr>

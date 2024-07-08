@@ -1,11 +1,11 @@
-import { GradeBookSummaryType, GradeType } from '../store/gradeBook/gradeBookTypes'
+import { GradeBookSummaryType, GradeType } from "../store/gradeBook/gradeBookTypes"
 
 export const gradeBookSummary = {
   getModuleRate(
     summary: GradeBookSummaryType[],
     grades: GradeType[],
     currentRange: number,
-    type: 'average' | 'sum'
+    type: "average" | "sum"
   ): string {
     const summaryCopy = JSON.parse(JSON.stringify(summary))
     const sortedSummary = summaryCopy.sort(
@@ -39,44 +39,42 @@ export const gradeBookSummary = {
       }
     })
 
-    if (currentRange < 0) return ''
+    if (currentRange < 0) return ""
 
-    const selectedPartIndex = summary.findIndex((el) => el.afterLesson === currentRange)
+    const selectedPartIndex = sortedSummary.findIndex((el: GradeBookSummaryType) => el.afterLesson === currentRange)
 
     const selectedPart = parts[selectedPartIndex]
 
-    console.log(parts)
+    if (!selectedPart) return ""
 
-    if (!selectedPart) return ''
-
-    if (type === 'average') {
+    if (type === "average") {
       const notZeroValues = selectedPart.filter((el) => el.rating !== 0)
 
-      const average = notZeroValues.reduce((acc, grade) => acc + grade.rating, 0) / selectedPart.length
-      if (isNaN(average) || average === 0) return '-'
+      const average = notZeroValues.reduce((acc, grade) => acc + grade.rating, 0) / notZeroValues.length
+      if (isNaN(average) || average === 0) return "-"
       return average.toFixed(0)
     }
 
-    if (type === 'sum') {
+    if (type === "sum") {
       const sum = selectedPart.reduce((acc, grade) => acc + grade.rating, 0)
-      if (isNaN(sum) || sum === 0) return '-'
+      if (isNaN(sum) || sum === 0) return "-"
       return String(sum)
     }
 
-    return ''
+    return ""
   },
 
-  getTotalRate(grades: GradeType[], type: 'average' | 'sum') {
-    if (type === 'average') {
+  getTotalRate(grades: GradeType[], type: "average" | "sum") {
+    if (type === "average") {
       const notZeroValues = grades.filter((el) => el.rating !== 0)
-      const rate = notZeroValues.reduce((acc, cur) => cur.rating + acc, 0) / grades.length
-      if (rate === 0) return '-'
+      const rate = notZeroValues.reduce((acc, cur) => cur.rating + acc, 0) / notZeroValues.length
+      if (rate === 0) return "-"
       return rate.toFixed(0)
     }
 
-    if (type === 'sum') {
+    if (type === "sum") {
       const rate = grades.reduce((acc, cur) => cur.rating + acc, 0)
-      if (rate === 0) return '-'
+      if (rate === 0) return "-"
       return rate
     }
   },
