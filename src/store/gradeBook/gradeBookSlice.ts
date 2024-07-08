@@ -1,10 +1,10 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import { GradeBookInitialStateType, GradeBookType } from "./gradeBookTypes"
-import { addSummary, deleteSummary, getGradeBook, getGrades, updateGrade } from "./gradeBookAsyncActions"
-import { AddSummaryResponceType, GetGradesResponceType, UpdateGradesResponceType } from "../../api/apiTypes"
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import { GradeBookInitialStateType, GradeBookType } from './gradeBookTypes'
+import { addSummary, deleteSummary, getGradeBook, getGrades, updateGrade } from './gradeBookAsyncActions'
+import { AddSummaryResponceType, GetGradesResponceType, UpdateGradesResponceType } from '../../api/apiTypes'
 
 const gradeBookInitialState: GradeBookInitialStateType = {
   // @ts-ignore
@@ -14,7 +14,7 @@ const gradeBookInitialState: GradeBookInitialStateType = {
 }
 
 export const gradeBookSlice = createSlice({
-  name: "gradeBook",
+  name: 'gradeBook',
   initialState: gradeBookInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -77,7 +77,8 @@ export const gradeBookSlice = createSlice({
     builder.addCase(deleteSummary.fulfilled, (state, action: PayloadAction<AddSummaryResponceType>) => {
       if (!state.gradeBook) return
       const { afterLesson, type } = action.payload.summary[0]
-      const summary = state.gradeBook.summary.filter((el) => el.afterLesson !== afterLesson || el.type === type)
+      console.log({ afterLesson, type })
+      const summary = state.gradeBook.summary.filter((el) => el.afterLesson !== afterLesson || el.type !== type)
       state.gradeBook.summary = summary
     })
 
@@ -88,7 +89,7 @@ export const gradeBookSlice = createSlice({
       /*  */
       /*  */
       /*  */
-      alert("ckeck console")
+      alert('ckeck console')
       console.log(action.payload)
       /*  */
       /*  */

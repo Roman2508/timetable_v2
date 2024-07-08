@@ -20,8 +20,8 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"
 import { groupsListSelector } from "../../store/groups/groupsSlice"
 import { getGradeBook } from "../../store/gradeBook/gradeBookAsyncActions"
 import { getGroupCategories } from "../../store/groups/groupsAsyncActions"
-import { findLessonsForSchedule } from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
 import { lessonsForGradeBookSelector } from "../../store/scheduleLessons/scheduleLessonsSlice"
+import { findLessonsForSchedule } from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
 
 interface IGradeBookFilterModalProps {
   open: boolean
@@ -94,8 +94,6 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
       open={open}
       maxWidth="sm"
       onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
     >
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <DialogTitle id="alert-dialog-title">Знайти електронний журнал:</DialogTitle>

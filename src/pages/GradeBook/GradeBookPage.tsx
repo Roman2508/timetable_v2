@@ -1,15 +1,14 @@
-import React from "react"
-import { useSelector } from "react-redux"
-import { ColumnWidthOutlined, FilterOutlined } from "@ant-design/icons"
-import { Grid, Typography, Tooltip, IconButton, Divider, Paper } from "@mui/material"
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { ColumnWidthOutlined, FilterOutlined } from '@ant-design/icons'
+import { Grid, Typography, Tooltip, IconButton, Divider, Paper } from '@mui/material'
 
-import { useAppDispatch } from "../../store/store"
-import { gradeBookSelector } from "../../store/gradeBook/gradeBookSlice"
-import GradeBookTable from "../../components/GradeBookPage/GradeBookTable"
-import AddSummaryModal from "../../components/GradeBookPage/AddSummaryModal"
-import GradeBookFilter from "../../components/GradeBookPage/GradeBookFilterModal"
-import EmptyCard from "../../components/EmptyCard/EmptyCard"
-import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
+import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { gradeBookSelector } from '../../store/gradeBook/gradeBookSlice'
+import GradeBookTable from '../../components/GradeBookPage/GradeBookTable'
+import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
+import AddSummaryModal from '../../components/GradeBookPage/AddSummaryModal'
+import GradeBookFilter from '../../components/GradeBookPage/GradeBookFilterModal'
 
 const GradeBookPage = () => {
   const { gradeBook } = useSelector(gradeBookSelector)
@@ -20,12 +19,12 @@ const GradeBookPage = () => {
   return (
     <>
       <GradeBookFilter open={isOpenFilterModal} setOpen={setIsOpenFilterModal} />
-      <AddSummaryModal open={isOpenSummaryModal} setOpen={setIsOpenSummaryModal} />
+      <AddSummaryModal open={isOpenSummaryModal} setOpen={setIsOpenSummaryModal} gradeBook={gradeBook} />
 
       <Grid container sx={{ mb: 2, pt: 0 }}>
         <Grid item xs={12}>
-          <Grid container sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Grid item style={{ display: "flex", alignItems: "center" }}>
+          <Grid container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Grid item style={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="h5" sx={{ mr: 1 }}>
                 Електронний журнал
               </Typography>
@@ -40,7 +39,7 @@ const GradeBookPage = () => {
 
               <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 1 }} />
 
-              <Tooltip title="Додати підсумок">
+              <Tooltip title="Підсумок">
                 <IconButton onClick={() => setIsOpenSummaryModal(true)}>
                   <ColumnWidthOutlined />
                 </IconButton>
@@ -60,7 +59,7 @@ const GradeBookPage = () => {
       </Grid>
 
       {!gradeBook ? (
-        <Paper sx={{ p: 4, textAlign: "center" }}>
+        <Paper sx={{ p: 4, textAlign: 'center' }}>
           <EmptyCard text="" padding={4} />
           <Typography>Виберіть групу та дисципліну для перегляду журналу</Typography>
         </Paper>
