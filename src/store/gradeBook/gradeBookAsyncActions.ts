@@ -91,10 +91,10 @@ export const getGrades = createAsyncThunk('group/getGrades', async (payload: Get
 
 export const updateGrade = createAsyncThunk('group/updateGrade', async (payload: UpdateGradePayloadType, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+  // thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
   try {
     const { data } = await gradeBookAPI.updateGrade(payload)
-    thunkAPI.dispatch(setAppAlert({ message: 'Оновлено оцінку в журналі', status: 'success' }))
+    // thunkAPI.dispatch(setAppAlert({ message: 'Оновлено оцінку в журналі', status: 'success' }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
     return data
   } catch (error: any) {

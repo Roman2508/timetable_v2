@@ -1,7 +1,7 @@
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupLoadType, GroupsType } from "../groups/groupsTypes"
-import { LessonsTypeRu } from "../scheduleLessons/scheduleLessonsTypes"
-import { StudentType } from "../students/studentsTypes"
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupLoadType, GroupsType } from '../groups/groupsTypes'
+import { LessonsTypeRu } from '../scheduleLessons/scheduleLessonsTypes'
+import { StudentType } from '../students/studentsTypes'
 
 export type GradeBookInitialStateType = {
   gradeBook: GradeBookType | null
@@ -30,6 +30,7 @@ export type GradeType = {
   lessonNumber: number
   isAbsence: boolean
   rating: number
+  summaryType: null | GradeBookSummaryTypes
 }
 
 export type GradeBookSummaryType = {
@@ -38,10 +39,10 @@ export type GradeBookSummaryType = {
 }
 
 export enum GradeBookSummaryTypes {
-  MODULE_AVERAGE = "MODULE_AVERAGE",
-  MODULE_SUM = "MODULE_SUM",
-  LESSON_AVERAGE = "LESSON_AVERAGE",
-  LESSON_SUM = "LESSON_SUM",
-  MODULE_TEST = "MODULE_TEST",
-  ADDITIONAL_RATE = "ADDITIONAL_RATE",
+  MODULE_AVERAGE = 'MODULE_AVERAGE',
+  MODULE_SUM = 'MODULE_SUM',
+  LESSON_AVERAGE = 'LESSON_AVERAGE',
+  LESSON_SUM = 'LESSON_SUM',
+  MODULE_TEST = 'MODULE_TEST',
+  ADDITIONAL_RATE = 'ADDITIONAL_RATE',
 }

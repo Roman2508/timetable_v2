@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
-import { GradeBookInitialStateType, GradeBookType } from './gradeBookTypes'
+import { GradeBookInitialStateType, GradeBookSummaryTypes, GradeBookType } from './gradeBookTypes'
 import { addSummary, deleteSummary, getGradeBook, getGrades, updateGrade } from './gradeBookAsyncActions'
 import { AddSummaryResponceType, GetGradesResponceType, UpdateGradesResponceType } from '../../api/apiTypes'
 
@@ -22,12 +22,20 @@ export const gradeBookSlice = createSlice({
     },
     updateGradesLocally(
       state,
-      action: PayloadAction<{ id: number; rating: number; isAbsence: boolean; lessonNumber: number }>
+      action: PayloadAction<{
+        id: number
+        rating: number
+        isAbsence: boolean
+        lessonNumber: number
+        summaryType: null | GradeBookSummaryTypes
+      }>
     ) {
       if (!state.gradeBook) return
 
       const isGradesExist = state.gradeBook.grades.find((el) => el.id === action.payload.id)
-      const isLessonExist = isGradesExist?.grades.find((el) => el.lessonNumber === action.payload.lessonNumber)
+      const isLessonExist = isGradesExist?.grades.find(
+        (el) => el.lessonNumber === action.payload.lessonNumber && el.summaryType === action.payload.summaryType
+      )
       if (!isLessonExist) {
         const newGrades = state.gradeBook.grades.map((el) => {
           if (el.id === action.payload.id) {
@@ -46,7 +54,10 @@ export const gradeBookSlice = createSlice({
         if (el.id === action.payload.id) {
           //
           const studentGrades = el.grades.map((grade) => {
-            if (grade.lessonNumber === action.payload.lessonNumber) {
+            if (
+              grade.lessonNumber === action.payload.lessonNumber &&
+              grade.summaryType === action.payload.summaryType
+            ) {
               return action.payload
             } else {
               return grade
@@ -88,36 +99,11 @@ export const gradeBookSlice = createSlice({
       /*  */
       /*  */
       /*  */
-      /*  */
       alert('ckeck console')
       console.log(action.payload)
       /*  */
       /*  */
       /*  */
-      /*  */
-    })
-
-    /* updateGrade */
-    builder.addCase(updateGrade.fulfilled, (state, action: PayloadAction<UpdateGradesResponceType>) => {
-      if (!state.gradeBook) return
-      const allLessonGrades = state.gradeBook.grades.map((el) => {
-        if (el.id === action.payload.id) {
-          //
-          const studentGrades = el.grades.map((grade) => {
-            if (grade.lessonNumber === action.payload.grades.lessonNumber) {
-              return action.payload.grades
-            } else {
-              return grade
-            }
-          })
-
-          return { ...el, grades: studentGrades }
-          //
-        } else {
-          return el
-        }
-      })
-      state.gradeBook.grades = allLessonGrades
     })
   },
 })

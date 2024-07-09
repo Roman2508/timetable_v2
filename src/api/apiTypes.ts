@@ -297,6 +297,7 @@ export type UpdateGradePayloadType = {
   lessonNumber: number
   isAbsence: boolean
   rating: number
+  summaryType: null | string
   // studentId: number
   // gradeBookId: number
 }

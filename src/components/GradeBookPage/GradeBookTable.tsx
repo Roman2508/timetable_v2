@@ -1,15 +1,20 @@
-import React from "react"
-import { Checkbox, Paper, TextField } from "@mui/material"
+import React from 'react'
+import { Checkbox, Paper, TextField } from '@mui/material'
 
-import "./grade-book.css"
-import { useAppDispatch } from "../../store/store"
-import HIcon from "../../assets/images/icons/letter-h.svg"
-import { gradeBookSummary } from "../../utils/gradeBookSummary"
-import { updateGrade } from "../../store/gradeBook/gradeBookAsyncActions"
-import { updateGradesLocally } from "../../store/gradeBook/gradeBookSlice"
-import { GradeBookSummaryTypes, GradeBookType, StudentGradesType } from "../../store/gradeBook/gradeBookTypes"
-import GradeBookTableHead from "./GradeBookTableHead"
-import GradeBookTableCell from "./GradeBookTableCell"
+import './grade-book.css'
+import { useAppDispatch } from '../../store/store'
+import GradeBookTableHead from './GradeBookTableHead'
+import GradeBookTableCell from './GradeBookTableCell'
+import HIcon from '../../assets/images/icons/letter-h.svg'
+import { gradeBookSummary } from '../../utils/gradeBookSummary'
+import { updateGrade } from '../../store/gradeBook/gradeBookAsyncActions'
+import { updateGradesLocally } from '../../store/gradeBook/gradeBookSlice'
+import {
+  GradeBookSummaryTypes,
+  GradeBookType,
+  GradeType,
+  StudentGradesType,
+} from '../../store/gradeBook/gradeBookTypes'
 
 interface IGradeBookTablePops {
   gradeBook: GradeBookType
@@ -19,6 +24,7 @@ const cellInitialState = {
   lessonNumber: 0,
   isAbsence: false,
   rating: 0,
+  summaryType: null as null | GradeBookSummaryTypes,
   student: 0,
 }
 
@@ -57,9 +63,13 @@ const cellInitialState = {
 const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
   const dispatch = useAppDispatch()
 
-  const [cellData, setCellData] = React.useState(cellInitialState)
-  const [hoveredCell, setHoveredSell] = React.useState({ col: 0, row: 0 })
-  const [backupGrade, setBackupGrade] = React.useState<typeof cellInitialState | null>(null)
+  const [hoveredCell, setHoveredSell] = React.useState({
+    col: 0,
+    row: 0,
+    summaryType: null as null | GradeBookSummaryTypes,
+  })
+  const [cellData, setCellData] = React.useState<GradeType & { student: number }>(cellInitialState)
+  const [backupGrade, setBackupGrade] = React.useState<(GradeType & { student: number }) | null>(null)
 
   const updageGrade = () => {
     try {
@@ -73,6 +83,7 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
           id: cellData.student,
           rating: cellData.rating,
           isAbsence: cellData.isAbsence,
+          summaryType: cellData.summaryType,
           lessonNumber: cellData.lessonNumber,
         }
         dispatch(updateGradesLocally(data))
@@ -84,6 +95,31 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
     } finally {
     }
   }
+
+  // const updageSummaryGrade = () => {
+  //   try {
+  //     const isLessonNumberEqual = backupGrade?.lessonNumber === cellData.lessonNumber
+  //     const isAbsenceEqual = backupGrade?.isAbsence === cellData.isAbsence
+  //     const isRatingEqual = backupGrade?.rating === cellData.rating
+  //     const isStudentsEqual = backupGrade?.student === cellData.student
+
+  //     if (isLessonNumberEqual && isStudentsEqual && (!isAbsenceEqual || !isRatingEqual)) {
+  //       const data = {
+  //         summaryType: null,
+  //         id: cellData.student,
+  //         rating: cellData.rating,
+  //         isAbsence: cellData.isAbsence,
+  //         lessonNumber: cellData.lessonNumber,
+  //       }
+  //       dispatch(updateGradesLocally(data))
+  //       dispatch(updateGrade(data))
+  //       setBackupGrade(null)
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //   } finally {
+  //   }
+  // }
 
   return (
     <Paper>
@@ -107,47 +143,55 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
                   {Array(gradeBook ? gradeBook.lesson.hours : 0)
                     .fill(null)
                     .map((_, colIndex) => {
-                      const currentCellData = grade.grades.find((el) => el.lessonNumber === colIndex + 1)
+                      // const currentCellData = grade.grades.find((el) => el.lessonNumber === colIndex + 1)
 
                       const moduleAvarage = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex && el.type === "MODULE_AVERAGE"
+                        (el) => el.afterLesson === colIndex && el.type === 'MODULE_AVERAGE'
                       )
 
                       const moduleSum = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex && el.type === "MODULE_SUM"
+                        (el) => el.afterLesson === colIndex && el.type === 'MODULE_SUM'
                       )
 
                       const moduleTest = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex && el.type === "MODULE_TEST"
+                        (el) => el.afterLesson === colIndex && el.type === 'MODULE_TEST'
                       )
 
                       const additionalRate = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex && el.type === "ADDITIONAL_RATE"
+                        (el) => el.afterLesson === colIndex && el.type === 'ADDITIONAL_RATE'
                       )
+                      /* 
+                      const currentColSummary = moduleAvarage || moduleSum || moduleTest || additionalRate || null
+
+                      const currentCellData = grade.grades.find(
+                        (el) =>
+                          el.lessonNumber === colIndex + 1 &&
+                          (currentColSummary ? currentColSummary.type === el.summaryType : true)
+                      ) */
 
                       return (
                         <React.Fragment key={colIndex}>
                           {moduleAvarage && (
-                            <th style={{ backgroundColor: "#f3f3f3" }}>
-                              <p style={{ textAlign: "center", margin: 0 }}>
+                            <th style={{ backgroundColor: '#f3f3f3' }}>
+                              <p style={{ textAlign: 'center', margin: 0 }}>
                                 {gradeBookSummary.getModuleRate(
                                   gradeBook ? gradeBook.summary : [],
                                   grade.grades,
                                   moduleAvarage.afterLesson,
-                                  "average"
+                                  'average'
                                 )}
                               </p>
                             </th>
                           )}
 
                           {moduleSum && (
-                            <th style={{ backgroundColor: "#f3f3f3" }}>
-                              <p style={{ textAlign: "center", margin: 0 }}>
+                            <th style={{ backgroundColor: '#f3f3f3' }}>
+                              <p style={{ textAlign: 'center', margin: 0 }}>
                                 {gradeBookSummary.getModuleRate(
                                   gradeBook ? gradeBook.summary : [],
                                   grade.grades,
                                   moduleSum.afterLesson,
-                                  "sum"
+                                  'sum'
                                 )}
                               </p>
                             </th>
@@ -159,13 +203,16 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
                               colIndex={colIndex}
                               rowIndex={rowIndex}
                               cellData={cellData}
+                              grades={grade.grades}
+                              summaryType={moduleTest.type}
                               backgroundColor="#f3f3f3"
                               setCellData={setCellData}
                               hoveredCell={hoveredCell}
+                              showAbsenceCheckbox={false}
                               updageGrade={updageGrade}
                               setHoveredSell={setHoveredSell}
                               setBackupGrade={setBackupGrade}
-                              currentCellData={currentCellData}
+                              // currentCellData={currentCellData}
                             />
                           )}
 
@@ -175,13 +222,16 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
                               colIndex={colIndex}
                               rowIndex={rowIndex}
                               cellData={cellData}
+                              grades={grade.grades}
                               backgroundColor="#f3f3f3"
                               setCellData={setCellData}
                               hoveredCell={hoveredCell}
-                              updageGrade={updageGrade}
+                              showAbsenceCheckbox={false}
                               setHoveredSell={setHoveredSell}
                               setBackupGrade={setBackupGrade}
-                              currentCellData={currentCellData}
+                              updageGrade={updageGrade}
+                              summaryType={additionalRate.type}
+                              // currentCellData={currentCellData}
                             />
                           )}
 
@@ -190,12 +240,13 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
                             colIndex={colIndex}
                             rowIndex={rowIndex}
                             cellData={cellData}
+                            grades={grade.grades}
                             setCellData={setCellData}
                             hoveredCell={hoveredCell}
                             updageGrade={updageGrade}
                             setHoveredSell={setHoveredSell}
                             setBackupGrade={setBackupGrade}
-                            currentCellData={currentCellData}
+                            // currentCellData={currentCellData}
                           />
 
                           {/* <th style={{ overflow: "hidden" }}>
@@ -299,14 +350,14 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
                     })}
 
                   {gradeBook?.summary.find((el) => el.type === GradeBookSummaryTypes.LESSON_AVERAGE) && (
-                    <td style={{ textAlign: "center", backgroundColor: "#f3f3f3" }}>
-                      {gradeBookSummary.getTotalRate(grade.grades, "average")}
+                    <td style={{ textAlign: 'center', backgroundColor: '#f3f3f3' }}>
+                      {gradeBookSummary.getTotalRate(grade.grades, 'average')}
                     </td>
                   )}
 
                   {gradeBook?.summary.find((el) => el.type === GradeBookSummaryTypes.LESSON_SUM) && (
-                    <td style={{ textAlign: "center", backgroundColor: "#f3f3f3" }}>
-                      {gradeBookSummary.getTotalRate(grade.grades, "sum")}
+                    <td style={{ textAlign: 'center', backgroundColor: '#f3f3f3' }}>
+                      {gradeBookSummary.getTotalRate(grade.grades, 'sum')}
                     </td>
                   )}
                 </tr>
