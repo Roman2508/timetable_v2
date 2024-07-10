@@ -12,9 +12,9 @@ interface IGradeBookTableCellProps {
   updageGrade: () => void
   backgroundColor?: string
   showAbsenceCheckbox?: boolean
-  // currentCellData: GradeType | undefined
   cellData: GradeType & { student: number }
   summaryType?: null | GradeBookSummaryTypes
+  backupGrade: (GradeType & { student: number }) | null
   setCellData: Dispatch<SetStateAction<GradeType & { student: number }>>
   setBackupGrade: Dispatch<SetStateAction<(GradeType & { student: number }) | null>>
   hoveredCell: { col: number; row: number; summaryType: null | GradeBookSummaryTypes }
@@ -30,14 +30,19 @@ const GradeBookTableCell: React.FC<IGradeBookTableCellProps> = ({
   setCellData,
   hoveredCell,
   updageGrade,
+  backupGrade,
   setHoveredSell,
   setBackupGrade,
-  // currentCellData,
   summaryType = null,
   showAbsenceCheckbox = true,
   backgroundColor = '#ffffff',
 }) => {
-  const currentCellData = grades.find((el) => el.lessonNumber === colIndex + 1 && el.summaryType === summaryType)
+  const currentCellData = grades.find((el) => {
+    if (summaryType) {
+      return el.lessonNumber === colIndex && el.summaryType === summaryType
+    }
+    return el.lessonNumber === colIndex + 1 && el.summaryType === summaryType
+  })
 
   return (
     <th style={{ overflow: 'hidden', backgroundColor }}>
@@ -59,7 +64,8 @@ const GradeBookTableCell: React.FC<IGradeBookTableCellProps> = ({
             const data = {
               rating: 0,
               isAbsence: false,
-              lessonNumber: colIndex + 1,
+              // lessonNumber: colIndex + 1,
+              lessonNumber: summaryType ? colIndex : colIndex + 1,
               student: gradeId,
               summaryType,
             }
@@ -70,6 +76,7 @@ const GradeBookTableCell: React.FC<IGradeBookTableCellProps> = ({
         onMouseLeave={updageGrade}
         onKeyDown={(e) => {
           if (e.key === 'Enter') updageGrade()
+          if (e.key === 'Escape') backupGrade && setCellData(backupGrade)
         }}
         style={
           !showAbsenceCheckbox

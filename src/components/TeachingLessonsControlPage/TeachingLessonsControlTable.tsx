@@ -1,5 +1,4 @@
 import React from 'react'
-import { Paper } from '@mui/material'
 
 import './teaching-lessons-control.css'
 
@@ -9,7 +8,7 @@ const lessonsCount = 2
 
 const TeachingLessonsControlTable: React.FC<ITeachingLessonsControlTablePops> = ({}) => {
   return (
-    <table className="lessons-control-table">
+    <table className="lessons-control-table" cellSpacing="0">
       <thead>
         <tr>
           <th>№</th>

@@ -1,14 +1,17 @@
-import { GradeBookSummaryType, GradeType } from "../store/gradeBook/gradeBookTypes"
+import { GradeBookSummaryType, GradeType } from '../store/gradeBook/gradeBookTypes'
 
 export const gradeBookSummary = {
   getModuleRate(
     summary: GradeBookSummaryType[],
     grades: GradeType[],
     currentRange: number,
-    type: "average" | "sum"
+    type: 'average' | 'sum' | 'current_sum'
   ): string {
-    const summaryCopy = JSON.parse(JSON.stringify(summary))
-    const sortedSummary = summaryCopy.sort(
+    const summaryCopy: GradeBookSummaryType[] = JSON.parse(JSON.stringify(summary))
+    const summartWithoutRateAndTest = summaryCopy.filter(
+      (el) => el.type !== 'ADDITIONAL_RATE' && el.type !== 'MODULE_TEST'
+    )
+    const sortedSummary = summartWithoutRateAndTest.sort(
       (a: GradeBookSummaryType, b: GradeBookSummaryType) => a.afterLesson - b.afterLesson
     )
     const indices: number[] = sortedSummary.map((item: GradeBookSummaryType) => item.afterLesson)
@@ -39,42 +42,50 @@ export const gradeBookSummary = {
       }
     })
 
-    if (currentRange < 0) return ""
+    if (currentRange < 0) return ''
 
     const selectedPartIndex = sortedSummary.findIndex((el: GradeBookSummaryType) => el.afterLesson === currentRange)
 
     const selectedPart = parts[selectedPartIndex]
 
-    if (!selectedPart) return ""
+    if (!selectedPart) return ''
 
-    if (type === "average") {
+    if (type === 'average') {
       const notZeroValues = selectedPart.filter((el) => el.rating !== 0)
 
       const average = notZeroValues.reduce((acc, grade) => acc + grade.rating, 0) / notZeroValues.length
-      if (isNaN(average) || average === 0) return "-"
+      if (isNaN(average) || average === 0) return '-'
       return average.toFixed(0)
     }
 
-    if (type === "sum") {
+    if (type === 'sum') {
       const sum = selectedPart.reduce((acc, grade) => acc + grade.rating, 0)
-      if (isNaN(sum) || sum === 0) return "-"
+      if (isNaN(sum) || sum === 0) return '-'
       return String(sum)
     }
 
-    return ""
-  },
-
-  getTotalRate(grades: GradeType[], type: "average" | "sum") {
-    if (type === "average") {
-      const notZeroValues = grades.filter((el) => el.rating !== 0)
-      const rate = notZeroValues.reduce((acc, cur) => cur.rating + acc, 0) / notZeroValues.length
-      if (rate === 0) return "-"
-      return rate.toFixed(0)
+    // Рейтинг з модуля без додаткового рейтингу та модульного контролю
+    if (type === 'current_sum') {
+      const selectedPathWithoutSummary = selectedPart.filter((el) => !el.summaryType)
+      const sum = selectedPathWithoutSummary.reduce((acc, grade) => acc + grade.rating, 0)
+      if (isNaN(sum) || sum === 0) return '-'
+      return String(sum)
     }
 
-    if (type === "sum") {
+    return ''
+  },
+
+  getTotalRate(grades: GradeType[], type: 'average' | 'sum') {
+    if (type === 'average') {
+      const notZeroValues = grades.filter((el) => el.rating !== 0)
+      const average = notZeroValues.reduce((acc, cur) => cur.rating + acc, 0) / notZeroValues.length
+      if (isNaN(average) || average === 0) return '-'
+      return average.toFixed(0)
+    }
+
+    if (type === 'sum') {
       const rate = grades.reduce((acc, cur) => cur.rating + acc, 0)
-      if (rate === 0) return "-"
+      if (rate === 0) return '-'
       return rate
     }
   },

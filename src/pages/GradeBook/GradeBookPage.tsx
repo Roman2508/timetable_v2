@@ -57,9 +57,9 @@ const GradeBookPage = () => {
             <Grid item>
               <Typography variant="h5">
                 {gradeBook &&
-                  `${gradeBook.lesson.name} ${gradeBook.lesson.semester} семестр. Група ${
-                    gradeBook.group.name
-                  }. Викладач: ${getLastnameAndInitials(gradeBook.lesson.teacher)}`}
+                  `${gradeBook.lesson.name} 
+                  ${gradeBook.lesson.semester} семестр. Група ${gradeBook.group.name}
+                  . Викладач: ${getLastnameAndInitials(gradeBook.lesson.teacher)}`}
               </Typography>
             </Grid>
           </Grid>

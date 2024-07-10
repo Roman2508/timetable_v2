@@ -15,16 +15,16 @@ import {
   ListItemIcon,
   ListItemText,
   DialogContent,
-  DialogActions,
 } from '@mui/material'
 import React, { Dispatch, SetStateAction } from 'react'
 import { CloseOutlined, DeleteOutlined } from '@ant-design/icons'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
-import { GradeBookSummaryType, GradeBookType } from '../../store/gradeBook/gradeBookTypes'
 import { useAppDispatch } from '../../store/store'
-import { addSummary, deleteSummary } from '../../store/gradeBook/gradeBookAsyncActions'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import { deleteSummaryGradesLocally } from '../../store/gradeBook/gradeBookSlice'
+import { addSummary, deleteSummary } from '../../store/gradeBook/gradeBookAsyncActions'
+import { GradeBookSummaryType, GradeBookType } from '../../store/gradeBook/gradeBookTypes'
 
 interface IAddSummaryModalProps {
   open: boolean
@@ -44,6 +44,7 @@ export const summaryTypes = [
   { label: 'Рейтинг з дисципліни (сума)', value: 'LESSON_SUM' },
   { label: 'Модульний контроль', value: 'MODULE_TEST' },
   { label: 'Додатковий рейтинг', value: 'ADDITIONAL_RATE' },
+  { label: 'Поточний рейтинг', value: 'CURRENT_RATE' },
 ] as const
 
 const AddSummaryModal: React.FC<IAddSummaryModalProps> = ({ open, setOpen, gradeBook }) => {
@@ -97,7 +98,10 @@ const AddSummaryModal: React.FC<IAddSummaryModalProps> = ({ open, setOpen, grade
     try {
       if (!gradeBook) return
       if (window.confirm('Ви дійсно хочете видалити підсумок?')) {
+        // delete summary
         await dispatch(deleteSummary({ id: gradeBook.id, type, afterLesson }))
+        // delete all summary grades
+        dispatch(deleteSummaryGradesLocally({ id: gradeBook.id, type, afterLesson }))
       }
     } catch (error) {
       console.log(error)

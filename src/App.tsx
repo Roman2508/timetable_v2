@@ -1,55 +1,55 @@
-import { lazy } from "react"
-import Loadable from "./components/Loadable"
-import "react-toastify/dist/ReactToastify.css"
-import { Route, Routes } from "react-router-dom"
+import { lazy } from 'react'
+import Loadable from './components/Loadable'
+import 'react-toastify/dist/ReactToastify.css'
+import { Route, Routes } from 'react-router-dom'
 
-import "./App.css"
-import ThemeCustomization from "./themes"
-import MainLayout from "./layout/MainLayout"
-import ScrollTop from "./components/ScrollTop"
-import MinimalLayout from "./layout/MinimalLayout"
+import './App.css'
+import ThemeCustomization from './themes'
+import MainLayout from './layout/MainLayout'
+import ScrollTop from './components/ScrollTop'
+import MinimalLayout from './layout/MinimalLayout'
 // import { PlansPage } from './pages/Plans/PlansPage'
 // import { GroupsPage } from './pages/Groups/GroupsPage'
 // import { StreamsPage } from './pages/Streams/StreamsPage'
 // import FullGroupPage from './pages/FullGroup/FullGroupPage'
-import GradeBookPage from "./pages/GradeBook/GradeBookPage"
+import GradeBookPage from './pages/GradeBook/GradeBookPage'
 // import { FullPlanPage } from './pages/FullPlan/FullPlanPage'
 // import { TeachersPage } from './pages/Teachers/TeachersPage'
 // import { SettingsPage } from './pages/Settings/SettingsPage'
-import { TimetablePage } from "./pages/Timetable/TimetablePage"
+import { TimetablePage } from './pages/Timetable/TimetablePage'
 // import { AuditoriesPage } from './pages/Auditories/AuditoriesPage'
-import AuthLogin from "./pages/authentication/auth-forms/AuthLogin"
+import AuthLogin from './pages/authentication/auth-forms/AuthLogin'
 // import { StudentsDivide } from './pages/StudentsDivide/StudentsDivide'
 // import { DistributionPage } from './pages/Distribution/DistributionPage'
-import AuthRegister from "./pages/authentication/auth-forms/AuthRegister"
+import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
 // import TeachingLessonsControl from './pages/TeachingLessonsControl/TeachingLessonsControl'
 // import { StudentsAccounts } from './pages/StudentsAccounts/StudentsAccounts'
 
 // render - dashboard
-const DashboardDefault = Loadable(lazy(() => import("./pages/dashboard")))
+const DashboardDefault = Loadable(lazy(() => import('./pages/dashboard')))
 
 // render - sample page
-const SamplePage = Loadable(lazy(() => import("./pages/extra-pages/SamplePage")))
+const SamplePage = Loadable(lazy(() => import('./pages/extra-pages/SamplePage')))
 
-const Color = Loadable(lazy(() => import("./pages/components-overview/Color")))
-const Shadow = Loadable(lazy(() => import("./pages/components-overview/Shadow")))
-const AntIcons = Loadable(lazy(() => import("./pages/components-overview/AntIcons")))
-const Typography = Loadable(lazy(() => import("./pages/components-overview/Typography")))
+const Color = Loadable(lazy(() => import('./pages/components-overview/Color')))
+const Shadow = Loadable(lazy(() => import('./pages/components-overview/Shadow')))
+const AntIcons = Loadable(lazy(() => import('./pages/components-overview/AntIcons')))
+const Typography = Loadable(lazy(() => import('./pages/components-overview/Typography')))
 
 // lazy loading pages
-const GroupsPage = Loadable(lazy(() => import("./pages/Groups/GroupsPage")))
-const FullGroupPage = Loadable(lazy(() => import("./pages/FullGroup/FullGroupPage")))
-const PlansPage = Loadable(lazy(() => import("./pages/Plans/PlansPage")))
-const FullPlanPage = Loadable(lazy(() => import("./pages/FullPlan/FullPlanPage")))
-const AuditoriesPage = Loadable(lazy(() => import("./pages/Auditories/AuditoriesPage")))
-const TeachersPage = Loadable(lazy(() => import("./pages/Teachers/TeachersPage")))
-const DistributionPage = Loadable(lazy(() => import("./pages/Distribution/DistributionPage")))
-const StreamsPage = Loadable(lazy(() => import("./pages/Streams/StreamsPage")))
-const SettingsPage = Loadable(lazy(() => import("./pages/Settings/SettingsPage")))
-const StudentsAccounts = Loadable(lazy(() => import("./pages/StudentsAccounts/StudentsAccounts")))
-const StudentsDivide = Loadable(lazy(() => import("./pages/StudentsDivide/StudentsDivide")))
-const TeachingLessonsControl = Loadable(lazy(() => import("./pages/TeachingLessonsControl/TeachingLessonsControl")))
-const LoadPage = Loadable(lazy(() => import("./pages/Load/LoadPage")))
+const GroupsPage = Loadable(lazy(() => import('./pages/Groups/GroupsPage')))
+const FullGroupPage = Loadable(lazy(() => import('./pages/FullGroup/FullGroupPage')))
+const PlansPage = Loadable(lazy(() => import('./pages/Plans/PlansPage')))
+const FullPlanPage = Loadable(lazy(() => import('./pages/FullPlan/FullPlanPage')))
+const AuditoriesPage = Loadable(lazy(() => import('./pages/Auditories/AuditoriesPage')))
+const TeachersPage = Loadable(lazy(() => import('./pages/Teachers/TeachersPage')))
+const DistributionPage = Loadable(lazy(() => import('./pages/Distribution/DistributionPage')))
+const StreamsPage = Loadable(lazy(() => import('./pages/Streams/StreamsPage')))
+const SettingsPage = Loadable(lazy(() => import('./pages/Settings/SettingsPage')))
+const StudentsAccounts = Loadable(lazy(() => import('./pages/StudentsAccounts/StudentsAccounts')))
+const StudentsDivide = Loadable(lazy(() => import('./pages/StudentsDivide/StudentsDivide')))
+const TeachingLessonsControl = Loadable(lazy(() => import('./pages/TeachingLessonsControl/TeachingLessonsControl')))
+const LoadPage = Loadable(lazy(() => import('./pages/Load/LoadPage')))
 
 const App = () => {
   return (
@@ -148,6 +148,7 @@ export default App
 // 5. При створенні викладачів треба додавати логін та пароль і перевіряти унікалькість логіна
 // 6. Поділ на підгрупи - need to disable all tabs if select "all lessons"
 // 7. Сторінка "Розподіл навантаження" кнопки "прикріпити всі" і "відкріпити всі" працює тільки при подвійному кліку
+// 8. Облікові записи. Має бути масове оновлення та видалення студентів
 
 // ========================================================
 // ================== Поділ на підгрупи ===================

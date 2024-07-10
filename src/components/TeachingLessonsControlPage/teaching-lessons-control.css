@@ -1,14 +1,20 @@
 .lessons-control-table {
   margin-top: 20px;
   width: 100%;
-  /* border: 1px solid #ddd; */
+  border-bottom: 1px solid #ddd;
 }
 
 .lessons-control-table td,
 .lessons-control-table th {
-  border: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
   padding: 4px;
   text-align: center;
+}
+
+.lessons-control-table td:last-of-type,
+.lessons-control-table th:last-of-type {
+  border-right: 1px solid #ddd;
 }
 
 .lessons-control-table tbody tr:hover {

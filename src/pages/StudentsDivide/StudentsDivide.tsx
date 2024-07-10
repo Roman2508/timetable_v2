@@ -18,6 +18,8 @@ import {
 import StudentsDivideLessons from '../../components/StudentsDividePage/StudentsDivideLessons'
 import { LoadingStatusTypes } from '../../store/appTypes'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import { sortItemsByKey } from '../../utils/sortItemsByKey'
+import { StudentType } from '../../store/students/studentsTypes'
 
 const StudentsDivide = () => {
   const dispatch = useAppDispatch()
@@ -157,9 +159,9 @@ const StudentsDivide = () => {
                   // @ts-ignore Typings are not considering `native`
                   onChange={(e) => handleChangeMultiple(e, 'add')}
                 >
-                  {group.students.map((student, i) => (
+                  {sortItemsByKey(group.students, 'name').map((student: StudentType, index: number) => (
                     <option key={student.id} value={student.id} style={{ padding: '2px 0' }}>
-                      {`${i + 1}. ${student.name}`}
+                      {`${index + 1}. ${student.name}`}
                     </option>
                   ))}
                 </Select>
@@ -242,13 +244,14 @@ const StudentsDivide = () => {
                     // @ts-ignore Typings are not considering `native`
                     onChange={(e) => handleChangeMultiple(e, 'delete')}
                   >
-                    {(dividingType === 'all' ? group.students : lessonStudents ? lessonStudents : []).map(
-                      (student, i) => (
-                        <option key={student.id} value={student.id} style={{ padding: '2px 0' }}>
-                          {`${i + 1}. ${student.name}`}
-                        </option>
-                      )
-                    )}
+                    {sortItemsByKey(
+                      dividingType === 'all' ? group.students : lessonStudents ? lessonStudents : [],
+                      'name'
+                    ).map((student: StudentType, index: number) => (
+                      <option key={student.id} value={student.id} style={{ padding: '2px 0' }}>
+                        {`${index + 1}. ${student.name}`}
+                      </option>
+                    ))}
                   </Select>
                 )}
               </FormControl>

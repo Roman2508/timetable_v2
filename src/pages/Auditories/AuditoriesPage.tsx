@@ -1,26 +1,26 @@
 // material-ui
-import { Grid, Typography } from "@mui/material"
+import { Grid, Typography } from '@mui/material'
 
 // project import
-import React from "react"
-import { useSelector } from "react-redux"
-import MainCard from "../../components/MainCard"
-import { useAppDispatch } from "../../store/store"
-import { auditoriesSelector } from "../../store/auditories/auditoriesSlise"
-import CreateAuditoryForm from "../../components/AuditoriesPage/CreateAuditoryForm"
-import UpdateAuditoryModal from "../../components/AuditoriesPage/UpdateAuditoryModal"
-import { AccordionItemsList } from "../../components/AccordionItemsList/AccordionItemsList"
-import CreateAuditoryCategoryForm from "../../components/AuditoriesPage/CreateAuditoryCategoryForm"
-import UpdateAuditoryCategoryForm from "../../components/AuditoriesPage/UpdateAuditoryCategoryModal"
+import React from 'react'
+import { useSelector } from 'react-redux'
+import MainCard from '../../components/MainCard'
+import { useAppDispatch } from '../../store/store'
+import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
+import CreateAuditoryForm from '../../components/AuditoriesPage/CreateAuditoryForm'
+import UpdateAuditoryModal from '../../components/AuditoriesPage/UpdateAuditoryModal'
+import { AccordionItemsList } from '../../components/AccordionItemsList/AccordionItemsList'
+import CreateAuditoryCategoryForm from '../../components/AuditoriesPage/CreateAuditoryCategoryForm'
+import UpdateAuditoryCategoryForm from '../../components/AuditoriesPage/UpdateAuditoryCategoryModal'
 import {
   deleteAuditory,
   deleteAuditoryCategory,
   getAuditoryCategories,
-} from "../../store/auditories/auditoriesAsyncActions"
-import { LoadingStatusTypes } from "../../store/appTypes"
-import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
-import EmptyCard from "../../components/EmptyCard/EmptyCard"
-import { AuditoriesTypes } from "../../store/auditories/auditoriesTypes"
+} from '../../store/auditories/auditoriesAsyncActions'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { AuditoriesTypes } from '../../store/auditories/auditoriesTypes'
 
 // ==============================|| AUDITORIES ||============================== //
 
@@ -45,7 +45,7 @@ const AuditoriesPage = () => {
 
   const onDeleteAuditory = (id: number) => {
     try {
-      if (window.confirm("Ви дійсно хочете видалити викладача?")) {
+      if (window.confirm('Ви дійсно хочете видалити викладача?')) {
         dispatch(deleteAuditory(id))
       }
     } catch (error) {
@@ -55,10 +55,10 @@ const AuditoriesPage = () => {
 
   const onDeleteAuditoryCategory = (id: number, auditoriesCount: number) => {
     try {
-      if (!window.confirm("Ви дійсно хочете видалити категорію?")) return
+      if (!window.confirm('Ви дійсно хочете видалити категорію?')) return
 
       if (auditoriesCount > 0) {
-        alert("В категорії не повинно бути аудиторій")
+        alert('В категорії не повинно бути аудиторій')
       } else {
         dispatch(deleteAuditoryCategory(id))
       }
@@ -81,7 +81,7 @@ const AuditoriesPage = () => {
         editingAuditoryCategory={editingAuditoryCategory}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
         <Grid item xs={12} md={10}>
           <Grid container>
             <Grid item>
@@ -91,19 +91,15 @@ const AuditoriesPage = () => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} md={10} sx={{ display: "flex", alignItems: "flex-start" }}>
+        <Grid item xs={12} md={10} sx={{ display: 'flex', alignItems: 'flex-start' }}>
           <Grid
             item
             xs={8}
-            sx={{ borderRadius: "8px", border: "1px solid #e6ebf1", overflow: "hidden" }}
+            sx={{ borderRadius: '8px', border: '1px solid #e6ebf1', overflow: 'hidden', backgroundColor: '#fff' }}
           >
             {/* AUDITORIES LIST */}
-            {!auditoriCategories && loadingStatus === LoadingStatusTypes.LOADING && (
-              <LoadingSpinner />
-            )}
-            {!auditoriCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && (
-              <EmptyCard />
-            )}
+            {!auditoriCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
+            {!auditoriCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
             {auditoriCategories?.length && (
               <AccordionItemsList
                 items={auditoriCategories}
@@ -122,10 +118,7 @@ const AuditoriesPage = () => {
           <Grid item xs={4} sx={{ ml: 2 }}>
             <Grid item xs={12} sx={{ mb: 2 }}>
               <MainCard>
-                <Typography
-                  variant="button"
-                  sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}
-                >
+                <Typography variant="button" sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase' }}>
                   Додати нову аудиторію
                 </Typography>
 
@@ -135,10 +128,7 @@ const AuditoriesPage = () => {
 
             <Grid item xs={12}>
               <MainCard>
-                <Typography
-                  variant="button"
-                  sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}
-                >
+                <Typography variant="button" sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase' }}>
                   Додати нову категорію
                 </Typography>
 
@@ -152,4 +142,4 @@ const AuditoriesPage = () => {
   )
 }
 
-export default AuditoriesPage 
+export default AuditoriesPage

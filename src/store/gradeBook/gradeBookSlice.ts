@@ -2,13 +2,11 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
+import { addSummary, deleteSummary, getGradeBook, getGrades } from './gradeBookAsyncActions'
 import { GradeBookInitialStateType, GradeBookSummaryTypes, GradeBookType } from './gradeBookTypes'
-import { addSummary, deleteSummary, getGradeBook, getGrades, updateGrade } from './gradeBookAsyncActions'
-import { AddSummaryResponceType, GetGradesResponceType, UpdateGradesResponceType } from '../../api/apiTypes'
+import { AddSummaryResponceType, DeleteGradeBookSummaryPayloadType, GetGradesResponceType } from '../../api/apiTypes'
 
 const gradeBookInitialState: GradeBookInitialStateType = {
-  // @ts-ignore
-  // gradeBook: testInitialData[0],
   gradeBook: null,
   loadingStatus: LoadingStatusTypes.NEVER,
 }
@@ -71,6 +69,18 @@ export const gradeBookSlice = createSlice({
       })
       state.gradeBook.grades = allLessonGrades
     },
+    deleteSummaryGradesLocally(state, action: PayloadAction<DeleteGradeBookSummaryPayloadType>) {
+      if (!state.gradeBook) return
+
+      const newGrades = state.gradeBook.grades.map((grade) => {
+        const grades = grade.grades.filter(
+          (el) => el.lessonNumber !== action.payload.afterLesson + 1 || el.summaryType !== action.payload.type
+        )
+        return { ...grade, grades }
+      })
+
+      state.gradeBook.grades = newGrades
+    },
   },
   extraReducers: (builder) => {
     /* getGradeBook */
@@ -88,7 +98,6 @@ export const gradeBookSlice = createSlice({
     builder.addCase(deleteSummary.fulfilled, (state, action: PayloadAction<AddSummaryResponceType>) => {
       if (!state.gradeBook) return
       const { afterLesson, type } = action.payload.summary[0]
-      console.log({ afterLesson, type })
       const summary = state.gradeBook.summary.filter((el) => el.afterLesson !== afterLesson || el.type !== type)
       state.gradeBook.summary = summary
     })
@@ -108,7 +117,7 @@ export const gradeBookSlice = createSlice({
   },
 })
 
-export const { setLoadingStatus, updateGradesLocally } = gradeBookSlice.actions
+export const { setLoadingStatus, updateGradesLocally, deleteSummaryGradesLocally } = gradeBookSlice.actions
 
 export default gradeBookSlice.reducer
 

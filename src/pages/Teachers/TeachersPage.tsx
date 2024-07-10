@@ -107,7 +107,11 @@ const TeachersPage = () => {
         </Grid>
 
         <Grid item xs={12} md={10} sx={{ display: 'flex', alignItems: 'flex-start' }}>
-          <Grid item xs={8} sx={{ borderRadius: '8px', border: '1px solid #e6ebf1', overflow: 'hidden' }}>
+          <Grid
+            item
+            xs={8}
+            sx={{ borderRadius: '8px', border: '1px solid #e6ebf1', overflow: 'hidden', backgroundColor: '#fff' }}
+          >
             {/* TEACHERS LIST */}
             {!teachersCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
             {!teachersCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
