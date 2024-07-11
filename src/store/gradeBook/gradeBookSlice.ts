@@ -74,7 +74,7 @@ export const gradeBookSlice = createSlice({
 
       const newGrades = state.gradeBook.grades.map((grade) => {
         const grades = grade.grades.filter(
-          (el) => el.lessonNumber !== action.payload.afterLesson + 1 || el.summaryType !== action.payload.type
+          (el) => el.lessonNumber !== action.payload.afterLesson - 1 || el.summaryType !== action.payload.type
         )
         return { ...grade, grades }
       })

@@ -3,23 +3,23 @@ import { useSelector } from 'react-redux'
 import { LeftSquareOutlined, RightSquareOutlined } from '@ant-design/icons'
 import { Grid, Paper, Select, Tooltip, IconButton, Typography, FormControl } from '@mui/material'
 
+import {
+  addStudentToLesson,
+  deleteStudentFromLesson,
+  addStudentsToAllGroupLessons,
+  deleteStudentsFromAllGroupLessons,
+} from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 import { useAppDispatch } from '../../store/store'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import { sortItemsByKey } from '../../utils/sortItemsByKey'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import { GroupLoadType } from '../../store/groups/groupsTypes'
 import { groupsSelector } from '../../store/groups/groupsSlice'
+import { StudentType } from '../../store/students/studentsTypes'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import { scheduleLessonsSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
 import StudentsDivideFilter from '../../components/StudentsDividePage/StudentsDivideFilter'
-import {
-  addStudentToLesson,
-  addStudentsToAllGroupLessons,
-  deleteStudentFromLesson,
-  deleteStudentsFromAllGroupLessons,
-} from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 import StudentsDivideLessons from '../../components/StudentsDividePage/StudentsDivideLessons'
-import { LoadingStatusTypes } from '../../store/appTypes'
-import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
-import { sortItemsByKey } from '../../utils/sortItemsByKey'
-import { StudentType } from '../../store/students/studentsTypes'
 
 const StudentsDivide = () => {
   const dispatch = useAppDispatch()

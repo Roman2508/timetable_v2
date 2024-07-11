@@ -45,6 +45,7 @@ export const summaryTypes = [
   { label: 'Модульний контроль', value: 'MODULE_TEST' },
   { label: 'Додатковий рейтинг', value: 'ADDITIONAL_RATE' },
   { label: 'Поточний рейтинг', value: 'CURRENT_RATE' },
+  { label: 'Екзамен', value: 'EXAM' },
 ] as const
 
 const AddSummaryModal: React.FC<IAddSummaryModalProps> = ({ open, setOpen, gradeBook }) => {
@@ -72,15 +73,16 @@ const AddSummaryModal: React.FC<IAddSummaryModalProps> = ({ open, setOpen, grade
     watch,
     reset,
     control,
-    formState: { isSubmitting },
+    setValue,
     handleSubmit,
+    formState: { isSubmitting },
   } = useForm<IGradeBookFilterFields>({ mode: 'onBlur' })
 
   const onSubmit: SubmitHandler<IGradeBookFilterFields> = async (data) => {
     try {
       if (!gradeBook) return
 
-      if (data.type === 'LESSON_AVERAGE' || data.type === 'LESSON_SUM') {
+      if (data.type === 'LESSON_AVERAGE' || data.type === 'LESSON_SUM' || data.type === 'EXAM') {
         await dispatch(addSummary({ id: gradeBook.id, type: data.type, afterLesson: gradeBook.lesson.hours }))
         return
       } else {
@@ -141,6 +143,19 @@ const AddSummaryModal: React.FC<IAddSummaryModalProps> = ({ open, setOpen, grade
                       {...field}
                       id="type"
                       defaultValue={summaryTypes[0].value}
+                      onChange={(e) => {
+                        field.onChange(e)
+                        if (!gradeBook) return
+
+                        const selectedSummary = e.target.value
+                        if (
+                          selectedSummary === 'EXAM' ||
+                          selectedSummary === 'LESSON_SUM' ||
+                          selectedSummary === 'LESSON_AVERAGE'
+                        ) {
+                          setValue('afterLesson', gradeBook.lesson.hours)
+                        }
+                      }}
                       sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
                     >
                       {summaryTypes.map((option) => (
@@ -168,7 +183,9 @@ const AddSummaryModal: React.FC<IAddSummaryModalProps> = ({ open, setOpen, grade
                       fullWidth
                       {...field}
                       id="afterLesson"
-                      disabled={watch('type') === 'LESSON_AVERAGE' || watch('type') === 'LESSON_SUM'}
+                      disabled={
+                        watch('type') === 'LESSON_AVERAGE' || watch('type') === 'LESSON_SUM' || watch('type') === 'EXAM'
+                      }
                       sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
                     >
                       {Array(gradeBook ? gradeBook.lesson.hours : 1)

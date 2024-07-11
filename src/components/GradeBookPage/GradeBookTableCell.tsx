@@ -52,22 +52,21 @@ const GradeBookTableCell: React.FC<IGradeBookTableCellProps> = ({
           // is grade exist
           if (currentCellData) {
             const data = {
+              summaryType,
+              student: gradeId,
               rating: currentCellData.rating,
               isAbsence: currentCellData.isAbsence,
               lessonNumber: currentCellData.lessonNumber,
-              student: gradeId,
-              summaryType,
             }
             setCellData(data)
             setBackupGrade(data)
           } else {
             const data = {
               rating: 0,
-              isAbsence: false,
-              // lessonNumber: colIndex + 1,
-              lessonNumber: summaryType ? colIndex : colIndex + 1,
-              student: gradeId,
               summaryType,
+              student: gradeId,
+              isAbsence: false,
+              lessonNumber: summaryType ? colIndex : colIndex + 1,
             }
             setCellData(data)
             setBackupGrade(data)

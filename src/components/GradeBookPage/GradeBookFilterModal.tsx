@@ -47,11 +47,10 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({ open, setO
   }
 
   const {
-    reset,
     watch,
     control,
-    formState: { isSubmitting },
     handleSubmit,
+    formState: { isSubmitting },
   } = useForm<IGradeBookFilterFields>({ mode: "onBlur" })
 
   const onSubmit: SubmitHandler<IGradeBookFilterFields> = async (data) => {

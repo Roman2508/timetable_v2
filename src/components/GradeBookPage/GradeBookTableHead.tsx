@@ -24,7 +24,7 @@ const GradeBookTableHead: React.FC<IGradeBookTableHeadProps> = ({ gradeBook }) =
                 {gradeBook.summary.find((el) => el.afterLesson === index + 1 && el.type === 'CURRENT_RATE') && (
                   <th style={{ padding: '4px 8px' }}>
                     <p>Поточний</p>
-                    <p style={{ whiteSpace: 'nowrap' }}>контроль</p>
+                    <p style={{ whiteSpace: 'nowrap' }}>рейтинг</p>
                   </th>
                 )}
 
@@ -57,6 +57,12 @@ const GradeBookTableHead: React.FC<IGradeBookTableHeadProps> = ({ gradeBook }) =
               </React.Fragment>
             )
           })}
+
+        {gradeBook.summary.find((el) => el.type === GradeBookSummaryTypes.EXAM) && (
+          <th style={{ padding: '4px 8px' }}>
+            <p>Екзамен</p>
+          </th>
+        )}
 
         {gradeBook.summary.find((el) => el.type === GradeBookSummaryTypes.LESSON_AVERAGE) && (
           <th style={{ padding: '0 8px' }}>Семестрова</th>

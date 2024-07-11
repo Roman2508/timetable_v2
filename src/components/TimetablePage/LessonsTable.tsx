@@ -52,13 +52,7 @@ const LessonsTable: React.FC<ILessonsTable> = ({
 }) => {
   const dispatch = useAppDispatch()
 
-  const {
-    // lastOpenedWeek,
-    // lastOpenedSemester,
-    lastSelectedItemId,
-    lastSelectedScheduleType,
-    // lastSelectedStructuralUnitId,
-  } = useSelector(lastSelectedDataSelector)
+  const { lastSelectedItemId, lastSelectedScheduleType } = useSelector(lastSelectedDataSelector)
 
   const { groupLoad, loadingStatus, scheduleLessons } = useSelector(scheduleLessonsSelector)
 
@@ -123,6 +117,8 @@ const LessonsTable: React.FC<ILessonsTable> = ({
       setIsPossibleToCreateLessons(true)
     }
 
+    const studentsCount = typeof lesson.students === 'number' ? lesson.students : lesson.students?.length
+
     setSelectedLesson({
       id: lesson.id,
       name: lesson.name,
@@ -131,7 +127,7 @@ const LessonsTable: React.FC<ILessonsTable> = ({
       stream: lesson.stream,
       teacher: lesson.teacher,
       totalHours: lesson.hours,
-      students: lesson.students,
+      students: studentsCount,
       subgroupNumber: lesson.subgroupNumber,
       specialization: lesson.specialization,
       group: { id: lesson.group.id, name: lesson.group.name },

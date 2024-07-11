@@ -9,7 +9,7 @@ export const gradeBookSummary = {
   ): string {
     const summaryCopy: GradeBookSummaryType[] = JSON.parse(JSON.stringify(summary))
     const summartWithoutRateAndTest = summaryCopy.filter(
-      (el) => el.type !== 'ADDITIONAL_RATE' && el.type !== 'MODULE_TEST'
+      (el) => el.type !== 'ADDITIONAL_RATE' && el.type !== 'MODULE_TEST' && el.type !== 'EXAM'
     )
     const sortedSummary = summartWithoutRateAndTest.sort(
       (a: GradeBookSummaryType, b: GradeBookSummaryType) => a.afterLesson - b.afterLesson
