@@ -53,7 +53,6 @@ const LessonsTable: React.FC<ILessonsTable> = ({
   const dispatch = useAppDispatch()
 
   const { lastSelectedItemId, lastSelectedScheduleType } = useSelector(lastSelectedDataSelector)
-
   const { groupLoad, loadingStatus, scheduleLessons } = useSelector(scheduleLessonsSelector)
 
   React.useEffect(() => {

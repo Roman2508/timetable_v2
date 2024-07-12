@@ -1,12 +1,14 @@
 import React from 'react'
 
+import { customDayjs } from '../Calendar/Calendar'
 import { GradeBookSummaryTypes, GradeBookType } from '../../store/gradeBook/gradeBookTypes'
 
 interface IGradeBookTableHeadProps {
   gradeBook: GradeBookType
+  gradeBookLessonDates: { date: string }[]
 }
 
-const GradeBookTableHead: React.FC<IGradeBookTableHeadProps> = ({ gradeBook }) => {
+const GradeBookTableHead: React.FC<IGradeBookTableHeadProps> = ({ gradeBook, gradeBookLessonDates }) => {
   return (
     <thead>
       <tr>
@@ -14,11 +16,13 @@ const GradeBookTableHead: React.FC<IGradeBookTableHeadProps> = ({ gradeBook }) =
         {Array(gradeBook ? gradeBook.lesson.hours : 0)
           .fill(null)
           .map((_, index) => {
+            const dateObj = gradeBookLessonDates[index]
+
             return (
               <React.Fragment key={index}>
                 <th>
                   <p>{index + 1}</p>
-                  <p>22.02</p>
+                  <p>{dateObj ? customDayjs(dateObj.date).format('DD.MM.YY') : '-'}</p>
                 </th>
 
                 {gradeBook.summary.find((el) => el.afterLesson === index + 1 && el.type === 'CURRENT_RATE') && (

@@ -1,13 +1,9 @@
-// material-ui
-import { Grid, List, Typography, ListItemText, ListItemButton, IconButton, Tooltip } from '@mui/material'
-import { EditOutlined, DeleteOutlined, PlusCircleOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
-
-// project import
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { Grid, List, Typography, ListItemText, ListItemButton, IconButton, Tooltip } from '@mui/material'
+import { EditOutlined, DeleteOutlined, PlusCircleOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
 
-import { deleteGroup, getGroupCategories, deleteGroupCategory } from '../../store/groups/groupsAsyncActions'
 import MainCard from '../../components/MainCard'
 import { useAppDispatch } from '../../store/store'
 import { LoadingStatusTypes } from '../../store/appTypes'
@@ -17,8 +13,7 @@ import { GroupCategoriesType } from '../../store/groups/groupsTypes'
 import { GroupsTable } from '../../components/GroupsPage/GroupsTable'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import { GroupsActionsModal } from '../../components/GroupsPage/GroupsActionsModal'
-
-// ==============================|| GROUPS ||============================== //
+import { deleteGroup, getGroupCategories, deleteGroupCategory } from '../../store/groups/groupsAsyncActions'
 
 const GroupsPage = () => {
   const dispatch = useAppDispatch()
@@ -79,12 +74,7 @@ const GroupsPage = () => {
         setActiveGroupCategory={setActiveGroupCategory}
       />
 
-      <Grid
-        container
-        // rowSpacing={4.5}
-        // columnSpacing={2.75}
-        sx={{ m: '0 auto', maxWidth: '1200px' /* paddingRight: '20px' */ }}
-      >
+      <Grid container sx={{ m: '0 auto', maxWidth: '1200px' }}>
         {/* Категорії (відділення) */}
         <Grid item xs={12} md={5} lg={5} sx={{ paddingRight: '20px' }}>
           <Grid container alignItems="center" justifyContent="space-between">
@@ -196,12 +186,6 @@ const GroupsPage = () => {
               />
             )}
             {!activeGroupCategory?.groups.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
-
-            {/* {activeGroupCategory ? (
-              <GroupsTable groups={activeGroupCategory.groups} onDeleteEntity={onDeleteEntity} />
-            ) : (
-              <EmptyCard />
-            )} */}
           </MainCard>
         </Grid>
       </Grid>

@@ -320,3 +320,13 @@ export type UpdateGradesResponceType = {
   id: number
   grades: GradeType
 }
+
+export type FindAllLessonDatesForTheSemesterPayloadType = {
+  groupId: number
+  semester: number
+  lessonName: string
+  type: string
+  stream?: number
+  subgroupNumber?: number
+  specialization?: string
+}

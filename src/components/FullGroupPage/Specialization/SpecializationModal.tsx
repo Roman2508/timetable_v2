@@ -29,15 +29,18 @@ interface ISelectPlanModalProps {
   setOpen: Dispatch<SetStateAction<boolean>>
 }
 
+const specializationListInitialState = [
+  { label: 'Спеціалізація відсутня', value: 'Спеціалізація відсутня' },
+  { label: 'Не вивчається', value: 'Не вивчається' },
+]
+
 const SpecializationModal: React.FC<ISelectPlanModalProps> = ({ open, setOpen }) => {
   const dispatch = useAppDispatch()
 
-  const [specializationListModalVisible, setSpecializationListModalVisible] = React.useState(false)
   const [selectedLesson, setSelectedLesson] = React.useState<GroupLoadType | null>(null)
-  const [specializationList, setSpecializationList] = React.useState([
-    { label: 'Спеціалізація відсутня', value: 'Спеціалізація відсутня' },
-    { label: 'Не вивчається', value: 'Не вивчається' },
-  ])
+  const [sortBy, setSortBy] = React.useState({ key: 'name', order: 'asc' as 'asc' | 'desc' })
+  const [specializationListModalVisible, setSpecializationListModalVisible] = React.useState(false)
+  const [specializationList, setSpecializationList] = React.useState(specializationListInitialState)
   const [selectedSpecialization, setSelectedSpecialization] = React.useState(specializationList[0].value)
 
   const { group } = useSelector(groupsSelector)
@@ -75,16 +78,9 @@ const SpecializationModal: React.FC<ISelectPlanModalProps> = ({ open, setOpen })
         specializationList={group.specializationList}
       />
 
-      <Dialog
-        open={open}
-        // fullScreen
-        maxWidth={'xl'}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
+      <Dialog open={open} maxWidth={'xl'} onClose={handleClose}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <DialogTitle>{'Спеціалізовані підгрупи'}</DialogTitle>
+          <DialogTitle>Спеціалізовані підгрупи</DialogTitle>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Stack>
@@ -135,9 +131,10 @@ const SpecializationModal: React.FC<ISelectPlanModalProps> = ({ open, setOpen })
                 '& .MuiTableCell-root:last-of-type': { pr: 3 },
               }}
             >
-              <SpecializationModalTableHead />
+              <SpecializationModalTableHead sortBy={sortBy} setSortBy={setSortBy} />
 
               <SpecializationModalTableBody
+                sortBy={sortBy}
                 groupLoad={group.groupLoad}
                 selectedLesson={selectedLesson}
                 setSelectedLesson={setSelectedLesson}
@@ -147,7 +144,7 @@ const SpecializationModal: React.FC<ISelectPlanModalProps> = ({ open, setOpen })
           </TableContainer>
         </DialogContent>
 
-        <DialogActions sx={{ paddingBottom: '24px' }}>
+        <DialogActions sx={{ paddingBottom: '24px', paddingRight: '24px' }}>
           <Button
             type="submit"
             color="primary"

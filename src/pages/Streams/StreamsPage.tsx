@@ -1,10 +1,8 @@
-// material-ui
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { FilterOutlined, FormOutlined } from '@ant-design/icons'
 import { Grid, Table, Divider, IconButton, Typography, Tooltip } from '@mui/material'
 
-// project import
 import MainCard from '../../components/MainCard'
 import { useAppDispatch } from '../../store/store'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
@@ -15,15 +13,13 @@ import { streamsSelector } from '../../store/streams/streamsSlice'
 import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import StreamSelections from '../../components/StreamsPage/StreamSelections'
+import { areAllFieldsInStreamEqual } from '../../utils/compateStreamFilelds'
 import { StreamActionsModal } from '../../components/StreamsPage/StreamActionsModal'
 import { getStreamLessons, getStreams } from '../../store/streams/streamsAsyncActions'
 import { StreamLessonsTableHead } from '../../components/StreamsPage/StreamLessonsTableHead'
 import { StreamLessonsTableBody } from '../../components/StreamsPage/StreamLessonsTableBody'
 import { AddGroupsToStreamModal } from '../../components/StreamsPage/AddGroupsToStreamModal'
 import { AddLessonToStreamModal } from '../../components/StreamsPage/AddLessonToStreamModal'
-import { areAllFieldsInStreamEqual } from '../../utils/compateStreamFilelds'
-
-// ==============================|| STREAMS ||============================== //
 
 const StreamsPage = () => {
   const dispatch = useAppDispatch()
@@ -118,12 +114,7 @@ const StreamsPage = () => {
                 >
                   <Typography
                     variant="button"
-                    sx={{
-                      textAlign: 'center',
-                      display: 'block',
-                      textTransform: 'uppercase',
-                      px: 2,
-                    }}
+                    sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase', px: 2 }}
                   >
                     {selectedStream ? `Потік: ${selectedStream.name}` : 'Виберіть потік'}
                   </Typography>
@@ -180,4 +171,4 @@ const StreamsPage = () => {
   )
 }
 
-export default StreamsPage 
+export default StreamsPage

@@ -1,5 +1,33 @@
-export const sortItemsByKey = (items: any[], key: string) => {
+// export const sortItemsByKey = (items: any[], key: string) => {
+//   const itemsDeepCopy = JSON.parse(JSON.stringify(items))
+
+//   if (typeof items[0][0] === 'object') {
+//     return itemsDeepCopy.sort((a: any, b: any) => a[0][key].toLowerCase().localeCompare(b[0][key].toLowerCase()))
+//   }
+
+//   return itemsDeepCopy.sort((a: any, b: any) => a[key].toLowerCase().localeCompare(b[key].toLowerCase()))
+// }
+
+export const sortItemsByKey = (items: any[], key: string, order: 'asc' | 'desc' = 'asc') => {
   const itemsDeepCopy = JSON.parse(JSON.stringify(items))
-  return itemsDeepCopy.sort((a: any, b: any) => a[key].toLowerCase().localeCompare(b[key].toLowerCase()))
-  //   return itemsDeepCopy.sort((a: any, b: any) => a[key] - b[key])
+
+  const getValue = (obj: any) => obj[key]
+
+  const compareValues = (valA: any, valB: any) => {
+    if (typeof valA === 'string' && typeof valB === 'string') {
+      return valA.toLowerCase().localeCompare(valB.toLowerCase())
+    } else if (typeof valA === 'number' && typeof valB === 'number') {
+      return valA - valB
+    } else {
+      return valA.toString().toLowerCase().localeCompare(valB.toString().toLowerCase())
+    }
+  }
+
+  const compare = (a: any, b: any) => (order === 'asc' ? compareValues(a, b) : -compareValues(a, b))
+
+  if (Array.isArray(itemsDeepCopy[0])) {
+    return itemsDeepCopy.sort((a: any, b: any) => compare(getValue(a[0]), getValue(b[0])))
+  }
+
+  return itemsDeepCopy.sort((a: any, b: any) => compare(getValue(a), getValue(b)))
 }

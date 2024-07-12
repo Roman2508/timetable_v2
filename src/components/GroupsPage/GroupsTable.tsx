@@ -1,8 +1,3 @@
-import { Link as RouterLink } from 'react-router-dom'
-import React, { Dispatch, SetStateAction, useState } from 'react'
-import { DeleteOutlined, EditOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
-
-// material-ui
 import {
   Box,
   Link,
@@ -16,43 +11,14 @@ import {
   SortDirection,
   TableContainer,
 } from '@mui/material'
+import { Link as RouterLink } from 'react-router-dom'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import { DeleteOutlined, EditOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
+
 import { useAppDispatch } from '../../store/store'
 import { handleGroupVisible } from '../../store/groups/groupsAsyncActions'
 import { GroupCategoriesType, GroupsShortType } from '../../store/groups/groupsTypes'
-
-// const createData = (trackingNo: number, name: string, fat: number, carbs: number, protein: number) => {
-//   return { trackingNo, name, fat, carbs, protein }
-// }
-
-// function descendingComparator(a, b, orderBy) {
-//   if (b[orderBy] < a[orderBy]) {
-//     return -1
-//   }
-//   if (b[orderBy] > a[orderBy]) {
-//     return 1
-//   }
-//   return 0
-// }
-
-// function getComparator(order, orderBy) {
-//   return order === 'desc'
-//     ? (a, b) => descendingComparator(a, b, orderBy)
-//     : (a, b) => -descendingComparator(a, b, orderBy)
-// }
-
-// function stableSort(array, comparator) {
-//   const stabilizedThis = array.map((el, index) => [el, index])
-//   stabilizedThis.sort((a, b) => {
-//     const order = comparator(a[0], b[0])
-//     if (order !== 0) {
-//       return order
-//     }
-//     return a[1] - b[1]
-//   })
-//   return stabilizedThis.map((el) => el[0])
-// }
-
-// ==============================|| ORDER TABLE - HEADER CELL ||============================== //
+import { sortItemsByKey } from '../../utils/sortItemsByKey'
 
 interface IHeadCells {
   id: string
@@ -89,7 +55,7 @@ const headCells: IHeadCells[] = [
   },
 ]
 
-// ==============================|| ORDER TABLE - HEADER ||============================== //
+// ==============================|| TABLE - HEAD ||============================== //
 
 interface IOrderTableHeadProps {
   order: string
@@ -115,7 +81,7 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = ({ order, orderBy }) => {
   )
 }
 
-// ==============================|| ORDER TABLE ||============================== //
+// ==============================|| TABLE ||============================== //
 
 interface IGroupsTableProps {
   groups: GroupsShortType[]
@@ -170,10 +136,10 @@ const GroupsTable: React.FC<IGroupsTableProps> = ({ groups, onDeleteEntity, setA
           <OrderTableHead order={order} orderBy={orderBy} />
           <TableBody>
             {/* {stableSort(rows, getComparator(order, orderBy)).map((row, index) => { */}
-            {groups.map((group, index) => {
+            {sortItemsByKey(groups, 'name').map((group: GroupsShortType, index: number) => {
               const isItemSelected = isSelected(group.id)
               const labelId = `enhanced-table-checkbox-${index}`
-           
+
               return (
                 <TableRow
                   hover

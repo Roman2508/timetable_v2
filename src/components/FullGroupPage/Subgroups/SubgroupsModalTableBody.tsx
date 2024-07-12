@@ -3,6 +3,7 @@ import { TableBody, TableCell, TableRow, Typography } from '@mui/material'
 
 import { GroupLoadType } from '../../../store/groups/groupsTypes'
 import { groupLessonByNameSubgroupsAndSemester } from '../../../utils/groupLessonByNameSubgroupsAndSemester'
+import { sortItemsByKey } from '../../../utils/sortItemsByKey'
 
 const cellStyles = {
   borderBottom: '1px solid rgb(220, 220, 220)',
@@ -13,17 +14,21 @@ const cellStyles = {
 interface ISubgroupsModalTableBodyProps {
   groupLoad: GroupLoadType[] | null
   selectedLesson: GroupLoadType[] | null
+  sortBy: { key: string; order: 'asc' | 'desc' }
   setSelectedLesson: Dispatch<SetStateAction<GroupLoadType[] | null>>
 }
 
 const SubgroupsModalTableBody: React.FC<ISubgroupsModalTableBodyProps> = ({
+  sortBy,
   groupLoad,
   selectedLesson,
   setSelectedLesson,
 }) => {
+  const lessons = !groupLoad ? [] : groupLessonByNameSubgroupsAndSemester(groupLoad)
+
   return (
     <TableBody>
-      {(!groupLoad ? [] : groupLessonByNameSubgroupsAndSemester(groupLoad)).map((row, index: number) => {
+      {sortItemsByKey(lessons, sortBy.key, sortBy.order).map((row: GroupLoadType[], index: number) => {
         const isItemSelected = (selectedLesson ? selectedLesson[0].id : 0) === row[0].id
         const labelId = `enhanced-table-checkbox-${index}`
 

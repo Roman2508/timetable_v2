@@ -50,6 +50,7 @@ import {
   AddStudentsToAllGroupLessonsType,
   DeleteStudentsFromAllGroupLessonsType,
   FindGroupLoadLessonsByGroupIdAndSemesterPayloadType,
+  FindAllLessonDatesForTheSemesterPayloadType,
 } from './apiTypes'
 import { StreamsType } from '../store/streams/streamsTypes'
 import { StudentType } from '../store/students/studentsTypes'
@@ -385,6 +386,10 @@ export const scheduleLessonsAPI = {
   },
   delete(id: number) {
     return instanse.delete<number>(`/schedule-lessons/${id}`)
+  },
+
+  findAllLessonDatesForTheSemester(payload: FindAllLessonDatesForTheSemesterPayloadType) {
+    return instanse.get<{ date: string }[]>(`/schedule-lessons/dates`, { params: { ...payload } })
   },
 }
 

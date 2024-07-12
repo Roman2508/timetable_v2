@@ -15,10 +15,15 @@ const GradeBookPage = () => {
 
   const [isOpenFilterModal, setIsOpenFilterModal] = React.useState(false)
   const [isOpenSummaryModal, setIsOpenSummaryModal] = React.useState(false)
+  const [gradeBookLessonDates, setGradeBookLessonDates] = React.useState<{ date: string }[]>([])
 
   return (
     <>
-      <GradeBookFilter open={isOpenFilterModal} setOpen={setIsOpenFilterModal} />
+      <GradeBookFilter
+        open={isOpenFilterModal}
+        setOpen={setIsOpenFilterModal}
+        setGradeBookLessonDates={setGradeBookLessonDates}
+      />
       <AddSummaryModal open={isOpenSummaryModal} setOpen={setIsOpenSummaryModal} gradeBook={gradeBook} />
 
       <Grid container sx={{ mb: 2, pt: 0 }}>
@@ -72,7 +77,7 @@ const GradeBookPage = () => {
           <Typography>Виберіть групу та дисципліну для перегляду журналу</Typography>
         </Paper>
       ) : (
-        <GradeBookTable gradeBook={gradeBook} />
+        <GradeBookTable gradeBook={gradeBook} gradeBookLessonDates={gradeBookLessonDates} />
       )}
     </>
   )

@@ -17,6 +17,7 @@ import { updateGradesLocally } from '../../store/gradeBook/gradeBookSlice'
 
 interface IGradeBookTablePops {
   gradeBook: GradeBookType
+  gradeBookLessonDates: { date: string }[]
 }
 
 const cellInitialState = {
@@ -29,7 +30,7 @@ const cellInitialState = {
 
 // Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
 
-const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
+const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook, gradeBookLessonDates }) => {
   const dispatch = useAppDispatch()
 
   const [hoveredCell, setHoveredSell] = React.useState({
@@ -69,7 +70,7 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook }) => {
     <Paper>
       <div className="table-container">
         <table className="grades-table">
-          <GradeBookTableHead gradeBook={gradeBook} />
+          <GradeBookTableHead gradeBook={gradeBook} gradeBookLessonDates={gradeBookLessonDates} />
 
           <tbody>
             {JSON.parse(JSON.stringify(gradeBook?.grades))
