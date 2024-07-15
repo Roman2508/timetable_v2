@@ -234,9 +234,15 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook, gradeBookLes
                   )}
 
                   {gradeBook?.summary.find((el) => el.type === GradeBookSummaryTypes.LESSON_SUM) && (
-                    <td style={{ textAlign: 'center', backgroundColor: '#f3f3f3' }}>
-                      {gradeBookSummary.getTotalRate(grade.grades, 'sum')}
-                    </td>
+                    <>
+                      <td style={{ textAlign: 'center', backgroundColor: '#f3f3f3' }}>
+                        {gradeBookSummary.getTotalRate(grade.grades, 'sum')}
+                      </td>
+
+                      <td style={{ textAlign: 'center', backgroundColor: '#f3f3f3' }}>
+                        {gradeBookSummary.calcECTS(Number(gradeBookSummary.getTotalRate(grade.grades, 'sum')))}
+                      </td>
+                    </>
                   )}
                 </tr>
               ))}

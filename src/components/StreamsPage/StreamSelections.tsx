@@ -1,37 +1,24 @@
-import {
-  Grid,
-  List,
-  Tooltip,
-  Divider,
-  IconButton,
-  Typography,
-  ListItemText,
-  ListItemButton,
-} from "@mui/material"
-import React, { Dispatch, SetStateAction } from "react"
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons"
+import { Grid, List, Tooltip, Divider, IconButton, Typography, ListItemText, ListItemButton } from '@mui/material'
+import React, { Dispatch, SetStateAction } from 'react'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
-import {
-  deleteStream,
-  addGroupToStream,
-  deleteGroupFromStream,
-} from "../../store/streams/streamsAsyncActions"
-import MainCard from "../MainCard"
-import { useAppDispatch } from "../../store/store"
-import { StreamsType } from "../../store/streams/streamsTypes"
-import { DeleteGroupFromStreamResponseType } from "../../api/apiTypes"
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"
-import { useSelector } from "react-redux"
-import { streamsSelector } from "../../store/streams/streamsSlice"
-import { LoadingStatusTypes } from "../../store/appTypes"
-import EmptyCard from "../EmptyCard/EmptyCard"
+import { deleteStream, addGroupToStream, deleteGroupFromStream } from '../../store/streams/streamsAsyncActions'
+import MainCard from '../MainCard'
+import { useAppDispatch } from '../../store/store'
+import { StreamsType } from '../../store/streams/streamsTypes'
+import { DeleteGroupFromStreamResponseType } from '../../api/apiTypes'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import { useSelector } from 'react-redux'
+import { streamsSelector } from '../../store/streams/streamsSlice'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import EmptyCard from '../EmptyCard/EmptyCard'
 
 interface IStreamSelectionsProps {
   streams: StreamsType[] | null
   selectedStream: StreamsType | null
   setActionsModalVisible: Dispatch<SetStateAction<boolean>>
   setSelectedStream: Dispatch<SetStateAction<StreamsType | null>>
-  setActionsModalType: Dispatch<SetStateAction<"create" | "update">>
+  setActionsModalType: Dispatch<SetStateAction<'create' | 'update'>>
   setAddGroupsToStreamModalVisible: Dispatch<SetStateAction<boolean>>
 }
 
@@ -47,47 +34,43 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
   const { loadingStatus } = useSelector(streamsSelector)
 
   const onDeleteStream = async () => {
-    if (!selectedStream) return alert("Потік не вибраний")
-    if (!window.confirm("Ви дійсно хочете видалити потік?")) return
-    if (selectedStream.groups.length) return alert("Неможливо видалити потік в якому є групи")
+    if (!selectedStream) return alert('Потік не вибраний')
+    if (!window.confirm('Ви дійсно хочете видалити потік?')) return
+    if (selectedStream.groups.length) return alert('Неможливо видалити потік в якому є групи')
     await dispatch(deleteStream(selectedStream.id))
     setSelectedStream(null)
   }
 
   const onRemoveGroupFromStream = async (groupId: number) => {
-    if (!selectedStream) return alert("Потік не вибраний")
-    if (!window.confirm("Ви дійсно хочете видалити групу з потоку?")) return
-    const { payload } = await dispatch(
-      deleteGroupFromStream({ groupId, streamId: selectedStream.id })
-    )
+    if (!selectedStream) return alert('Потік не вибраний')
+    if (!window.confirm('Ви дійсно хочете видалити групу з потоку?')) return
+    const { payload } = await dispatch(deleteGroupFromStream({ groupId, streamId: selectedStream.id }))
     setSelectedStream((prev) => {
       if (!prev) return null
-      const streamGroups = prev.groups.filter(
-        (g) => g.id !== (payload as DeleteGroupFromStreamResponseType).groupId
-      )
+      const streamGroups = prev.groups.filter((g) => g.id !== (payload as DeleteGroupFromStreamResponseType).groupId)
       return { ...prev, groups: streamGroups }
     })
   }
 
   return (
-    <Grid item xs={3} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <Grid item xs={12}>
         <Grid item xs={12}>
-          <MainCard sx={{ "& .MuiCardContent-root": { p: 0 }, p: 0 }}>
+          <MainCard sx={{ '& .MuiCardContent-root': { p: 0 }, p: 0 }}>
             <div
               style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingRight: "8px",
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingRight: '8px',
               }}
             >
               <Typography
                 variant="button"
                 sx={{
-                  textAlign: "left",
-                  display: "block",
-                  textTransform: "uppercase",
+                  textAlign: 'left',
+                  display: 'block',
+                  textTransform: 'uppercase',
                   my: 2.6,
                   px: 3,
                 }}
@@ -99,9 +82,9 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
                 <IconButton
                   onClick={() => {
                     setActionsModalVisible(true)
-                    setActionsModalType("create")
+                    setActionsModalType('create')
                   }}
-                  sx={{ mr: "5px" }}
+                  sx={{ mr: '5px' }}
                 >
                   <PlusOutlined />
                 </IconButton>
@@ -112,10 +95,10 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
             <List
               sx={{
                 p: 0,
-                "& .MuiListItemButton-root": { py: 2 },
-                maxHeight: "235px",
-                height: "235px",
-                overflowY: "auto",
+                '& .MuiListItemButton-root': { py: 2 },
+                maxHeight: '235px',
+                height: '235px',
+                overflowY: 'auto',
               }}
             >
               {!streams && loadingStatus === LoadingStatusTypes.ERROR && <EmptyCard />}
@@ -127,7 +110,7 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
                   key={el.id}
                   onClick={() => setSelectedStream(el)}
                   selected={selectedStream?.id === el.id}
-                  sx={{ padding: "8px 24px !important" }}
+                  sx={{ padding: '8px 24px !important' }}
                 >
                   <ListItemText primary={el.name} />
                 </ListItemButton>
@@ -138,34 +121,31 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard sx={{ "& .MuiCardContent-root": { p: 0 }, p: 0 }}>
+        <MainCard sx={{ '& .MuiCardContent-root': { p: 0 }, p: 0 }}>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "0 8px 0 24px",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '0 8px 0 24px',
             }}
           >
             <Typography
               variant="button"
               sx={{
-                textAlign: "center",
-                display: "block",
-                textTransform: "uppercase",
+                textAlign: 'center',
+                display: 'block',
+                textTransform: 'uppercase',
                 my: 2.6,
               }}
             >
-              {selectedStream ? `Потік: ${selectedStream.name}` : "Виберіть потік"}
+              {selectedStream ? `Групи потоку: ${selectedStream.name}` : 'Виберіть потік'}
             </Typography>
 
             {selectedStream && (
               <div>
                 <Tooltip title="Додати групу до потоку">
-                  <IconButton
-                    onClick={() => setAddGroupsToStreamModalVisible(true)}
-                    sx={{ mr: "5px" }}
-                  >
+                  <IconButton onClick={() => setAddGroupsToStreamModalVisible(true)} sx={{ mr: '5px' }}>
                     <PlusOutlined />
                   </IconButton>
                 </Tooltip>
@@ -174,16 +154,16 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
                   <IconButton
                     onClick={() => {
                       setActionsModalVisible(true)
-                      setActionsModalType("update")
+                      setActionsModalType('update')
                     }}
-                    sx={{ mr: "5px" }}
+                    sx={{ mr: '5px' }}
                   >
                     <EditOutlined />
                   </IconButton>
                 </Tooltip>
 
                 <Tooltip title="Видалити потік">
-                  <IconButton onClick={() => onDeleteStream()} sx={{ mr: "5px" }}>
+                  <IconButton onClick={() => onDeleteStream()} sx={{ mr: '5px' }}>
                     <DeleteOutlined />
                   </IconButton>
                 </Tooltip>
@@ -195,10 +175,10 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
           <List
             sx={{
               p: 0,
-              "& .MuiListItemButton-root": { py: 2 },
-              maxHeight: "235px",
-              height: "235px",
-              overflowY: "auto",
+              '& .MuiListItemButton-root': { py: 2 },
+              maxHeight: '235px',
+              height: '235px',
+              overflowY: 'auto',
             }}
           >
             {(selectedStream ? selectedStream.groups : []).map((el) => (
@@ -207,9 +187,9 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
                 disableRipple
                 key={el.id}
                 sx={{
-                  "&:hover .MuiButtonBase-root": { display: "block" },
-                  padding: "8px 8px 8px 24px !important",
-                  cursor: "default",
+                  '&:hover .MuiButtonBase-root': { display: 'block' },
+                  padding: '8px 8px 8px 24px !important',
+                  cursor: 'default',
                 }}
               >
                 <ListItemText primary={el.name} />
@@ -218,11 +198,11 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
                   <IconButton
                     onClick={() => onRemoveGroupFromStream(el.id)}
                     sx={{
-                      mr: "8px",
-                      p: "0px",
-                      width: "28px",
-                      height: "28px",
-                      display: "none",
+                      mr: '8px',
+                      p: '0px',
+                      width: '28px',
+                      height: '28px',
+                      display: 'none',
                     }}
                   >
                     <DeleteOutlined />

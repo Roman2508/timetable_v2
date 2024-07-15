@@ -89,6 +89,16 @@ export const gradeBookSummary = {
       return rate
     }
   },
+
+  calcECTS(grade: number): 'A' | 'B' | 'C' | 'D' | 'E' | 'FX' | 'F' {
+    if (grade >= 90) return 'A'
+    else if (grade >= 82 && grade <= 89) return 'B'
+    else if (grade >= 74 && grade <= 81) return 'C'
+    else if (grade >= 64 && grade <= 73) return 'D'
+    else if (grade >= 60 && grade <= 63) return 'E'
+    else if (grade >= 35 && grade <= 59) return 'FX'
+    else return 'F'
+  },
 }
 
 /* trycode.pw

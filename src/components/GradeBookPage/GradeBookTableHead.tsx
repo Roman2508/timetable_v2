@@ -73,10 +73,16 @@ const GradeBookTableHead: React.FC<IGradeBookTableHeadProps> = ({ gradeBook, gra
         )}
 
         {gradeBook.summary.find((el) => el.type === GradeBookSummaryTypes.LESSON_SUM) && (
-          <th style={{ padding: '0 8px' }}>
-            <p>Рейтинг</p>
-            <p style={{ whiteSpace: 'nowrap' }}>з дисципліни</p>
-          </th>
+          <>
+            <th style={{ padding: '0 8px' }}>
+              <p>Рейтинг</p>
+              <p style={{ whiteSpace: 'nowrap' }}>з дисципліни</p>
+            </th>
+
+            <th style={{ padding: '0 8px' }}>
+              <p>ECTS</p>
+            </th>
+          </>
         )}
       </tr>
     </thead>
