@@ -155,11 +155,34 @@ export const deletePlan = createAsyncThunk('plans/deletePlan', async (id: number
 
 /* plan-subjects */
 
-export const getPlanSubjects = createAsyncThunk('plans/getPlanSubjects', async (id: number, thunkAPI) => {
+export const getPlanSubjects = createAsyncThunk(
+  'plans/getPlanSubjects',
+  async (payload: { id: number; semesters: string }, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+    try {
+      const { data } = await planSubjectsAPI.getPlanSubjects(payload)
+      thunkAPI.dispatch(setAppAlert({ message: 'План завантажено', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)
+
+export const getPlanName = createAsyncThunk('plans/getPlanName', async (id: number, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
   try {
-    const { data } = await planSubjectsAPI.getSubjects(id)
+    const { data } = await plansAPI.getPlanName(id)
     thunkAPI.dispatch(setAppAlert({ message: 'План завантажено', status: 'success' }))
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
     return data

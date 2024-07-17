@@ -2,7 +2,8 @@ import { LoadingStatusTypes } from '../appTypes'
 
 export type PlansInitialState = {
   plansCategories: PlansCategoriesType[] | null
-  plan: PlanType | null
+  plan: Omit<PlanType, 'subjects'> | null
+  planSubjects: PlanSubjectType[] | null
   loadingStatus: LoadingStatusTypes
 }
 

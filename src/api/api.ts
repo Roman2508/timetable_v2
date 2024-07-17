@@ -58,7 +58,7 @@ import { SettingsType } from '../store/settings/settingsTypes'
 import { GradeBookType } from '../store/gradeBook/gradeBookTypes'
 import { ScheduleLessonType } from '../store/scheduleLessons/scheduleLessonsTypes'
 import { TeachersCategoryType, TeachersType } from '../store/teachers/teachersTypes'
-import { PlanType, PlansCategoriesType, PlansType } from '../store/plans/plansTypes'
+import { PlanSubjectType, PlanType, PlansCategoriesType, PlansType } from '../store/plans/plansTypes'
 import { GroupCategoriesType, GroupLoadType, GroupsType } from '../store/groups/groupsTypes'
 import { AuditoriesTypes, AuditoryCategoriesTypes } from '../store/auditories/auditoriesTypes'
 
@@ -169,6 +169,9 @@ export const plansAPI = {
   },
 
   /* plans */
+  getPlanName(id: number) {
+    return instanse.get<PlanType>(`/plans/${id}`)
+  },
   createPlan(payload: CreatePlanPayloadType) {
     return instanse.post<PlansType>('/plans', payload)
   },
@@ -183,9 +186,12 @@ export const plansAPI = {
 }
 
 export const planSubjectsAPI = {
-  getSubjects(id: number) {
-    return instanse.get<PlanType>(`/plans/${id}`)
+  getPlanSubjects(payload: { id: number; semesters: string }) {
+    const { id, semesters } = payload
+
+    return instanse.get<PlanSubjectType[]>(`/plan-subjects/${id}`, { params: { semesters } })
   },
+
   createSubject(payload: CreateSubjectPayloadType) {
     return instanse.post<any>('/plan-subjects', payload)
   },

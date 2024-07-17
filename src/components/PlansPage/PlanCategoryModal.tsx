@@ -15,21 +15,29 @@ import React, { Dispatch, SetStateAction } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 import { useAppDispatch } from '../../store/store'
-import { createPlan, createPlanCategory, updatePlanCategory } from '../../store/plans/plansAsyncActions'
+import { PlanModalInitialData, PlansActionModalTypes } from '../../pages/Plans/PlansPage'
+import { createPlan, createPlanCategory, updatePlan, updatePlanCategory } from '../../store/plans/plansAsyncActions'
 
 interface IPlanCategoryModalProps {
   open: boolean
-  modalType: 'create' | 'update' | 'create-plan'
+  modalType: PlansActionModalTypes
+  editingPlan: PlanModalInitialData | null
   setOpen: Dispatch<SetStateAction<boolean>>
-  editingPlanCategory: { id: number; name: string } | null
+  editingPlanCategory: PlanModalInitialData | null
+  setEditingPlan: Dispatch<SetStateAction<PlanModalInitialData | null>>
+  setEditingPlanCategory: Dispatch<SetStateAction<PlanModalInitialData | null>>
 }
 
-const PlanCategoryModal: React.FC<IPlanCategoryModalProps> = ({ open, setOpen, modalType, editingPlanCategory }) => {
+const PlanCategoryModal: React.FC<IPlanCategoryModalProps> = (props) => {
+  const { open, setOpen, modalType, editingPlan, editingPlanCategory, setEditingPlan, setEditingPlanCategory } = props
+
   const dispatch = useAppDispatch()
 
   const handleClose = () => {
     reset({ name: '' })
     setOpen(false)
+    setEditingPlanCategory(null)
+    setEditingPlan(null)
   }
 
   const {
@@ -41,38 +49,39 @@ const PlanCategoryModal: React.FC<IPlanCategoryModalProps> = ({ open, setOpen, m
   } = useForm<{ name: string }>({
     mode: 'onBlur',
     defaultValues: {
-      name: editingPlanCategory ? editingPlanCategory.name : '',
+      name: editingPlanCategory ? editingPlanCategory.name : editingPlan ? editingPlan.name : '',
     },
   })
 
   const onSubmit: SubmitHandler<{ name: string }> = async (data) => {
     try {
-      // Якщо форму відкрито в модалці - оновлення викладача
-      if (modalType === 'update') {
+      if (modalType === 'update-plan-category') {
         if (!editingPlanCategory) return
         await dispatch(updatePlanCategory({ ...data, id: editingPlanCategory.id }))
-        handleClose()
-        reset({ name: '' })
         return
       }
 
-      if (modalType === 'create') {
-        // Якщо форму відкрито НЕ в модалці - створення викладача
+      if (modalType === 'create-plan-category') {
         await dispatch(createPlanCategory(data))
-        handleClose()
-        reset({ name: '' })
         return
       }
 
       if (modalType === 'create-plan') {
         if (!editingPlanCategory) return
         await dispatch(createPlan({ ...data, categoryId: editingPlanCategory.id }))
-        handleClose()
-        reset({ name: '' })
+        return
+      }
+
+      if (modalType === 'update-plan') {
+        if (!editingPlan) return
+        await dispatch(updatePlan({ ...data, id: editingPlan.id }))
         return
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      handleClose()
+      reset({ name: '' })
     }
   }
 
@@ -81,18 +90,19 @@ const PlanCategoryModal: React.FC<IPlanCategoryModalProps> = ({ open, setOpen, m
     setValue('name', editingPlanCategory.name)
   }, [editingPlanCategory])
 
+  React.useEffect(() => {
+    if (!editingPlan || modalType !== 'update-plan') return
+    setValue('name', editingPlan.name)
+  }, [editingPlan])
+
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
+    <Dialog open={open} onClose={handleClose}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <DialogTitle id="alert-dialog-title">
-          {modalType === 'create' && 'Нова категорія'}
-          {modalType === 'update' && 'Редагування категорії'}
+          {modalType === 'create-plan-category' && 'Нова категорія'}
+          {modalType === 'update-plan-category' && 'Редагування категорії'}
           {modalType === 'create-plan' && 'Новий план'}
+          {modalType === 'update-plan' && 'Редагувати план'}
         </DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
@@ -100,12 +110,12 @@ const PlanCategoryModal: React.FC<IPlanCategoryModalProps> = ({ open, setOpen, m
         </IconButton>
       </div>
       <DialogContent sx={{ padding: '0 24px 20px' }}>
-        <DialogContentText id="alert-dialog-description">
+        <DialogContentText>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Controller
               name="name"
               control={control}
-              rules={{ required: 'Вкажіть назву категорії' }}
+              rules={{ required: modalType === 'update-plan' ? 'Вкажіть назву плану' : 'Вкажіть назву категорії' }}
               render={({ field }) => {
                 return (
                   <Stack spacing={1} sx={{ mt: 2 }}>
@@ -118,11 +128,7 @@ const PlanCategoryModal: React.FC<IPlanCategoryModalProps> = ({ open, setOpen, m
                       type="text"
                       error={Boolean(errors.name)}
                     />
-                    {errors.name && (
-                      <FormHelperText error id="helper-text-name">
-                        {errors.name.message}
-                      </FormHelperText>
-                    )}
+                    {errors.name && <FormHelperText error>{errors.name.message}</FormHelperText>}
                   </Stack>
                 )
               }}
@@ -135,13 +141,19 @@ const PlanCategoryModal: React.FC<IPlanCategoryModalProps> = ({ open, setOpen, m
               disabled={isSubmitting}
               sx={{ textTransform: 'capitalize', width: '100%', p: '7.44px 15px', mt: 3 }}
             >
-              {modalType === 'update' && !isSubmitting
+              {modalType.includes('update') && !isSubmitting && 'Оновити'}
+              {modalType.includes('create') && !isSubmitting && 'Створити'}
+              {isSubmitting && 'Завантаження...'}
+
+              {/* {modalType === 'update-plan-category' && !isSubmitting
                 ? 'Оновити'
-                : modalType === 'create' && !isSubmitting
+                : modalType === 'update-plan' && !isSubmitting
+                ? 'Оновити'
+                : modalType === 'create-plan-category' && !isSubmitting
                 ? 'Створити'
                 : modalType === 'create-plan' && !isSubmitting
                 ? 'Створити'
-                : 'Завантаження...'}
+                : 'Завантаження...'} */}
             </Button>
           </form>
         </DialogContentText>

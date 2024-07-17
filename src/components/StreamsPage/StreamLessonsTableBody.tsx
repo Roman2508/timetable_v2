@@ -5,9 +5,9 @@ import { GroupLoadType } from '../../store/groups/groupsTypes'
 import { groupLessonsByFields } from '../../utils/groupLessonsByFields'
 
 const cellStyles = {
-  borderBottom: '1px solid rgb(220, 220, 220)',
   p: '4px',
   minWidth: '0px',
+  borderBottom: '1px solid rgb(220, 220, 220)',
 }
 
 interface IStreamLessonsTableBodyProps {
@@ -16,11 +16,9 @@ interface IStreamLessonsTableBodyProps {
   setSelectedLessons: Dispatch<SetStateAction<GroupLoadType[][]>>
 }
 
-const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = ({
-  streamLessons,
-  selectedLessons,
-  setSelectedLessons,
-}) => {
+const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = (props) => {
+  const { streamLessons, selectedLessons, setSelectedLessons } = props
+
   const handleSelectLesson = (lesson: GroupLoadType[]) => {
     setSelectedLessons((prev) => {
       const existedLesson = prev.find((el) => el[0].id === lesson[0].id)
@@ -61,8 +59,8 @@ const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = ({
             <TableCell
               sx={{
                 ...cellStyles,
-                minWidth: '250px !important',
                 position: 'relative',
+                minWidth: '250px !important',
                 ':hover *': { display: 'flex !important' },
               }}
               component="th"
@@ -70,9 +68,19 @@ const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = ({
               scope="row"
               align="left"
             >
-              <Typography sx={{ flexGrow: 1 }}>{row[0].name}</Typography>
+              <Typography
+                sx={{
+                  flexGrow: 1,
+                  overflow: 'hidden',
+                  maxWidth: '450px',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {row[0].name}
+              </Typography>
             </TableCell>
-            <TableCell sx={cellStyles} align="center">
+            <TableCell sx={{ ...cellStyles, whiteSpace: 'nowrap' }} align="center">
               {row[0].group.name} {row[0].subgroupNumber ? `підгр.${row[0].subgroupNumber}` : ''}
             </TableCell>
             <TableCell sx={cellStyles} align="center">
@@ -85,7 +93,11 @@ const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = ({
               const streamName = lesson && lesson.stream ? lesson.stream.name : ''
 
               return (
-                <TableCell key={lessonType} sx={{ ...cellStyles, cursor: 'pointer' }} align="center">
+                <TableCell
+                  key={lessonType}
+                  sx={{ ...cellStyles, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                  align="center"
+                >
                   {lesson ? `${lesson.hours} ${streamName && `(${streamName})`}` : '-'}
                 </TableCell>
               )

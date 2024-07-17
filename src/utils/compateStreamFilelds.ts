@@ -50,15 +50,17 @@ export const convertLessonsForCompare = (lessons: GroupLoadType[][]) => {
 export const areAllFieldsInStreamEqual = (lessons: GroupLoadType[][]): boolean => {
   const allLessonsArr = convertLessonsForCompare(lessons)
 
-  console.log(allLessonsArr)
-
   if (allLessonsArr.length === 0) {
     return false // Пустий масив
   }
 
   const sampleObject = allLessonsArr[0]
 
-  const keys = Object.keys(sampleObject)
+  const allKeys = Object.keys(sampleObject)
+
+  // Виймаю з масиву ключів назву дисципліни
+  // Оскільки 2 дисципліни з різними назвами можуть бути об'єднаними
+  const [_, ...keys] = allKeys
 
   let compareResult
 

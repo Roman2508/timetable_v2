@@ -30,6 +30,10 @@ const plansSlice = createSlice({
     setLoadingStatus(state, action) {
       state.loadingStatus = action.payload
     },
+
+    clearStreamLessons(state) {
+      state.streamLessons = null
+    },
   },
   extraReducers: (builder) => {
     /* --- categories --- */
@@ -104,7 +108,7 @@ const plansSlice = createSlice({
     /* addLessonToStream */
     builder.addCase(addLessonToStream.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
       if (!state.streamLessons) return
-
+      console.log(action.payload)
       const lessons = state.streamLessons.map((el) => {
         const newLesson = action.payload.find((n) => n.id === el.id)
 
@@ -137,7 +141,7 @@ const plansSlice = createSlice({
   },
 })
 
-export const { setLoadingStatus } = plansSlice.actions
+export const { setLoadingStatus, clearStreamLessons } = plansSlice.actions
 
 export default plansSlice.reducer
 

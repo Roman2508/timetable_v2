@@ -9,7 +9,7 @@ import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import { GroupLoadType } from '../../store/groups/groupsTypes'
 import { StreamsType } from '../../store/streams/streamsTypes'
 import { groupsSelector } from '../../store/groups/groupsSlice'
-import { streamsSelector } from '../../store/streams/streamsSlice'
+import { clearStreamLessons, streamsSelector } from '../../store/streams/streamsSlice'
 import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import StreamSelections from '../../components/StreamsPage/StreamSelections'
@@ -43,10 +43,15 @@ const StreamsPage = () => {
   React.useEffect(() => {
     if (streams) return
     dispatch(getStreams())
+
+    return () => {
+      dispatch(clearStreamLessons())
+    }
   }, [])
 
   React.useEffect(() => {
     if (!selectedStream) return
+    dispatch(clearStreamLessons())
     const fetchGroups = async () => {
       Promise.allSettled(
         selectedStream.groups.map(async (el) => {
@@ -110,6 +115,8 @@ const StreamsPage = () => {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     marginBottom: '10px',
+                    whiteSpace: 'nowrap',
+                    overflowY: 'auto',
                   }}
                 >
                   <Typography
@@ -144,7 +151,7 @@ const StreamsPage = () => {
                 {selectedStream && !streamLessons && <LoadingSpinner />}
 
                 {selectedStream && streamLessons && (
-                  <Table>
+                  <Table sx={{ width: '100%', tableLayout: 'fixed' }}>
                     <StreamLessonsTableHead />
                     <StreamLessonsTableBody
                       streamLessons={streamLessons}

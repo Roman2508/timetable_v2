@@ -15,7 +15,7 @@ const StreamLessonsTableHead: React.FC = () => {
   return (
     <TableHead>
       <TableRow>
-        <TableCell sx={cellStyles} align="center" rowSpan={3} padding="none">
+        <TableCell sx={{ ...cellStyles, width: 'calc(100% / 3)' }} align="center" rowSpan={3} padding="none">
           Дисципліна
         </TableCell>
         <TableCell sx={cellStyles} align="center" rowSpan={3} padding="none">

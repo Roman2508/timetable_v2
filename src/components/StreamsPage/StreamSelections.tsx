@@ -1,17 +1,17 @@
-import { Grid, List, Tooltip, Divider, IconButton, Typography, ListItemText, ListItemButton } from '@mui/material'
+import { useSelector } from 'react-redux'
 import React, { Dispatch, SetStateAction } from 'react'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { Grid, List, Tooltip, Divider, IconButton, Typography, ListItemText, ListItemButton } from '@mui/material'
 
-import { deleteStream, addGroupToStream, deleteGroupFromStream } from '../../store/streams/streamsAsyncActions'
 import MainCard from '../MainCard'
-import { useAppDispatch } from '../../store/store'
-import { StreamsType } from '../../store/streams/streamsTypes'
-import { DeleteGroupFromStreamResponseType } from '../../api/apiTypes'
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
-import { useSelector } from 'react-redux'
-import { streamsSelector } from '../../store/streams/streamsSlice'
-import { LoadingStatusTypes } from '../../store/appTypes'
 import EmptyCard from '../EmptyCard/EmptyCard'
+import { useAppDispatch } from '../../store/store'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import { StreamsType } from '../../store/streams/streamsTypes'
+import { streamsSelector } from '../../store/streams/streamsSlice'
+import { DeleteGroupFromStreamResponseType } from '../../api/apiTypes'
+import { deleteStream, deleteGroupFromStream } from '../../store/streams/streamsAsyncActions'
 
 interface IStreamSelectionsProps {
   streams: StreamsType[] | null
@@ -130,20 +130,25 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
               padding: '0 8px 0 24px',
             }}
           >
-            <Typography
-              variant="button"
-              sx={{
-                textAlign: 'center',
-                display: 'block',
-                textTransform: 'uppercase',
-                my: 2.6,
-              }}
-            >
-              {selectedStream ? `Групи потоку: ${selectedStream.name}` : 'Виберіть потік'}
-            </Typography>
+            <Tooltip title={selectedStream ? `Групи потоку: ${selectedStream.name}` : 'Виберіть потік'}>
+              <Typography
+                variant="button"
+                sx={{
+                  my: 2.6,
+                  display: 'block',
+                  textAlign: 'center',
+                  textTransform: 'uppercase',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {selectedStream ? `Групи потоку: ${selectedStream.name}` : 'Виберіть потік'}
+              </Typography>
+            </Tooltip>
 
             {selectedStream && (
-              <div>
+              <div style={{ display: 'flex', backgroundColor: '#fff' }}>
                 <Tooltip title="Додати групу до потоку">
                   <IconButton onClick={() => setAddGroupsToStreamModalVisible(true)} sx={{ mr: '5px' }}>
                     <PlusOutlined />

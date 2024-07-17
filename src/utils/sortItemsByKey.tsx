@@ -1,13 +1,3 @@
-// export const sortItemsByKey = (items: any[], key: string) => {
-//   const itemsDeepCopy = JSON.parse(JSON.stringify(items))
-
-//   if (typeof items[0][0] === 'object') {
-//     return itemsDeepCopy.sort((a: any, b: any) => a[0][key].toLowerCase().localeCompare(b[0][key].toLowerCase()))
-//   }
-
-//   return itemsDeepCopy.sort((a: any, b: any) => a[key].toLowerCase().localeCompare(b[key].toLowerCase()))
-// }
-
 export const sortItemsByKey = (items: any[], key: string, order: 'asc' | 'desc' = 'asc') => {
   const itemsDeepCopy = JSON.parse(JSON.stringify(items))
 

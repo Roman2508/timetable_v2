@@ -14,12 +14,14 @@ import {
   updatePlanSubjectsHours,
   createPlanSubjects,
   deletePlanSubjects,
+  getPlanName,
 } from './plansAsyncActions'
 import { RootState } from '../store'
 
 const plansInitialState: PlansInitialState = {
   plansCategories: null,
   plan: null,
+  planSubjects: null,
   loadingStatus: LoadingStatusTypes.NEVER,
 }
 
@@ -116,52 +118,52 @@ const plansSlice = createSlice({
     builder.addCase(
       updatePlanSubjectsName.fulfilled,
       (state, action: PayloadAction<{ id: number; name: string; cmk: number }[]>) => {
-        if (!state.plan) return
+        if (!state.planSubjects) return
 
-        const subjects = state.plan.subjects.map((el) => {
+        const subjects = state.planSubjects.map((el) => {
           if (el.id === action.payload[0].id) {
             return { ...el, name: action.payload[0].name, cmk: { id: action.payload[0].cmk } }
           }
 
           return el
         })
-        state.plan.subjects = subjects
+        state.planSubjects = subjects
       }
     )
 
     /* createPlanSubjects */
     builder.addCase(createPlanSubjects.fulfilled, (state, action: PayloadAction<PlanSubjectType>) => {
-      if (!state.plan) return
+      if (!state.planSubjects) return
 
-      state.plan.subjects.push(action.payload)
+      state.planSubjects.push(action.payload)
     })
 
     /* updatePlanSubjectsHours */
     builder.addCase(updatePlanSubjectsHours.fulfilled, (state, action: PayloadAction<PlanSubjectType>) => {
-      if (!state.plan) return
+      if (!state.planSubjects) return
 
-      const isExist = state.plan.subjects.some((el) => el.id === action.payload.id)
+      const isExist = state.planSubjects.some((el) => el.id === action.payload.id)
 
       if (isExist) {
-        const subjects = state.plan.subjects.map((el) => {
+        const subjects = state.planSubjects.map((el) => {
           if (el.id === action.payload.id) {
             return action.payload
           }
 
           return el
         })
-        state.plan.subjects = subjects
+        state.planSubjects = subjects
       } else {
-        state.plan.subjects.push(action.payload)
+        state.planSubjects.push(action.payload)
       }
     })
 
     /* deletePlanSubjects */
     builder.addCase(deletePlanSubjects.fulfilled, (state, action: PayloadAction<number>) => {
-      if (!state.plan) return
+      if (!state.planSubjects) return
 
-      const subjects = state.plan.subjects.filter((subject) => subject.id !== action.payload)
-      state.plan.subjects = subjects
+      const subjects = state.planSubjects.filter((subject) => subject.id !== action.payload)
+      state.planSubjects = subjects
     })
 
     /* deletePlan */
@@ -177,9 +179,14 @@ const plansSlice = createSlice({
       state.plansCategories = updatedCategories
     })
 
-    /* getPlanSubjects */
-    builder.addCase(getPlanSubjects.fulfilled, (state, action: PayloadAction<PlanType>) => {
+    /* getPlanName */
+    builder.addCase(getPlanName.fulfilled, (state, action: PayloadAction<PlanType>) => {
       state.plan = action.payload
+    })
+
+    /* getPlanSubjects */
+    builder.addCase(getPlanSubjects.fulfilled, (state, action: PayloadAction<PlanSubjectType[]>) => {
+      state.planSubjects = action.payload
     })
   },
 })

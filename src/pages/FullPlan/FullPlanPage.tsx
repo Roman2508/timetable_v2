@@ -1,48 +1,58 @@
-// material-ui
-import { Grid, Button, TextField, Typography, IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material'
-import { SearchOutlined } from '@ant-design/icons'
-
-// project import
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { SearchOutlined } from '@ant-design/icons'
+import { Grid, Button, TextField, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material'
 
 import MainCard from '../../components/MainCard'
 import { useAppDispatch } from '../../store/store'
 import { LoadingStatusTypes } from '../../store/appTypes'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { PlanSubjectType } from '../../store/plans/plansTypes'
 import { clearPlan, plansSelector } from '../../store/plans/plansSlice'
-import { getPlanSubjects } from '../../store/plans/plansAsyncActions'
 import SubjectsModal from '../../components/FullPlanPage/SubjectsModal'
 import { FullPlanTable } from '../../components/FullPlanPage/FullPlanTable'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import { getPlanName, getPlanSubjects } from '../../store/plans/plansAsyncActions'
 import { SemesterHoursModal } from '../../components/FullPlanPage/SemesterHoursModal'
-import { PlanSubjectType } from '../../store/plans/plansTypes'
-
-// ==============================|| FULL PLAN ||============================== //
 
 const FullPlanPage = () => {
   const params = useParams()
 
   const dispatch = useAppDispatch()
 
-  const { plan, loadingStatus } = useSelector(plansSelector)
-  const [editingSubjectData, setEditingSubjectData] = React.useState({ name: '', cmk: 0 })
+  const { plan, planSubjects, loadingStatus } = useSelector(plansSelector)
+
+  const [searchValue, setSearchValue] = React.useState('')
   const [subjectsModalVisible, setSubjectsModalVisible] = React.useState(false)
-  const [subjectsModalType, setSubjectsModalType] = React.useState<'create' | 'update'>('create')
+  const [showedSemesters, setShowedSemesters] = React.useState(() => [1, 2, 3, 4, 5, 6])
   const [semesterHoursModalVisible, setSemesterHoursModalVisible] = React.useState(false)
+  const [editingSubjectData, setEditingSubjectData] = React.useState({ name: '', cmk: 0 })
   const [selectedSemester, setSelectedSemester] = React.useState<PlanSubjectType | null>(null)
+  const [subjectsModalType, setSubjectsModalType] = React.useState<'create' | 'update'>('create')
 
   React.useEffect(() => {
     if (!params.id) return
-    dispatch(getPlanSubjects(Number(params.id)))
+    dispatch(getPlanName(Number(params.id)))
+
+    alert('ADD DEBOUNCE TO FETCHING PLAN SUBJECTS')
+
+    let semesters = ''
+    showedSemesters.forEach((el) => {
+      if (!semesters.length) {
+        semesters = semesters.concat(String(el))
+      } else {
+        semesters = semesters.concat(`,${el}`)
+      }
+    })
+
+    const payload = { id: Number(params.id), semesters }
+    dispatch(getPlanSubjects(payload))
 
     return () => {
       dispatch(clearPlan())
     }
-  }, [])
-
-  const [showedSemesters, setShowedSemesters] = React.useState(() => [1, 2])
+  }, [params.id, showedSemesters])
 
   const handleShowedSemesters = (_: React.MouseEvent<HTMLElement>, newSemesters: number[]) => {
     setShowedSemesters(newSemesters)
@@ -85,20 +95,14 @@ const FullPlanPage = () => {
               >
                 Додати дисципліну
               </Button>
+
               <TextField
                 size="small"
+                value={searchValue}
                 placeholder="Знайти..."
-                sx={{
-                  '& .css-r8nwpq-MuiInputBase-root-MuiOutlinedInput-root': { p: 0 },
-                  width: '200px',
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton>
-                      <SearchOutlined />
-                    </IconButton>
-                  ),
-                }}
+                onChange={(e) => setSearchValue(e.target.value)}
+                InputProps={{ endAdornment: <SearchOutlined style={{ opacity: 0.5 }} /> }}
+                sx={{ '& .css-r8nwpq-MuiInputBase-root-MuiOutlinedInput-root': { p: 0, pr: 1.5 }, width: '200px' }}
               />
             </Grid>
 
@@ -117,12 +121,15 @@ const FullPlanPage = () => {
         </Grid>
 
         <Grid item xs={12}>
-          {!plan && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
-          {!plan?.subjects?.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
-          {plan?.subjects?.length && (
+          {!planSubjects && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
+
+          {planSubjects && !planSubjects.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
+
+          {planSubjects && planSubjects.length > 0 && (
             <MainCard sx={{ border: 0, borderRadius: 0 }} content={false}>
               <FullPlanTable
-                plan={plan}
+                searchValue={searchValue}
+                planSubjects={planSubjects}
                 setSelectedSemester={setSelectedSemester}
                 setSubjectsModalType={setSubjectsModalType}
                 setEditingSubjectData={setEditingSubjectData}
@@ -137,4 +144,4 @@ const FullPlanPage = () => {
   )
 }
 
-export default FullPlanPage 
+export default FullPlanPage
