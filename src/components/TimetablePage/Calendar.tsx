@@ -229,6 +229,7 @@ const Calendar: React.FC<ICalendarProps> = ({
       />
 
       <PutSeveralLessonsAtSameTimeModal
+        settings={settings}
         selectedLesson={selectedLesson}
         open={severalLessonsModalVisible}
         selectedTimeSlot={selectedTimeSlot}

@@ -32,7 +32,7 @@ export const colorsInitialState = {
 // colors[lesson[0].type]
 // colors[convertColorKeys[lesson[0].type]]
 
-const convertColorKeys = {
+export const convertColorKeys = {
   ['ЛК']: 'lectures',
   ['ПЗ']: 'practical',
   ['ЛАБ']: 'laboratory',
@@ -111,6 +111,7 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
     setColors(settings.colors)
   }, [settings])
 
+
   return (
     <div className="day">
       <div className="day-name" style={{ userSelect: 'none' }}>
@@ -145,7 +146,7 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
             {!!lesson?.length && (
               <div
                 className={'time-slot'}
-                style={lesson && lesson[0] ? { backgroundColor: colors[convertColorKeys[lesson[0].type]] } : {}}
+                style={lesson && lesson[0] ? { backgroundColor: colors[convertColorKeys[lesson[0].typeRu]] } : {}}
               >
                 {!!lesson.length &&
                   lesson.map((l) => {
@@ -177,7 +178,7 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
                           handleOpenSeveralLessonModal(l, day.data, lessonNumber, l.auditory ? l.auditory.id : null)
                         }}
                         className={cn(severalLessonsClassName, { selected: isSame })}
-                        style={{ backgroundColor: colors[convertColorKeys[l.type]] }}
+                        style={{ backgroundColor: colors[convertColorKeys[l.typeRu]] }}
                       >
                         {l.replacement && (
                           <p

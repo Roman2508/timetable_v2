@@ -1,3 +1,4 @@
+import { Dayjs } from 'dayjs'
 import { CloseOutlined } from '@ant-design/icons'
 import React, { Dispatch, SetStateAction } from 'react'
 import { Dialog, Tooltip, IconButton, Typography, DialogContent, Button } from '@mui/material'
@@ -6,8 +7,8 @@ import { ISelectedTimeSlot } from './Calendar'
 import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
 import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
 import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsTypes'
-import { colors } from './CalendarDay'
-import { Dayjs } from 'dayjs'
+import { convertColorKeys } from './CalendarDay'
+import { SettingsType } from '../../store/settings/settingsTypes'
 
 const dayNames = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота', 'Неділя']
 
@@ -21,8 +22,17 @@ const lessonsTime = [
   '18:00 – 19:20',
 ]
 
+export const colors = {
+  ['ЛК']: 'rgb(232, 255, 82)',
+  ['ПЗ']: 'rgb(24, 176, 71)',
+  ['ЛАБ']: 'rgb(43, 163, 185)',
+  ['СЕМ']: 'rgb(82, 27, 172)',
+  ['ЕКЗ']: 'rgb(176, 24, 24)',
+}
+
 interface IPutSeveralLessonsAtSameTimeModalProps {
   open: boolean
+  settings: SettingsType | null
   selectedLesson: ISelectedLesson | null
   severalLessonsList: ScheduleLessonType[]
   selectedTimeSlot: ISelectedTimeSlot | null
@@ -37,6 +47,7 @@ interface IPutSeveralLessonsAtSameTimeModalProps {
 const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeModalProps> = ({
   open,
   setOpen,
+  settings,
   selectedLesson,
   selectedTimeSlot,
   setSelectedLesson,
@@ -75,10 +86,11 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
       subgroupNumber: lesson.subgroupNumber,
       specialization: lesson.specialization,
       group: { id: lesson.group.id, name: lesson.group.name },
+      replacement: lesson.replacement,
     })
     setActionsModalVisible(true)
   }
-
+  
   const onAddSeveralLesson = () => {
     if (!selectedLesson || !selectedTimeSlot) return
     setIsAddNewLesson(true)
@@ -94,6 +106,7 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
       subgroupNumber: selectedLesson.subgroupNumber,
       specialization: selectedLesson.specialization,
       group: { id: selectedLesson.group.id, name: selectedLesson.group.name },
+      replacement: selectedLesson.replacement,
     })
     setActionsModalVisible(true)
   }
@@ -109,6 +122,9 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
       selectedLesson.name === l.name
     return isSame
   })
+
+
+  if (!settings) return 
 
   return (
     <Dialog
@@ -148,7 +164,8 @@ const PutSeveralLessonsAtSameTimeModal: React.FC<IPutSeveralLessonsAtSameTimeMod
               key={l.id}
               className={'lesson-slot'}
               onClick={() => onSelectLesson(l)}
-              style={{ backgroundColor: colors[l.typeRu], marginBottom: '10px' }}
+              style={{ backgroundColor: settings.colors[convertColorKeys[l.typeRu]], marginBottom: '10px' }}
+              // style={{ backgroundColor: colors[l.typeRu], marginBottom: '10px' }}
             >
               <p className="time-slot-lesson-name">{l.name}</p>
 
