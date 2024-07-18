@@ -9,23 +9,18 @@ import {
   Typography,
   TableContainer,
 } from '@mui/material'
-import React, { useState } from 'react'
+import React from 'react'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 import { useAppDispatch } from '../../store/store'
+import { PlanSubjectType } from '../../store/plans/plansTypes'
 import { groupLessonsByName } from '../../utils/groupLessonsByName'
 import { searchItemsByField } from '../../utils/searchItemsByField'
-import { PlanSubjectType, PlanType } from '../../store/plans/plansTypes'
 import { deletePlanSubjects } from '../../store/plans/plansAsyncActions'
 
-interface IOrderTableHeadProps {
-  order: string
-  orderBy: string
-}
+const cellStyles = { borderLeft: '1px solid rgb(235, 235, 235)' }
 
-const cellStyles = { border: '1px solid rgb(235, 235, 235)' }
-
-const OrderTableHead: React.FC<IOrderTableHeadProps> = () => {
+const OrderTableHead: React.FC = () => {
   return (
     <TableHead>
       <TableRow>
@@ -120,9 +115,6 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
 }) => {
   const dispatch = useAppDispatch()
 
-  const [order] = useState('asc')
-  const [orderBy] = useState('trackingNo')
-
   const onDeleteSubject = (subjects: PlanSubjectType[]) => {
     if (subjects.length > 1) return alert('Видаліть спочатку всі семестри')
     if (window.confirm('Ви дійсно хочете видалити дисципліну?')) {
@@ -149,7 +141,7 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
         }
 
     setSelectedSemester(data)
-    setEditingSubjectData({ name: row.name, cmk: row.cmk.id })
+    setEditingSubjectData({ name: row.name, cmk: row.cmk?.id })
     setSemesterHoursModalVisible(true)
   }
 
@@ -174,26 +166,17 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
             '& .MuiTableCell-root:last-of-type': { pr: 3 },
           }}
         >
-          <OrderTableHead order={order} orderBy={orderBy} />
+          <OrderTableHead />
+
           <TableBody>
-            {/* stableSort(rows, getComparator(order, orderBy)) */}
             {searchItemsByField(groupLessonsByName(planSubjects), 'name', searchValue).map(
               (row: PlanSubjectType[], index: number) => {
-                // const isItemSelected = isSelected(row.trackingNo)
                 const labelId = `enhanced-table-checkbox-${index}`
 
                 const totalSubjectHours = row.reduce((acc, cur) => Number(cur.totalHours) + acc, 0)
 
                 return (
-                  <TableRow
-                    hover
-                    key={row[0].id}
-                    role="checkbox"
-                    // aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    // key={row.trackingNo}
-                    // selected={isItemSelected}
-                  >
+                  <TableRow hover key={row[0].id} role="checkbox" tabIndex={-1}>
                     <TableCell
                       sx={{
                         ...cellStyles,
@@ -248,29 +231,6 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
                           <TableCell
                             key={index}
                             onClick={() => onSemesterClick(row[0], semester, semesterHours)}
-                            /* onClick={() => {
-                            const data = semesterHours
-                              ? { ...semesterHours, semesterNumber: semester }
-                              : {
-                                  ...row[0],
-                                  planId: row[0].plan.id,
-                                  semesterNumber: semester,
-                                  totalHours: 0,
-                                  lectures: 0,
-                                  practical: 0,
-                                  laboratory: 0,
-                                  seminars: 0,
-                                  exams: 0,
-                                  examsConsulation: 0,
-                                  metodologicalGuidance: 0,
-                                  independentWork: 0,
-                                }
-
-                            setSelectedSemester(data)
-                            console.log(row[0])
-                            setEditingSubjectData({ name: row[0].name, cmk: row[0].cmk.id })
-                            setSemesterHoursModalVisible(true)
-                          }} */
                             sx={{
                               ...cellStyles,
                               cursor: 'pointer',

@@ -17,8 +17,8 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useAppDispatch } from '../../store/store'
 import { PlanSubjectType } from '../../store/plans/plansTypes'
 import { IFormFields, formFields } from './FullPlanPageFormFields'
-import { deletePlanSubjects, updatePlanSubjectsHours } from '../../store/plans/plansAsyncActions'
 import useTotalAndCurrendSubjectHours from '../../utils/useTotalAndCurrendSubjectHours'
+import { deletePlanSubjects, updatePlanSubjectsHours } from '../../store/plans/plansAsyncActions'
 
 interface ISemesterHoursModalProps {
   open: boolean
@@ -114,24 +114,34 @@ const SemesterHoursModal: React.FC<ISemesterHoursModalProps> = ({
   }, [selectedSemester])
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
+    <Dialog open={open} onClose={handleClose}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <DialogTitle id="alert-dialog-title">{editingSubjectData.name}</DialogTitle>
+        <DialogTitle>{editingSubjectData.name}</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
           <CloseOutlined />
         </IconButton>
       </div>
       <DialogContent sx={{ padding: '0 24px 20px' }}>
-        <DialogContentText id="alert-dialog-description">
-          <Typography sx={current !== total ? { color: 'red' } : {}}>
-            {current} / {total}
-          </Typography>
+        <DialogContentText>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography
+              sx={{
+                mb: 0.5,
+                color: '#262626',
+                maxWidth: '270px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textoverflow: 'ellipsis',
+              }}
+            >
+              {selectedSemester && selectedSemester.cmk?.name}
+            </Typography>
+
+            <Typography sx={current !== total ? { color: 'red' } : {}}>
+              {current} / {total}
+            </Typography>
+          </div>
 
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             {formFields.map((el) => (

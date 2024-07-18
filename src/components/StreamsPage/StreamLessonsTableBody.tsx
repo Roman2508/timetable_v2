@@ -8,6 +8,8 @@ const cellStyles = {
   p: '4px',
   minWidth: '0px',
   borderBottom: '1px solid rgb(220, 220, 220)',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 }
 
 interface IStreamLessonsTableBodyProps {

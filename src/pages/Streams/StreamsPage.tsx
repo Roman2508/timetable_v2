@@ -5,17 +5,18 @@ import { Grid, Table, Divider, IconButton, Typography, Tooltip } from '@mui/mate
 
 import MainCard from '../../components/MainCard'
 import { useAppDispatch } from '../../store/store'
+import { LoadingStatusTypes } from '../../store/appTypes'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import { GroupLoadType } from '../../store/groups/groupsTypes'
 import { StreamsType } from '../../store/streams/streamsTypes'
 import { groupsSelector } from '../../store/groups/groupsSlice'
-import { clearStreamLessons, streamsSelector } from '../../store/streams/streamsSlice'
 import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import StreamSelections from '../../components/StreamsPage/StreamSelections'
 import { areAllFieldsInStreamEqual } from '../../utils/compateStreamFilelds'
 import { StreamActionsModal } from '../../components/StreamsPage/StreamActionsModal'
 import { getStreamLessons, getStreams } from '../../store/streams/streamsAsyncActions'
+import { clearStreamLessons, streamsSelector } from '../../store/streams/streamsSlice'
 import { StreamLessonsTableHead } from '../../components/StreamsPage/StreamLessonsTableHead'
 import { StreamLessonsTableBody } from '../../components/StreamsPage/StreamLessonsTableBody'
 import { AddGroupsToStreamModal } from '../../components/StreamsPage/AddGroupsToStreamModal'
@@ -25,7 +26,7 @@ const StreamsPage = () => {
   const dispatch = useAppDispatch()
 
   const { groupCategories } = useSelector(groupsSelector)
-  const { streams, streamLessons } = useSelector(streamsSelector)
+  const { streams, streamLessons, loadingStatus } = useSelector(streamsSelector)
 
   const [actionsModalVisible, setActionsModalVisible] = React.useState(false)
   const [selectedLessons, setSelectedLessons] = React.useState<GroupLoadType[][]>([])
@@ -95,8 +96,8 @@ const StreamsPage = () => {
         setOpen={setAddLessonToStreamModalVisible}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
-        <Grid item xs={12}>
+      <Grid container columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
+        <Grid item xs={12} sx={{ mb: 3 }}>
           <Grid container>
             <Grid item>
               <Typography variant="h5">Потоки</Typography>
@@ -148,7 +149,10 @@ const StreamsPage = () => {
                 <Divider />
 
                 {!selectedStream && <EmptyCard text="Потік не вибраний" />}
-                {selectedStream && !streamLessons && <LoadingSpinner />}
+                {selectedStream && !streamLessons && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
+                {selectedStream && !streamLessons && loadingStatus === LoadingStatusTypes.ERROR && (
+                  <EmptyCard text="Не знайдено" />
+                )}
 
                 {selectedStream && streamLessons && (
                   <Table sx={{ width: '100%', tableLayout: 'fixed' }}>

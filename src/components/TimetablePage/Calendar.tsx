@@ -4,6 +4,11 @@ import { useSelector } from 'react-redux'
 import React, { Dispatch, SetStateAction } from 'react'
 
 import {
+  setLastSelectedData,
+  scheduleLessonsSelector,
+  lastSelectedDataSelector,
+} from '../../store/scheduleLessons/scheduleLessonsSlice'
+import {
   getTeacherLessons,
   getAuditoryOverlay,
   getScheduleLessons,
@@ -22,11 +27,6 @@ import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
 import { settingsSelector } from '../../store/settings/settingsSlice'
 import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsTypes'
 import { PutSeveralLessonsAtSameTimeModal } from './PutSeveralLessonsAtSameTimeModal'
-import {
-  lastSelectedDataSelector,
-  scheduleLessonsSelector,
-  setLastSelectedData,
-} from '../../store/scheduleLessons/scheduleLessonsSlice'
 
 export interface ISelectedTimeSlot {
   data: Dayjs

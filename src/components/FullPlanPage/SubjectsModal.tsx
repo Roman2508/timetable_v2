@@ -45,12 +45,14 @@ const SubjectsModal: React.FC<ISubjectsModalProps> = ({
     reset,
     control,
     setValue,
+    clearErrors,
     formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm<{ name: string; cmk: number }>({ mode: 'onBlur' })
 
   const handleClose = () => {
     setOpen(false)
+    clearErrors('name')
   }
 
   React.useEffect(() => {

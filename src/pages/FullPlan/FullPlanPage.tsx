@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import debounse from 'lodash/debounce'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { SearchOutlined } from '@ant-design/icons'
@@ -24,6 +25,7 @@ const FullPlanPage = () => {
   const { plan, planSubjects, loadingStatus } = useSelector(plansSelector)
 
   const [searchValue, setSearchValue] = React.useState('')
+  const [] = React.useState()
   const [subjectsModalVisible, setSubjectsModalVisible] = React.useState(false)
   const [showedSemesters, setShowedSemesters] = React.useState(() => [1, 2, 3, 4, 5, 6])
   const [semesterHoursModalVisible, setSemesterHoursModalVisible] = React.useState(false)
@@ -31,33 +33,39 @@ const FullPlanPage = () => {
   const [selectedSemester, setSelectedSemester] = React.useState<PlanSubjectType | null>(null)
   const [subjectsModalType, setSubjectsModalType] = React.useState<'create' | 'update'>('create')
 
+  const debouncedGetResponce = React.useCallback(
+    debounse((payload) => dispatch(getPlanSubjects(payload)), 1000),
+    []
+  )
+
+  const fetchLessonsBySemesters = () => {
+    let semesters = ''
+    showedSemesters.forEach((el) => {
+      if (!semesters.length) semesters = semesters.concat(String(el))
+      else semesters = semesters.concat(`,${el}`)
+    })
+    const payload = { id: Number(params.id), semesters }
+    // dispatch(getPlanSubjects(payload))
+    debouncedGetResponce(payload)
+  }
+
   React.useEffect(() => {
     if (!params.id) return
     dispatch(getPlanName(Number(params.id)))
 
-    alert('ADD DEBOUNCE TO FETCHING PLAN SUBJECTS')
-
-    let semesters = ''
-    showedSemesters.forEach((el) => {
-      if (!semesters.length) {
-        semesters = semesters.concat(String(el))
-      } else {
-        semesters = semesters.concat(`,${el}`)
-      }
-    })
-
-    const payload = { id: Number(params.id), semesters }
-    dispatch(getPlanSubjects(payload))
-
     return () => {
       dispatch(clearPlan())
     }
-  }, [params.id, showedSemesters])
+  }, [params.id])
+
+  React.useEffect(() => {
+    fetchLessonsBySemesters()
+  }, [showedSemesters])
 
   const handleShowedSemesters = (_: React.MouseEvent<HTMLElement>, newSemesters: number[]) => {
     setShowedSemesters(newSemesters)
   }
-
+  
   return (
     <>
       <SubjectsModal
@@ -126,16 +134,24 @@ const FullPlanPage = () => {
           {planSubjects && !planSubjects.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
 
           {planSubjects && planSubjects.length > 0 && (
-            <MainCard sx={{ border: 0, borderRadius: 0 }} content={false}>
-              <FullPlanTable
-                searchValue={searchValue}
-                planSubjects={planSubjects}
-                setSelectedSemester={setSelectedSemester}
-                setSubjectsModalType={setSubjectsModalType}
-                setEditingSubjectData={setEditingSubjectData}
-                setSubjectsModalVisible={setSubjectsModalVisible}
-                setSemesterHoursModalVisible={setSemesterHoursModalVisible}
-              />
+            <MainCard sx={{ border: 0, borderRadius: 0, position: 'relative' }} content={false}>
+              {planSubjects && loadingStatus === LoadingStatusTypes.LOADING && (
+                <div style={{ position: 'absolute', top: '50%', left: '50%', zIndex: '11' }}>
+                  <LoadingSpinner />
+                </div>
+              )}
+
+              <div style={planSubjects && loadingStatus === LoadingStatusTypes.LOADING ? { opacity: 0.5 } : {}}>
+                <FullPlanTable
+                  searchValue={searchValue}
+                  planSubjects={planSubjects}
+                  setSelectedSemester={setSelectedSemester}
+                  setSubjectsModalType={setSubjectsModalType}
+                  setEditingSubjectData={setEditingSubjectData}
+                  setSubjectsModalVisible={setSubjectsModalVisible}
+                  setSemesterHoursModalVisible={setSemesterHoursModalVisible}
+                />
+              </div>
             </MainCard>
           )}
         </Grid>

@@ -1,9 +1,15 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import { getSettings, updateSettings } from "./settingsAsyncActions"
-import { SettingsInitialStateType, SettingsType } from "./settingsTypes"
+import {
+  getSettings,
+  updateColors,
+  updateSettings,
+  updateCallSchedule,
+  updateSemesterTerms,
+} from './settingsAsyncActions'
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import { SettingsInitialStateType, SettingsType } from './settingsTypes'
 
 const settingsInitialState: SettingsInitialStateType = {
   settings: null,
@@ -11,7 +17,7 @@ const settingsInitialState: SettingsInitialStateType = {
 }
 
 const settingsSlice = createSlice({
-  name: "settings",
+  name: 'settings',
   initialState: settingsInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -26,6 +32,21 @@ const settingsSlice = createSlice({
 
     /* updateSettings */
     builder.addCase(updateSettings.fulfilled, (state, action: PayloadAction<SettingsType>) => {
+      state.settings = action.payload
+    })
+
+    /* updateColors */
+    builder.addCase(updateColors.fulfilled, (state, action: PayloadAction<SettingsType>) => {
+      state.settings = action.payload
+    })
+
+    /* updateCallSchedule */
+    builder.addCase(updateCallSchedule.fulfilled, (state, action: PayloadAction<SettingsType>) => {
+      state.settings = action.payload
+    })
+
+    /* updateSemesterTerms */
+    builder.addCase(updateSemesterTerms.fulfilled, (state, action: PayloadAction<SettingsType>) => {
       state.settings = action.payload
     })
   },

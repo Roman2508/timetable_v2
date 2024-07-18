@@ -330,3 +330,35 @@ export type FindAllLessonDatesForTheSemesterPayloadType = {
   subgroupNumber?: number
   specialization?: string
 }
+
+/* settings */
+export type UpdateColorsPayloadType = {
+  lectures: string
+  practical: string
+  laboratory: string
+  seminars: string
+  exams: string
+}
+
+export type CallScheduleType = {
+  start: string
+  end: string
+}
+
+export type UpdateCallSchedulePayloadType = {
+  ['1']: CallScheduleType
+  ['2']: CallScheduleType
+  ['3']: CallScheduleType
+  ['4']: CallScheduleType
+  ['5']: CallScheduleType
+  ['6']: CallScheduleType
+  ['7']: CallScheduleType
+}
+
+export type UpdateSemesterTermsPayloadType = {
+  firstSemesterStart: string
+  firstSemesterEnd: string
+  secondSemesterStart: string
+  secondSemesterEnd: string
+}
+/* // settings */

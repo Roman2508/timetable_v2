@@ -111,9 +111,9 @@ const TimetablePage = () => {
         <Grid item xs={12}>
           <TimetablePageHeader
             weeksCount={weeksCount}
+            currentWeekNumber={lastOpenedWeek}
             setSlectedGroupId={setSlectedGroupId}
             selectedSemester={lastOpenedSemester}
-            currentWeekNumber={lastOpenedWeek}
             setSelectedTeacherId={setSelectedTeacherId}
             setSelectedAuditoryId={setSelectedAuditoryId}
           />

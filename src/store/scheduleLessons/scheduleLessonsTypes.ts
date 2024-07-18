@@ -42,6 +42,7 @@ export type ScheduleLessonInitialStateType = {
 }
 
 export type ScheduleLessonType = {
+  type: any
   id: number
   name: string
   date: Date

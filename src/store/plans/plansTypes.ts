@@ -44,5 +44,6 @@ export type PlanSubjectType = {
   }
   cmk: {
     id: number
+    name: string
   }
 }

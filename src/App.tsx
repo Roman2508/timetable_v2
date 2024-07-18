@@ -8,22 +8,22 @@ import ThemeCustomization from './themes'
 import MainLayout from './layout/MainLayout'
 import ScrollTop from './components/ScrollTop'
 import MinimalLayout from './layout/MinimalLayout'
-// import { PlansPage } from './pages/Plans/PlansPage'
-// import { GroupsPage } from './pages/Groups/GroupsPage'
-// import { StreamsPage } from './pages/Streams/StreamsPage'
+// import PlansPage from './pages/Plans/PlansPage'
+// import GroupsPage from './pages/Groups/GroupsPage'
+// import StreamsPage from './pages/Streams/StreamsPage'
 // import FullGroupPage from './pages/FullGroup/FullGroupPage'
 import GradeBookPage from './pages/GradeBook/GradeBookPage'
-// import { FullPlanPage } from './pages/FullPlan/FullPlanPage'
-// import { TeachersPage } from './pages/Teachers/TeachersPage'
-// import { SettingsPage } from './pages/Settings/SettingsPage'
+// import FullPlanPage from './pages/FullPlan/FullPlanPage'
+// import TeachersPage from './pages/Teachers/TeachersPage'
+// import SettingsPage from './pages/Settings/SettingsPage'
 import { TimetablePage } from './pages/Timetable/TimetablePage'
-// import { AuditoriesPage } from './pages/Auditories/AuditoriesPage'
+// import AuditoriesPage from './pages/Auditories/AuditoriesPage'
 import AuthLogin from './pages/authentication/auth-forms/AuthLogin'
-// import { StudentsDivide } from './pages/StudentsDivide/StudentsDivide'
-// import { DistributionPage } from './pages/Distribution/DistributionPage'
+// import StudentsDivide from './pages/StudentsDivide/StudentsDivide'
+// import DistributionPage from './pages/Distribution/DistributionPage'
 import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
 // import TeachingLessonsControl from './pages/TeachingLessonsControl/TeachingLessonsControl'
-// import { StudentsAccounts } from './pages/StudentsAccounts/StudentsAccounts'
+// import StudentsAccounts from './pages/StudentsAccounts/StudentsAccounts'
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('./pages/dashboard')))
@@ -37,19 +37,19 @@ const AntIcons = Loadable(lazy(() => import('./pages/components-overview/AntIcon
 const Typography = Loadable(lazy(() => import('./pages/components-overview/Typography')))
 
 // lazy loading pages
-const GroupsPage = Loadable(lazy(() => import('./pages/Groups/GroupsPage')))
-const FullGroupPage = Loadable(lazy(() => import('./pages/FullGroup/FullGroupPage')))
+const LoadPage = Loadable(lazy(() => import('./pages/Load/LoadPage')))
 const PlansPage = Loadable(lazy(() => import('./pages/Plans/PlansPage')))
-const FullPlanPage = Loadable(lazy(() => import('./pages/FullPlan/FullPlanPage')))
-const AuditoriesPage = Loadable(lazy(() => import('./pages/Auditories/AuditoriesPage')))
-const TeachersPage = Loadable(lazy(() => import('./pages/Teachers/TeachersPage')))
-const DistributionPage = Loadable(lazy(() => import('./pages/Distribution/DistributionPage')))
+const GroupsPage = Loadable(lazy(() => import('./pages/Groups/GroupsPage')))
 const StreamsPage = Loadable(lazy(() => import('./pages/Streams/StreamsPage')))
 const SettingsPage = Loadable(lazy(() => import('./pages/Settings/SettingsPage')))
-const StudentsAccounts = Loadable(lazy(() => import('./pages/StudentsAccounts/StudentsAccounts')))
+const TeachersPage = Loadable(lazy(() => import('./pages/Teachers/TeachersPage')))
+const FullPlanPage = Loadable(lazy(() => import('./pages/FullPlan/FullPlanPage')))
+const FullGroupPage = Loadable(lazy(() => import('./pages/FullGroup/FullGroupPage')))
+const AuditoriesPage = Loadable(lazy(() => import('./pages/Auditories/AuditoriesPage')))
 const StudentsDivide = Loadable(lazy(() => import('./pages/StudentsDivide/StudentsDivide')))
+const DistributionPage = Loadable(lazy(() => import('./pages/Distribution/DistributionPage')))
+const StudentsAccounts = Loadable(lazy(() => import('./pages/StudentsAccounts/StudentsAccounts')))
 const TeachingLessonsControl = Loadable(lazy(() => import('./pages/TeachingLessonsControl/TeachingLessonsControl')))
-const LoadPage = Loadable(lazy(() => import('./pages/Load/LoadPage')))
 
 const App = () => {
   return (

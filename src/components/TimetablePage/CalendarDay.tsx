@@ -13,13 +13,32 @@ import { getAuditoryOverlay } from '../../store/scheduleLessons/scheduleLessonsA
 
 const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд']
 
-export const colors = {
-  ['ЛК']: 'rgb(232, 255, 82)',
-  ['ПЗ']: 'rgb(24, 176, 71)',
-  ['ЛАБ']: 'rgb(43, 163, 185)',
-  ['СЕМ']: 'rgb(82, 27, 172)',
-  ['ЕКЗ']: 'rgb(176, 24, 24)',
+// export const colors = {
+//   ['ЛК']: 'rgb(232, 255, 82)',
+//   ['ПЗ']: 'rgb(24, 176, 71)',
+//   ['ЛАБ']: 'rgb(43, 163, 185)',
+//   ['СЕМ']: 'rgb(82, 27, 172)',
+//   ['ЕКЗ']: 'rgb(176, 24, 24)',
+// }
+
+export const colorsInitialState = {
+  lectures: 'rgb(255, 255, 255)',
+  practical: 'rgb(255, 255, 255)',
+  laboratory: 'rgb(255, 255, 255)',
+  seminars: 'rgb(255, 255, 255)',
+  exams: 'rgb(255, 255, 255)',
 }
+
+// colors[lesson[0].type]
+// colors[convertColorKeys[lesson[0].type]]
+
+const convertColorKeys = {
+  ['ЛК']: 'lectures',
+  ['ПЗ']: 'practical',
+  ['ЛАБ']: 'laboratory',
+  ['СЕМ']: 'seminars',
+  ['ЕКЗ']: 'exams',
+} as const
 
 interface ICalendarDayProps {
   index: number
@@ -59,6 +78,7 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
 }) => {
   const dispatch = useAppDispatch()
 
+  const [colors, setColors] = React.useState(colorsInitialState)
   // if true day is outside the semester
   const [isDayOutsideTheSemester, setIsDayOutsideTheSemester] = React.useState(false)
 
@@ -85,6 +105,11 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
   React.useEffect(() => {
     setIsDayOutsideTheSemester(checkIsAvailable())
   }, [selectedSemester])
+
+  React.useEffect(() => {
+    if (!settings) return
+    setColors(settings.colors)
+  }, [settings])
 
   return (
     <div className="day">
@@ -120,7 +145,7 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
             {!!lesson?.length && (
               <div
                 className={'time-slot'}
-                style={lesson && lesson[0] ? { backgroundColor: colors[lesson[0].typeRu] } : {}}
+                style={lesson && lesson[0] ? { backgroundColor: colors[convertColorKeys[lesson[0].type]] } : {}}
               >
                 {!!lesson.length &&
                   lesson.map((l) => {
@@ -152,7 +177,7 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
                           handleOpenSeveralLessonModal(l, day.data, lessonNumber, l.auditory ? l.auditory.id : null)
                         }}
                         className={cn(severalLessonsClassName, { selected: isSame })}
-                        style={{ backgroundColor: colors[l.typeRu] }}
+                        style={{ backgroundColor: colors[convertColorKeys[l.type]] }}
                       >
                         {l.replacement && (
                           <p
