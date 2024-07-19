@@ -30,6 +30,7 @@ const DistributionPage = () => {
   const { teachersCategories, loadingStatus } = useSelector(teachersSelector)
   const { groupCategories, group, loadingStatus: groupsLoadingStatus } = useSelector(groupsSelector)
 
+  const [isLessonsLoading, setIsLessonsLoading] = React.useState(false)
   const [selectedGroupId, setSelectedGroupId] = React.useState<number | null>(null)
   const [selectGroupModalVisible, setSelectGroupModalVisible] = React.useState(false)
   const [selectedTeacherId, setSelectedTeacherId] = React.useState<number | null>(null)
@@ -44,9 +45,18 @@ const DistributionPage = () => {
   }, [])
 
   React.useEffect(() => {
-    if (selectedGroupId) {
-      dispatch(getGroup(String(selectedGroupId)))
+    const fetchData = async () => {
+      try {
+        if (selectedGroupId) {
+          setIsLessonsLoading(true)
+          await dispatch(getGroup(String(selectedGroupId)))
+        }
+      } finally {
+        setIsLessonsLoading(false)
+      }
     }
+
+    fetchData()
   }, [selectedGroupId])
 
   return (
@@ -55,6 +65,7 @@ const DistributionPage = () => {
         open={selectGroupModalVisible}
         groupCategories={groupCategories}
         setOpen={setSelectGroupModalVisible}
+        setSelectedLesson={setSelectedLesson}
         setSelectedGroupId={setSelectedGroupId}
       />
 
@@ -97,13 +108,17 @@ const DistributionPage = () => {
 
               {/* DISTRIBUTION TABLE */}
               {!group.id && groupsLoadingStatus !== LoadingStatusTypes.LOADING ? <EmptyCard /> : ''}
+
               {!group.id && groupsLoadingStatus === LoadingStatusTypes.LOADING ? <LoadingSpinner /> : ''}
-              {group.id ? (
+
+              {group.id && !isLessonsLoading ? (
                 <DistributionLessonsTable
                   groupLoad={group.groupLoad}
                   selectedLesson={selectedLesson}
                   setSelectedLesson={setSelectedLesson}
                 />
+              ) : isLessonsLoading ? (
+                <LoadingSpinner />
               ) : (
                 ''
               )}
@@ -146,4 +161,4 @@ const DistributionPage = () => {
   )
 }
 
-export default DistributionPage 
+export default DistributionPage

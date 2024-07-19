@@ -1,8 +1,10 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import { TableBody, TableCell, TableRow, Typography } from '@mui/material'
+import { TableBody, TableCell, TableRow, Tooltip, Typography } from '@mui/material'
 
 import { GroupLoadType } from '../../store/groups/groupsTypes'
 import { groupLessonsByFields } from '../../utils/groupLessonsByFields'
+import { sortItemsByKey } from '../../utils/sortItemsByKey'
+import { StreamsTableSortType } from '../../pages/Streams/StreamsPage'
 
 const cellStyles = {
   p: '4px',
@@ -13,13 +15,14 @@ const cellStyles = {
 }
 
 interface IStreamLessonsTableBodyProps {
+  sortBy: StreamsTableSortType
   streamLessons: GroupLoadType[] | null
   selectedLessons: GroupLoadType[][] | null
   setSelectedLessons: Dispatch<SetStateAction<GroupLoadType[][]>>
 }
 
 const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = (props) => {
-  const { streamLessons, selectedLessons, setSelectedLessons } = props
+  const { streamLessons, selectedLessons, setSelectedLessons, sortBy } = props
 
   const handleSelectLesson = (lesson: GroupLoadType[]) => {
     setSelectedLessons((prev) => {
@@ -35,9 +38,13 @@ const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = (props) =
   return (
     <TableBody>
       {(streamLessons
-        ? groupLessonsByFields(streamLessons, { groupName: true, lessonName: true, semester: true, subgroups: true })
+        ? sortItemsByKey(
+            groupLessonsByFields(streamLessons, { groupName: true, lessonName: true, semester: true, subgroups: true }),
+            sortBy.key,
+            sortBy.order
+          )
         : []
-      ).map((row, index: number) => {
+      ).map((row: GroupLoadType[], index: number) => {
         const isItemSelected = selectedLessons?.find(
           (el) =>
             el[0].name === row[0].name &&
@@ -57,6 +64,7 @@ const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = (props) =
             selected={!!isItemSelected}
             aria-checked={!!isItemSelected}
             onClick={() => handleSelectLesson(row)}
+            sx={{ cursor: 'pointer' }}
           >
             <TableCell
               sx={{
@@ -95,12 +103,10 @@ const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = (props) =
               const streamName = lesson && lesson.stream ? lesson.stream.name : ''
 
               return (
-                <TableCell
-                  key={lessonType}
-                  sx={{ ...cellStyles, cursor: 'pointer', whiteSpace: 'nowrap' }}
-                  align="center"
-                >
-                  {lesson ? `${lesson.hours} ${streamName && `(${streamName})`}` : '-'}
+                <TableCell key={lessonType} sx={{ ...cellStyles, whiteSpace: 'nowrap' }} align="center">
+                  <Tooltip title={streamName ? streamName : ''}>
+                    <>{lesson ? `${lesson.hours} ${streamName && `(${streamName})`}` : '-'}</>
+                  </Tooltip>
                 </TableCell>
               )
             })}

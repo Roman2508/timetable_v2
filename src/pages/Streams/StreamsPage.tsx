@@ -22,6 +22,11 @@ import { StreamLessonsTableBody } from '../../components/StreamsPage/StreamLesso
 import { AddGroupsToStreamModal } from '../../components/StreamsPage/AddGroupsToStreamModal'
 import { AddLessonToStreamModal } from '../../components/StreamsPage/AddLessonToStreamModal'
 
+export type StreamsTableSortType = {
+  key: 'name' | 'semester' | 'group'
+  order: 'asc' | 'desc'
+}
+
 const StreamsPage = () => {
   const dispatch = useAppDispatch()
 
@@ -34,6 +39,7 @@ const StreamsPage = () => {
   const [actionsModalType, setActionsModalType] = React.useState<'create' | 'update'>('create')
   const [addGroupsToStreamModalVisible, setAddGroupsToStreamModalVisible] = React.useState(false)
   const [addLessonToStreamModalVisible, setAddLessonToStreamModalVisible] = React.useState(false)
+  const [sortBy, setSortBy] = React.useState<StreamsTableSortType>({ key: 'name', order: 'asc' })
   const [isCombineLessonsToStreamButtonDisabled, setIsCombineLessonsToStreamButtonDisabled] = React.useState(false)
 
   React.useEffect(() => {
@@ -156,8 +162,9 @@ const StreamsPage = () => {
 
                 {selectedStream && streamLessons && (
                   <Table sx={{ width: '100%', tableLayout: 'fixed' }}>
-                    <StreamLessonsTableHead />
+                    <StreamLessonsTableHead sortBy={sortBy} setSortBy={setSortBy} />
                     <StreamLessonsTableBody
+                      sortBy={sortBy}
                       streamLessons={streamLessons}
                       selectedLessons={selectedLessons}
                       setSelectedLessons={setSelectedLessons}

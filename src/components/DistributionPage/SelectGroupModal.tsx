@@ -2,7 +2,7 @@ import { CloseOutlined } from '@ant-design/icons'
 import React, { Dispatch, SetStateAction } from 'react'
 import { Dialog, Button, IconButton, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 
-import { GroupCategoriesType } from '../../store/groups/groupsTypes'
+import { GroupCategoriesType, GroupLoadType } from '../../store/groups/groupsTypes'
 import { AccordionItemsList } from '../AccordionItemsList/AccordionItemsList'
 
 interface ISelectGroupModalProps {
@@ -10,9 +10,12 @@ interface ISelectGroupModalProps {
   setOpen: Dispatch<SetStateAction<boolean>>
   groupCategories: GroupCategoriesType[] | null
   setSelectedGroupId: Dispatch<SetStateAction<number | null>>
+  setSelectedLesson: Dispatch<SetStateAction<GroupLoadType[] | null>>
 }
 
-const SelectGroupModal: React.FC<ISelectGroupModalProps> = ({ open, setOpen, groupCategories, setSelectedGroupId }) => {
+const SelectGroupModal: React.FC<ISelectGroupModalProps> = (props) => {
+  const { open, setOpen, groupCategories, setSelectedGroupId, setSelectedLesson } = props
+
   const [groupId, setGroupId] = React.useState<number | null>(null)
   const [groupName, setGroupName] = React.useState<string | null>(null)
 
@@ -23,6 +26,7 @@ const SelectGroupModal: React.FC<ISelectGroupModalProps> = ({ open, setOpen, gro
   const onSelectGroup = () => {
     if (groupId) {
       setSelectedGroupId(groupId)
+      setSelectedLesson(null)
       handleClose()
     } else {
       alert('Групу не вибрано')
@@ -30,18 +34,9 @@ const SelectGroupModal: React.FC<ISelectGroupModalProps> = ({ open, setOpen, gro
   }
 
   return (
-    <Dialog
-      open={open}
-      maxWidth="sm"
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-      sx={{ '& .MuiPaper-root': { width: '100%' } }}
-    >
+    <Dialog open={open} maxWidth="sm" onClose={handleClose} sx={{ '& .MuiPaper-root': { width: '100%' } }}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <DialogTitle id="alert-dialog-title">{`Відкрити навантаження групи: ${
-          groupName ? groupName : ''
-        }`}</DialogTitle>
+        <DialogTitle>{`Відкрити навантаження групи: ${groupName ? groupName : ''}`}</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
           <CloseOutlined />
