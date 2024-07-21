@@ -74,10 +74,10 @@ const PlansPage = () => {
         setEditingPlanCategory={setEditingPlanCategory}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
+      <Grid container columnSpacing={2.75} sx={{ justifyContent: "center" }}>
         {/* Категорії */}
         <Grid item xs={12} md={9}>
-          <Grid container sx={{ alignItems: "center" }}>
+          <Grid container sx={{ alignItems: "center", mb: 2 }}>
             <Grid item sx={{ flexGrow: 1 }}>
               <Typography variant="h5">{plansCategories ? "Плани" : "Завантаження..."}</Typography>
             </Grid>
