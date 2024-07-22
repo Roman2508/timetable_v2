@@ -26,7 +26,7 @@ import ProfileTab from './ProfileTab'
 import SettingTab from './SettingTab'
 
 // assets
-import avatar1 from '../../../../../assets/images/users/avatar-1.png'
+import avatar1 from '../../../../../assets/images/users/avatar-2.png'
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 
 // tab panel wrapper
@@ -104,7 +104,7 @@ const Profile = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-          <Typography variant="subtitle1">John Doe</Typography>
+          <Typography variant="subtitle1">Пташник Р.В.</Typography>
         </Stack>
       </ButtonBase>
       <Popper
@@ -147,7 +147,7 @@ const Profile = () => {
                           <Stack direction="row" spacing={1.25} alignItems="center">
                             <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
                             <Stack>
-                              <Typography variant="h6">John Doe</Typography>
+                              <Typography variant="h6">Пташник Р.В.</Typography>
                               <Typography variant="body2" color="textSecondary">
                                 UI/UX Designer
                               </Typography>

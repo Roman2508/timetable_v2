@@ -1,21 +1,4 @@
-import {
-  Box,
-  Tab,
-  Grid,
-  Tabs,
-  Select,
-  Button,
-  Divider,
-  MenuItem,
-  InputLabel,
-  Typography,
-  FormControl,
-  CircularProgress,
-  Stack,
-  TextField,
-} from '@mui/material'
-import React from 'react'
-import { useSelector } from 'react-redux'
+import { Grid, Stack, MenuItem, TextField, InputLabel, Typography } from '@mui/material'
 
 import MainCard from '../../components/MainCard'
 import TeachingLessonsControlTable from '../../components/TeachingLessonsControlPage/TeachingLessonsControlTable'

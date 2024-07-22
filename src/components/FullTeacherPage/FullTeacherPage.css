@@ -1,0 +1,25 @@
+.full-teacher__teaching-load-table {
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+}
+
+.full-teacher__teaching-load-table td,
+.full-teacher__teaching-load-table th {
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  padding: 4px;
+  text-align: center;
+}
+
+.full-teacher__teaching-load-table td:last-of-type,
+.full-teacher__teaching-load-table th:last-of-type {
+  border-right: 1px solid #ddd;
+}
+
+.full-teacher__teaching-load-table tbody tr:hover {
+  background-color: #f3f3f3;
+}
+
+.full-teacher__teaching-load-table tbody tr td:hover span {
+  display: inline-block !important;
+}
