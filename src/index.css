@@ -26,6 +26,7 @@ header {
 
 * {
   /* scrollbar from moz */
+  font-family: Inter, "Public Sans", sans-serif;
   scrollbar-color: var("secondary.main") #f4f4f4;
   scrollbar-width: thin;
 }
