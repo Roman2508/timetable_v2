@@ -9,6 +9,7 @@ import { MyTeachingLoadTab } from "../../components/FullTeacherPage/MyTeachingLo
 import { ListsOfStudentsTab } from "../../components/FullTeacherPage/ListsOfStudentsTab"
 import { EducationalAndMethodicalComplexesTab } from "../../components/FullTeacherPage/EducationalAndMethodicalComplexesTab"
 import IndividualTeacherWorkPlan from "../../components/FullTeacherPage/IndividualTeacherWorkPlan"
+import TeachersReportTab from "../../components/FullTeacherPage/TeachersReportTab"
 
 const tabs = [
   "Загальна інформація",
@@ -79,11 +80,21 @@ const FullTeachersPage = () => {
                     {tabs[activeTab]}
                   </Typography>
 
+                  {/* npm i react-swipeable-views */}
+                  {/* <SwipeableViews
+                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                    index={value}
+                    onChangeIndex={handleChangeIndex}
+                  >
+                    <TabPanel value={value} index={0} dir={theme.direction}>
+                      Item One
+                    </TabPanel>
+                  <SwipeableViews/>  */}
                   {activeTab === 0 && <GeneralInfoTab />}
                   {activeTab === 1 && <MyTeachingLoadTab />}
                   {activeTab === 2 && <EducationalAndMethodicalComplexesTab />}
                   {activeTab === 3 && <IndividualTeacherWorkPlan />}
-                  {activeTab === 4 && <div>44444</div>}
+                  {activeTab === 4 && <TeachersReportTab />}
                   {activeTab === 5 && <ListsOfStudentsTab />}
                   {activeTab === 6 && <div>55555</div>}
                 </div>

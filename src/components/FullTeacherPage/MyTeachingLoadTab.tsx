@@ -39,7 +39,7 @@ const sellStyles = {
 export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
   return (
     <>
-      <Table sx={{ minWidth: 450, mb: 10 }} size="small" aria-label="a dense table">
+      <Table sx={{ minWidth: 450 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
             <TableCell align="center">№</TableCell>
@@ -140,7 +140,7 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
         </TableBody>
       </Table>
 
-      <table className="full-teacher__teaching-load-table" cellSpacing="0">
+      {/* <table className="full-teacher__teaching-load-table" cellSpacing="0">
         <thead>
           <tr>
             <th style={{ width: "100px" }}>Група</th>
@@ -207,7 +207,7 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
             <th>560</th>
           </tr>
         </tbody>
-      </table>
+      </table> */}
     </>
   )
 }
