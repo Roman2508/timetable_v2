@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react"
 // @ts-ignore
-import List from '@editorjs/list'
-import Header from '@editorjs/Header'
-import EditorJS, { OutputBlockData, OutputData } from '@editorjs/editorjs'
+import List from "@editorjs/list"
+import Header from "@editorjs/Header"
+import EditorJS, { OutputBlockData, OutputData } from "@editorjs/editorjs"
 
 interface IEditorBlockProps {
   setBlocks: React.Dispatch<React.SetStateAction<OutputBlockData<string, any>[]>>
-  blocks: OutputData['blocks']
+  blocks: OutputData["blocks"]
 }
 
 const EditorBlock: React.FC<IEditorBlockProps> = ({ setBlocks, blocks }) => {
@@ -18,18 +18,18 @@ const EditorBlock: React.FC<IEditorBlockProps> = ({ setBlocks, blocks }) => {
     //initialize editor if we don't have a reference
     if (!ref.current) {
       const editor = new EditorJS({
-        placeholder: 'Введіть список ваших публікацій',
+        placeholder: "Введіть список ваших публікацій",
         tools: {
           paragraph: {
-            shortcut: 'CMD+P',
+            shortcut: "CMD+P",
           },
           list: {
             class: List,
             // inlineToolbar: true,
             config: {
-              defaultStyle: 'ordered',
+              defaultStyle: "ordered",
             },
-            shortcut: 'CMD+L',
+            shortcut: "CMD+L",
           },
           header: {
             // @ts-ignore
@@ -37,7 +37,7 @@ const EditorBlock: React.FC<IEditorBlockProps> = ({ setBlocks, blocks }) => {
             inlineToolbar: true,
             levels: [2, 3, 4, 5, 6],
             defaultLevel: 3,
-            shortcut: 'CMD+H',
+            shortcut: "CMD+H",
           },
         },
         async onChange() {
@@ -61,18 +61,18 @@ const EditorBlock: React.FC<IEditorBlockProps> = ({ setBlocks, blocks }) => {
             ui: {
               blockTunes: {
                 toggler: {
-                  'Click to tune': 'Натисніть щоб налаштувати',
-                  'or drag to move': 'або перетягніть',
+                  "Click to tune": "Натисніть щоб налаштувати",
+                  "or drag to move": "або перетягніть",
                 },
               },
               inlineToolbar: {
                 converter: {
-                  'Convert to': 'Конвертувати в',
+                  "Convert to": "Конвертувати в",
                 },
               },
               toolbar: {
                 toolbox: {
-                  Add: 'Додати',
+                  Add: "Додати",
                 },
               },
             },
@@ -81,12 +81,12 @@ const EditorBlock: React.FC<IEditorBlockProps> = ({ setBlocks, blocks }) => {
              * Section for translation Tool Names: both block and inline tools
              */
             toolNames: {
-              Text: 'Абзац',
-              Heading: 'Заголовок',
-              List: 'Список',
-              Bold: 'Напівжирний',
-              Italic: 'Курсив',
-              InlineCode: 'Моноширинный',
+              Text: "Абзац",
+              Heading: "Заголовок",
+              List: "Список",
+              Bold: "Напівжирний",
+              Italic: "Курсив",
+              InlineCode: "Моноширинный",
             },
 
             /**
@@ -99,25 +99,25 @@ const EditorBlock: React.FC<IEditorBlockProps> = ({ setBlocks, blocks }) => {
                */
               list: {
                 // <-- 'Warning' tool will accept this dictionary section
-                Title: 'Название',
-                Message: 'Сообщение',
-                Unordered: 'Марковані',
-                Ordered: 'Нумерований',
+                Title: "Название",
+                Message: "Сообщение",
+                Unordered: "Маркований",
+                Ordered: "Нумерований",
               },
               header: {
-                'Heading 1': 'Заголовок 1',
-                'Heading 2': 'Заголовок 2',
-                'Heading 3': 'Заголовок 3',
-                'Heading 4': 'Заголовок 4',
-                'Heading 5': 'Заголовок 5',
-                'Heading 6': 'Заголовок 6',
+                "Heading 1": "Заголовок 1",
+                "Heading 2": "Заголовок 2",
+                "Heading 3": "Заголовок 3",
+                "Heading 4": "Заголовок 4",
+                "Heading 5": "Заголовок 5",
+                "Heading 6": "Заголовок 6",
               },
 
               /**
                * The "stub" is an internal block tool, used to fit blocks that does not have the corresponded plugin
                */
               stub: {
-                'The block can not be displayed correctly.': 'Блок не може бути відображений',
+                "The block can not be displayed correctly.": "Блок не може бути відображений",
               },
             },
 
@@ -133,13 +133,13 @@ const EditorBlock: React.FC<IEditorBlockProps> = ({ setBlocks, blocks }) => {
                */
 
               delete: {
-                Delete: 'Видалити',
+                Delete: "Видалити",
               },
               moveUp: {
-                'Move up': 'Перемістити вверх',
+                "Move up": "Перемістити вверх",
               },
               moveDown: {
-                'Move down': 'Перемістити вниз',
+                "Move down": "Перемістити вниз",
               },
             },
           },
@@ -157,7 +157,7 @@ const EditorBlock: React.FC<IEditorBlockProps> = ({ setBlocks, blocks }) => {
     }
   }, [])
 
-  return <div id={'editorjs'} />
+  return <div id={"editorjs"} />
 }
 
 export default React.memo(EditorBlock)

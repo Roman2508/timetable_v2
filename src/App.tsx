@@ -22,7 +22,7 @@ import AuthLogin from "./pages/authentication/auth-forms/AuthLogin"
 // import StudentsDivide from './pages/StudentsDivide/StudentsDivide'
 // import DistributionPage from './pages/Distribution/DistributionPage'
 import AuthRegister from "./pages/authentication/auth-forms/AuthRegister"
-import FullTeachersPage from "./pages/FullTeacher/FullTeacherPage"
+// import FullTeachersPage from "./pages/FullTeacher/FullTeacherPage"
 // import TeachingLessonsControl from './pages/TeachingLessonsControl/TeachingLessonsControl'
 // import StudentsAccounts from './pages/StudentsAccounts/StudentsAccounts'
 
@@ -47,6 +47,7 @@ const TeachersPage = Loadable(lazy(() => import("./pages/Teachers/TeachersPage")
 const FullPlanPage = Loadable(lazy(() => import("./pages/FullPlan/FullPlanPage")))
 const FullGroupPage = Loadable(lazy(() => import("./pages/FullGroup/FullGroupPage")))
 const AuditoriesPage = Loadable(lazy(() => import("./pages/Auditories/AuditoriesPage")))
+const FullTeachersPage = Loadable(lazy(() => import("./pages/FullTeacher/FullTeacherPage")))
 const StudentsDivide = Loadable(lazy(() => import("./pages/StudentsDivide/StudentsDivide")))
 const DistributionPage = Loadable(lazy(() => import("./pages/Distribution/DistributionPage")))
 const StudentsAccounts = Loadable(lazy(() => import("./pages/StudentsAccounts/StudentsAccounts")))

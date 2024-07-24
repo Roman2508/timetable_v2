@@ -1,26 +1,26 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { useSearchParams } from 'react-router-dom'
-import { Avatar, Button, Grid, Tab, Tabs, Typography } from '@mui/material'
+import React from "react"
+import { useSelector } from "react-redux"
+import { useSearchParams } from "react-router-dom"
+import { Avatar, Button, Grid, Tab, Tabs, Typography } from "@mui/material"
 
-import MainCard from '../../components/MainCard'
-import { useAppDispatch } from '../../store/store'
-import GeneralInfoTab from '../../components/FullTeacherPage/GeneralInfoTab'
-import PrintedWorksTab from '../../components/FullTeacherPage/PrintedWorksTab'
-import TeachersReportTab from '../../components/FullTeacherPage/TeachersReportTab'
-import { MyTeachingLoadTab } from '../../components/FullTeacherPage/MyTeachingLoadTab'
-import { ListsOfStudentsTab } from '../../components/FullTeacherPage/ListsOfStudentsTab'
-import IndividualTeacherWorkPlan from '../../components/FullTeacherPage/IndividualTeacherWorkPlan'
-import { EducationalAndMethodicalComplexesTab } from '../../components/FullTeacherPage/EducationalAndMethodicalComplexesTab'
+import MainCard from "../../components/MainCard"
+import { useAppDispatch } from "../../store/store"
+import GeneralInfoTab from "../../components/FullTeacherPage/GeneralInfoTab"
+import PrintedWorksTab from "../../components/FullTeacherPage/PrintedWorksTab"
+import TeachersReportTab from "../../components/FullTeacherPage/TeachersReportTab"
+import { MyTeachingLoadTab } from "../../components/FullTeacherPage/MyTeachingLoadTab"
+import { ListsOfStudentsTab } from "../../components/FullTeacherPage/ListsOfStudentsTab"
+import IndividualTeacherWorkPlan from "../../components/FullTeacherPage/IndividualTeacherWorkPlan"
+import { InstructionalMaterialsTab } from "../../components/FullTeacherPage/InstructionalMaterialsTab"
 
 const tabs = [
-  'Загальна інформація',
-  'Моє педагогічне навантаження',
-  'Навчально-методичні комплекси',
-  'Індивідуальний план',
-  'Звіт викладача',
-  'Списки студентів',
-  'Друковані праці',
+  "Загальна інформація",
+  "Моє педагогічне навантаження",
+  "Навчально-методичні комплекси",
+  "Індивідуальний план",
+  "Звіт викладача",
+  "Списки студентів",
+  "Друковані праці",
 ]
 
 const FullTeachersPage = () => {
@@ -28,7 +28,7 @@ const FullTeachersPage = () => {
 
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const [activeTab, setActiveTab] = React.useState(Number(searchParams.get('tab')) || 0)
+  const [activeTab, setActiveTab] = React.useState(Number(searchParams.get("tab")) || 0)
 
   const handleChangeTab = (_: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue)
@@ -36,39 +36,39 @@ const FullTeachersPage = () => {
   }
 
   React.useEffect(() => {
-    const tab = searchParams.get('tab')
+    const tab = searchParams.get("tab")
     if (tab) setActiveTab(Number(tab))
   }, [searchParams])
 
   return (
     <>
-      <Grid container rowSpacing={2.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
+      <Grid container rowSpacing={2.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
         <Grid item xs={12}>
           <Grid container>
-            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid item sx={{ display: "flex", alignItems: "center" }}>
               <Typography variant="h5">Особистий профіль</Typography>
             </Grid>
           </Grid>
         </Grid>
 
-        <Grid item xs={12} sx={{ display: 'flex', alignItems: 'flex-start' }}>
-          <Grid item xs={12} sx={{ minHeight: 'calc(100vh - 160px)' }}>
-            <MainCard sx={{ '.MuiCardContent-root': { px: 0, minHeight: 'calc(100vh - 140px)' } }}>
+        <Grid item xs={12} sx={{ display: "flex", alignItems: "flex-start" }}>
+          <Grid item xs={12} sx={{ minHeight: "calc(100vh - 160px)" }}>
+            <MainCard sx={{ ".MuiCardContent-root": { px: 0, minHeight: "calc(100vh - 140px)" } }}>
               <div className="full-teacher__container">
                 <div className="full-teacher__general-info">
                   <Avatar
-                    sx={{ bgcolor: '#e9e9e9', width: '150px', height: '150px', fontSize: '46px', fontWeight: 600 }}
+                    sx={{ bgcolor: "#e9e9e9", width: "150px", height: "150px", fontSize: "46px", fontWeight: 600 }}
                     variant="square"
                   >
                     ПР
                   </Avatar>
-                  <Typography variant="h5" sx={{ whiteSpace: 'nowrap', pt: 2, pb: 1 }}>
+                  <Typography variant="h5" sx={{ whiteSpace: "nowrap", pt: 2, pb: 1 }}>
                     Пташник Р.В.
                   </Typography>
-                  <Typography variant="body1" sx={{ whiteSpace: 'nowrap', textTransform: 'initial' }}>
+                  <Typography variant="body1" sx={{ whiteSpace: "nowrap", textTransform: "initial" }}>
                     Викладач-спеціаліст
                   </Typography>
-                  <Typography variant="body1" sx={{ whiteSpace: 'nowrap', textTransform: 'initial', pb: 2 }}>
+                  <Typography variant="body1" sx={{ whiteSpace: "nowrap", textTransform: "initial", pb: 2 }}>
                     Пед. навантаження 922 год.
                   </Typography>
 
@@ -78,7 +78,7 @@ const FullTeachersPage = () => {
                 </div>
 
                 <div className="full-teacher__tabs">
-                  <Typography variant="h5" sx={{ whiteSpace: 'nowrap', pb: 3 }}>
+                  <Typography variant="h5" sx={{ whiteSpace: "nowrap", pb: 3 }}>
                     {tabs[activeTab]}
                   </Typography>
 
@@ -92,9 +92,10 @@ const FullTeachersPage = () => {
                       Item One
                     </TabPanel>
                   <SwipeableViews/>  */}
+                  
                   {activeTab === 0 && <GeneralInfoTab />}
                   {activeTab === 1 && <MyTeachingLoadTab />}
-                  {activeTab === 2 && <EducationalAndMethodicalComplexesTab />}
+                  {activeTab === 2 && <InstructionalMaterialsTab />}
                   {activeTab === 3 && <IndividualTeacherWorkPlan />}
                   {activeTab === 4 && <TeachersReportTab />}
                   {activeTab === 5 && <ListsOfStudentsTab />}
@@ -109,20 +110,20 @@ const FullTeachersPage = () => {
                     onChange={handleChangeTab}
                     orientation="vertical"
                     className="full-teacher__navigation-inner"
-                    sx={{ borderLeft: 1, borderColor: 'divider', minWidth: '280px', '.MuiTabs-indicator': { left: 0 } }}
+                    sx={{ borderLeft: 1, borderColor: "divider", minWidth: "280px", ".MuiTabs-indicator": { left: 0 } }}
                   >
                     {tabs.map((el) => (
                       <Tab
                         key={el}
                         label={el}
-                        sx={{ textAlign: 'left', alignItems: 'flex-start', textTransform: 'initial' }}
+                        sx={{ textAlign: "left", alignItems: "flex-start", textTransform: "initial" }}
                       />
                     ))}
                   </Tabs>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}></div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}></div>
             </MainCard>
           </Grid>
         </Grid>
