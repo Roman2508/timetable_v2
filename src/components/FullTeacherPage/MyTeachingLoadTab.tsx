@@ -1,7 +1,7 @@
-import React from "react"
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
+import React from 'react'
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 
-import "./FullTeacherPage.css"
+import './FullTeacherPage.css'
 
 interface Props {}
 
@@ -20,26 +20,26 @@ function createData(
 }
 
 const rows = [
-  createData(1, "PH9-23-1", "Інформаційні технології у фармації", "Вся група", "ЛК", 24),
-  createData(2, "PH9-23-1", "Інформаційні технології у фармації", "Вся група", "ЛК", 24),
-  createData(3, "PH9-23-1", "Інформаційні технології у фармації", "Вся група", "ЛК", 24),
-  createData(4, "PH9-23-1", "Інформаційні технології у фармації", "Вся група", "ЛК", 24),
-  createData(5, "PH9-23-1", "Інформаційні технології у фармації", "Вся група", "ЛК", 24),
-  createData(6, "PH9-23-1", "Інформаційні технології у фармації", "Вся група", "ЛК", 24),
+  createData(1, 'PH9-23-1', 'Інформаційні технології у фармації', 'Вся група', 'ЛК', 24),
+  createData(2, 'PH9-23-1', 'Інформаційні технології у фармації', 'Вся група', 'ЛК', 24),
+  createData(3, 'PH9-23-1', 'Інформаційні технології у фармації', 'Вся група', 'ЛК', 24),
+  createData(4, 'PH9-23-1', 'Інформаційні технології у фармації', 'Вся група', 'ЛК', 24),
+  createData(5, 'PH9-23-1', 'Інформаційні технології у фармації', 'Вся група', 'ЛК', 24),
+  createData(6, 'PH9-23-1', 'Інформаційні технології у фармації', 'Вся група', 'ЛК', 24),
 ]
 
 const sellStyles = {
-  whiteSpace: "nowrap",
-  textOverflow: "ellipsis",
-  overflow: "hidden",
-  padding: "6px",
-  height: "40px",
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  padding: '6px',
+  height: '40px',
 }
 
 export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
   return (
     <>
-      <Table sx={{ minWidth: 450 }} size="small" aria-label="a dense table">
+      <Table size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
             <TableCell align="center">№</TableCell>
@@ -80,7 +80,7 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
                 {row.lessonType}
               </TableCell>
 
-              <TableCell sx={{ width: "100px", ...sellStyles }} align="center">
+              <TableCell sx={{ width: '100px', ...sellStyles }} align="center">
                 {row.hours}
               </TableCell>
             </TableRow>
@@ -123,7 +123,7 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
                 {row.lessonType}
               </TableCell>
 
-              <TableCell sx={{ width: "100px", ...sellStyles }} align="center">
+              <TableCell sx={{ width: '100px', ...sellStyles }} align="center">
                 {row.hours}
               </TableCell>
             </TableRow>

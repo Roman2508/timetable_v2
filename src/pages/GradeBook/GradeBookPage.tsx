@@ -1,22 +1,22 @@
-import React from "react"
-import { useSelector } from "react-redux"
-import { useSearchParams } from "react-router-dom"
-import { Grid, Typography, Tooltip, IconButton, Divider, Paper } from "@mui/material"
-import { ColumnWidthOutlined, FilterOutlined, PrinterOutlined, SnippetsOutlined } from "@ant-design/icons"
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { useSearchParams } from 'react-router-dom'
+import { Grid, Typography, Tooltip, IconButton, Divider, Paper } from '@mui/material'
+import { ColumnWidthOutlined, FilterOutlined, PrinterOutlined, SnippetsOutlined } from '@ant-design/icons'
 
-import { useAppDispatch } from "../../store/store"
-import { scheduleLessonsAPI } from "../../api/api"
-import { sortItemsByKey } from "../../utils/sortItemsByKey"
-import EmptyCard from "../../components/EmptyCard/EmptyCard"
-import { GradeBookType } from "../../store/gradeBook/gradeBookTypes"
-import { gradeBookSelector } from "../../store/gradeBook/gradeBookSlice"
-import { getGradeBook } from "../../store/gradeBook/gradeBookAsyncActions"
-import GradeBookTable from "../../components/GradeBookPage/GradeBookTable"
-import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
-import AddSummaryModal from "../../components/GradeBookPage/AddSummaryModal"
-import GradeBookFilter from "../../components/GradeBookPage/GradeBookFilterModal"
-import { LoadingStatusTypes } from "../../store/appTypes"
-import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
+import { useAppDispatch } from '../../store/store'
+import { scheduleLessonsAPI } from '../../api/api'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import { sortItemsByKey } from '../../utils/sortItemsByKey'
+import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { GradeBookType } from '../../store/gradeBook/gradeBookTypes'
+import { gradeBookSelector } from '../../store/gradeBook/gradeBookSlice'
+import { getGradeBook } from '../../store/gradeBook/gradeBookAsyncActions'
+import GradeBookTable from '../../components/GradeBookPage/GradeBookTable'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
+import AddSummaryModal from '../../components/GradeBookPage/AddSummaryModal'
+import GradeBookFilter from '../../components/GradeBookPage/GradeBookFilterModal'
 
 const GradeBookPage = () => {
   const dispatch = useAppDispatch()
@@ -59,15 +59,15 @@ const GradeBookPage = () => {
 
     const dates = await scheduleLessonsAPI.findAllLessonDatesForTheSemester(findLessonsPayload)
 
-    const sortedDates = sortItemsByKey(dates.data, "date")
+    const sortedDates = sortItemsByKey(dates.data, 'date')
     setGradeBookLessonDates(sortedDates)
   }
 
   React.useEffect(() => {
-    const groupId = searchParams.get("groupId")
-    const lessonId = searchParams.get("lessonId")
-    const semester = searchParams.get("semester")
-    const lessonType = searchParams.get("lessonType")
+    const groupId = searchParams.get('groupId')
+    const lessonId = searchParams.get('lessonId')
+    const semester = searchParams.get('semester')
+    const lessonType = searchParams.get('lessonType')
 
     if (!groupId || !lessonId || !semester || !lessonType) return
     fetchGradeBook(Number(groupId), Number(lessonId), Number(semester), lessonType)
@@ -86,8 +86,8 @@ const GradeBookPage = () => {
 
       <Grid container sx={{ mb: 2, pt: 0 }}>
         <Grid item xs={12}>
-          <Grid container sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Grid item style={{ display: "flex", alignItems: "center" }}>
+          <Grid container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Grid item style={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="h5" sx={{ mr: 1 }}>
                 Електронний журнал
               </Typography>
@@ -138,7 +138,7 @@ const GradeBookPage = () => {
       </Grid>
 
       {!gradeBook && loadingStatus !== LoadingStatusTypes.LOADING ? (
-        <Paper sx={{ p: 4, textAlign: "center" }}>
+        <Paper sx={{ p: 4, textAlign: 'center' }}>
           <EmptyCard text="" padding={4} />
           <Typography>Виберіть групу та дисципліну для перегляду журналу</Typography>
         </Paper>
@@ -147,7 +147,7 @@ const GradeBookPage = () => {
       ) : gradeBook ? (
         <GradeBookTable gradeBook={gradeBook} gradeBookLessonDates={gradeBookLessonDates} />
       ) : (
-        ""
+        ''
       )}
     </>
   )

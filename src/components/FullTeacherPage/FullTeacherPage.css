@@ -23,3 +23,114 @@
 .full-teacher__teaching-load-table tbody tr td:hover span {
   display: inline-block !important;
 }
+
+.full-teacher__container {
+  display: flex;
+  min-height: calc(100vh - 180px);
+}
+
+.full-teacher__general-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px;
+  border-right: 1px solid #f0f0f0;
+}
+
+.full-teacher__tabs {
+  width: 100%;
+  padding: 0 16px;
+  overflow-y: auto;
+}
+
+@media (max-width: 1200px) {
+  .full-teacher__container {
+    flex-direction: column;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 400px 1fr;
+    grid-template-areas:
+      'g n'
+      't t';
+    /* justify-items: right; */
+  }
+
+  .full-teacher__general-info {
+    /* order: 0; */
+    max-width: 250px;
+    margin: 0 auto;
+    border: 0 !important;
+    border-bottom: 1px solid rgb(240, 240, 240);
+    grid-area: g;
+  }
+
+  .full-teacher__tabs {
+    grid-area: t;
+    padding: 30px 16px 0 !important;
+    border-top: 1px solid rgb(240, 240, 240);
+    /* order: 2; */
+  }
+
+  .full-teacher__navigation {
+    border-left: 1px solid rgb(240, 240, 240);
+    grid-area: n;
+    /* order: 1; */
+    /* margin: 40px 0; */
+    /* border-top: 1px solid rgb(240, 240, 240); */
+    /* border-bottom: 1px solid rgb(240, 240, 240); */
+    display: flex;
+    justify-content: center;
+  }
+
+  .full-teacher__navigation-inner {
+    border: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .full-teacher__container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 320px 360px auto;
+    grid-template-areas:
+      'g'
+      'n'
+      't';
+  }
+
+  .full-teacher__tabs table * {
+    font-size: 12px !important;
+    line-height: 1.3;
+  }
+
+  .full-teacher__tabs table th,
+  .full-teacher__tabs table td {
+    padding: 4px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 540px) {
+  .full-teacher__tabs table * {
+    font-size: 10px !important;
+  }
+  .full-teacher__tabs table th,
+  .full-teacher__tabs table td {
+    padding: 2px;
+    height: 30px;
+  }
+}
+
+/* EDITOR */
+
+#editorjs .ce-toolbar__content {
+  max-width: 85%;
+}
+
+#editorjs .ce-block__content {
+  max-width: 84%;
+}
+
+#editorjs .codex-editor__redactor {
+  padding-bottom: 40px !important;
+}

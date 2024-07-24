@@ -13,9 +13,9 @@ import {
   InputLabel,
   FormControl,
   IconButton,
-} from "@mui/material"
-import React from "react"
-import { CheckOutlined, CloseOutlined, EditOutlined } from "@ant-design/icons"
+} from '@mui/material'
+import React from 'react'
+import { CheckOutlined, CloseOutlined, EditOutlined } from '@ant-design/icons'
 
 type Props = {}
 
@@ -24,32 +24,32 @@ function createData(id: number, name: string, hours: number) {
 }
 
 const rows = [
-  createData(1, "Інформація, інформаційні технології та людина в інформаційному суспільстві", 2),
-  createData(2, "Інформаційна безпека та основи кібергігієни", 2),
-  createData(3, "Цифрове навчання та комп’ютерно-орієнтовані засоби навчальної діяльності", 2),
-  createData(4, "Сучасні інформаційні технології та їх вплив на суспільство", 2),
+  createData(1, 'Інформація, інформаційні технології та людина в інформаційному суспільстві', 2),
+  createData(2, 'Інформаційна безпека та основи кібергігієни', 2),
+  createData(3, 'Цифрове навчання та комп’ютерно-орієнтовані засоби навчальної діяльності', 2),
+  createData(4, 'Сучасні інформаційні технології та їх вплив на суспільство', 2),
   createData(5, "Комп’ютерне моделювання та комп'ютерний експеримент", 2),
 ]
 
-const editedThemeInitialState = { id: -1, name: "" }
+const editedThemeInitialState = { id: -1, name: '' }
 
 export const EducationalAndMethodicalComplexesTab = ({}: Props) => {
   const [editedTheme, setEditedTheme] = React.useState<{ id: number; name: string }>(editedThemeInitialState)
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         <FormControl fullWidth sx={{ my: 3 }}>
-          <InputLabel sx={{ overflow: "visible !important" }}>Група</InputLabel>
+          <InputLabel sx={{ overflow: 'visible !important' }}>Група</InputLabel>
           <Select
           // onChange={handleChangeEditedUser}
           // value={editedUser ? String(editedUser.id) : ''}
           >
             {[
-              { id: 1, name: "LD9-22-1" },
-              { id: 2, name: "PH9-22-1" },
-              { id: 3, name: "PH9-23-1" },
-              { id: 4, name: "PH9-24-1" },
+              { id: 1, name: 'LD9-22-1' },
+              { id: 2, name: 'PH9-22-1' },
+              { id: 3, name: 'PH9-23-1' },
+              { id: 4, name: 'PH9-24-1' },
             ].map((el) => (
               <MenuItem value={el.id}>{el.name}</MenuItem>
             ))}
@@ -57,23 +57,23 @@ export const EducationalAndMethodicalComplexesTab = ({}: Props) => {
         </FormControl>
 
         <FormControl fullWidth sx={{ my: 3, ml: 2 }}>
-          <InputLabel sx={{ overflow: "visible !important" }}>Дисципліна</InputLabel>
+          <InputLabel sx={{ overflow: 'visible !important' }}>Дисципліна</InputLabel>
           <Select
           // onChange={handleChangeEditedUser}
           // value={editedUser ? String(editedUser.id) : ''}
           >
             {[
-              { id: 1, name: "Інформатика" },
-              { id: 2, name: "Інформаційні технології у фармації" },
-              { id: 3, name: "Технології" },
-              { id: 4, name: "Основи медичної інформатики" },
+              { id: 1, name: 'Інформатика' },
+              { id: 2, name: 'Інформаційні технології у фармації' },
+              { id: 3, name: 'Технології' },
+              { id: 4, name: 'Основи медичної інформатики' },
             ].map((el) => (
               <MenuItem value={el.id}>{el.name}</MenuItem>
             ))}
           </Select>
         </FormControl>
 
-        <Button variant="contained" sx={{ height: "41px", minWidth: "120px", ml: 2 }}>
+        <Button variant="contained" sx={{ height: '41px', minWidth: '120px', ml: 2 }}>
           Переглянути
         </Button>
       </div>
@@ -91,18 +91,18 @@ export const EducationalAndMethodicalComplexesTab = ({}: Props) => {
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.id}>
-              <TableCell component="th" sx={{ width: "80px", height: "48px", padding: "0px 12px" }}>
+              <TableCell component="th" sx={{ width: '80px', height: '48px', padding: '0px 12px' }}>
                 {row.id}
               </TableCell>
 
               <TableCell
                 align="left"
                 sx={{
-                  "&:hover span": { display: "inline-block !important" },
-                  display: "flex",
-                  alignItems: "center",
-                  height: "48px",
-                  padding: "0px 12px",
+                  '&:hover span': { display: 'inline-block !important' },
+                  display: 'flex',
+                  alignItems: 'center',
+                  height: '48px',
+                  padding: '0px 12px',
                 }}
               >
                 {editedTheme.id === row.id ? (
@@ -110,9 +110,9 @@ export const EducationalAndMethodicalComplexesTab = ({}: Props) => {
                     <TextField
                       fullWidth
                       sx={{
-                        ".MuiInputBase-input": { padding: "0 14px 0 4px", height: "31px", width: "100%" },
-                        "& .Mui-focused": { boxShadow: "none !important" },
-                        fieldset: { border: "0 !important" },
+                        '.MuiInputBase-input': { padding: '0 14px 0 4px', height: '31px', width: '100%' },
+                        '& .Mui-focused': { boxShadow: 'none !important' },
+                        fieldset: { border: '0 !important' },
                       }}
                       value={editedTheme.name}
                     />
@@ -121,26 +121,26 @@ export const EducationalAndMethodicalComplexesTab = ({}: Props) => {
                   <p style={{ flexGrow: 1, margin: 0 }}>{row.name}</p>
                 )}
 
-                <div style={{ width: "28px", display: "flex", justifyContent: "center" }}>
+                <div style={{ display: 'flex', justifyContent: 'center', backgroundColor: '#fff' }}>
                   {editedTheme.id === row.id ? (
                     <>
-                      <IconButton sx={{ marginRight: "10px" }} onClick={() => setEditedTheme(editedThemeInitialState)}>
-                        <CheckOutlined style={{ cursor: "pointer" }} />
+                      <IconButton sx={{ marginRight: '10px' }} onClick={() => setEditedTheme(editedThemeInitialState)}>
+                        <CheckOutlined style={{ cursor: 'pointer' }} />
                       </IconButton>
 
                       <IconButton onClick={() => setEditedTheme(editedThemeInitialState)}>
-                        <CloseOutlined style={{ cursor: "pointer" }} />
+                        <CloseOutlined style={{ cursor: 'pointer' }} />
                       </IconButton>
                     </>
                   ) : (
                     <IconButton onClick={() => setEditedTheme({ id: row.id, name: row.name })}>
-                      <EditOutlined style={{ display: "none", cursor: "pointer" }} />
+                      <EditOutlined style={{ display: 'none', cursor: 'pointer' }} />
                     </IconButton>
                   )}
                 </div>
               </TableCell>
 
-              <TableCell sx={{ width: "100px", height: "48px", padding: "0px 12px" }} align="center">
+              <TableCell sx={{ width: '100px', height: '48px', padding: '0px 12px' }} align="center">
                 {row.hours}
               </TableCell>
             </TableRow>
