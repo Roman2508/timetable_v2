@@ -58,11 +58,10 @@ const DistributionActions: React.FC<IDistributionActionsProps> = ({
       exclusive
       value={attachmentType}
       onChange={handleAttachment}
-      aria-label="attach teachers"
       sx={{ display: 'flex', justifyContent: 'center' }}
     >
       {attachmentButtons.map((el) => (
-        <Tooltip title={el.title} onClick={() => onClickActionButton(el.type)}>
+        <Tooltip key={el.title} title={el.title} onClick={() => onClickActionButton(el.type)}>
           <ToggleButton value={el.type}>{el.icon}</ToggleButton>
         </Tooltip>
       ))}

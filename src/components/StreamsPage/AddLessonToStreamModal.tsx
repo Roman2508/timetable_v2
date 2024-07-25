@@ -36,7 +36,7 @@ interface IFormFields {
 }
 
 interface IinitialFormValues {
-  label: 'Лекції' | 'Практичні' | 'Лабораторні' | 'Семінари' | 'Екзамени'
+  label: 'Лекції' | 'Практичні' | 'Лабораторні' | 'Семінари' | 'Екзамен'
   value: 'lectures' | 'practical' | 'laboratory' | 'seminars' | 'exams'
   isChecked: boolean
   isDisabled: boolean
@@ -47,7 +47,7 @@ const initialFormValues: IinitialFormValues[] = [
   { label: 'Практичні', value: 'practical', isChecked: false, isDisabled: false },
   { label: 'Лабораторні', value: 'laboratory', isChecked: false, isDisabled: false },
   { label: 'Семінари', value: 'seminars', isChecked: false, isDisabled: true },
-  { label: 'Екзамени', value: 'exams', isChecked: false, isDisabled: false },
+  { label: 'Екзамен', value: 'exams', isChecked: false, isDisabled: false },
 ]
 
 const AddLessonToStreamModal: React.FC<IAddLessonToStreamModalProps> = ({
@@ -139,14 +139,9 @@ const AddLessonToStreamModal: React.FC<IAddLessonToStreamModalProps> = ({
   }, [selectedLessons])
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
+    <Dialog open={open} onClose={handleClose}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <DialogTitle id="alert-dialog-title">{"Об'єднати в потік"}</DialogTitle>
+        <DialogTitle>Об'єднати в потік</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
           <CloseOutlined />

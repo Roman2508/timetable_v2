@@ -1,9 +1,12 @@
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 
 import {
+  unpinTeacher,
+  attachTeacher,
   getGroupOverlay,
   copyDaySchedule,
   copyWeekSchedule,
+  getLessonStudents,
   getTeacherLessons,
   createReplacement,
   getTeacherOverlay,
@@ -15,15 +18,21 @@ import {
   updateScheduleLesson,
   findLessonsForSchedule,
   deleteStudentFromLesson,
-  getLessonStudents,
+  getGroupLoadByCurrentCourse,
   findGroupLoadLessonsByGroupIdAndSemester,
 } from './scheduleLessonsAsyncActions'
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
 import { GroupLoadType } from '../groups/groupsTypes'
+import { StudentType } from '../students/studentsTypes'
 import { TeachersType } from '../teachers/teachersTypes'
 import { ILastSelectedData, ScheduleLessonInitialStateType, ScheduleLessonType } from './scheduleLessonsTypes'
-import { StudentType } from '../students/studentsTypes'
+
+const getLocalStorageData = () => {
+  const data = window.localStorage.getItem('persist:scheduleLessons')
+  if (data) return JSON.parse(data)
+  return {}
+}
 
 const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
   groupLoad: null,
@@ -35,11 +44,11 @@ const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
 
   lessonStudents: null,
 
-  lastOpenedSemester: 1,
-  lastOpenedWeek: 1,
-  lastSelectedItemId: 7,
-  lastSelectedScheduleType: 'group',
-  lastSelectedStructuralUnitId: 1,
+  lastOpenedSemester: getLocalStorageData().lastOpenedSemester || 1,
+  lastOpenedWeek: getLocalStorageData().lastOpenedWeek || 1,
+  lastSelectedItemId: getLocalStorageData().lastSelectedItemId || 1,
+  lastSelectedScheduleType: getLocalStorageData().lastSelectedScheduleType || 'group',
+  lastSelectedStructuralUnitId: getLocalStorageData().lastSelectedStructuralUnitId || 1,
 
   loadingStatus: LoadingStatusTypes.NEVER,
 }
@@ -172,6 +181,11 @@ const scheduleLessonsSlice = createSlice({
       state.groupLoad = []
     })
 
+    /* getGroupLoadByCurrentCourse */
+    builder.addCase(getGroupLoadByCurrentCourse.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
+      state.groupLoad = action.payload
+    })
+
     /* findGroupLoadLessonsByGroupIdAndSemester */
     builder.addCase(
       findGroupLoadLessonsByGroupIdAndSemester.fulfilled,
@@ -183,6 +197,40 @@ const scheduleLessonsSlice = createSlice({
     /* getLessonStudents */
     builder.addCase(getLessonStudents.fulfilled, (state, action: PayloadAction<StudentType[]>) => {
       state.lessonStudents = action.payload
+    })
+
+    /* teachers attachment */
+    /* attachTeacher */
+    builder.addCase(
+      attachTeacher.fulfilled,
+      (state, action: PayloadAction<{ lessonId: number; teacher: TeachersType }>) => {
+        if (!state.groupLoad) return
+
+        const lessons = state.groupLoad.map((el) => {
+          if (el.id === action.payload.lessonId) {
+            return { ...el, teacher: action.payload.teacher }
+          }
+
+          return el
+        })
+
+        state.groupLoad = lessons
+      }
+    )
+
+    /* unpinTeacher */
+    builder.addCase(unpinTeacher.fulfilled, (state, action: PayloadAction<{ lessonId: number }>) => {
+      if (!state.groupLoad) return
+
+      const lessons = state.groupLoad.map((el) => {
+        if (el.id === action.payload.lessonId) {
+          return { ...el, teacher: null }
+        }
+
+        return el
+      })
+
+      state.groupLoad = lessons
     })
 
     /* students */

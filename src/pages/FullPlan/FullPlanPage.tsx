@@ -65,7 +65,7 @@ const FullPlanPage = () => {
   const handleShowedSemesters = (_: React.MouseEvent<HTMLElement>, newSemesters: number[]) => {
     setShowedSemesters(newSemesters)
   }
-  
+
   return (
     <>
       <SubjectsModal

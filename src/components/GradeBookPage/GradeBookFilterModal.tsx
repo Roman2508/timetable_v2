@@ -9,20 +9,20 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-} from "@mui/material"
-import { useSelector } from "react-redux"
-import { CloseOutlined } from "@ant-design/icons"
-import { SetURLSearchParams } from "react-router-dom"
-import React, { Dispatch, SetStateAction } from "react"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
+} from '@mui/material'
+import { useSelector } from 'react-redux'
+import { CloseOutlined } from '@ant-design/icons'
+import { SetURLSearchParams } from 'react-router-dom'
+import React, { Dispatch, SetStateAction } from 'react'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
-import { useAppDispatch } from "../../store/store"
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"
-import { groupsListSelector } from "../../store/groups/groupsSlice"
-import { clearGradeBook } from "../../store/gradeBook/gradeBookSlice"
-import { getGroupCategories } from "../../store/groups/groupsAsyncActions"
-import { lessonsForGradeBookSelector } from "../../store/scheduleLessons/scheduleLessonsSlice"
-import { findLessonsForSchedule } from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
+import { useAppDispatch } from '../../store/store'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import { groupsListSelector } from '../../store/groups/groupsSlice'
+import { clearGradeBook } from '../../store/gradeBook/gradeBookSlice'
+import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
+import { lessonsForGradeBookSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
+import { findLessonsForSchedule } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 
 interface IGradeBookFilterModalProps {
   open: boolean
@@ -62,13 +62,13 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
     setValue,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<IGradeBookFilterFields>({ mode: "onBlur" })
+  } = useForm<IGradeBookFilterFields>({ mode: 'onBlur' })
 
   const onSubmit: SubmitHandler<IGradeBookFilterFields> = async (data) => {
     try {
-      if (!selectedLessonType) return alert("Виберіть дисципліну")
+      if (!selectedLessonType) return alert('Виберіть дисципліну')
       handleClose()
-    
+
       const { group, lesson, semester } = data
 
       setSearchParams({
@@ -90,31 +90,31 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
   }, [])
 
   React.useEffect(() => {
-    if (!watch("semester") || !watch("group")) return
-    dispatch(findLessonsForSchedule({ semester: watch("semester"), itemId: watch("group"), scheduleType: "group" }))
-  }, [watch("group"), watch("semester")])
+    if (!watch('semester') || !watch('group')) return
+    dispatch(findLessonsForSchedule({ semester: watch('semester'), itemId: watch('group'), scheduleType: 'group' }))
+  }, [watch('group'), watch('semester')])
 
   React.useEffect(() => {
-    if (!watch("lesson")) return
-    const findedLesson = lessons.find((el) => el.id === Number(watch("lesson")))
+    if (!watch('lesson')) return
+    const findedLesson = lessons.find((el) => el.id === Number(watch('lesson')))
     if (findedLesson) setSelectedLessonType(findedLesson.typeRu)
-  }, [watch("lesson")])
+  }, [watch('lesson')])
 
   React.useEffect(() => {
-    const groupId = searchParams.get("groupId")
-    const lessonId = searchParams.get("lessonId")
-    const semester = searchParams.get("semester")
+    const groupId = searchParams.get('groupId')
+    const lessonId = searchParams.get('lessonId')
+    const semester = searchParams.get('semester')
 
     if (!groupId || !lessonId || !semester) return
 
-    setValue("group", Number(groupId))
-    setValue("lesson", lessonId)
-    setValue("semester", Number(semester))
+    setValue('group', Number(groupId))
+    setValue('lesson', lessonId)
+    setValue('semester', Number(semester))
   }, [searchParams])
 
   return (
     <Dialog open={open} maxWidth="sm" onClose={handleClose}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <DialogTitle id="alert-dialog-title">Знайти електронний журнал:</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
@@ -123,11 +123,11 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent sx={{ padding: "0 24px 20px", maxWidth: "295px" }}>
+        <DialogContent sx={{ padding: '0 24px 20px', maxWidth: '295px' }}>
           <Controller
             name="semester"
             control={control}
-            rules={{ required: "Виберіть семестр" }}
+            rules={{ required: 'Виберіть семестр' }}
             render={({ field }) => {
               return (
                 <Stack spacing={1} sx={{ mt: 2 }}>
@@ -137,9 +137,10 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
                     fullWidth
                     {...field}
                     id="semestr"
-                    sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}
+                    sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
                   >
-                    {[1, 2, 3, 4, 5, 6].map((option) => (
+                    {/* {[1, 2, 3, 4, 5, 6].map((option) => ( */}
+                    {[1, 2].map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
                       </MenuItem>
@@ -153,7 +154,7 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
           <Controller
             name="group"
             control={control}
-            rules={{ required: "Виберіть групу" }}
+            rules={{ required: 'Виберіть групу' }}
             render={({ field }) => {
               return (
                 <Stack spacing={1} sx={{ mt: 2 }}>
@@ -163,7 +164,7 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
                     fullWidth
                     {...field}
                     id="group"
-                    sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}
+                    sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
                   >
                     {groups.map((option) => (
                       <MenuItem key={option.id} value={option.id}>
@@ -179,7 +180,7 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
           <Controller
             name="lesson"
             control={control}
-            rules={{ required: "Виберіть дисципліну" }}
+            rules={{ required: 'Виберіть дисципліну' }}
             render={({ field }) => {
               return (
                 <Stack spacing={1} sx={{ mt: 2 }}>
@@ -189,10 +190,10 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
                     fullWidth
                     {...field}
                     id="lesson"
-                    sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}
+                    sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
                   >
                     {lessons.map((option) => {
-                      const unitInfo = option.subgroupNumber ? `(${option.subgroupNumber} підгрупа)` : "(Вся група)"
+                      const unitInfo = option.subgroupNumber ? `(${option.subgroupNumber} підгрупа)` : '(Вся група)'
 
                       return (
                         <MenuItem key={option.id} value={option.id}>
@@ -212,9 +213,9 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
             type="submit"
             variant="contained"
             disabled={isSubmitting || !selectedLessonType}
-            sx={{ width: "89.3px", height: "36.5px" }}
+            sx={{ width: '89.3px', height: '36.5px' }}
           >
-            {isSubmitting ? <LoadingSpinner size={10} /> : "Вибрати"}
+            {isSubmitting ? <LoadingSpinner size={10} /> : 'Вибрати'}
             {/* <LoadingSpinner size={10} /> */}
           </Button>
         </DialogActions>

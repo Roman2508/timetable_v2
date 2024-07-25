@@ -299,11 +299,20 @@ export const groupLoadLessonsAPI = {
   },
 
   /* group load */
+  getGroupLoadByCurrentCourse(id: number) {
+    return instanse.get<GroupLoadType[]>(`/group-load-lessons/by-current-cours/${id}`)
+  },
+
   findLessonsForSchedule(payload: FindLessonsForSchedulePayloadType) {
     const { semester, itemId, scheduleType } = payload
     return instanse.get<GroupLoadType[]>(`/group-load-lessons/${semester}/${scheduleType}/${itemId}`)
   },
-
+/* 
+  findLessonsForSchedule(payload: FindLessonsForSchedulePayloadType) {
+    const { semester, itemId, scheduleType } = payload
+    return instanse.get<GroupLoadType[]>(`/group-load-lessons/${semester}/${scheduleType}/${itemId}`)
+  },
+ */
   findGroupLoadLessonsByGroupIdAndSemester(payload: FindGroupLoadLessonsByGroupIdAndSemesterPayloadType) {
     const { semester, groupId } = payload
     return instanse.get<GroupLoadType[]>(`/group-load-lessons/${semester}/${groupId}`)

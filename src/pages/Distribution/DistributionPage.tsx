@@ -1,41 +1,39 @@
-// material-ui
-import { Grid, Divider, Tooltip, Typography, IconButton } from "@mui/material"
-// ant-design
-import { FilterOutlined } from "@ant-design/icons"
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { FilterOutlined } from '@ant-design/icons'
+import { Grid, Divider, Tooltip, Typography, IconButton } from '@mui/material'
 
-// project import
-import React from "react"
-import { useSelector } from "react-redux"
-
-import MainCard from "../../components/MainCard"
-import { useAppDispatch } from "../../store/store"
-import { LoadingStatusTypes } from "../../store/appTypes"
-import EmptyCard from "../../components/EmptyCard/EmptyCard"
-import { GroupLoadType } from "../../store/groups/groupsTypes"
-import { groupsSelector } from "../../store/groups/groupsSlice"
-import { teachersSelector } from "../../store/teachers/teachersSlice"
-import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
-import { getTeachersCategories } from "../../store/teachers/teachersAsyncActions"
-import { getGroup, getGroupCategories } from "../../store/groups/groupsAsyncActions"
-import { SelectGroupModal } from "../../components/DistributionPage/SelectGroupModal"
-import { AccordionItemsList } from "../../components/AccordionItemsList/AccordionItemsList"
-import { DistributionLessonsTable } from "../../components/DistributionPage/DistributionLessonsTable"
-import DistributionTeachersToLessons from "../../components/DistributionPage/DistributionTeachersToLessons"
-import { sortItemsByKey } from "../../utils/sortItemsByKey"
+import MainCard from '../../components/MainCard'
+import { useAppDispatch } from '../../store/store'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { GroupLoadType } from '../../store/groups/groupsTypes'
+import { groupsSelector } from '../../store/groups/groupsSlice'
+import { teachersSelector } from '../../store/teachers/teachersSlice'
+import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
+import { getTeachersCategories } from '../../store/teachers/teachersAsyncActions'
+import { SelectGroupModal } from '../../components/DistributionPage/SelectGroupModal'
+import { clearGroupLoad, scheduleLessonsSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
+import { AccordionItemsList } from '../../components/AccordionItemsList/AccordionItemsList'
+import { getGroupLoadByCurrentCourse } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import { DistributionLessonsTable } from '../../components/DistributionPage/DistributionLessonsTable'
+import DistributionTeachersToLessons from '../../components/DistributionPage/DistributionTeachersToLessons'
 
 // ==============================|| AUDITORIES ||============================== //
 
 const DistributionPage = () => {
   const dispatch = useAppDispatch()
 
+  const { groupLoad } = useSelector(scheduleLessonsSelector)
   const { teachersCategories, loadingStatus } = useSelector(teachersSelector)
-  const { groupCategories, group, loadingStatus: groupsLoadingStatus } = useSelector(groupsSelector)
+  const { groupCategories, loadingStatus: groupsLoadingStatus } = useSelector(groupsSelector)
 
   const [isLessonsLoading, setIsLessonsLoading] = React.useState(false)
-  const [selectedGroupId, setSelectedGroupId] = React.useState<number | null>(null)
   const [selectGroupModalVisible, setSelectGroupModalVisible] = React.useState(false)
   const [selectedTeacherId, setSelectedTeacherId] = React.useState<number | null>(null)
   const [selectedLesson, setSelectedLesson] = React.useState<null | GroupLoadType[]>(null)
+  const [selectedGroup, setSelectedGroup] = React.useState<{ id: number; name: string } | null>(null)
 
   React.useEffect(() => {
     dispatch(getTeachersCategories(false))
@@ -48,9 +46,9 @@ const DistributionPage = () => {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        if (selectedGroupId) {
+        if (selectedGroup?.id) {
           setIsLessonsLoading(true)
-          await dispatch(getGroup(String(selectedGroupId)))
+          await dispatch(getGroupLoadByCurrentCourse(selectedGroup.id))
         }
       } finally {
         setIsLessonsLoading(false)
@@ -58,19 +56,23 @@ const DistributionPage = () => {
     }
 
     fetchData()
-  }, [selectedGroupId])
+
+    return () => {
+      dispatch(clearGroupLoad())
+    }
+  }, [selectedGroup])
 
   return (
     <>
       <SelectGroupModal
         open={selectGroupModalVisible}
         groupCategories={groupCategories}
+        setSelectedGroup={setSelectedGroup}
         setOpen={setSelectGroupModalVisible}
         setSelectedLesson={setSelectedLesson}
-        setSelectedGroupId={setSelectedGroupId}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
         <Grid item xs={12}>
           <Grid container>
             <Grid item>
@@ -80,22 +82,17 @@ const DistributionPage = () => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} sx={{ display: "flex", alignItems: "flex-start" }}>
+        <Grid item xs={12} sx={{ display: 'flex', alignItems: 'flex-start' }}>
           <Grid item xs={4}>
-            <MainCard sx={{ "& .MuiCardContent-root": { px: 1 } }}>
+            <MainCard sx={{ '& .MuiCardContent-root': { px: 1 } }}>
               <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: "10px",
-                }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}
               >
                 <Typography
                   variant="button"
-                  sx={{ textAlign: "center", display: "block", textTransform: "uppercase", px: 2 }}
+                  sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase', px: 2 }}
                 >
-                  {group.id ? `Навантаження групи: ${group.name}` : "Виберіть групу"}
+                  {selectedGroup?.name ? `Навантаження групи: ${selectedGroup.name}` : 'Виберіть групу'}
                 </Typography>
 
                 <Tooltip title="Вибрати групу">
@@ -108,24 +105,23 @@ const DistributionPage = () => {
               <Divider />
 
               {/* DISTRIBUTION TABLE */}
-              {!group.id && groupsLoadingStatus !== LoadingStatusTypes.LOADING ? <EmptyCard /> : ""}
 
-              {!group.id && groupsLoadingStatus === LoadingStatusTypes.LOADING && !isLessonsLoading ? (
-                <LoadingSpinner />
+              {!groupLoad?.length && groupsLoadingStatus !== LoadingStatusTypes.LOADING && !isLessonsLoading ? (
+                <EmptyCard />
               ) : (
-                ""
+                ''
               )}
 
-              {group.id && !isLessonsLoading ? (
+              {groupLoad?.length && !isLessonsLoading ? (
                 <DistributionLessonsTable
-                  groupLoad={group.groupLoad}
+                  groupLoad={groupLoad}
                   selectedLesson={selectedLesson}
                   setSelectedLesson={setSelectedLesson}
                 />
               ) : isLessonsLoading ? (
                 <LoadingSpinner />
               ) : (
-                ""
+                ''
               )}
               {/* // DISTRIBUTION TABLE */}
             </MainCard>
@@ -141,9 +137,9 @@ const DistributionPage = () => {
             {/* // DISTRIBUTION LESSONS */}
           </Grid>
 
-          <Grid item xs={4} sx={{ borderRadius: "8px", border: "1px solid #e6ebf1", overflow: "hidden" }}>
+          <Grid item xs={4} sx={{ borderRadius: '8px', border: '1px solid #e6ebf1', overflow: 'hidden' }}>
             <MainCard>
-              <Typography variant="button" sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}>
+              <Typography variant="button" sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase' }}>
                 Викладачі
               </Typography>
             </MainCard>

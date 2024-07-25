@@ -9,12 +9,12 @@ interface ISelectGroupModalProps {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
   groupCategories: GroupCategoriesType[] | null
-  setSelectedGroupId: Dispatch<SetStateAction<number | null>>
   setSelectedLesson: Dispatch<SetStateAction<GroupLoadType[] | null>>
+  setSelectedGroup: Dispatch<SetStateAction<{ id: number; name: string } | null>>
 }
 
 const SelectGroupModal: React.FC<ISelectGroupModalProps> = (props) => {
-  const { open, setOpen, groupCategories, setSelectedGroupId, setSelectedLesson } = props
+  const { open, setOpen, groupCategories, setSelectedGroup, setSelectedLesson } = props
 
   const [groupId, setGroupId] = React.useState<number | null>(null)
   const [groupName, setGroupName] = React.useState<string | null>(null)
@@ -24,8 +24,8 @@ const SelectGroupModal: React.FC<ISelectGroupModalProps> = (props) => {
   }
 
   const onSelectGroup = () => {
-    if (groupId) {
-      setSelectedGroupId(groupId)
+    if (groupId && groupName) {
+      setSelectedGroup({ id: groupId, name: groupName })
       setSelectedLesson(null)
       handleClose()
     } else {

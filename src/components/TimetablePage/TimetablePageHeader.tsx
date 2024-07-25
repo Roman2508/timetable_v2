@@ -390,8 +390,6 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
             id="category"
             value={currentWeekNumber}
             onChange={(e) => {
-              // setCurrentWeekNumber(Number(e.target.value))
-              // setLastSelectedDataToLocalStorage({ lastOpenedWeek: Number(e.target.value) })
               dispatch(setLastSelectedData({ lastOpenedWeek: Number(e.target.value) }))
             }}
             sx={{ width: '80px' }}
@@ -409,28 +407,28 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
         <Stack direction="row" alignItems="center" spacing={0}>
           <Button
             size="small"
-            onClick={() => dispatch(setLastSelectedData({ lastSelectedScheduleType: 'group' }))}
             sx={{ width: '100px', py: 0.674 }}
             color={lastSelectedScheduleType === 'group' ? 'primary' : 'secondary'}
             variant={lastSelectedScheduleType === 'group' ? 'outlined' : 'text'}
+            onClick={() => dispatch(setLastSelectedData({ lastSelectedScheduleType: 'group' }))}
           >
             Група
           </Button>
           <Button
             size="small"
-            onClick={() => dispatch(setLastSelectedData({ lastSelectedScheduleType: 'teacher' }))}
             sx={{ width: '100px', py: 0.674 }}
             color={lastSelectedScheduleType === 'teacher' ? 'primary' : 'secondary'}
             variant={lastSelectedScheduleType === 'teacher' ? 'outlined' : 'text'}
+            onClick={() => dispatch(setLastSelectedData({ lastSelectedScheduleType: 'teacher' }))}
           >
             Викладач
           </Button>
           <Button
             size="small"
-            onClick={() => dispatch(setLastSelectedData({ lastSelectedScheduleType: 'auditory' }))}
             sx={{ width: '100px', py: 0.674 }}
             color={lastSelectedScheduleType === 'auditory' ? 'primary' : 'secondary'}
             variant={lastSelectedScheduleType === 'auditory' ? 'outlined' : 'text'}
+            onClick={() => dispatch(setLastSelectedData({ lastSelectedScheduleType: 'auditory' }))}
           >
             Аудиторія
           </Button>

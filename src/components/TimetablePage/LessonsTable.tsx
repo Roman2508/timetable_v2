@@ -2,6 +2,11 @@ import { useSelector } from 'react-redux'
 import React, { Dispatch, SetStateAction } from 'react'
 import { Table, Tooltip, TableRow, TableBody, TableCell, TableHead, Typography } from '@mui/material'
 
+import {
+  clearGroupLoad,
+  scheduleLessonsSelector,
+  lastSelectedDataSelector,
+} from '../../store/scheduleLessons/scheduleLessonsSlice'
 import EmptyCard from '../EmptyCard/EmptyCard'
 import { useAppDispatch } from '../../store/store'
 import { LoadingStatusTypes } from '../../store/appTypes'
@@ -15,11 +20,6 @@ import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsT
 import { groupAndSortAuditoryLessons } from '../../utils/groupAndSortAuditoryLessons'
 import { findLessonsCountForLessonsTable } from '../../utils/findLessonsCountForLessonsTable'
 import { findLessonsForSchedule } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
-import {
-  clearGroupLoad,
-  scheduleLessonsSelector,
-  lastSelectedDataSelector,
-} from '../../store/scheduleLessons/scheduleLessonsSlice'
 
 const tableCellStyles = {
   fontSize: '13px',
@@ -33,17 +33,13 @@ const tableCellStyles = {
 
 interface ILessonsTable {
   selectedSemester: 1 | 2
-  // selectedItemId: number | null
   selectedLesson: ISelectedLesson | null
-  // scheduleType: 'group' | 'teacher' | 'auditory'
   setSelectedTeacherId: Dispatch<SetStateAction<number | null>>
   setIsPossibleToCreateLessons: Dispatch<SetStateAction<boolean>>
   setSelectedLesson: Dispatch<SetStateAction<ISelectedLesson | null>>
 }
 
 const LessonsTable: React.FC<ILessonsTable> = ({
-  // scheduleType,
-  // selectedItemId,
   selectedLesson,
   selectedSemester,
   setSelectedLesson,
@@ -52,23 +48,20 @@ const LessonsTable: React.FC<ILessonsTable> = ({
 }) => {
   const dispatch = useAppDispatch()
 
-  const { lastSelectedItemId, lastSelectedScheduleType } = useSelector(lastSelectedDataSelector)
   const { groupLoad, loadingStatus, scheduleLessons } = useSelector(scheduleLessonsSelector)
+  const { lastSelectedItemId, lastSelectedScheduleType } = useSelector(lastSelectedDataSelector)
 
   React.useEffect(() => {
     if (!lastSelectedItemId) return
 
     if (lastSelectedScheduleType === 'group' || lastSelectedScheduleType === 'teacher') {
       dispatch(clearGroupLoad())
-      dispatch(
-        findLessonsForSchedule({
-          semester: selectedSemester,
-          itemId: lastSelectedItemId,
-          scheduleType: lastSelectedScheduleType,
-        })
-      )
+      const semester = selectedSemester
+      const itemId = lastSelectedItemId
+      const scheduleType = lastSelectedScheduleType
+      dispatch(findLessonsForSchedule({ semester, itemId, scheduleType }))
     }
-  }, [lastSelectedItemId, lastSelectedScheduleType, selectedSemester])
+  }, [lastSelectedItemId, /* lastSelectedScheduleType, */ selectedSemester])
 
   // При першому рендері вибираю з таблиці LessonsTable перший елемент
   React.useEffect(() => {
@@ -217,7 +210,6 @@ const LessonsTable: React.FC<ILessonsTable> = ({
               key={lesson.id}
               selected={isSelected}
               onClick={() => handleSelectLesson(lesson)}
-              // sx={{ '&:hover': { backgroundColor: 'secondary.lighter', cursor: 'pointer' } }}
               sx={
                 isEqualPlannedAndActuallyHours
                   ? { opacity: '0.4', '&:hover': { backgroundColor: 'secondary.lighter', cursor: 'pointer' } }

@@ -91,7 +91,11 @@ const StreamLessonsTableBody: React.FC<IStreamLessonsTableBodyProps> = (props) =
               </Typography>
             </TableCell>
             <TableCell sx={{ ...cellStyles, whiteSpace: 'nowrap' }} align="center">
-              {row[0].group.name} {row[0].subgroupNumber ? `підгр.${row[0].subgroupNumber}` : ''}
+              <Tooltip title={`${row[0].group.name} ${row[0].subgroupNumber ? `підгр.${row[0].subgroupNumber}` : ''}`}>
+                <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {row[0].group.name} {row[0].subgroupNumber ? `підгр.${row[0].subgroupNumber}` : ''}
+                </Typography>
+              </Tooltip>
             </TableCell>
             <TableCell sx={cellStyles} align="center">
               {row[0].semester}

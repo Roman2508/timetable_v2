@@ -7,6 +7,8 @@ import {
   DialogContent,
   DialogActions,
   TableContainer,
+  TableRow,
+  TableCell,
 } from '@mui/material'
 import { useSelector } from 'react-redux'
 import { CloseOutlined } from '@ant-design/icons'
@@ -17,6 +19,7 @@ import { GroupLoadType } from '../../../store/groups/groupsTypes'
 import { groupsSelector } from '../../../store/groups/groupsSlice'
 import { SubgroupsModalTableHead } from './SubgroupsModalTableHead'
 import { SubgroupsModalTableBody } from './SubgroupsModalTableBody'
+import EmptyCard from '../../EmptyCard/EmptyCard'
 
 interface ISelectPlanModalProps {
   open: boolean
@@ -79,12 +82,23 @@ const SubgroupsModal: React.FC<ISelectPlanModalProps> = ({ open, setOpen }) => {
             >
               <SubgroupsModalTableHead setSortBy={setSortBy} sortBy={sortBy} />
 
-              <SubgroupsModalTableBody
-                sortBy={sortBy}
-                groupLoad={group.groupLoad}
-                selectedLesson={selectedLesson}
-                setSelectedLesson={setSelectedLesson}
-              />
+              {!group.groupLoad || !group.groupLoad.length ? (
+                <TableRow>
+                  <TableCell component="th" colSpan={7} scope="row" align="center">
+                    <EmptyCard
+                      textMaxWidth="620px"
+                      text="Навчальне навантаження групи відсутнє, спробуйте перезавантажити сторінку, якщо проблема не зникла, можливо навчальний план групи немає жодної дисципліни"
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                <SubgroupsModalTableBody
+                  sortBy={sortBy}
+                  groupLoad={group.groupLoad}
+                  selectedLesson={selectedLesson}
+                  setSelectedLesson={setSelectedLesson}
+                />
+              )}
             </Table>
           </TableContainer>
         </DialogContent>

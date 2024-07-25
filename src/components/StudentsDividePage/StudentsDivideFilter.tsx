@@ -7,10 +7,7 @@ import { useAppDispatch } from '../../store/store'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
 import { groupsListSelector } from '../../store/groups/groupsSlice'
 import { getGroup, getGroupCategories } from '../../store/groups/groupsAsyncActions'
-import {
-  findGroupLoadLessonsByGroupIdAndSemester,
-  findLessonsForSchedule,
-} from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import { findGroupLoadLessonsByGroupIdAndSemester } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 
 interface IStudentsDivideFilterProps {
   setFilter: React.Dispatch<React.SetStateAction<{ groupId: number; semester: number }>>

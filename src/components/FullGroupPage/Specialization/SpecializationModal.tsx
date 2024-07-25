@@ -11,6 +11,8 @@ import {
   DialogContent,
   DialogActions,
   TableContainer,
+  TableRow,
+  TableCell,
 } from '@mui/material'
 import { useSelector } from 'react-redux'
 import React, { Dispatch, SetStateAction } from 'react'
@@ -23,6 +25,7 @@ import { groupsSelector } from '../../../store/groups/groupsSlice'
 import SpecializationModalTableBody from './SpecializationModalTableBody'
 import { SpecializationModalTableHead } from './SpecializationModalTableHead'
 import { attachSpecialization } from '../../../store/groups/groupsAsyncActions'
+import EmptyCard from '../../EmptyCard/EmptyCard'
 
 interface ISelectPlanModalProps {
   open: boolean
@@ -133,13 +136,24 @@ const SpecializationModal: React.FC<ISelectPlanModalProps> = ({ open, setOpen })
             >
               <SpecializationModalTableHead sortBy={sortBy} setSortBy={setSortBy} />
 
-              <SpecializationModalTableBody
-                sortBy={sortBy}
-                groupLoad={group.groupLoad}
-                selectedLesson={selectedLesson}
-                setSelectedLesson={setSelectedLesson}
-                setSelectedSpecialization={setSelectedSpecialization}
-              />
+              {!group.groupLoad || !group.groupLoad.length ? (
+                <TableRow>
+                  <TableCell component="th" colSpan={8} scope="row" align="center">
+                    <EmptyCard
+                      textMaxWidth="620px"
+                      text="Навчальне навантаження групи відсутнє, спробуйте перезавантажити сторінку, якщо проблема не зникла, можливо навчальний план групи немає жодної дисципліни"
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                <SpecializationModalTableBody
+                  sortBy={sortBy}
+                  groupLoad={group.groupLoad}
+                  selectedLesson={selectedLesson}
+                  setSelectedLesson={setSelectedLesson}
+                  setSelectedSpecialization={setSelectedSpecialization}
+                />
+              )}
             </Table>
           </TableContainer>
         </DialogContent>

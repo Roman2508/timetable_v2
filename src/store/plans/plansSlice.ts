@@ -34,6 +34,7 @@ const plansSlice = createSlice({
     },
     clearPlan(state) {
       state.plan = null
+      state.planSubjects = null
     },
   },
   extraReducers: (builder) => {

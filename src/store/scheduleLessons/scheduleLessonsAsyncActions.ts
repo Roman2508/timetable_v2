@@ -16,6 +16,7 @@ import {
   AddStudentsToAllGroupLessonsType,
   DeleteStudentsFromAllGroupLessonsType,
   FindGroupLoadLessonsByGroupIdAndSemesterPayloadType,
+  AttachTeacherPayloadType,
 } from '../../api/apiTypes'
 import { LoadingStatusTypes } from '../appTypes'
 import { TeachersType } from '../teachers/teachersTypes'
@@ -23,6 +24,7 @@ import { setLoadingStatus } from './scheduleLessonsSlice'
 import { setAppAlert } from '../appStatus/appStatusSlice'
 import { ScheduleLessonType } from './scheduleLessonsTypes'
 import { groupLoadLessonsAPI, scheduleLessonsAPI } from '../../api/api'
+import { GroupLoadType } from '../groups/groupsTypes'
 
 export const getScheduleLessons = createAsyncThunk(
   'schedule-lessons/getScheduleLessons',
@@ -32,6 +34,29 @@ export const getScheduleLessons = createAsyncThunk(
     try {
       const { data } = await scheduleLessonsAPI.getLessons(payload)
       // thunkAPI.dispatch(setAppAlert({ message: 'Розклад завантажено', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)
+
+export const getGroupLoadByCurrentCourse = createAsyncThunk(
+  'schedule-lessons/getGroupLoadByCurrentCourse',
+  async (id: number, thunkAPI): Promise<GroupLoadType[]> => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+    try {
+      const { data } = await groupLoadLessonsAPI.getGroupLoadByCurrentCourse(id)
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
@@ -387,6 +412,55 @@ export const findGroupLoadLessonsByGroupIdAndSemester = createAsyncThunk(
     }
   }
 )
+
+/* teachers attachment */
+
+/* attachTeacher */
+export const attachTeacher = createAsyncThunk(
+  'group/attachTeacher',
+  async (payload: AttachTeacherPayloadType, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+    try {
+      const { data } = await groupLoadLessonsAPI.attachTeacher(payload)
+      thunkAPI.dispatch(setAppAlert({ message: 'Викладача прикріплено до дисципліни', status: 'success' }))
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+      return data
+    } catch (error: any) {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      thunkAPI.dispatch(
+        setAppAlert({
+          message: (error as any)?.response?.data?.message || error.message,
+          status: 'error',
+        })
+      )
+      throw error
+    }
+  }
+)
+
+/* unpinTeacher */
+export const unpinTeacher = createAsyncThunk('group/unpinTeacher', async (lessonId: number, thunkAPI) => {
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
+
+  try {
+    const { data } = await groupLoadLessonsAPI.unpinTeacher(lessonId)
+    thunkAPI.dispatch(setAppAlert({ message: 'Викладача відкріплено від дисципліни', status: 'success' }))
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
+  } catch (error: any) {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+    thunkAPI.dispatch(
+      setAppAlert({
+        message: (error as any)?.response?.data?.message || error.message,
+        status: 'error',
+      })
+    )
+    throw error
+  }
+})
 
 /* add/delete students to/from lesson */
 export const addStudentToLesson = createAsyncThunk(

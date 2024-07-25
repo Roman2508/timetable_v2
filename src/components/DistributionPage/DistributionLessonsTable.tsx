@@ -31,21 +31,23 @@ const DistributionLessonsTable: React.FC<IDistributionLessonsTableProps> = ({
       </TableHead>
 
       <TableBody>
-        {lessons.map((lesson, index) => (
-          <TableRow
-            key={index}
-            selected={lesson[0].id === (selectedLesson && selectedLesson[0].id)}
-            onClick={() => setSelectedLesson(lesson)}
-            sx={{ '&:hover': { backgroundColor: 'secondary.lighter', cursor: 'pointer' } }}
-          >
-            <TableCell padding="none" align="left" sx={{ py: '6px' }}>
-              {lesson[0].name}
-            </TableCell>
-            <TableCell padding="none" align="right" sx={{ py: '6px' }}>
-              {lesson[0].semester}
-            </TableCell>
-          </TableRow>
-        ))}
+        {lessons.map((lesson, index) => {
+          return (
+            <TableRow
+              key={index}
+              selected={lesson[0].id === (selectedLesson && selectedLesson[0].id)}
+              onClick={() => setSelectedLesson(lesson)}
+              sx={{ '&:hover': { backgroundColor: 'secondary.lighter', cursor: 'pointer' } }}
+            >
+              <TableCell padding="none" align="left" sx={{ py: '6px' }}>
+                {lesson[0].name}
+              </TableCell>
+              <TableCell padding="none" align="right" sx={{ py: '6px' }}>
+                {lesson[0].semester}
+              </TableCell>
+            </TableRow>
+          )
+        })}
       </TableBody>
     </Table>
   )

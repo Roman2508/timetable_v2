@@ -5,10 +5,9 @@ import {
   updateGroup,
   createGroup,
   deleteGroup,
-  unpinTeacher,
-  attachTeacher,
   createSubgroups,
   getGroupCategories,
+  handleGroupVisible,
   updateGroupCategory,
   createGroupCategory,
   deleteGroupCategory,
@@ -16,13 +15,10 @@ import {
   createSpecialization,
   updateSpecialization,
   deleteSpecialization,
-  handleGroupVisible,
-  changeStudentsCount,
 } from './groupsAsyncActions'
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
-import { TeachersType } from '../teachers/teachersTypes'
-import { AttachSpecializationPayloadType, ChangeStudentsCountType } from '../../api/apiTypes'
+import { AttachSpecializationPayloadType } from '../../api/apiTypes'
 import { GroupCategoriesType, GroupLoadType, GroupsInitialState, GroupsShortType, GroupsType } from './groupsTypes'
 
 const groupsInitialState: GroupsInitialState = {
@@ -218,61 +214,38 @@ const groupsSlice = createSlice({
       state.group.groupLoad = [...lessons, ...action.payload]
     })
 
-    /* attachTeacher */
-    builder.addCase(
-      attachTeacher.fulfilled,
-      (state, action: PayloadAction<{ lessonId: number; teacher: TeachersType }>) => {
-        if (!state.group.groupLoad) return
+    // /* attachTeacher */
+    // builder.addCase(
+    //   attachTeacher.fulfilled,
+    //   (state, action: PayloadAction<{ lessonId: number; teacher: TeachersType }>) => {
+    //     if (!state.group.groupLoad) return
 
-        const lessons = state.group.groupLoad.map((el) => {
-          if (el.id === action.payload.lessonId) {
-            return { ...el, teacher: action.payload.teacher }
-          }
+    //     const lessons = state.group.groupLoad.map((el) => {
+    //       if (el.id === action.payload.lessonId) {
+    //         return { ...el, teacher: action.payload.teacher }
+    //       }
 
-          return el
-        })
+    //       return el
+    //     })
 
-        state.group.groupLoad = lessons
-      }
-    )
+    //     state.group.groupLoad = lessons
+    //   }
+    // )
 
-    /* unpinTeacher */
-    builder.addCase(unpinTeacher.fulfilled, (state, action: PayloadAction<{ lessonId: number }>) => {
-      if (!state.group.groupLoad) return
+    // /* unpinTeacher */
+    // builder.addCase(unpinTeacher.fulfilled, (state, action: PayloadAction<{ lessonId: number }>) => {
+    //   if (!state.group.groupLoad) return
 
-      const lessons = state.group.groupLoad.map((el) => {
-        if (el.id === action.payload.lessonId) {
-          return { ...el, teacher: null }
-        }
+    //   const lessons = state.group.groupLoad.map((el) => {
+    //     if (el.id === action.payload.lessonId) {
+    //       return { ...el, teacher: null }
+    //     }
 
-        return el
-      })
+    //     return el
+    //   })
 
-      state.group.groupLoad = lessons
-    })
-
-    /* changeStudentsCount */
-    builder.addCase(changeStudentsCount.fulfilled, (state, action: PayloadAction<ChangeStudentsCountType>) => {
-      if (!state.group.groupLoad) return
-
-      const { name, typeRu, semester, specialization, subgroupNumber, students } = action.payload
-
-      const lessons = state.group.groupLoad.map((el) => {
-        if (
-          el.name === name &&
-          el.typeRu === typeRu &&
-          el.semester === semester &&
-          el.specialization === specialization &&
-          el.subgroupNumber === subgroupNumber
-        ) {
-          return { ...el, students }
-        }
-
-        return el
-      })
-
-      state.group.groupLoad = lessons
-    })
+    //   state.group.groupLoad = lessons
+    // })
   },
 })
 

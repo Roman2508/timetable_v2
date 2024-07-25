@@ -17,6 +17,7 @@ import { PlanSubjectType } from '../../store/plans/plansTypes'
 import { groupLessonsByName } from '../../utils/groupLessonsByName'
 import { searchItemsByField } from '../../utils/searchItemsByField'
 import { deletePlanSubjects } from '../../store/plans/plansAsyncActions'
+import { sortItemsByKey } from '../../utils/sortItemsByKey'
 
 const cellStyles = { borderLeft: '1px solid rgb(235, 235, 235)' }
 
@@ -169,7 +170,7 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
           <OrderTableHead />
 
           <TableBody>
-            {searchItemsByField(groupLessonsByName(planSubjects), 'name', searchValue).map(
+            {searchItemsByField(sortItemsByKey(groupLessonsByName(planSubjects), 'name'), 'name', searchValue).map(
               (row: PlanSubjectType[], index: number) => {
                 const labelId = `enhanced-table-checkbox-${index}`
 
