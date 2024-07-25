@@ -77,10 +77,6 @@ export const InstructionalMaterialsTab = ({}: Props) => {
             ))}
           </Select>
         </FormControl>
-
-        <Button variant="contained" sx={{ height: "41px", minWidth: "120px", ml: 2 }}>
-          Переглянути
-        </Button>
       </div>
 
       <Divider sx={{ mb: 3 }} />

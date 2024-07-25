@@ -101,7 +101,7 @@ const dashboard = {
     },
     {
       id: "controls",
-      title: "Контроль вичиткия",
+      title: "Контроль вичитки",
       type: "item",
       url: "/controls",
       icon: icons.FormOutlined,

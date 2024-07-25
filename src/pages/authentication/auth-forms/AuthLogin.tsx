@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import React from "react"
+import { Link as RouterLink } from "react-router-dom"
 
 // material-ui
 import {
@@ -17,19 +17,19 @@ import {
   Stack,
   Typography,
   Chip,
-} from '@mui/material'
+} from "@mui/material"
 
 // third party
 // import * as Yup from 'yup';
 // import { Formik } from 'formik';
 
 // project import
-import FirebaseSocial from './FirebaseSocial'
-import AnimateButton from '../../../components/@extended/AnimateButton'
+import FirebaseSocial from "./FirebaseSocial"
+import AnimateButton from "../../../components/@extended/AnimateButton"
 
 // assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -51,7 +51,7 @@ const AuthLogin = () => {
     formState: { errors },
     handleSubmit,
   } = useForm<{ name: string }>({
-    mode: 'onBlur',
+    mode: "onBlur",
   })
 
   const onSubmit: SubmitHandler<{ name: string }> = async (data) => {
@@ -103,7 +103,7 @@ const AuthLogin = () => {
             type="text"
             name="name"
             placeholder="test"
-            sx={{ mt: '2px !important' }}
+            sx={{ mt: "2px !important" }}
             fullWidth
             error={Boolean(errors.name)}
           />
@@ -119,7 +119,7 @@ const AuthLogin = () => {
           <OutlinedInput
             id="name"
             type="password"
-            sx={{ mt: '2px !important' }}
+            sx={{ mt: "2px !important" }}
             name="name"
             placeholder="test"
             fullWidth
@@ -136,9 +136,9 @@ const AuthLogin = () => {
           variant="contained"
           color="primary"
           sx={{
-            textTransform: 'capitalize',
-            width: '100%',
-            p: '7.44px 15px',
+            textTransform: "capitalize",
+            width: "100%",
+            p: "7.44px 15px",
             mt: 3,
           }}
         >
@@ -146,20 +146,22 @@ const AuthLogin = () => {
         </Button>
 
         <Divider sx={{ mt: 1.5 }}>
-          <Chip label={'Або'} size="medium" sx={{ userSelect: 'none' }} />
+          <Chip label={"Або"} size="medium" sx={{ userSelect: "none" }} />
         </Divider>
+
+        {/* <Typography sx={{ py: 1 }}>Увійдіть використовуючи свій обліковий запис (...@pharm.zt.ua):</Typography> */}
 
         <Button
           variant="outlined"
           color="primary"
           sx={{
-            textTransform: 'capitalize',
-            width: '100%',
-            p: '7.44px 15px',
+            textTransform: "capitalize",
+            width: "100%",
+            p: "7.44px 15px",
             mt: 1.5,
           }}
         >
-          Google
+          Вхід з акаунтом Google
         </Button>
       </form>
       {/* <Formik
