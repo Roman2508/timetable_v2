@@ -362,3 +362,12 @@ export type UpdateSemesterTermsPayloadType = {
   secondSemesterEnd: string
 }
 /* // settings */
+
+/* InstructionalMaterials */
+
+export type CreateInstructionalMaterialsPayloadType = {
+  name: string
+  lessonNumber: number
+  lessonId: number
+}
+export type UpdateInstructionalMaterialsPayloadType = { id: number; name: string }

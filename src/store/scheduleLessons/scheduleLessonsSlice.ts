@@ -157,6 +157,7 @@ const scheduleLessonsSlice = createSlice({
     /* updateScheduleLesson */
     builder.addCase(updateScheduleLesson.fulfilled, (state, action: PayloadAction<ScheduleLessonType>) => {
       if (!state.scheduleLessons) return
+
       const updatedLessons = state.scheduleLessons.map((el) => {
         if (el.id === action.payload.id) {
           return { ...el, ...action.payload }

@@ -13,6 +13,7 @@ import studentsSlice from './students/studentsSlice'
 import appStatusSlice from './appStatus/appStatusSlice'
 import gradeBookSlice from './gradeBook/gradeBookSlice'
 import auditoriesSlise from './auditories/auditoriesSlise'
+import teacherProfileSlice from './teacherProfile/teacherProfileSlice'
 import scheduleLessonsSlice from './scheduleLessons/scheduleLessonsSlice'
 
 const menuPersistConfig = {
@@ -43,6 +44,7 @@ const rootReducer = combineReducers({
   appStatus: appStatusSlice,
   gradeBook: gradeBookSlice,
   auditories: auditoriesSlise,
+  teacherProfile: teacherProfileSlice,
   menu: persistReducer(menuPersistConfig, menuSlice),
   scheduleLessons: persistReducer(groupsPersistConfig, scheduleLessonsSlice),
 })

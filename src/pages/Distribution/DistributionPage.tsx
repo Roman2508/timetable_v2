@@ -138,23 +138,28 @@ const DistributionPage = () => {
           </Grid>
 
           <Grid item xs={4} sx={{ borderRadius: '8px', border: '1px solid #e6ebf1', overflow: 'hidden' }}>
-            <MainCard>
-              <Typography variant="button" sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase' }}>
+            <MainCard sx={{ '& .MuiCardContent-root': { px: 0, pb: 0 } }}>
+              <Typography
+                variant="button"
+                sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase', mb: '18px' }}
+              >
                 Викладачі
               </Typography>
-            </MainCard>
 
-            {/* TEACHERS LIST */}
-            {!teachersCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
-            {!teachersCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
-            {teachersCategories?.length && (
-              <AccordionItemsList
-                items={teachersCategories}
-                selectedItemId={selectedTeacherId}
-                onSelectItem={setSelectedTeacherId}
-              />
-            )}
-            {/* // TEACHERS LIST */}
+              <Divider />
+
+              {/* TEACHERS LIST */}
+              {!teachersCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
+              {!teachersCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
+              {teachersCategories?.length && (
+                <AccordionItemsList
+                  items={teachersCategories}
+                  selectedItemId={selectedTeacherId}
+                  onSelectItem={setSelectedTeacherId}
+                />
+              )}
+              {/* // TEACHERS LIST */}
+            </MainCard>
           </Grid>
         </Grid>
       </Grid>

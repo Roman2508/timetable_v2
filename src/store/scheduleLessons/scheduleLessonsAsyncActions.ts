@@ -304,14 +304,9 @@ export const updateScheduleLesson = createAsyncThunk(
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
       return data
     } catch (error: any) {
+      const message = (error as any)?.response?.data?.message || error.message
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
-        })
-      )
+      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
       throw error
     }
   }

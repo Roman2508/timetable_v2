@@ -186,6 +186,8 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
         })
       )
 
+      if (!payload) return alert('Error')
+
       lesson = payload as ScheduleLessonType
     }
 
