@@ -8,11 +8,11 @@ import {
   FindLessonsForSchedulePayloadType,
   DeleteStudentsFromAllGroupLessonsType,
   FindGroupLoadLessonsByGroupIdAndSemesterPayloadType,
-} from './apiTypes'
-import { instanse } from './api'
-import { GroupLoadType } from '../store/groups/groupsTypes'
-import { StudentType } from '../store/students/studentsTypes'
-import { TeachersType } from '../store/teachers/teachersTypes'
+} from "./apiTypes"
+import { instanse } from "./api"
+import { GroupLoadType } from "../store/groups/groupsTypes"
+import { StudentType } from "../store/students/studentsTypes"
+import { TeachersType } from "../store/teachers/teachersTypes"
 
 export const groupLoadLessonsAPI = {
   /* Specialization */
@@ -22,19 +22,19 @@ export const groupLoadLessonsAPI = {
 
   /* Students */
   addStudentsToLesson(payload: AddStudentToLessonType) {
-    return instanse.patch<StudentType[]>('/group-load-lessons/students/add', payload)
+    return instanse.patch<StudentType[]>("/group-load-lessons/students/add", payload)
   },
 
   deleteStudentsFromLesson(payload: DeleteStudentFromLessonType) {
-    return instanse.patch<StudentType[]>('/group-load-lessons/students/delete', payload)
+    return instanse.patch<StudentType[]>("/group-load-lessons/students/delete", payload)
   },
 
   addStudentsToAllGroupLessons(payload: AddStudentsToAllGroupLessonsType) {
-    return instanse.patch<StudentType[]>('/group-load-lessons/students/all/add', payload)
+    return instanse.patch<StudentType[]>("/group-load-lessons/students/all/add", payload)
   },
 
   deleteStudentsFromAllGroupLessons(payload: DeleteStudentsFromAllGroupLessonsType) {
-    return instanse.patch<StudentType[]>('/group-load-lessons/students/all/delete', payload)
+    return instanse.patch<StudentType[]>("/group-load-lessons/students/all/delete", payload)
   },
 
   /* Subgroups */
@@ -56,6 +56,10 @@ export const groupLoadLessonsAPI = {
   /* group load */
   getGroupLoadByCurrentCourse(id: number) {
     return instanse.get<GroupLoadType[]>(`/group-load-lessons/by-current-cours/${id}`)
+  },
+
+  findAllTeacherLessonsById(teacherId: number) {
+    return instanse.get<GroupLoadType[]>(`/group-load-lessons/teacher/${teacherId}`)
   },
 
   findLessonsForSchedule(payload: FindLessonsForSchedulePayloadType) {

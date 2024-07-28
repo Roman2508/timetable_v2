@@ -1,6 +1,6 @@
-import { LoadingStatusTypes } from '../appTypes'
-import { GroupLoadType } from '../groups/groupsTypes'
-import { TeachersType } from '../teachers/teachersTypes'
+import { LoadingStatusTypes } from "../appTypes"
+import { GroupLoadType } from "../groups/groupsTypes"
+import { TeachersType } from "../teachers/teachersTypes"
 
 export type TeacherProfileInitialInitialState = {
   // Загальна інформація, Видавнича діяльність
@@ -10,8 +10,8 @@ export type TeacherProfileInitialInitialState = {
   workload: GroupLoadType[] | null
 
   // Дисципліна в яку викладач вносить теми уроків (Навчально-методичні комплекси)
-  // TODO: Переіменувати
-  lesson: GroupLoadType | null
+  // Дисципліни викладача за рік
+  filterLesson: GroupLoadType[] | null
   instructionalMaterials: InstructionalMaterialsType[] | null
 
   individualWorkPlan: IndividualWorkPlanType[] | null
