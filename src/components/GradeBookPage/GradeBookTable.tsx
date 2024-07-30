@@ -1,19 +1,19 @@
-import React from 'react'
-import { Paper } from '@mui/material'
+import React from "react"
+import { Paper } from "@mui/material"
 
 import {
   GradeType,
   GradeBookType,
   StudentGradesType,
   GradeBookSummaryTypes,
-} from '../../store/gradeBook/gradeBookTypes'
-import './grade-book.css'
-import { useAppDispatch } from '../../store/store'
-import GradeBookTableHead from './GradeBookTableHead'
-import GradeBookTableCell from './GradeBookTableCell'
-import { gradeBookSummary } from '../../utils/gradeBookSummary'
-import { updateGrade } from '../../store/gradeBook/gradeBookAsyncActions'
-import { updateGradesLocally } from '../../store/gradeBook/gradeBookSlice'
+} from "../../store/gradeBook/gradeBookTypes"
+import "./grade-book.css"
+import { useAppDispatch } from "../../store/store"
+import GradeBookTableHead from "./GradeBookTableHead"
+import GradeBookTableCell from "./GradeBookTableCell"
+import { gradeBookSummary } from "../../utils/gradeBookSummary"
+import { updateGrade } from "../../store/gradeBook/gradeBookAsyncActions"
+import { updateGradesLocally } from "../../store/gradeBook/gradeBookSlice"
 
 interface IGradeBookTablePops {
   gradeBook: GradeBookType
@@ -89,27 +89,27 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook, gradeBookLes
                     .fill(null)
                     .map((_, colIndex) => {
                       const moduleAvarage = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex + 1 && el.type === 'MODULE_AVERAGE'
+                        (el) => el.afterLesson === colIndex + 1 && el.type === "MODULE_AVERAGE"
                       )
 
                       const moduleSum = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex + 1 && el.type === 'MODULE_SUM'
+                        (el) => el.afterLesson === colIndex + 1 && el.type === "MODULE_SUM"
                       )
 
                       const moduleTest = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex + 1 && el.type === 'MODULE_TEST'
+                        (el) => el.afterLesson === colIndex + 1 && el.type === "MODULE_TEST"
                       )
 
                       const additionalRate = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex + 1 && el.type === 'ADDITIONAL_RATE'
+                        (el) => el.afterLesson === colIndex + 1 && el.type === "ADDITIONAL_RATE"
                       )
 
                       const currentRate = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex + 1 && el.type === 'CURRENT_RATE'
+                        (el) => el.afterLesson === colIndex + 1 && el.type === "CURRENT_RATE"
                       )
 
                       const examRate = gradeBook?.summary.find(
-                        (el) => el.afterLesson === colIndex + 1 && el.type === 'EXAM'
+                        (el) => el.afterLesson === colIndex + 1 && el.type === "EXAM"
                       )
 
                       return (
@@ -129,13 +129,13 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook, gradeBookLes
                           />
 
                           {currentRate && (
-                            <th style={{ backgroundColor: '#f3f3f3' }}>
-                              <p style={{ textAlign: 'center', margin: 0 }}>
+                            <th style={{ backgroundColor: "#f3f3f3" }}>
+                              <p style={{ textAlign: "center", margin: 0 }}>
                                 {gradeBookSummary.getModuleRate(
                                   gradeBook ? gradeBook.summary : [],
                                   grade.grades,
                                   currentRate.afterLesson,
-                                  'current_sum'
+                                  "current_sum"
                                 )}
                               </p>
                             </th>
@@ -180,26 +180,26 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook, gradeBookLes
                           )}
 
                           {moduleAvarage && (
-                            <th style={{ backgroundColor: '#f3f3f3' }}>
-                              <p style={{ textAlign: 'center', margin: 0 }}>
+                            <th style={{ backgroundColor: "#f3f3f3" }}>
+                              <p style={{ textAlign: "center", margin: 0 }}>
                                 {gradeBookSummary.getModuleRate(
                                   gradeBook ? gradeBook.summary : [],
                                   grade.grades,
                                   moduleAvarage.afterLesson,
-                                  'average'
+                                  "average"
                                 )}
                               </p>
                             </th>
                           )}
 
                           {moduleSum && (
-                            <th style={{ backgroundColor: '#f3f3f3' }}>
-                              <p style={{ textAlign: 'center', margin: 0 }}>
+                            <th style={{ backgroundColor: "#f3f3f3" }}>
+                              <p style={{ textAlign: "center", margin: 0 }}>
                                 {gradeBookSummary.getModuleRate(
                                   gradeBook ? gradeBook.summary : [],
                                   grade.grades,
                                   moduleSum.afterLesson,
-                                  'sum'
+                                  "sum"
                                 )}
                               </p>
                             </th>
@@ -228,19 +228,19 @@ const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook, gradeBookLes
                     })}
 
                   {gradeBook?.summary.find((el) => el.type === GradeBookSummaryTypes.LESSON_AVERAGE) && (
-                    <td style={{ textAlign: 'center', backgroundColor: '#f3f3f3' }}>
-                      {gradeBookSummary.getTotalRate(grade.grades, 'average')}
+                    <td style={{ textAlign: "center", backgroundColor: "#f3f3f3" }}>
+                      {gradeBookSummary.getTotalRate(grade.grades, "average")}
                     </td>
                   )}
 
                   {gradeBook?.summary.find((el) => el.type === GradeBookSummaryTypes.LESSON_SUM) && (
                     <>
-                      <td style={{ textAlign: 'center', backgroundColor: '#f3f3f3' }}>
-                        {gradeBookSummary.getTotalRate(grade.grades, 'sum')}
+                      <td style={{ textAlign: "center", backgroundColor: "#f3f3f3" }}>
+                        {gradeBookSummary.getTotalRate(grade.grades, "sum")}
                       </td>
 
-                      <td style={{ textAlign: 'center', backgroundColor: '#f3f3f3' }}>
-                        {gradeBookSummary.calcECTS(Number(gradeBookSummary.getTotalRate(grade.grades, 'sum')))}
+                      <td style={{ textAlign: "center", backgroundColor: "#f3f3f3" }}>
+                        {gradeBookSummary.calcECTS(Number(gradeBookSummary.getTotalRate(grade.grades, "sum")))}
                       </td>
                     </>
                   )}

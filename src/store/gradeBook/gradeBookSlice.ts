@@ -2,12 +2,14 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 import { RootState } from "../store"
 import { LoadingStatusTypes } from "../appTypes"
-import { addSummary, deleteSummary, getGradeBook, getGrades } from "./gradeBookAsyncActions"
+import { addSummary, deleteSummary, getGradeBook, getGrades, getLessonThemes } from "./gradeBookAsyncActions"
 import { GradeBookInitialStateType, GradeBookSummaryTypes, GradeBookType } from "./gradeBookTypes"
 import { AddSummaryResponceType, DeleteGradeBookSummaryPayloadType, GetGradesResponceType } from "../../api/apiTypes"
+import { InstructionalMaterialsType } from "../teacherProfile/teacherProfileTypes"
 
 const gradeBookInitialState: GradeBookInitialStateType = {
   gradeBook: null,
+  lessonThemes: null,
   loadingStatus: LoadingStatusTypes.NEVER,
 }
 
@@ -103,6 +105,11 @@ export const gradeBookSlice = createSlice({
       const { afterLesson, type } = action.payload.summary[0]
       const summary = state.gradeBook.summary.filter((el) => el.afterLesson !== afterLesson || el.type !== type)
       state.gradeBook.summary = summary
+    })
+
+    /* getLessonThemes */
+    builder.addCase(getLessonThemes.fulfilled, (state, action: PayloadAction<InstructionalMaterialsType[]>) => {
+      state.lessonThemes = action.payload
     })
 
     /* getGrades */

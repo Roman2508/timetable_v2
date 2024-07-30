@@ -6,6 +6,7 @@ import {
   createInstructionalMaterials,
   deleteInstructionalMaterials,
   updateInstructionalMaterials,
+  getTeacherLoadById,
 } from "./teacherProfileAsyncActions"
 import { RootState } from "../store"
 import { LoadingStatusTypes } from "../appTypes"
@@ -85,6 +86,14 @@ const teacherProfileSlice = createSlice({
     /* findAllTeacherLessonsById */
     builder.addCase(findAllTeacherLessonsById.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
       state.filterLesson = action.payload
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
+    })
+
+    /* teacher workload */
+
+    /* getTeacherLoadById */
+    builder.addCase(getTeacherLoadById.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
+      state.workload = action.payload
       state.loadingStatus = LoadingStatusTypes.SUCCESS
     })
   },

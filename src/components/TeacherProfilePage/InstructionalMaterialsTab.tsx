@@ -7,22 +7,25 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TextField,
+  Typography,
   IconButton,
   InputLabel,
   FormControl,
-  Typography,
 } from "@mui/material"
 import React from "react"
 import { useSelector } from "react-redux"
-import { CheckOutlined, CloseOutlined, EditOutlined } from "@ant-design/icons"
+import { EditOutlined } from "@ant-design/icons"
 
+import {
+  findAllTeacherLessonsById,
+  getInstructionalMaterials,
+} from "../../store/teacherProfile/teacherProfileAsyncActions"
+import EmptyCard from "../EmptyCard/EmptyCard"
 import { useAppDispatch } from "../../store/store"
 import { GroupLoadType } from "../../store/groups/groupsTypes"
-import { teacherProfileSelector } from "../../store/teacherProfile/teacherProfileSlice"
-import { findAllTeacherLessonsById } from "../../store/teacherProfile/teacherProfileAsyncActions"
-import EmptyCard from "../EmptyCard/EmptyCard"
 import { InstructionalMaterialsModal } from "./InstructionalMaterialsModal"
+import { teacherProfileSelector } from "../../store/teacherProfile/teacherProfileSlice"
+import { InstructionalMaterialsType } from "../../store/teacherProfile/teacherProfileTypes"
 
 interface Props {}
 
@@ -30,19 +33,6 @@ interface IFilter {
   ["1"]: GroupLoadType[]
   ["2"]: GroupLoadType[]
 }
-
-function createData(id: number, name: string, hours: number) {
-  return { id, name, hours }
-}
-
-const rows = [
-  createData(1, "Інформація, інформаційні технології та людина в інформаційному суспільстві", 2),
-  createData(3, "Інформаційна безпека та основи кібергігієни", 2),
-  createData(7, "Цифрове навчання та комп’ютерно-орієнтовані засоби навчальної діяльності", 2),
-  createData(4, "Сучасні інформаційні технології та їх вплив на суспільство", 2),
-  createData(9, "Сучасні інформаційні технології та їх вплив на суспільство", 2),
-  createData(6, "Комп’ютерне моделювання та комп'ютерний експеримент", 2),
-]
 
 export const InstructionalMaterialsTab = React.memo(({}: Props) => {
   const dispatch = useAppDispatch()
@@ -52,7 +42,9 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
   const [semester, setSemester] = React.useState(1)
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [filter, setFilter] = React.useState<IFilter>({ ["1"]: [], ["2"]: [] })
+  const [actionType, setActiveType] = React.useState<"create" | "update">("create")
   const [selectedLesson, setSelectedLesson] = React.useState<GroupLoadType | null>(null)
+  const [editingTheme, setEditingTheme] = React.useState<InstructionalMaterialsType | null>(null)
 
   const handleChangeSelectedLesson = (id: number) => {
     if (!filterLesson) return
@@ -60,9 +52,29 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
     if (lesson) setSelectedLesson(lesson)
   }
 
+  const handleEditTheme = (lessonNumber: number, theme?: InstructionalMaterialsType) => {
+    if (!selectedLesson) return alert("Урок не вибраний")
+    setIsModalOpen(true)
+
+    if (theme) {
+      setActiveType("update")
+      setEditingTheme(theme)
+      return
+    }
+
+    setActiveType("create")
+    setEditingTheme({ id: 0, lessonNumber, name: "", lesson: selectedLesson })
+  }
+
   React.useEffect(() => {
-    dispatch(findAllTeacherLessonsById(14))
+    if (filterLesson) return
+    dispatch(findAllTeacherLessonsById(3))
   }, [])
+
+  React.useEffect(() => {
+    if (!selectedLesson) return
+    dispatch(getInstructionalMaterials(selectedLesson.id))
+  }, [selectedLesson])
 
   React.useEffect(() => {
     if (!filterLesson) return
@@ -79,14 +91,22 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
 
   return (
     <>
-      <InstructionalMaterialsModal open={isModalOpen} setOpen={setIsModalOpen} selectedLesson={selectedLesson} />
+      <InstructionalMaterialsModal
+        open={isModalOpen}
+        actionType={actionType}
+        setOpen={setIsModalOpen}
+        editingTheme={editingTheme}
+        selectedLesson={selectedLesson}
+      />
 
       <div style={{ display: "flex", alignItems: "flex-start" }}>
         <FormControl fullWidth sx={{ mb: 3 }}>
           <InputLabel sx={{ overflow: "visible !important" }}>Семестр</InputLabel>
           <Select onChange={(e) => setSemester(Number(e.target.value))} value={semester}>
             {[1, 2].map((el) => (
-              <MenuItem value={el}>{el}</MenuItem>
+              <MenuItem value={el} key={el}>
+                {el}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -99,7 +119,7 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
           >
             {/* @ts-ignore */}
             {(filterLesson ? filter[semester] : []).map((el: GroupLoadType) => (
-              <MenuItem value={el.id}>{`${el.group.name} / ${el.typeRu} / ${el.name}`}</MenuItem>
+              <MenuItem value={el.id} key={el.id}>{`${el.group.name} / ${el.typeRu} / ${el.name}`}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -127,7 +147,9 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
             {Array(selectedLesson ? selectedLesson.hours : 0)
               .fill(null)
               .map((_, i) => {
-                const lesson = rows.find((el) => el.id === i + 1)
+                // const lesson = rows.find((el) => el.id === i + 1)
+
+                const theme = instructionalMaterials?.find((el) => el.lessonNumber === i + 1)
 
                 return (
                   <TableRow key={i}>
@@ -145,19 +167,13 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
                         "&:hover span": { display: "inline-block !important" },
                       }}
                     >
-                      <Typography style={{ flexGrow: 1, margin: 0 }}>{lesson?.name}</Typography>
+                      <Typography style={{ flexGrow: 1, margin: 0 }}>{theme?.name}</Typography>
 
-                      <IconButton
-                        onClick={() => {
-                          if (!lesson) return
-                          setSelectedLesson(lesson)
-                          setIsModalOpen(true)
-                        }}
-                      >
+                      <IconButton onClick={() => handleEditTheme(i + 1, theme)}>
                         <EditOutlined style={{ display: "none", cursor: "pointer" }} />
                       </IconButton>
                     </TableCell>
-                    <TableCell>{lesson ? lesson.hours : "-"}</TableCell>
+                    <TableCell>{theme ? 2 : "-"}</TableCell>
                   </TableRow>
                 )
               })}

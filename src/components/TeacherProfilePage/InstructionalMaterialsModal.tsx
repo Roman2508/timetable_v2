@@ -14,17 +14,24 @@ import { CloseOutlined } from "@ant-design/icons"
 import React, { Dispatch, SetStateAction } from "react"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 
+import {
+  createInstructionalMaterials,
+  updateInstructionalMaterials,
+} from "../../store/teacherProfile/teacherProfileAsyncActions"
 import { useAppDispatch } from "../../store/store"
 import { GroupLoadType } from "../../store/groups/groupsTypes"
+import { InstructionalMaterialsType } from "../../store/teacherProfile/teacherProfileTypes"
 
 interface IInstructionalMaterialsModalProps {
   open: boolean
+  actionType: "create" | "update"
   selectedLesson: GroupLoadType | null
   setOpen: Dispatch<SetStateAction<boolean>>
+  editingTheme: InstructionalMaterialsType | null
 }
 
 const InstructionalMaterialsModal: React.FC<IInstructionalMaterialsModalProps> = (props) => {
-  const { open, setOpen, selectedLesson } = props
+  const { open, setOpen, editingTheme, actionType, selectedLesson } = props
 
   const dispatch = useAppDispatch()
 
@@ -36,22 +43,38 @@ const InstructionalMaterialsModal: React.FC<IInstructionalMaterialsModalProps> =
     watch,
     control,
     setValue,
-    formState: { errors },
     handleSubmit,
-  } = useForm<{ name: string }>({
-    mode: "onChange",
-  })
+    formState: { errors },
+  } = useForm<{ name: string }>({ mode: "onChange" })
 
   const onSubmit: SubmitHandler<{ name: string }> = async (data) => {
+    if (!selectedLesson) return alert("Урок не вибраний")
+    if (!editingTheme) return alert("Тема не вибрана")
     setOpen(false)
-    //   await dispatch(aaaaaaa(data.name))
+
+    if (actionType === "create") {
+      const payload = { name: data.name, lessonNumber: editingTheme.lessonNumber, lessonId: selectedLesson.id }
+      await dispatch(createInstructionalMaterials(payload))
+      return
+    }
+
+    if (actionType === "update") {
+      const payload = {
+        name: data.name,
+        id: editingTheme.id,
+        lessonId: selectedLesson.id,
+        lessonNumber: editingTheme.lessonNumber,
+      }
+      await dispatch(updateInstructionalMaterials(payload))
+    }
+
     setValue("name", "")
   }
 
   React.useEffect(() => {
-    if (!selectedLesson) return
-    setValue("name", selectedLesson.name)
-  }, [selectedLesson])
+    if (!editingTheme) return
+    setValue("name", editingTheme.name)
+  }, [editingTheme])
 
   return (
     <Dialog
@@ -103,7 +126,7 @@ const InstructionalMaterialsModal: React.FC<IInstructionalMaterialsModalProps> =
               sx={{ width: "100%", mt: 3 }}
               disabled={!!errors.name || !watch("name")}
             >
-              Зберегти
+              {actionType === "create" ? "Зберегти" : "Оновити"}
             </Button>
           </form>
         </DialogContentText>
