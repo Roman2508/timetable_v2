@@ -23,8 +23,8 @@ import AuthLogin from './pages/authentication/auth-forms/AuthLogin'
 // import DistributionPage from './pages/Distribution/DistributionPage'
 import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
 // import FullTeachersPage from "./pages/FullTeacher/FullTeacherPage"
-// import TeachingLessonsControl from './pages/TeachingLessonsControl/TeachingLessonsControl'
 // import StudentsAccounts from './pages/StudentsAccounts/StudentsAccounts'
+// import TeachingLessonsControl from './pages/TeachingLessonsControl/TeachingLessonsControl'
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('./pages/dashboard')))
@@ -47,10 +47,10 @@ const TeachersPage = Loadable(lazy(() => import('./pages/Teachers/TeachersPage')
 const FullPlanPage = Loadable(lazy(() => import('./pages/FullPlan/FullPlanPage')))
 const FullGroupPage = Loadable(lazy(() => import('./pages/FullGroup/FullGroupPage')))
 const AuditoriesPage = Loadable(lazy(() => import('./pages/Auditories/AuditoriesPage')))
-const TeacherProfilePage = Loadable(lazy(() => import('./pages/TeacherProfile/TeacherProfilePage')))
 const StudentsDivide = Loadable(lazy(() => import('./pages/StudentsDivide/StudentsDivide')))
 const DistributionPage = Loadable(lazy(() => import('./pages/Distribution/DistributionPage')))
 const StudentsAccounts = Loadable(lazy(() => import('./pages/StudentsAccounts/StudentsAccounts')))
+const TeacherProfilePage = Loadable(lazy(() => import('./pages/TeacherProfile/TeacherProfilePage')))
 const TeachingLessonsControl = Loadable(lazy(() => import('./pages/TeachingLessonsControl/TeachingLessonsControl')))
 
 const App = () => {
