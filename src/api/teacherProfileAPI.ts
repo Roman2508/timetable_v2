@@ -1,8 +1,9 @@
 import { instanse } from './api'
-import { InstructionalMaterialsType } from '../store/teacherProfile/teacherProfileTypes'
+import { IndividualTeacherWordTypes, InstructionalMaterialsType } from '../store/teacherProfile/teacherProfileTypes'
 import { CreateInstructionalMaterialsPayloadType, UpdateInstructionalMaterialsPayloadType } from './apiTypes'
 
 export const teacherProfileAPI = {
+  /* instructional-materials */
   getInstructionalMaterials(id: number) {
     return instanse.get<InstructionalMaterialsType[]>(`/instructional-materials/${id}`)
   },
@@ -15,5 +16,10 @@ export const teacherProfileAPI = {
   },
   deleteInstructionalMaterial(id: number) {
     return instanse.delete<number>(`/instructional-materials/${id}`)
+  },
+
+  /* individual-teacher-work */
+  getIndividualTeacherWork() {
+    return instanse.get<IndividualTeacherWordTypes[]>('/instructional-materials')
   },
 }

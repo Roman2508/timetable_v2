@@ -10,10 +10,10 @@ import {
   AccordionDetails,
   AccordionSummary,
   TextareaAutosize,
-} from "@mui/material"
-import React from "react"
-import { DownOutlined } from "@ant-design/icons"
-import { CustomDatePicker } from "../CustomDatePicker"
+} from '@mui/material'
+import React from 'react'
+import { DownOutlined } from '@ant-design/icons'
+import { CustomDatePicker } from '../CustomDatePicker'
 
 function createData(
   id: number,
@@ -30,34 +30,34 @@ function createData(
 const data = [
   createData(
     1,
-    "Написання конкурсної роботи для представлення на обласному, регіональному рівні",
-    "",
+    'Написання конкурсної роботи для представлення на обласному, регіональному рівні',
+    '',
     50,
-    "30.06.2024",
-    "30.06.2024",
+    '30.06.2024',
+    '30.06.2024',
     false
   ),
-  createData(2, "Участь у коледжній науково-методичній виставці", "", 50, "30.06.2024", "30.06.2024", true),
+  createData(2, 'Участь у коледжній науково-методичній виставці', '', 50, '30.06.2024', '30.06.2024', true),
   createData(
     3,
-    "Діяльність як члена атестаційної комісії викладачів ( І рівня та/або ІІ рівня)",
-    "",
+    'Діяльність як члена атестаційної комісії викладачів ( І рівня та/або ІІ рівня)',
+    '',
     50,
-    "30.06.2024",
-    "30.06.2024",
+    '30.06.2024',
+    '30.06.2024',
     true
   ),
-  createData(4, "Підготовка доповіді на засідання ЦК", "", 50, "30.06.2024", "30.06.2024", false),
+  createData(4, 'Підготовка доповіді на засідання ЦК', '', 50, '30.06.2024', '30.06.2024', false),
   createData(
     5,
-    "Організація проведення заходів, свят, концертів коледжного рівня",
-    "",
+    'Організація проведення заходів, свят, концертів коледжного рівня',
+    '',
     50,
-    "30.06.2024",
-    "30.06.2024",
+    '30.06.2024',
+    '30.06.2024',
     false
   ),
-  createData(6, "Складання плану роботи кабінету", "", 50, "30.06.2024", "30.06.2024", true),
+  createData(6, 'Складання плану роботи кабінету', '', 50, '30.06.2024', '30.06.2024', true),
 ]
 
 interface Props {}
@@ -66,13 +66,13 @@ const TeachersReportTab: React.FC<Props> = (props) => {
   const {} = props
 
   return (
-    <div style={{ position: "relative" }}>
-      <div style={{ marginBottom: "30px" }}>
-        <Button variant="outlined" sx={{ mr: 1 }} style={{ textTransform: "initial" }}>
+    <div style={{ position: 'relative' }}>
+      <div style={{ marginBottom: '30px' }}>
+        <Button variant="outlined" sx={{ mr: 1 }} style={{ textTransform: 'initial' }}>
           Експортувати звіт в PDF
         </Button>
 
-        <Button variant="outlined" style={{ textTransform: "initial" }}>
+        <Button variant="outlined" style={{ textTransform: 'initial' }}>
           Експортувати звіт в WORD
         </Button>
       </div>
@@ -82,9 +82,9 @@ const TeachersReportTab: React.FC<Props> = (props) => {
           <Accordion
             key={el.id}
             sx={{
-              "&.Mui-expanded": { /* margin: "32px 0 !important" */ background: "white" },
-              "&.Mui-expanded .MuiAccordionSummary-root": {
-                /* margin: "32px 0 !important" */ background: "#fafafb",
+              '&.Mui-expanded': { /* margin: "32px 0 !important" */ background: 'white' },
+              '&.Mui-expanded .MuiAccordionSummary-root': {
+                /* margin: "32px 0 !important" */ background: '#fafafb',
               },
             }}
           >
@@ -93,16 +93,16 @@ const TeachersReportTab: React.FC<Props> = (props) => {
               <Chip
                 size="small"
                 variant="outlined"
-                label={el.status ? "Виконано" : "Не виконано"}
-                color={el.status ? "primary" : "error"}
-                sx={{ width: "106px", ml: "auto", mr: 2 }}
+                label={el.status ? 'Виконано' : 'Не виконано'}
+                color={el.status ? 'primary' : 'error'}
+                sx={{ width: '106px', ml: 'auto', mr: 2 }}
               />
             </AccordionSummary>
 
             <Divider />
 
             <AccordionDetails>
-              <div style={{ marginBottom: "30px", display: "flex", gap: 14 }}>
+              <div style={{ marginBottom: '30px', display: 'flex', gap: 14 }}>
                 <Stack spacing={1} sx={{ flex: 1 }}>
                   <InputLabel htmlFor="hours">Кількість годин</InputLabel>
                   <OutlinedInput fullWidth type="number" id="hours" name="hours" />
@@ -114,7 +114,7 @@ const TeachersReportTab: React.FC<Props> = (props) => {
                     //   value={}
                     width="100%"
                     sx={{ paddingTop: 0 }}
-                    setValue={(e) => console.log("firstSemesterEnd", e)}
+                    setValue={(e) => console.log('firstSemesterEnd', e)}
                   />
                 </Stack>
 
@@ -124,7 +124,7 @@ const TeachersReportTab: React.FC<Props> = (props) => {
                     //   value={}
                     width="100%"
                     sx={{ paddingTop: 0 }}
-                    setValue={(e) => console.log("firstSemesterEnd", e)}
+                    setValue={(e) => console.log('firstSemesterEnd', e)}
                   />
                 </Stack>
               </div>
@@ -135,20 +135,20 @@ const TeachersReportTab: React.FC<Props> = (props) => {
                 minRows={4}
                 maxRows={4}
                 style={{
-                  border: "1px solid #d9d9d9",
-                  borderRadius: "4px",
-                  padding: "10px",
-                  fontSize: "16px",
-                  outline: "none",
-                  resize: "none",
-                  width: "100%",
+                  border: '1px solid #d9d9d9',
+                  borderRadius: '4px',
+                  padding: '10px',
+                  fontSize: '16px',
+                  outline: 'none',
+                  resize: 'none',
+                  width: '100%',
                 }}
               />
             </AccordionDetails>
 
-            <AccordionActions sx={{ px: "16px" }}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+            <AccordionActions sx={{ px: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
                   {Array(4)
                     .fill(null)
                     .map((_, index) => (
@@ -162,13 +162,13 @@ const TeachersReportTab: React.FC<Props> = (props) => {
                     ))}
                 </div>
 
-                <Button variant="outlined" sx={{ whiteSpace: "nowrap", minWidth: "120px" }}>
+                <Button variant="outlined" sx={{ whiteSpace: 'nowrap', textTransform: 'initial', minWidth: '120px' }}>
                   Додати файли
                 </Button>
               </div>
 
               <div>
-                <Button variant="contained" sx={{ whiteSpace: "nowrap" }}>
+                <Button variant="contained" sx={{ whiteSpace: 'nowrap', textTransform: 'initial' }}>
                   Позначити як виконане
                 </Button>
               </div>

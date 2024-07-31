@@ -1,18 +1,18 @@
-import { createAsyncThunk } from "@reduxjs/toolkit"
+import { createAsyncThunk } from '@reduxjs/toolkit'
 
-import { LoadingStatusTypes } from "../appTypes"
-import { setLoadingStatus } from "./teacherProfileSlice"
-import { setAppAlert } from "../appStatus/appStatusSlice"
-import { teacherProfileAPI } from "../../api/teacherProfileAPI"
-import { CreateInstructionalMaterialsPayloadType, UpdateInstructionalMaterialsPayloadType } from "../../api/apiTypes"
-import { groupLoadLessonsAPI } from "../../api/groupLoadLessonsAPI"
+import { LoadingStatusTypes } from '../appTypes'
+import { setLoadingStatus } from './teacherProfileSlice'
+import { setAppAlert } from '../appStatus/appStatusSlice'
+import { teacherProfileAPI } from '../../api/teacherProfileAPI'
+import { groupLoadLessonsAPI } from '../../api/groupLoadLessonsAPI'
+import { CreateInstructionalMaterialsPayloadType, UpdateInstructionalMaterialsPayloadType } from '../../api/apiTypes'
 
 /* instructional-materials */
 export const getInstructionalMaterials = createAsyncThunk(
-  "teacher-profile/getInstructionalMaterials",
+  'teacher-profile/getInstructionalMaterials',
   async (id: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await teacherProfileAPI.getInstructionalMaterials(id)
@@ -21,17 +21,17 @@ export const getInstructionalMaterials = createAsyncThunk(
     } catch (error: any) {
       const message = (error as any)?.response?.data?.message || error.message
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: "error" }))
+      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
       throw error
     }
   }
 )
 
 export const createInstructionalMaterials = createAsyncThunk(
-  "teacher-profile/createInstructionalMaterials",
+  'teacher-profile/createInstructionalMaterials',
   async (payload: CreateInstructionalMaterialsPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await teacherProfileAPI.createInstructionalMaterial(payload)
@@ -40,17 +40,17 @@ export const createInstructionalMaterials = createAsyncThunk(
     } catch (error: any) {
       const message = (error as any)?.response?.data?.message || error.message
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: "error" }))
+      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
       throw error
     }
   }
 )
 
 export const updateInstructionalMaterials = createAsyncThunk(
-  "teacher-profile/updateInstructionalMaterials",
+  'teacher-profile/updateInstructionalMaterials',
   async (payload: UpdateInstructionalMaterialsPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await teacherProfileAPI.updateInstructionalMaterial(payload)
@@ -59,17 +59,17 @@ export const updateInstructionalMaterials = createAsyncThunk(
     } catch (error: any) {
       const message = (error as any)?.response?.data?.message || error.message
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: "error" }))
+      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
       throw error
     }
   }
 )
 
 export const deleteInstructionalMaterials = createAsyncThunk(
-  "teacher-profile/deleteInstructionalMaterials",
+  'teacher-profile/deleteInstructionalMaterials',
   async (id: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await teacherProfileAPI.deleteInstructionalMaterial(id)
@@ -78,14 +78,14 @@ export const deleteInstructionalMaterials = createAsyncThunk(
     } catch (error: any) {
       const message = (error as any)?.response?.data?.message || error.message
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: "error" }))
+      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
       throw error
     }
   }
 )
 
 export const findAllTeacherLessonsById = createAsyncThunk(
-  "teacher-profile/findAllTeacherLessonsById",
+  'teacher-profile/findAllTeacherLessonsById',
   async (teacherId: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
@@ -96,7 +96,7 @@ export const findAllTeacherLessonsById = createAsyncThunk(
     } catch (error: any) {
       const message = (error as any)?.response?.data?.message || error.message
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: "error" }))
+      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
       throw error
     }
   }
@@ -104,10 +104,10 @@ export const findAllTeacherLessonsById = createAsyncThunk(
 
 /* teacher load */
 export const getTeacherLoadById = createAsyncThunk(
-  "teacher-profile/getTeacherLoadById",
+  'teacher-profile/getTeacherLoadById',
   async (teacherId: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: "Завантаження...", status: "info" }))
+    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
     try {
       const { data } = await groupLoadLessonsAPI.findAllTeacherLessonsById(teacherId)
@@ -116,7 +116,7 @@ export const getTeacherLoadById = createAsyncThunk(
     } catch (error: any) {
       const message = (error as any)?.response?.data?.message || error.message
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: "error" }))
+      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
       throw error
     }
   }

@@ -17,6 +17,7 @@ html,
 body {
   min-height: 100vh;
   overflow-x: hidden;
+  scroll-behavior: smooth;
   padding-right: 0 !important;
 }
 
@@ -26,8 +27,8 @@ header {
 
 * {
   /* scrollbar from moz */
-  font-family: Inter, "Public Sans", sans-serif;
-  scrollbar-color: var("secondary.main") #f4f4f4;
+  font-family: Inter, 'Public Sans', sans-serif;
+  scrollbar-color: var('secondary.main') #f4f4f4;
   scrollbar-width: thin;
 }
 
@@ -37,7 +38,7 @@ header {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var("secondary.main");
+  background-color: var('secondary.main');
   /* border-radius: 3px; */
 }
 

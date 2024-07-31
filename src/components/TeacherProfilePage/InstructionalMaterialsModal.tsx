@@ -9,22 +9,22 @@ import {
   DialogContent,
   FormHelperText,
   DialogContentText,
-} from "@mui/material"
-import { CloseOutlined } from "@ant-design/icons"
-import React, { Dispatch, SetStateAction } from "react"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
+} from '@mui/material'
+import { CloseOutlined } from '@ant-design/icons'
+import React, { Dispatch, SetStateAction } from 'react'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 import {
   createInstructionalMaterials,
   updateInstructionalMaterials,
-} from "../../store/teacherProfile/teacherProfileAsyncActions"
-import { useAppDispatch } from "../../store/store"
-import { GroupLoadType } from "../../store/groups/groupsTypes"
-import { InstructionalMaterialsType } from "../../store/teacherProfile/teacherProfileTypes"
+} from '../../store/teacherProfile/teacherProfileAsyncActions'
+import { useAppDispatch } from '../../store/store'
+import { GroupLoadType } from '../../store/groups/groupsTypes'
+import { InstructionalMaterialsType } from '../../store/teacherProfile/teacherProfileTypes'
 
 interface IInstructionalMaterialsModalProps {
   open: boolean
-  actionType: "create" | "update"
+  actionType: 'create' | 'update'
   selectedLesson: GroupLoadType | null
   setOpen: Dispatch<SetStateAction<boolean>>
   editingTheme: InstructionalMaterialsType | null
@@ -35,30 +35,32 @@ const InstructionalMaterialsModal: React.FC<IInstructionalMaterialsModalProps> =
 
   const dispatch = useAppDispatch()
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-
   const {
     watch,
     control,
     setValue,
+    clearErrors,
     handleSubmit,
     formState: { errors },
-  } = useForm<{ name: string }>({ mode: "onChange" })
+  } = useForm<{ name: string }>({ mode: 'onChange' })
+
+  const handleClose = () => {
+    setOpen(false)
+    clearErrors('name')
+  }
 
   const onSubmit: SubmitHandler<{ name: string }> = async (data) => {
-    if (!selectedLesson) return alert("Урок не вибраний")
-    if (!editingTheme) return alert("Тема не вибрана")
+    if (!selectedLesson) return alert('Урок не вибраний')
+    if (!editingTheme) return alert('Тема не вибрана')
     setOpen(false)
 
-    if (actionType === "create") {
+    if (actionType === 'create') {
       const payload = { name: data.name, lessonNumber: editingTheme.lessonNumber, lessonId: selectedLesson.id }
       await dispatch(createInstructionalMaterials(payload))
       return
     }
 
-    if (actionType === "update") {
+    if (actionType === 'update') {
       const payload = {
         name: data.name,
         id: editingTheme.id,
@@ -68,21 +70,21 @@ const InstructionalMaterialsModal: React.FC<IInstructionalMaterialsModalProps> =
       await dispatch(updateInstructionalMaterials(payload))
     }
 
-    setValue("name", "")
+    setValue('name', '')
   }
 
   React.useEffect(() => {
     if (!editingTheme) return
-    setValue("name", editingTheme.name)
+    setValue('name', editingTheme.name)
   }, [editingTheme])
 
   return (
     <Dialog
       open={open}
       onClose={handleClose}
-      sx={{ "& .MuiDialog-paper": { width: "100% !important", maxWidth: "500px" } }}
+      sx={{ '& .MuiDialog-paper': { width: '100% !important', maxWidth: '500px' } }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <DialogTitle>Тема уроку</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
@@ -90,7 +92,7 @@ const InstructionalMaterialsModal: React.FC<IInstructionalMaterialsModalProps> =
         </IconButton>
       </div>
 
-      <DialogContent sx={{ padding: "0 24px 20px" }}>
+      <DialogContent sx={{ padding: '0 24px 20px' }}>
         <DialogContentText>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Controller
@@ -106,7 +108,7 @@ const InstructionalMaterialsModal: React.FC<IInstructionalMaterialsModalProps> =
                       {...field}
                       name="name"
                       id="modal-name"
-                      value={watch("name")}
+                      value={watch('name')}
                       placeholder="Назва"
                       error={Boolean(errors.name)}
                     />
@@ -123,10 +125,10 @@ const InstructionalMaterialsModal: React.FC<IInstructionalMaterialsModalProps> =
             <Button
               type="submit"
               variant="contained"
-              sx={{ width: "100%", mt: 3 }}
-              disabled={!!errors.name || !watch("name")}
+              sx={{ width: '100%', mt: 3 }}
+              disabled={!!errors.name || !watch('name')}
             >
-              {actionType === "create" ? "Зберегти" : "Оновити"}
+              {actionType === 'create' ? 'Зберегти' : 'Оновити'}
             </Button>
           </form>
         </DialogContentText>
