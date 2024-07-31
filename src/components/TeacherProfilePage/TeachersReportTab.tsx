@@ -10,7 +10,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   TextareaAutosize,
-  TabScrollButton,
 } from "@mui/material"
 import React from "react"
 import { DownOutlined } from "@ant-design/icons"
@@ -69,10 +68,13 @@ const TeachersReportTab: React.FC<Props> = (props) => {
   return (
     <div style={{ position: "relative" }}>
       <div style={{ marginBottom: "30px" }}>
-        <Button variant="outlined" sx={{ mr: 1 }}>
-          Завантажити PDF
+        <Button variant="outlined" sx={{ mr: 1 }} style={{ textTransform: "initial" }}>
+          Експортувати звіт в PDF
         </Button>
-        <Button variant="outlined">Завантажити WORD</Button>
+
+        <Button variant="outlined" style={{ textTransform: "initial" }}>
+          Експортувати звіт в WORD
+        </Button>
       </div>
 
       {data.map((el) => {
@@ -153,14 +155,14 @@ const TeachersReportTab: React.FC<Props> = (props) => {
                       <Chip
                         key={index}
                         size="small"
-                        sx={{ mx: 1, my: .5 }}
+                        sx={{ mx: 1, my: 0.5 }}
                         label="Example.pdf"
                         onDelete={(e) => console.log(e)}
                       />
                     ))}
                 </div>
 
-                <Button variant="outlined" sx={{ whiteSpace: "nowrap", minWidth: '120px' }}>
+                <Button variant="outlined" sx={{ whiteSpace: "nowrap", minWidth: "120px" }}>
                   Додати файли
                 </Button>
               </div>

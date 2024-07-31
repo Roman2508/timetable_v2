@@ -1,21 +1,30 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-import { RootState } from '../store'
-import { LoadingStatusTypes } from '../appTypes'
-import { TeacherProfileInitialInitialState } from './teacherProfileTypes'
+import {
+  getInstructionalMaterials,
+  findAllTeacherLessonsById,
+  createInstructionalMaterials,
+  deleteInstructionalMaterials,
+  updateInstructionalMaterials,
+  getTeacherLoadById,
+} from "./teacherProfileAsyncActions"
+import { RootState } from "../store"
+import { LoadingStatusTypes } from "../appTypes"
+import { GroupLoadType } from "../groups/groupsTypes"
+import { InstructionalMaterialsType, TeacherProfileInitialInitialState } from "./teacherProfileTypes"
 
 const teacherProfileInitialState: TeacherProfileInitialInitialState = {
-  lesson: null,
+  report: null,
   workload: null,
   generalInfo: null,
+  filterLesson: null,
   individualWorkPlan: null,
-  report: null,
   instructionalMaterials: null,
   loadingStatus: LoadingStatusTypes.NEVER,
 }
 
 const teacherProfileSlice = createSlice({
-  name: 'teacher-profile',
+  name: "teacher-profile",
   initialState: teacherProfileInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -26,11 +35,67 @@ const teacherProfileSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    /* --- categories --- */
-    //   builder.addCase(getTeachersCategories.fulfilled, (state, action: PayloadAction<TeachersCategoryType[]>) => {
-    // state.teachersCategories = action.payload
-    // state.loadingStatus = LoadingStatusTypes.SUCCESS
-    //   })
+    /* --- instructional-materials --- */
+
+    /* --- getInstructionalMaterials-materials --- */
+    builder.addCase(
+      getInstructionalMaterials.fulfilled,
+      (state, action: PayloadAction<InstructionalMaterialsType[]>) => {
+        state.instructionalMaterials = action.payload
+        state.loadingStatus = LoadingStatusTypes.SUCCESS
+      }
+    )
+
+    /* createInstructionalMaterials */
+    builder.addCase(
+      createInstructionalMaterials.fulfilled,
+      (state, action: PayloadAction<InstructionalMaterialsType>) => {
+        if (!state.instructionalMaterials) return
+        state.instructionalMaterials.push(action.payload)
+        state.loadingStatus = LoadingStatusTypes.SUCCESS
+      }
+    )
+
+    /* updateInstructionalMaterials */
+    builder.addCase(
+      updateInstructionalMaterials.fulfilled,
+      (state, action: PayloadAction<InstructionalMaterialsType>) => {
+        if (!state.instructionalMaterials) return
+        const instructionalMaterials = state.instructionalMaterials.map((el) => {
+          if (el.id === action.payload.id) {
+            return { ...el, ...action.payload }
+          }
+          return el
+        })
+
+        state.instructionalMaterials = instructionalMaterials
+        state.loadingStatus = LoadingStatusTypes.SUCCESS
+      }
+    )
+
+    /* deleteInstructionalMaterials */
+    builder.addCase(deleteInstructionalMaterials.fulfilled, (state, action: PayloadAction<number>) => {
+      if (!state.instructionalMaterials) return
+      const instructionalMaterials = state.instructionalMaterials.filter((el) => el.id !== action.payload)
+      state.instructionalMaterials = instructionalMaterials
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
+    })
+
+    /* lessons */
+
+    /* findAllTeacherLessonsById */
+    builder.addCase(findAllTeacherLessonsById.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
+      state.filterLesson = action.payload
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
+    })
+
+    /* teacher workload */
+
+    /* getTeacherLoadById */
+    builder.addCase(getTeacherLoadById.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
+      state.workload = action.payload
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
+    })
   },
 })
 
@@ -38,4 +103,4 @@ export const { setLoadingStatus /* clearTeachers */ } = teacherProfileSlice.acti
 
 export default teacherProfileSlice.reducer
 
-export const teacherProfileSelector = (state: RootState) => state.teachers
+export const teacherProfileSelector = (state: RootState) => state.teacherProfile

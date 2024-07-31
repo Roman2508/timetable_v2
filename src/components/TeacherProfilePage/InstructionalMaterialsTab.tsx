@@ -1,62 +1,112 @@
 import {
   Table,
-  Button,
   Select,
   Divider,
-  Tooltip,
   MenuItem,
   TableRow,
   TableBody,
   TableCell,
   TableHead,
-  TextField,
+  Typography,
+  IconButton,
   InputLabel,
   FormControl,
-  IconButton,
 } from "@mui/material"
 import React from "react"
-import { CheckOutlined, CloseOutlined, EditOutlined } from "@ant-design/icons"
+import { useSelector } from "react-redux"
+import { EditOutlined } from "@ant-design/icons"
 
-type Props = {}
+import {
+  findAllTeacherLessonsById,
+  getInstructionalMaterials,
+} from "../../store/teacherProfile/teacherProfileAsyncActions"
+import EmptyCard from "../EmptyCard/EmptyCard"
+import { useAppDispatch } from "../../store/store"
+import { GroupLoadType } from "../../store/groups/groupsTypes"
+import { InstructionalMaterialsModal } from "./InstructionalMaterialsModal"
+import { teacherProfileSelector } from "../../store/teacherProfile/teacherProfileSlice"
+import { InstructionalMaterialsType } from "../../store/teacherProfile/teacherProfileTypes"
 
-function createData(id: number, name: string, hours: number) {
-  return { id, name, hours }
+interface Props {}
+
+interface IFilter {
+  ["1"]: GroupLoadType[]
+  ["2"]: GroupLoadType[]
 }
 
-const rows = [
-  createData(1, "Інформація, інформаційні технології та людина в інформаційному суспільстві", 2),
-  createData(2, "Інформаційна безпека та основи кібергігієни", 2),
-  createData(3, "Цифрове навчання та комп’ютерно-орієнтовані засоби навчальної діяльності", 2),
-  createData(4, "Сучасні інформаційні технології та їх вплив на суспільство", 2),
-  createData(5, "Комп’ютерне моделювання та комп'ютерний експеримент", 2),
-  createData(6, "Інформація, інформаційні технології та людина в інформаційному суспільстві", 2),
-  createData(7, "Інформаційна безпека та основи кібергігієни", 2),
-  createData(8, "Цифрове навчання та комп’ютерно-орієнтовані засоби навчальної діяльності", 2),
-  createData(9, "Сучасні інформаційні технології та їх вплив на суспільство", 2),
-  createData(10, "Комп’ютерне моделювання та комп'ютерний експеримент", 2),
-]
+export const InstructionalMaterialsTab = React.memo(({}: Props) => {
+  const dispatch = useAppDispatch()
 
-const editedThemeInitialState = { id: -1, name: "" }
+  const { filterLesson, instructionalMaterials } = useSelector(teacherProfileSelector)
 
-export const InstructionalMaterialsTab = ({}: Props) => {
-  const [editedTheme, setEditedTheme] = React.useState<{ id: number; name: string }>(editedThemeInitialState)
+  const [semester, setSemester] = React.useState(1)
+  const [isModalOpen, setIsModalOpen] = React.useState(false)
+  const [filter, setFilter] = React.useState<IFilter>({ ["1"]: [], ["2"]: [] })
+  const [actionType, setActiveType] = React.useState<"create" | "update">("create")
+  const [selectedLesson, setSelectedLesson] = React.useState<GroupLoadType | null>(null)
+  const [editingTheme, setEditingTheme] = React.useState<InstructionalMaterialsType | null>(null)
+
+  const handleChangeSelectedLesson = (id: number) => {
+    if (!filterLesson) return
+    const lesson = filterLesson.find((el) => el.id === id)
+    if (lesson) setSelectedLesson(lesson)
+  }
+
+  const handleEditTheme = (lessonNumber: number, theme?: InstructionalMaterialsType) => {
+    if (!selectedLesson) return alert("Урок не вибраний")
+    setIsModalOpen(true)
+
+    if (theme) {
+      setActiveType("update")
+      setEditingTheme(theme)
+      return
+    }
+
+    setActiveType("create")
+    setEditingTheme({ id: 0, lessonNumber, name: "", lesson: selectedLesson })
+  }
+
+  React.useEffect(() => {
+    if (filterLesson) return
+    dispatch(findAllTeacherLessonsById(3))
+  }, [])
+
+  React.useEffect(() => {
+    if (!selectedLesson) return
+    dispatch(getInstructionalMaterials(selectedLesson.id))
+  }, [selectedLesson])
+
+  React.useEffect(() => {
+    if (!filterLesson) return
+
+    filterLesson.forEach((el) => {
+      if (el.semester === 1 || el.semester === 3 || el.semester === 5) {
+        setFilter((prev) => ({ ["1"]: [...prev["1"], el], ["2"]: [...prev["2"]] }))
+        return
+      }
+
+      setFilter((prev) => ({ ["1"]: [...prev["1"]], ["2"]: [...prev["2"], el] }))
+    })
+  }, [filterLesson])
 
   return (
-    <div>
+    <>
+      <InstructionalMaterialsModal
+        open={isModalOpen}
+        actionType={actionType}
+        setOpen={setIsModalOpen}
+        editingTheme={editingTheme}
+        selectedLesson={selectedLesson}
+      />
+
       <div style={{ display: "flex", alignItems: "flex-start" }}>
         <FormControl fullWidth sx={{ mb: 3 }}>
-          <InputLabel sx={{ overflow: "visible !important" }}>Група</InputLabel>
-          <Select
-          // onChange={handleChangeEditedUser}
-          // value={editedUser ? String(editedUser.id) : ''}
-          >
-            {[
-              { id: 1, name: "LD9-22-1" },
-              { id: 2, name: "PH9-22-1" },
-              { id: 3, name: "PH9-23-1" },
-              { id: 4, name: "PH9-24-1" },
-            ].map((el) => (
-              <MenuItem value={el.id}>{el.name}</MenuItem>
+          <InputLabel sx={{ overflow: "visible !important" }}>Семестр</InputLabel>
+          <Select onChange={(e) => setSemester(Number(e.target.value))} value={semester}>
+            {[1, 2].map((el) => (
+              <MenuItem value={el} key={el}>
+                {el}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -64,16 +114,12 @@ export const InstructionalMaterialsTab = ({}: Props) => {
         <FormControl fullWidth sx={{ mb: 3, ml: 2 }}>
           <InputLabel sx={{ overflow: "visible !important" }}>Дисципліна</InputLabel>
           <Select
-          // onChange={handleChangeEditedUser}
-          // value={editedUser ? String(editedUser.id) : ''}
+            value={selectedLesson ? selectedLesson.id : ""}
+            onChange={(e) => handleChangeSelectedLesson(Number(e.target.value))}
           >
-            {[
-              { id: 1, name: "Інформатика" },
-              { id: 2, name: "Інформаційні технології у фармації" },
-              { id: 3, name: "Технології" },
-              { id: 4, name: "Основи медичної інформатики" },
-            ].map((el) => (
-              <MenuItem value={el.id}>{el.name}</MenuItem>
+            {/* @ts-ignore */}
+            {(filterLesson ? filter[semester] : []).map((el: GroupLoadType) => (
+              <MenuItem value={el.id} key={el.id}>{`${el.group.name} / ${el.typeRu} / ${el.name}`}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -81,153 +127,59 @@ export const InstructionalMaterialsTab = ({}: Props) => {
 
       <Divider sx={{ mb: 3 }} />
 
-      <Table sx={{ minWidth: 450, mb: 10 }} size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <TableCell sx={{ width: "50px", padding: "0px 6px" }} align="center">
-              №
-            </TableCell>
-            <TableCell>Тема</TableCell>
-            <TableCell align="center" sx={{ width: "50px" }}>
-              Години
-            </TableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell component="th" align="center" sx={{ width: "50px", height: "48px", padding: "0px 6px" }}>
-                {row.id}
+      {!selectedLesson ? (
+        <EmptyCard text="Виберіть дисципліну" />
+      ) : (
+        <Table sx={{ minWidth: 450, mb: 10 }} size="small" aria-label="a dense table">
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ width: "50px", padding: "0px 6px" }} align="center">
+                №
               </TableCell>
-
-              <TableCell
-                align="left"
-                sx={{
-                  "&:hover span": { display: "inline-block !important" },
-                  display: "flex",
-                  alignItems: "center",
-                  height: "48px",
-                  padding: "0px 6px",
-                }}
-              >
-                {editedTheme.id === row.id ? (
-                  <div style={{ flexGrow: 1 }}>
-                    <TextField
-                      fullWidth
-                      sx={{
-                        ".MuiInputBase-input": { padding: "0 14px 0 4px", height: "31px", width: "100%" },
-                        "& .Mui-focused": { boxShadow: "none !important" },
-                        fieldset: { border: "0 !important" },
-                      }}
-                      value={editedTheme.name}
-                    />
-                  </div>
-                ) : (
-                  <p style={{ flexGrow: 1, margin: 0 }}>{row.name}</p>
-                )}
-
-                <div style={{ display: "flex", justifyContent: "center", backgroundColor: "#fff" }}>
-                  {editedTheme.id === row.id ? (
-                    <>
-                      <IconButton sx={{ marginRight: "10px" }} onClick={() => setEditedTheme(editedThemeInitialState)}>
-                        <CheckOutlined style={{ cursor: "pointer" }} />
-                      </IconButton>
-
-                      <IconButton onClick={() => setEditedTheme(editedThemeInitialState)}>
-                        <CloseOutlined style={{ cursor: "pointer" }} />
-                      </IconButton>
-                    </>
-                  ) : (
-                    <IconButton onClick={() => setEditedTheme({ id: row.id, name: row.name })}>
-                      <EditOutlined style={{ display: "none", cursor: "pointer" }} />
-                    </IconButton>
-                  )}
-                </div>
-              </TableCell>
-
-              <TableCell sx={{ width: "50px", height: "48px", padding: "0px 6px" }} align="center">
-                {row.hours}
+              <TableCell>Тема</TableCell>
+              <TableCell align="center" sx={{ width: "50px" }}>
+                Години
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
 
-      {/* <table className="full-teacher__teaching-load-table" cellSpacing="0">
-        <thead>
-          <tr>
-            <th style={{ width: "60px" }}>№</th>
-            <th>Тема</th>
-            <th style={{ width: "140px" }}>Години</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array(12)
-            .fill(null)
-            .map((_, rowIndex) => (
-              <tr key={rowIndex}>
-                <td>{rowIndex + 1}.</td>
-                <td
-                  style={
-                    editedTheme.id === rowIndex
-                      ? {
-                          textAlign: "left",
-                          display: "flex",
-                          alignItems: "center",
-                          padding: "0 15px 0 0",
-                          height: "31px",
-                        }
-                      : { textAlign: "left", display: "flex", alignItems: "center", paddingRight: "15px" }
-                  }
-                >
-                  {editedTheme.id === rowIndex ? (
-                    <div style={{ flexGrow: 1 }}>
-                      <TextField
-                        fullWidth
-                        sx={{
-                          ".MuiInputBase-input": { padding: "0 14px 0 4px", height: "31px", width: "100%" },
-                          "& .Mui-focused": { boxShadow: "none !important" },
-                          fieldset: { border: "0 !important" },
-                        }}
-                        value={editedTheme.name}
-                      />
-                    </div>
-                  ) : (
-                    <p style={{ flexGrow: 1, margin: 0 }}>Інформаційні технології в суспільстві</p>
-                  )}
+          <TableBody>
+            {Array(selectedLesson ? selectedLesson.hours : 0)
+              .fill(null)
+              .map((_, i) => {
+                // const lesson = rows.find((el) => el.id === i + 1)
 
-                  <div style={{ width: "28px", display: "flex", justifyContent: "center" }}>
-                    {editedTheme.id === rowIndex ? (
-                      <>
-                        <Tooltip title="Зберегти">
-                          <CheckOutlined style={{ cursor: "pointer", marginRight: "10px" }} />
-                        </Tooltip>
+                const theme = instructionalMaterials?.find((el) => el.lessonNumber === i + 1)
 
-                        <Tooltip title="Відмінити">
-                          <CloseOutlined style={{ cursor: "pointer" }} />
-                        </Tooltip>
-                      </>
-                    ) : (
-                      <EditOutlined
-                        style={{ display: "none", cursor: "pointer" }}
-                        onClick={() => setEditedTheme({ id: rowIndex, name: "Інформаційні технології в суспільстві" })}
-                      />
-                    )}
-                  </div>
-                </td>
-                <td>2</td>
-              </tr>
-            ))}
+                return (
+                  <TableRow key={i}>
+                    <TableCell component="th" align="center" sx={{ width: "50px", height: "48px", padding: "0px 6px" }}>
+                      {i + 1}
+                    </TableCell>
 
-          <tr>
-            <th colSpan={2} style={{ textAlign: "left" }}>
-              Всього
-            </th>
-            <th>24</th>
-          </tr>
-        </tbody>
-      </table> */}
-    </div>
+                    <TableCell
+                      align="left"
+                      sx={{
+                        height: "48px",
+                        display: "flex",
+                        padding: "0px 6px",
+                        alignItems: "center",
+                        "&:hover span": { display: "inline-block !important" },
+                      }}
+                    >
+                      <Typography style={{ flexGrow: 1, margin: 0 }}>{theme?.name}</Typography>
+
+                      <IconButton onClick={() => handleEditTheme(i + 1, theme)}>
+                        <EditOutlined style={{ display: "none", cursor: "pointer" }} />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>{theme ? 2 : "-"}</TableCell>
+                  </TableRow>
+                )
+              })}
+          </TableBody>
+        </Table>
+      )}
+    </>
   )
-}
+})
