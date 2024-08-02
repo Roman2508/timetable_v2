@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import {
   getTeacherReport,
@@ -15,16 +15,19 @@ import {
   createInstructionalMaterials,
   deleteInstructionalMaterials,
   updateInstructionalMaterials,
-} from "./teacherProfileAsyncActions"
+  uploadTeacherReportFile,
+  deleteTeacherReportFile,
+} from './teacherProfileAsyncActions'
 import {
   TeacherReportType,
   IndividualWorkPlanType,
   InstructionalMaterialsType,
   TeacherProfileInitialInitialState,
-} from "./teacherProfileTypes"
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupLoadType } from "../groups/groupsTypes"
+} from './teacherProfileTypes'
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupLoadType } from '../groups/groupsTypes'
+import { TeacherReportUploadFileResponceType } from '../../api/apiTypes'
 
 const teacherProfileInitialState: TeacherProfileInitialInitialState = {
   report: null,
@@ -37,7 +40,7 @@ const teacherProfileInitialState: TeacherProfileInitialInitialState = {
 }
 
 const teacherProfileSlice = createSlice({
-  name: "teacher-profile",
+  name: 'teacher-profile',
   initialState: teacherProfileInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -175,6 +178,40 @@ const teacherProfileSlice = createSlice({
       state.report = report
       state.loadingStatus = LoadingStatusTypes.SUCCESS
     })
+
+    /* uploadTeacherReportFile */
+    builder.addCase(
+      uploadTeacherReportFile.fulfilled,
+      (state, action: PayloadAction<TeacherReportUploadFileResponceType>) => {
+        if (!state.report) return
+        const report = state.report.map((el) => {
+          if (el.id === action.payload.id) {
+            return { ...el, ...action.payload }
+          }
+          return el
+        })
+
+        state.report = report
+        state.loadingStatus = LoadingStatusTypes.SUCCESS
+      }
+    )
+
+    /* deleteTeacherReportFile */
+    builder.addCase(
+      deleteTeacherReportFile.fulfilled,
+      (state, action: PayloadAction<TeacherReportUploadFileResponceType>) => {
+        if (!state.report) return
+        const report = state.report.map((el) => {
+          if (el.id === action.payload.id) {
+            return { ...el, ...action.payload }
+          }
+          return el
+        })
+
+        state.report = report
+        state.loadingStatus = LoadingStatusTypes.SUCCESS
+      }
+    )
 
     /* deleteTeacherReport */
     builder.addCase(deleteTeacherReport.fulfilled, (state, action: PayloadAction<number>) => {

@@ -1,6 +1,6 @@
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupLoadType } from "../groups/groupsTypes"
-import { TeachersType } from "../teachers/teachersTypes"
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupLoadType } from '../groups/groupsTypes'
+import { TeachersType } from '../teachers/teachersTypes'
 
 export type TeacherProfileInitialInitialState = {
   // Загальна інформація, Видавнича діяльність
@@ -42,13 +42,19 @@ export type TeacherReportType = {
   plannedDate: string
   doneDate: string
   description: string
-  files: any[]
+  files: TeacherReportFileType[]
   teacher: TeachersType
   individualWork: IndividualWorkPlanType
 }
 
+export type TeacherReportFileType = {
+  id: string
+  name: string
+  mimeType: string
+}
+
 export enum IndividualTeacherWordTypes {
-  METHODICAL_WORK = "Методична робота",
-  SCIENTIFIC_WORK = "Наукова робота",
-  ORGANIZATIONAL_WORK = "Організаційна робота",
+  METHODICAL_WORK = 'Методична робота',
+  SCIENTIFIC_WORK = 'Наукова робота',
+  ORGANIZATIONAL_WORK = 'Організаційна робота',
 }
