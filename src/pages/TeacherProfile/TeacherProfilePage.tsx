@@ -10,7 +10,7 @@ import TeachersReportTab from "../../components/TeacherProfilePage/TeacherReport
 import { MyTeachingLoadTab } from "../../components/TeacherProfilePage/MyTeachingLoadTab"
 import { ListsOfStudentsTab } from "../../components/TeacherProfilePage/ListsOfStudentsTab"
 import { InstructionalMaterialsTab } from "../../components/TeacherProfilePage/InstructionalMaterialsTab"
-import IndividualTeacherWorkPlan from "../../components/TeacherProfilePage/IndividualTeacherWorkPlan/IndividualTeacherWorkPlan"
+import IndividualTeacherWorkTab from "../../components/TeacherProfilePage/IndividualTeacherWorkPlan/IndividualTeacherWorkTab"
 
 const tabs = [
   "Загальна інформація",
@@ -98,7 +98,7 @@ const FullTeachersPage = () => {
                   {activeTab === 1 && <PrintedWorksTab />}
                   {activeTab === 2 && <MyTeachingLoadTab />}
                   {activeTab === 3 && <InstructionalMaterialsTab />}
-                  {activeTab === 4 && <IndividualTeacherWorkPlan />}
+                  {activeTab === 4 && <IndividualTeacherWorkTab />}
                   {activeTab === 5 && <TeachersReportTab />}
                   {activeTab === 6 && <ListsOfStudentsTab />}
                 </div>

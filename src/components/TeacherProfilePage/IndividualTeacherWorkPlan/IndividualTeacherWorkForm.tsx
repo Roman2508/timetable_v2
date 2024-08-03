@@ -1,22 +1,29 @@
-import React, { Dispatch, SetStateAction } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { Stack, Button, MenuItem, TextField, InputLabel, OutlinedInput } from '@mui/material'
+import React, { Dispatch, SetStateAction } from "react"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { Stack, Button, MenuItem, TextField, InputLabel, OutlinedInput } from "@mui/material"
 
-import { IndividualTeacherWordTypes } from '../../../store/teacherProfile/teacherProfileTypes'
+import { useAppDispatch } from "../../../store/store"
+import { IndividualTeacherWordTypes } from "../../../store/teacherProfile/teacherProfileTypes"
+import {
+  createIndividualTeacherWork,
+  updateIndividualTeacherWork,
+} from "../../../store/teacherProfile/teacherProfileAsyncActions"
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner"
 
 export interface IFormState {
+  id: number
   name: string
   hours: number
-  category: `${IndividualTeacherWordTypes}`
+  type: IndividualTeacherWordTypes
 }
 
-const categoriesTypes: `${IndividualTeacherWordTypes}`[] = [
-  'Методична робота',
-  'Наукова робота',
-  'Організаційна робота',
+export const categoriesTypes: `${IndividualTeacherWordTypes}`[] = [
+  "Методична робота",
+  "Наукова робота",
+  "Організаційна робота",
 ]
 
-const initialFormValues = { name: '', hours: 0, category: IndividualTeacherWordTypes.METHODICAL_WORK }
+const initialFormValues = { id: 0, name: "", hours: 0, type: IndividualTeacherWordTypes.METHODICAL_WORK }
 
 interface IIndividualTeacherWorkFormProps {
   editingIndividualTeacherWork: IFormState | null
@@ -26,24 +33,34 @@ interface IIndividualTeacherWorkFormProps {
 export const IndividualTeacherWorkForm: React.FC<IIndividualTeacherWorkFormProps> = (props) => {
   const { editingIndividualTeacherWork, setEditingIndividualTeacherWork } = props
 
+  const dispatch = useAppDispatch()
+
   const {
     reset,
     watch,
     control,
     setValue,
-    formState: { isSubmitting },
     handleSubmit,
+    formState: { isSubmitting },
   } = useForm<IFormState>({
-    mode: 'onBlur',
+    mode: "onBlur",
     defaultValues: initialFormValues,
   })
 
-  const isSomeFieldIsEmpty = !watch('name') || !watch('hours') || !watch('category')
+  const isSomeFieldIsEmpty = !watch("name") || !watch("hours") || !watch("type")
 
   const onSubmit: SubmitHandler<IFormState> = async (data) => {
     try {
-      console.log(data)
-      // await dispatch(createIndividualTeacherWork(data))
+      // update
+      if (editingIndividualTeacherWork) {
+        await dispatch(updateIndividualTeacherWork({ ...data, id: editingIndividualTeacherWork.id }))
+        setEditingIndividualTeacherWork(null)
+        reset(initialFormValues)
+        return
+      }
+
+      // create
+      await dispatch(createIndividualTeacherWork(data))
       reset(initialFormValues)
     } catch (error) {
       console.log(error)
@@ -52,21 +69,22 @@ export const IndividualTeacherWorkForm: React.FC<IIndividualTeacherWorkFormProps
 
   React.useEffect(() => {
     if (!editingIndividualTeacherWork) return
-    setValue('name', editingIndividualTeacherWork.name)
-    setValue('hours', editingIndividualTeacherWork.hours)
-    setValue('category', editingIndividualTeacherWork.category)
+    setValue("id", editingIndividualTeacherWork.id)
+    setValue("name", editingIndividualTeacherWork.name)
+    setValue("type", editingIndividualTeacherWork.type)
+    setValue("hours", editingIndividualTeacherWork.hours)
   }, [editingIndividualTeacherWork])
 
   return (
-    <form style={{ display: 'flex', alignItems: 'flex-end', gap: 10 }} onSubmit={handleSubmit(onSubmit)}>
+    <form style={{ display: "flex", alignItems: "flex-end", gap: 10 }} onSubmit={handleSubmit(onSubmit)}>
       <Controller
         name="name"
         control={control}
-        rules={{ required: 'Вкажіть кількість місць в аудиторії' }}
+        rules={{ required: true }}
         render={({ field }) => {
           return (
             <Stack spacing={1} sx={{ mt: 2, flex: 1 }}>
-              <InputLabel htmlFor="name">Кількість місць*</InputLabel>
+              <InputLabel htmlFor="name">Вид діяльності*</InputLabel>
               <OutlinedInput {...field} fullWidth id="name" name="name" />
             </Stack>
           )
@@ -76,7 +94,7 @@ export const IndividualTeacherWorkForm: React.FC<IIndividualTeacherWorkFormProps
       <Controller
         name="hours"
         control={control}
-        rules={{ required: 'Вкажіть кількість місць в аудиторії' }}
+        rules={{ required: true }}
         render={({ field }) => {
           return (
             <Stack spacing={1} sx={{ mt: 2, flex: 1 }}>
@@ -88,19 +106,14 @@ export const IndividualTeacherWorkForm: React.FC<IIndividualTeacherWorkFormProps
       />
 
       <Controller
-        name="category"
+        name="type"
         control={control}
-        rules={{ required: 'Вкажіть категорію' }}
+        rules={{ required: "Вкажіть категорію" }}
         render={({ field }) => {
           return (
             <Stack spacing={1} sx={{ mt: 2, flex: 1 }}>
-              <InputLabel htmlFor="category">Категорія*</InputLabel>
-              <TextField
-                select
-                {...field}
-                id="category"
-                sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
-              >
+              <InputLabel>Категорія*</InputLabel>
+              <TextField select {...field} sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}>
                 {categoriesTypes.map((option) => (
                   <MenuItem key={option} value={option}>
                     {option}
@@ -119,7 +132,7 @@ export const IndividualTeacherWorkForm: React.FC<IIndividualTeacherWorkFormProps
           variant="outlined"
           disabled={isSubmitting || isSomeFieldIsEmpty}
           onClick={() => setEditingIndividualTeacherWork(initialFormValues)}
-          sx={{ textTransform: 'capitalize', width: '100%', p: '7.6px 15px', mt: 3, maxWidth: '120px' }}
+          sx={{ textTransform: "capitalize", width: "100%", p: "7.6px 15px", mt: 3, maxWidth: "120px" }}
         >
           Відмінити
         </Button>
@@ -130,9 +143,17 @@ export const IndividualTeacherWorkForm: React.FC<IIndividualTeacherWorkFormProps
         color="primary"
         variant="contained"
         disabled={isSubmitting || isSomeFieldIsEmpty}
-        sx={{ textTransform: 'capitalize', width: '100%', p: '8.4px 15px', mt: 3, maxWidth: '120px' }}
+        sx={{ textTransform: "capitalize", p: "8.4px 15px", mt: 3, width: "120px" }}
       >
-        {editingIndividualTeacherWork?.name ? 'Оновити' : 'Cтворити'}
+        {isSubmitting ? (
+          <LoadingSpinner size={24.5} disablePadding />
+        ) : editingIndividualTeacherWork?.name ? (
+          "Оновити"
+        ) : (
+          "Cтворити"
+        )}
+
+        {/* {editingIndividualTeacherWork?.name ? "Оновити" : "Cтворити"} */}
       </Button>
     </form>
   )

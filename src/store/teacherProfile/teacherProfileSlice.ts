@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 import {
   getTeacherReport,
@@ -6,6 +6,8 @@ import {
   createTeacherReport,
   updateTeacherReport,
   deleteTeacherReport,
+  uploadTeacherReportFile,
+  deleteTeacherReportFile,
   getIndividualTeacherWork,
   getInstructionalMaterials,
   findAllTeacherLessonsById,
@@ -15,19 +17,17 @@ import {
   createInstructionalMaterials,
   deleteInstructionalMaterials,
   updateInstructionalMaterials,
-  uploadTeacherReportFile,
-  deleteTeacherReportFile,
-} from './teacherProfileAsyncActions'
+} from "./teacherProfileAsyncActions"
 import {
   TeacherReportType,
   IndividualWorkPlanType,
   InstructionalMaterialsType,
   TeacherProfileInitialInitialState,
-} from './teacherProfileTypes'
-import { RootState } from '../store'
-import { LoadingStatusTypes } from '../appTypes'
-import { GroupLoadType } from '../groups/groupsTypes'
-import { TeacherReportUploadFileResponceType } from '../../api/apiTypes'
+} from "./teacherProfileTypes"
+import { RootState } from "../store"
+import { LoadingStatusTypes } from "../appTypes"
+import { GroupLoadType } from "../groups/groupsTypes"
+import { TeacherReportUploadFileResponceType } from "../../api/apiTypes"
 
 const teacherProfileInitialState: TeacherProfileInitialInitialState = {
   report: null,
@@ -40,7 +40,7 @@ const teacherProfileInitialState: TeacherProfileInitialInitialState = {
 }
 
 const teacherProfileSlice = createSlice({
-  name: 'teacher-profile',
+  name: "teacher-profile",
   initialState: teacherProfileInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -48,6 +48,9 @@ const teacherProfileSlice = createSlice({
     },
     clearInstructionalMaterials(state) {
       state.instructionalMaterials = null
+    },
+    clearTeacherReports(state) {
+      state.report = null
     },
   },
   extraReducers: (builder) => {
@@ -223,7 +226,7 @@ const teacherProfileSlice = createSlice({
   },
 })
 
-export const { setLoadingStatus /* clearTeachers */ } = teacherProfileSlice.actions
+export const { setLoadingStatus, clearTeacherReports } = teacherProfileSlice.actions
 
 export default teacherProfileSlice.reducer
 
