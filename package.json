@@ -21,11 +21,14 @@
     "@mui/lab": "^5.0.0-alpha.166",
     "@mui/material": "^5.15.11",
     "@mui/x-date-pickers": "^7.1.0",
+    "@react-pdf/renderer": "^3.4.4",
     "@reduxjs/toolkit": "^2.2.1",
     "apexcharts": "^3.46.0",
     "axios": "^1.6.7",
     "core-js": "^3.36.0",
     "dayjs": "^1.11.10",
+    "docx": "^8.5.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^11.0.8",
     "lodash": "^4.17.21",
     "mui-color-input": "^2.0.3",
@@ -48,6 +51,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.7",
     "@types/lodash": "^4.17.7",
     "@types/node": "^20.11.24",
     "@types/react": "^18.2.56",

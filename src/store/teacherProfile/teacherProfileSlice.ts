@@ -52,6 +52,9 @@ const teacherProfileSlice = createSlice({
     clearTeacherReports(state) {
       state.report = null
     },
+    clearIndividualTeacherWork(state) {
+      state.individualWorkPlan = null
+    },
   },
   extraReducers: (builder) => {
     /* --- instructional-materials --- */
@@ -226,7 +229,7 @@ const teacherProfileSlice = createSlice({
   },
 })
 
-export const { setLoadingStatus, clearTeacherReports } = teacherProfileSlice.actions
+export const { setLoadingStatus, clearTeacherReports, clearIndividualTeacherWork } = teacherProfileSlice.actions
 
 export default teacherProfileSlice.reducer
 

@@ -2,6 +2,11 @@ import React from "react"
 import { useSelector } from "react-redux"
 import { Chip, Stack, Divider, Typography, OutlinedInput } from "@mui/material"
 
+import {
+  clearTeacherReports,
+  teacherProfileSelector,
+  clearIndividualTeacherWork,
+} from "../../../store/teacherProfile/teacherProfileSlice"
 import EmptyCard from "../../EmptyCard/EmptyCard"
 import { useAppDispatch } from "../../../store/store"
 import { customDayjs } from "../../Calendar/Calendar"
@@ -11,7 +16,6 @@ import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner"
 import IndividualTeacherWorkItem from "./IndividualTeacherWorkItem"
 import { IndividualWorkPlanType } from "../../../store/teacherProfile/teacherProfileTypes"
 import { categoriesTypes, IFormState, IndividualTeacherWorkForm } from "./IndividualTeacherWorkForm"
-import { clearTeacherReports, teacherProfileSelector } from "../../../store/teacherProfile/teacherProfileSlice"
 import { getIndividualTeacherWork, getTeacherReport } from "../../../store/teacherProfile/teacherProfileAsyncActions"
 
 const IndividualTeacherWorkTab = () => {
@@ -26,6 +30,7 @@ const IndividualTeacherWorkTab = () => {
   React.useEffect(() => {
     dispatch(clearTeacherReports())
     dispatch(getIndividualTeacherWork())
+    dispatch(clearIndividualTeacherWork())
     dispatch(getTeacherReport({ year: showedYear, id: 17 }))
   }, [showedYear])
 
@@ -83,7 +88,7 @@ const IndividualTeacherWorkTab = () => {
         </Typography>
       </div>
 
-      <div style={{ marginBottom: "30px" }}>
+      <div>
         <IndividualTeacherWorkForm
           editingIndividualTeacherWork={editingIndividualTeacherWork}
           setEditingIndividualTeacherWork={setEditingIndividualTeacherWork}
@@ -101,9 +106,13 @@ const IndividualTeacherWorkTab = () => {
 
           return (
             <div key={category}>
+              <br />
+              <br />
               <Divider>
                 <Chip label={category} size="medium" />
               </Divider>
+              <br />
+              <br />
 
               {sortItemsByKey(individualWork, "name").map((el: IndividualWorkPlanType) => {
                 const addedReport = report?.find((r) => r.individualWork.id === el.id)

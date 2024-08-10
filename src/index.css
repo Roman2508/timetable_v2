@@ -27,8 +27,8 @@ header {
 
 * {
   /* scrollbar from moz */
-  font-family: Inter, 'Public Sans', sans-serif;
-  scrollbar-color: var('secondary.main') #f4f4f4;
+  font-family: Inter, "Public Sans", sans-serif;
+  scrollbar-color: var("secondary.main") #f4f4f4;
   scrollbar-width: thin;
 }
 
@@ -38,7 +38,7 @@ header {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var('secondary.main');
+  background-color: var("secondary.main");
   /* border-radius: 3px; */
 }
 
@@ -55,6 +55,13 @@ a:hover {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+@font-face {
+  font-family: "Times New Roman";
+  src: url("/assets/fonts/Times-New-Roman.ttf") format("ttf");
+  font-weight: normal;
+  font-style: normal;
 }
 
 @media (prefers-color-scheme: light) {

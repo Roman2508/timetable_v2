@@ -2,17 +2,42 @@ import React from "react"
 import { useSelector } from "react-redux"
 import { Button, OutlinedInput, Stack, Typography } from "@mui/material"
 
+import { Packer } from "docx"
+import { saveAs } from "file-saver"
+import { DocumentCreator } from "./cv-generator"
+import { experiences, education, skills, achievements } from "./cv-data"
+
 import EmptyCard from "../../EmptyCard/EmptyCard"
 import TeachersReportItem from "./TeacherReportItem"
 import { useAppDispatch } from "../../../store/store"
 import { customDayjs } from "../../Calendar/Calendar"
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner"
+import { sortTeacherReports } from "../../../utils/sortTeacherReports"
 import { TeacherReportType } from "../../../store/teacherProfile/teacherProfileTypes"
 import { getTeacherReport } from "../../../store/teacherProfile/teacherProfileAsyncActions"
 import { clearTeacherReports, teacherProfileSelector } from "../../../store/teacherProfile/teacherProfileSlice"
 
 const TeachersReportTab: React.FC = () => {
   const dispatch = useAppDispatch()
+
+  const generate = (): void => {
+    const documentCreator = new DocumentCreator()
+    const doc = documentCreator.create([experiences, education, skills, achievements])
+
+    Packer.toBlob(doc).then((blob) => {
+      console.log(blob)
+      saveAs(blob, "example.docx")
+    })
+  }
+
+  /*  */
+  /*  */
+  /*  */
+  // npm i docx-preview
+  // https://www.npmjs.com/package/docx-preview
+  /*  */
+  /*  */
+  /*  */
 
   const [showedYear, setShowedYear] = React.useState(customDayjs().year())
 
@@ -21,7 +46,7 @@ const TeachersReportTab: React.FC = () => {
   const getDoneHours = () => {
     if (!report) return
     const doneActivities = report.filter((el) => el.status)
-    return doneActivities.reduce((acc, cur) => cur.hours + acc, 0)
+    return doneActivities.reduce((acc, cur) => Number(cur.hours) + acc, 0)
   }
 
   React.useEffect(() => {
@@ -37,7 +62,7 @@ const TeachersReportTab: React.FC = () => {
             Експортувати звіт в PDF
           </Button>
 
-          <Button variant="outlined" style={{ textTransform: "initial" }}>
+          <Button variant="outlined" style={{ textTransform: "initial" }} onClick={generate}>
             Експортувати звіт в WORD
           </Button>
         </div>
@@ -73,7 +98,7 @@ const TeachersReportTab: React.FC = () => {
       ) : !report.length ? (
         <EmptyCard />
       ) : (
-        report.map((el: TeacherReportType) => <TeachersReportItem key={el.id} report={el} />)
+        sortTeacherReports(report).map((el: TeacherReportType) => <TeachersReportItem key={el.id} report={el} />)
       )}
     </div>
   )

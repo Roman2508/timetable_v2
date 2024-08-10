@@ -13,6 +13,7 @@ import {
   TextareaAutosize,
 } from "@mui/material"
 import React from "react"
+import debounse from "lodash/debounce"
 import { Link } from "react-router-dom"
 import { DownOutlined } from "@ant-design/icons"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
@@ -49,6 +50,7 @@ const TeachersReportItem: React.FC<ITeachersReportItemProps> = ({ report }) => {
   const dispatch = useAppDispatch()
 
   const {
+    watch,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -115,6 +117,29 @@ const TeachersReportItem: React.FC<ITeachersReportItemProps> = ({ report }) => {
       setIsFileDeleting(false)
     }
   }
+
+  const debouncedUpdateReport = React.useCallback(
+    debounse((payload) => dispatch(updateTeacherReport(payload)), 1000),
+    []
+  )
+
+  React.useEffect(() => {
+    const isHoursSame = report.hours === watch("hours")
+    const isDoneDateSame = report.doneDate === watch("doneDate")
+    const isPlannedDateSame = report.plannedDate === watch("plannedDate")
+    const isDescriptionSame = report.description === watch("description")
+
+    if (isHoursSame && isDoneDateSame && isPlannedDateSame && isDescriptionSame) return
+
+    const payload = {
+      id: report.id,
+      hours: watch("hours"),
+      doneDate: watch("doneDate"),
+      plannedDate: watch("plannedDate"),
+      description: watch("description"),
+    }
+    debouncedUpdateReport(payload)
+  }, [watch("hours"), watch("description"), watch("plannedDate"), watch("doneDate")])
 
   return (
     <Accordion
@@ -285,15 +310,15 @@ const TeachersReportItem: React.FC<ITeachersReportItemProps> = ({ report }) => {
               {isLoading ? <LoadingSpinner size={24.5} disablePadding /> : report.status ? "Не виконано" : "Виконано"}
             </Button>
 
-            <Button
+            {/* <Button
               type="submit"
+              color="primary"
               variant="contained"
-              color={"primary"}
               disabled={isSubmitting}
               sx={{ whiteSpace: "nowrap", textTransform: "initial", ml: 1, width: "95px" }}
             >
               {isSubmitting ? <LoadingSpinner size={24.5} disablePadding /> : "Зберегти"}
-            </Button>
+            </Button> */}
           </div>
         </AccordionActions>
       </form>
