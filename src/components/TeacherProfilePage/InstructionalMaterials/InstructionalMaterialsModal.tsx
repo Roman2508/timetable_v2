@@ -17,10 +17,10 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import {
   createInstructionalMaterials,
   updateInstructionalMaterials,
-} from '../../store/teacherProfile/teacherProfileAsyncActions'
-import { useAppDispatch } from '../../store/store'
-import { GroupLoadType } from '../../store/groups/groupsTypes'
-import { InstructionalMaterialsType } from '../../store/teacherProfile/teacherProfileTypes'
+} from '../../../store/teacherProfile/teacherProfileAsyncActions'
+import { useAppDispatch } from '../../../store/store'
+import { GroupLoadType } from '../../../store/groups/groupsTypes'
+import { InstructionalMaterialsType } from '../../../store/teacherProfile/teacherProfileTypes'
 
 interface IInstructionalMaterialsModalProps {
   open: boolean

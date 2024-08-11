@@ -24,6 +24,7 @@ const IndividualTeacherWorkTab = () => {
 
   const dispatch = useAppDispatch()
 
+  const [plannedHours, setPlannedHours] = React.useState(0)
   const [showedYear, setShowedYear] = React.useState<number>(customDayjs().year())
   const [editingIndividualTeacherWork, setEditingIndividualTeacherWork] = React.useState<IFormState | null>(null)
 
@@ -33,6 +34,13 @@ const IndividualTeacherWorkTab = () => {
     dispatch(clearIndividualTeacherWork())
     dispatch(getTeacherReport({ year: showedYear, id: 17 }))
   }, [showedYear])
+
+  React.useEffect(() => {
+    if (!report) return
+    const plannedActivities = report.filter((el) => el.status)
+    const plannedHours = plannedActivities.reduce((acc, cur) => Number(cur.hours) + acc, 0)
+    setPlannedHours(plannedHours)
+  }, [report])
 
   return (
     <div style={{ position: "relative" }}>
@@ -56,7 +64,7 @@ const IndividualTeacherWorkTab = () => {
             maxWidth: drawerOpen ? "1620px" : "1770px",
           }}
         >
-          Заплановано на навчальний рік 0 годин.
+          Заплановано на навчальний рік {plannedHours} годин.
         </Typography>
       </div>
 

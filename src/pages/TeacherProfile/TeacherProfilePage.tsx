@@ -6,11 +6,11 @@ import MainCard from "../../components/MainCard"
 import { useAppDispatch } from "../../store/store"
 import GeneralInfoTab from "../../components/TeacherProfilePage/GeneralInfoTab"
 import PrintedWorksTab from "../../components/TeacherProfilePage/PrintedWorksTab"
-import TeachersReportTab from "../../components/TeacherProfilePage/TeacherReport/TeachersReportTab"
 import { MyTeachingLoadTab } from "../../components/TeacherProfilePage/MyTeachingLoadTab"
 import { ListsOfStudentsTab } from "../../components/TeacherProfilePage/ListsOfStudentsTab"
-import { InstructionalMaterialsTab } from "../../components/TeacherProfilePage/InstructionalMaterialsTab"
+import TeachersReportTab from "../../components/TeacherProfilePage/TeacherReport/TeachersReportTab"
 import IndividualTeacherWorkTab from "../../components/TeacherProfilePage/IndividualTeacherWorkPlan/IndividualTeacherWorkTab"
+import { InstructionalMaterialsTab } from "../../components/TeacherProfilePage/InstructionalMaterials/InstructionalMaterialsTab"
 
 const tabs = [
   "Загальна інформація",

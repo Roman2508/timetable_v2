@@ -56,6 +56,25 @@
   border: 1px solid #d9d9d9;
 }
 
+.instructional-materials__actions {
+  gap: 12px;
+  display: flex;
+  margin-bottom: 24px;
+  flex-direction: column;
+}
+
+.instructional-materials__filter {
+  gap: 12px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.instructional-materials__buttons {
+  gap: 12px;
+  display: flex;
+  justify-content: center;
+}
+
 @media (max-width: 1200px) {
   .full-teacher__container {
     flex-direction: column;
@@ -133,6 +152,9 @@
   .full-teacher__tabs table td {
     padding: 2px;
     height: 30px;
+  }
+  .instructional-materials__buttons {
+    flex-direction: column;
   }
 }
 

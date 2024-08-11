@@ -43,7 +43,7 @@ const IndividualTeacherWorkItem: React.FC<IIndividualTeacherWorkItemProps> = (pr
 
   const dispatch = useAppDispatch()
 
-  const [isDeleting, setIsDeleting] = React.useState(false)
+  const [isFetching, setIsFetching] = React.useState(false)
   const [isExpanded, setIsExpanded] = React.useState(addedReport ? true : false)
 
   const {
@@ -73,10 +73,17 @@ const IndividualTeacherWorkItem: React.FC<IIndividualTeacherWorkItemProps> = (pr
 
   const onDeleteTeacherReport = async () => {
     if (!addedReport) return
-    setIsDeleting(true)
+    setIsFetching(true)
     await dispatch(deleteTeacherReport(addedReport.id))
-    setIsDeleting(false)
+    setIsFetching(false)
   }
+
+  // const onCreateTeacherReport = async () => {
+  //   try {
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
   const onEditIndividualTeacherWork = (values: IFormState) => {
     setEditingIndividualTeacherWork(values)
@@ -187,7 +194,6 @@ const IndividualTeacherWorkItem: React.FC<IIndividualTeacherWorkItemProps> = (pr
         <Controller
           name="description"
           control={control}
-          rules={{ required: true }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ flex: 1 }}>
@@ -203,11 +209,11 @@ const IndividualTeacherWorkItem: React.FC<IIndividualTeacherWorkItemProps> = (pr
             type="button"
             color="error"
             variant="outlined"
-            disabled={isDeleting}
+            disabled={isFetching}
             onClick={onDeleteTeacherReport}
             sx={{ whiteSpace: "nowrap", textTransform: "initial", width: "160px", padding: "7.32px 15px" }}
           >
-            {isDeleting ? <LoadingSpinner size={24.5} disablePadding /> : "Видалити зі звіта"}
+            {isFetching ? <LoadingSpinner size={24.5} disablePadding /> : "Видалити зі звіта"}
           </Button>
         ) : (
           <Button
@@ -226,104 +232,3 @@ const IndividualTeacherWorkItem: React.FC<IIndividualTeacherWorkItemProps> = (pr
 }
 
 export default IndividualTeacherWorkItem
-
-/* 
- <div style={{ padding: "16px", border: "1px solid #f0f0f0", margin: "10px 0" }}>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <div
-          style={{
-            flex: 1,
-            width: "calc(100% - 50px)",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <FormControlLabel
-            label={individualWork.name}
-            sx={{ userSelect: "none" }}
-            control={<Checkbox value={isChecked} checked={isChecked} onChange={() => setIsChecked((prev) => !prev)} />}
-          />
-
-          <Chip label={individualWork.hours} sx={{ userSelect: "none", mr: 1 }} size="small" variant="outlined" />
-        </div>
-
-        <IconButton
-          onClick={() =>
-            onEditIndividualTeacherWork({
-              id: individualWork.id,
-              name: individualWork.name,
-              type: individualWork.type,
-              hours: individualWork.hours,
-            })
-          }
-        >
-          <EditOutlined />
-        </IconButton>
-      </div>
-
-      {isChecked && (
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          style={{ display: "flex", alignItems: "flex-end", gap: 12, margin: "16px 0 20px" }}
-        >
-          <Controller
-            name="plannedDate"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => {
-              return (
-                <Stack spacing={1}>
-                  <InputLabel>Дата виконання*</InputLabel>
-                  <CustomDatePicker
-                    ref={field.ref}
-                    name={field.name}
-                    value={field.value}
-                    sx={{ paddingTop: 0 }}
-                    setValue={field.onChange}
-                  />
-                </Stack>
-              )
-            }}
-          />
-
-          <Controller
-            name="description"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => {
-              return (
-                <Stack spacing={1} sx={{ flex: 1 }}>
-                  <InputLabel>Зміст роботи*</InputLabel>
-                  <TextField {...field} fullWidth sx={{ "& .MuiInputBase-input": { py: "10.51px" } }} />
-                </Stack>
-              )
-            }}
-          />
-
-          {addedReport ? (
-            <Button
-              type="button"
-              color="error"
-              variant="outlined"
-              disabled={isDeleting}
-              onClick={onDeleteTeacherReport}
-              sx={{ whiteSpace: "nowrap", textTransform: "initial", width: "160px" }}
-            >
-              {isDeleting ? <LoadingSpinner size={24.5} disablePadding /> : "Видалити зі звіта"}
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              color="primary"
-              variant="outlined"
-              disabled={isSubmitting}
-              sx={{ whiteSpace: "nowrap", textTransform: "initial", width: "160px" }}
-            >
-              {isSubmitting ? <LoadingSpinner size={24.5} disablePadding /> : "Додати до звіта"}
-            </Button>
-          )}
-        </form>
-      )}
-    </div>
-*/

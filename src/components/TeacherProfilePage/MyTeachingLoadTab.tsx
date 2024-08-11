@@ -9,6 +9,7 @@ import { useSelector } from "react-redux"
 import { teacherProfileSelector } from "../../store/teacherProfile/teacherProfileSlice"
 import { LoadingStatusTypes } from "../../store/appTypes"
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"
+import splitWorkloadBySemesters from "../../utils/splitWorkloadBySemesters"
 
 interface Props {}
 
@@ -29,17 +30,7 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
   const [secondSemesterLessons, setSecondSemesterLessons] = React.useState<GroupLoadType[]>([])
 
   const handleSemesterLessons = (load: GroupLoadType[]) => {
-    const firstSemesterLessons: GroupLoadType[] = []
-    const secondSemesterLessons: GroupLoadType[] = []
-
-    load.forEach((el) => {
-      if (el.semester === 1 || el.semester === 3 || el.semester === 5) {
-        firstSemesterLessons.push(el)
-      }
-      if (el.semester === 2 || el.semester === 4 || el.semester === 6) {
-        secondSemesterLessons.push(el)
-      }
-    })
+    const { firstSemesterLessons, secondSemesterLessons } = splitWorkloadBySemesters(load)
 
     setFirstSemesterLessons(firstSemesterLessons)
     setSecondSemesterLessons(secondSemesterLessons)
@@ -169,6 +160,15 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
               </TableCell>
               <TableCell align="center" component="th" sx={{ fontWeight: 600 }}>
                 {secondSemesterLessons.reduce((total, current) => total + current.hours, 0)}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={5} component="th" align="left" sx={{ fontWeight: 600 }}>
+                Всього за рік
+              </TableCell>
+              <TableCell align="center" component="th" sx={{ fontWeight: 600 }}>
+                {secondSemesterLessons.reduce((total, current) => total + current.hours, 0) +
+                  firstSemesterLessons.reduce((total, current) => total + current.hours, 0)}
               </TableCell>
             </TableRow>
           </TableBody>

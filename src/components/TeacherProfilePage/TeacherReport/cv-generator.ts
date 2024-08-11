@@ -1,27 +1,7 @@
-import {
-  TextRun,
-  Document,
-  Paragraph,
-  TabStopType,
-  HeadingLevel,
-  CharacterSet,
-  AlignmentType,
-  TabStopPosition,
-  Table,
-  TableRow,
-  TableCell,
-  WidthType,
-} from "docx"
-import * as fs from "fs"
+import { Table, TextRun, TableRow, Document, WidthType, TableCell, Paragraph, AlignmentType } from "docx"
 
-// const font = fs.readFileSync("src/assets/fonts/Times-New-Roman.ttf")
-// const font = fs.readFileSync("../../../assets/fonts/Times-New-Roman.ttf")
-
-import font from "../../../assets/fonts/Times-New-Roman.ttf"
-
-const PHONE_NUMBER = "07534563401"
-const PROFILE_URL = "https://www.linkedin.com/in/dolan1"
-const EMAIL = "docx@docx.com"
+import { GroupLoadType } from "../../../store/groups/groupsTypes"
+import { TeacherReportType } from "../../../store/teacherProfile/teacherProfileTypes"
 
 type AlignmentType =
   | "start"
@@ -40,7 +20,15 @@ type AlignmentType =
 
 export class DocumentCreator {
   // tslint:disable-next-line: typedef
-  public create([experiences, educations, skills, achivements]): Document {
+  public create(
+    firstSemesterLessons: GroupLoadType[][],
+    secondSemesterLessons: GroupLoadType[][],
+    methodicalWork: TeacherReportType[],
+    scientificWork: TeacherReportType[],
+    organizationalWork: TeacherReportType[],
+    teacherName: string,
+    reportYear: number
+  ): Document {
     const document = new Document({
       sections: [
         {
@@ -72,8 +60,8 @@ export class DocumentCreator {
               after: 240,
             }),
             this.createParagraph("ІНДИВІДУАЛЬНИЙ ПЛАН РОБОТИ ВИКЛАДАЧА ТА ЇЇ ОБЛІК", "center", 28, true),
-            this.createParagraph("Пташник Р.В.", "center", 28, true),
-            this.createParagraph("на 2023 - 2024 н.р.", "center", 28, false, {
+            this.createParagraph(String(teacherName), "center", 28, true),
+            this.createParagraph(`на ${reportYear} - ${reportYear + 1} н.р.`, "center", 28, false, {
               before: 360,
               after: 240,
             }),
@@ -140,7 +128,7 @@ export class DocumentCreator {
 
             /*  */
 
-            this.createParagraph("НАВЧАЛЬНА РОБОТА НА 2023-2024 н.р.", "center", 28, true, {
+            this.createParagraph(`НАВЧАЛЬНА РОБОТА НА ${reportYear}-${reportYear + 1} н.р.`, "center", 28, true, {
               before: 360,
               after: 240,
             }),
@@ -228,18 +216,15 @@ export class DocumentCreator {
                   ],
                 }),
 
-                new TableRow({
-                  children: [
-                    new TableCell({ children: [this.createTableParagraph("1")] }),
-                    new TableCell({ children: [this.createTableParagraph("Інформатика", "left")] }),
-                    new TableCell({ children: [this.createTableParagraph("PH9-22-1")] }),
-                    new TableCell({ children: [this.createTableParagraph("")] }),
-                    new TableCell({ children: [this.createTableParagraph("48")] }),
-                    new TableCell({ children: [this.createTableParagraph("")] }),
-                    new TableCell({ children: [this.createTableParagraph("")] }),
-                    new TableCell({ children: [this.createTableParagraph("")] }),
-                  ],
-                }),
+                ...this.createTableLessons(firstSemesterLessons),
+                this.createTableSemesterSummary(firstSemesterLessons, "semester_1"),
+
+                ...this.createTableLessons(secondSemesterLessons),
+                this.createTableSemesterSummary(secondSemesterLessons, "semester_2"),
+
+                this.createTableSemesterSummary([...firstSemesterLessons, ...secondSemesterLessons], "year"),
+
+                //
               ],
             }),
 
@@ -256,245 +241,23 @@ export class DocumentCreator {
               }
             ),
 
-            this.createParagraph("20____ року. Протокол№ _____________", "both", 28, false, {
+            this.createParagraph("20____ року. Протокол № _____________", "both", 28, false, {
               before: 0,
               after: 360,
             }),
 
             this.createParagraph("Методична робота", "center", 28, true, { before: 0, after: 240 }),
-
-            /*  */
-
-            new Table({
-              width: {
-                size: 100, // 100% width
-                type: WidthType.PERCENTAGE,
-              },
-              margins: { top: 10, bottom: 10, left: 20, right: 20 },
-              rows: [
-                new TableRow({
-                  children: [
-                    new TableCell({
-                      children: [this.createTableParagraph("№")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Види робіт")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("К-ть "), this.createTableParagraph("годин")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Зміст роботи")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Термін"), this.createTableParagraph("виконання")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [
-                        this.createTableParagraph("Позначка"),
-                        this.createTableParagraph("про"),
-                        this.createTableParagraph("виконання"),
-                      ],
-                      verticalAlign: "center",
-                    }),
-                  ],
-                }),
-
-                new TableRow({
-                  children: [
-                    new TableCell({ children: [this.createTableParagraph("1")] }),
-                    new TableCell({
-                      children: [
-                        this.createTableParagraph(
-                          "Завантаження навчально-методичного забезпечення дисципліни на навчальну платформу коледжу Moodle",
-                          "left"
-                        ),
-                      ],
-                    }),
-                    new TableCell({ children: [this.createTableParagraph("50")] }),
-                    new TableCell({ children: [this.createTableParagraph("")] }),
-                    new TableCell({ children: [this.createTableParagraph("Протягом року")] }),
-                    new TableCell({ children: [this.createTableParagraph("Виконано")] }),
-                  ],
-                }),
-
-                new TableRow({
-                  children: [
-                    new TableCell({ children: [this.createTableParagraph("2")] }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Створення Програми з дисципліни", "left")],
-                    }),
-                    new TableCell({ children: [this.createTableParagraph("50")] }),
-                    new TableCell({ children: [this.createTableParagraph("")] }),
-                    new TableCell({ children: [this.createTableParagraph("Протягом року")] }),
-                    new TableCell({ children: [this.createTableParagraph("Виконано")] }),
-                  ],
-                }),
-              ],
-            }),
+            this.createReportTable(methodicalWork),
 
             /*  */
 
             this.createParagraph("Наукова робота", "center", 28, true, { before: 360, after: 240 }),
-
-            /*  */
-
-            new Table({
-              width: {
-                size: 100, // 100% width
-                type: WidthType.PERCENTAGE,
-              },
-              margins: { top: 10, bottom: 10, left: 20, right: 20 },
-              rows: [
-                new TableRow({
-                  children: [
-                    new TableCell({
-                      children: [this.createTableParagraph("№")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Види робіт")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("К-ть "), this.createTableParagraph("годин")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Зміст роботи")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Термін"), this.createTableParagraph("виконання")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [
-                        this.createTableParagraph("Позначка"),
-                        this.createTableParagraph("про"),
-                        this.createTableParagraph("виконання"),
-                      ],
-                      verticalAlign: "center",
-                    }),
-                  ],
-                }),
-
-                new TableRow({
-                  children: [
-                    new TableCell({ children: [this.createTableParagraph("1")] }),
-                    new TableCell({
-                      children: [
-                        this.createTableParagraph(
-                          "Завантаження навчально-методичного забезпечення дисципліни на навчальну платформу коледжу Moodle",
-                          "left"
-                        ),
-                      ],
-                    }),
-                    new TableCell({ children: [this.createTableParagraph("50")] }),
-                    new TableCell({ children: [this.createTableParagraph("")] }),
-                    new TableCell({ children: [this.createTableParagraph("Протягом року")] }),
-                    new TableCell({ children: [this.createTableParagraph("Виконано")] }),
-                  ],
-                }),
-
-                new TableRow({
-                  children: [
-                    new TableCell({ children: [this.createTableParagraph("2")] }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Створення Програми з дисципліни", "left")],
-                    }),
-                    new TableCell({ children: [this.createTableParagraph("50")] }),
-                    new TableCell({ children: [this.createTableParagraph("")] }),
-                    new TableCell({ children: [this.createTableParagraph("Протягом року")] }),
-                    new TableCell({ children: [this.createTableParagraph("Виконано")] }),
-                  ],
-                }),
-              ],
-            }),
+            this.createReportTable(scientificWork),
 
             /*  */
 
             this.createParagraph("Організаційна робота", "center", 28, true, { before: 360, after: 240 }),
-
-            /*  */
-
-            new Table({
-              width: {
-                size: 100, // 100% width
-                type: WidthType.PERCENTAGE,
-              },
-              margins: { top: 10, bottom: 10, left: 20, right: 20 },
-              rows: [
-                new TableRow({
-                  children: [
-                    new TableCell({
-                      children: [this.createTableParagraph("№")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Види робіт")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("К-ть "), this.createTableParagraph("годин")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Зміст роботи")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Термін"), this.createTableParagraph("виконання")],
-                      verticalAlign: "center",
-                    }),
-                    new TableCell({
-                      children: [
-                        this.createTableParagraph("Позначка"),
-                        this.createTableParagraph("про"),
-                        this.createTableParagraph("виконання"),
-                      ],
-                      verticalAlign: "center",
-                    }),
-                  ],
-                }),
-
-                new TableRow({
-                  children: [
-                    new TableCell({ children: [this.createTableParagraph("1")] }),
-                    new TableCell({
-                      children: [
-                        this.createTableParagraph(
-                          "Завантаження навчально-методичного забезпечення дисципліни на навчальну платформу коледжу Moodle",
-                          "left"
-                        ),
-                      ],
-                    }),
-                    new TableCell({ children: [this.createTableParagraph("50")] }),
-                    new TableCell({ children: [this.createTableParagraph("")] }),
-                    new TableCell({ children: [this.createTableParagraph("Протягом року")] }),
-                    new TableCell({ children: [this.createTableParagraph("Виконано")] }),
-                  ],
-                }),
-
-                new TableRow({
-                  children: [
-                    new TableCell({ children: [this.createTableParagraph("2")] }),
-                    new TableCell({
-                      children: [this.createTableParagraph("Створення Програми з дисципліни", "left")],
-                    }),
-                    new TableCell({ children: [this.createTableParagraph("50")] }),
-                    new TableCell({ children: [this.createTableParagraph("")] }),
-                    new TableCell({ children: [this.createTableParagraph("Протягом року")] }),
-                    new TableCell({ children: [this.createTableParagraph("Виконано")] }),
-                  ],
-                }),
-              ],
-            }),
+            this.createReportTable(organizationalWork),
 
             /*  */
 
@@ -503,10 +266,7 @@ export class DocumentCreator {
               "both",
               28,
               false,
-              {
-                before: 240,
-                after: 80,
-              }
+              { before: 240, after: 80 }
             ),
 
             this.createParagraph("____________________________________________________Викладач", "both", 28, false, {
@@ -676,73 +436,9 @@ export class DocumentCreator {
             }),
 
             /*  */
-            /*  */
-            /*  */
-            /*  */
-
-            this.createContactInfo(PHONE_NUMBER, PROFILE_URL, EMAIL),
-            this.createHeading("Education"),
-            ...educations
-              .map((education) => {
-                const arr: Paragraph[] = []
-                arr.push(
-                  this.createInstitutionHeader(
-                    education.schoolName,
-                    `${education.startDate.year} - ${education.endDate.year}`
-                  )
-                )
-                arr.push(this.createRoleText(`${education.fieldOfStudy} - ${education.degree}`))
-
-                const bulletPoints = this.splitParagraphIntoBullets(education.notes)
-                bulletPoints.forEach((bulletPoint) => {
-                  arr.push(this.createBullet(bulletPoint))
-                })
-
-                return arr
-              })
-              .reduce((prev, curr) => prev.concat(curr), []),
-            this.createHeading("Experience"),
-            ...experiences
-              .map((position) => {
-                const arr: Paragraph[] = []
-
-                arr.push(
-                  this.createInstitutionHeader(
-                    position.company.name,
-                    this.createPositionDateText(position.startDate, position.endDate, position.isCurrent)
-                  )
-                )
-                arr.push(this.createRoleText(position.title))
-
-                const bulletPoints = this.splitParagraphIntoBullets(position.summary)
-
-                bulletPoints.forEach((bulletPoint) => {
-                  arr.push(this.createBullet(bulletPoint))
-                })
-
-                return arr
-              })
-              .reduce((prev, curr) => prev.concat(curr), []),
-            this.createHeading("Skills, Achievements and Interests"),
-            this.createSubHeading("Skills"),
-            this.createSkillList(skills),
-            this.createSubHeading("Achievements"),
-            ...this.createAchivementsList(achivements),
-            this.createSubHeading("Interests"),
-            this.createInterests("Programming, Technology, Music Production, Web Design, 3D Modelling, Dancing."),
-            this.createHeading("References"),
-            new Paragraph(
-              "Dr. Dean Mohamedally Director of Postgraduate Studies Department of Computer Science, University College London Malet Place, Bloomsbury, London WC1E d.mohamedally@ucl.ac.uk"
-            ),
-            new Paragraph("More references upon request"),
-            new Paragraph({
-              text: "This CV was generated in real-time based on my Linked-In profile from my personal website www.dolan.bio.",
-              alignment: AlignmentType.CENTER,
-            }),
           ],
         },
       ],
-      // fonts: [{ name: "Times New Roman", data: formData, characterSet: CharacterSet.ANSI }],
     })
 
     return document
@@ -803,128 +499,125 @@ export class DocumentCreator {
     })
   }
 
-  public createHeading(text: string): Paragraph {
-    return new Paragraph({
-      text: text,
-      heading: HeadingLevel.HEADING_1,
-      thematicBreak: true,
+  public createTableLessons(lessons: GroupLoadType[][]): TableRow[] {
+    return lessons.map((el, index) => {
+      const lectures = el.find((el) => el.typeRu === "ЛК")
+      const practical = el.find((el) => el.typeRu === "ПЗ")
+      const laboratory = el.find((el) => el.typeRu === "ЛАБ")
+      const seminars = el.find((el) => el.typeRu === "СЕМ")
+      const exams = el.find((el) => el.typeRu === "ЕКЗ")
+
+      return new TableRow({
+        children: [
+          new TableCell({ children: [this.createTableParagraph(String(index + 1))] }),
+          new TableCell({ children: [this.createTableParagraph(el[0].name, "left")] }),
+          new TableCell({ children: [this.createTableParagraph(el[0].group.name)] }),
+          new TableCell({ children: [this.createTableParagraph(lectures ? String(lectures.hours) : "")] }),
+          new TableCell({
+            children: [this.createTableParagraph(practical ? String(practical.hours) : "")],
+          }),
+          new TableCell({
+            children: [this.createTableParagraph(laboratory ? String(laboratory.hours) : "")],
+          }),
+          new TableCell({ children: [this.createTableParagraph(seminars ? String(seminars.hours) : "")] }),
+          new TableCell({ children: [this.createTableParagraph(exams ? String(exams.hours) : "")] }),
+        ],
+      })
     })
   }
 
-  public createSubHeading(text: string): Paragraph {
-    return new Paragraph({
-      text: text,
-      heading: HeadingLevel.HEADING_2,
-    })
-  }
+  public createTableSemesterSummary(lessons: GroupLoadType[][], type: "semester_1" | "semester_2" | "year"): TableRow {
+    const getTotalHours = (type: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ" | "КОНС" | "МЕТОД"): number => {
+      const total = lessons.reduce((acc, cur) => {
+        const lesson = cur.find((el) => el.typeRu === type)
+        if (lesson) return lesson.hours + acc
+        return acc
+      }, 0)
 
-  public createInstitutionHeader(institutionName: string, dateText: string): Paragraph {
-    return new Paragraph({
-      tabStops: [
-        {
-          type: TabStopType.RIGHT,
-          position: TabStopPosition.MAX,
-        },
-      ],
-      children: [
-        new TextRun({
-          text: institutionName,
-          bold: true,
-        }),
-        new TextRun({
-          text: `\t${dateText}`,
-          bold: true,
-        }),
-      ],
-    })
-  }
-
-  public createRoleText(roleText: string): Paragraph {
-    return new Paragraph({
-      children: [
-        new TextRun({
-          text: roleText,
-          italics: true,
-        }),
-      ],
-    })
-  }
-
-  public createBullet(text: string): Paragraph {
-    return new Paragraph({
-      text: text,
-      bullet: {
-        level: 0,
-      },
-    })
-  }
-
-  // tslint:disable-next-line:no-any
-  public createSkillList(skills: any[]): Paragraph {
-    return new Paragraph({
-      children: [new TextRun(skills.map((skill) => skill.name).join(", ") + ".")],
-    })
-  }
-
-  // tslint:disable-next-line:no-any
-  public createAchivementsList(achivements: any[]): Paragraph[] {
-    return achivements.map(
-      (achievement) =>
-        new Paragraph({
-          text: achievement.name,
-          bullet: {
-            level: 0,
-          },
-        })
-    )
-  }
-
-  public createInterests(interests: string): Paragraph {
-    return new Paragraph({
-      children: [new TextRun(interests)],
-    })
-  }
-
-  public splitParagraphIntoBullets(text: string): string[] {
-    return text.split("\n\n")
-  }
-
-  // tslint:disable-next-line:no-any
-  public createPositionDateText(startDate: any, endDate: any, isCurrent: boolean): string {
-    const startDateText = this.getMonthFromInt(startDate.month) + ". " + startDate.year
-    const endDateText = isCurrent ? "Present" : `${this.getMonthFromInt(endDate.month)}. ${endDate.year}`
-
-    return `${startDateText} - ${endDateText}`
-  }
-
-  public getMonthFromInt(value: number): string {
-    switch (value) {
-      case 1:
-        return "Jan"
-      case 2:
-        return "Feb"
-      case 3:
-        return "Mar"
-      case 4:
-        return "Apr"
-      case 5:
-        return "May"
-      case 6:
-        return "Jun"
-      case 7:
-        return "Jul"
-      case 8:
-        return "Aug"
-      case 9:
-        return "Sept"
-      case 10:
-        return "Oct"
-      case 11:
-        return "Nov"
-      case 12:
-        return "Dec"
-      default:
-        return "N/A"
+      return total
     }
+
+    const label =
+      type === "semester_1"
+        ? "Разом за I семестр"
+        : type === "semester_2"
+        ? "Разом за II семестр"
+        : "Разом за навчальний рік"
+
+    const totalLectures = getTotalHours("ЛК")
+    const totalPracticals = getTotalHours("ПЗ")
+    const totalLaboratory = getTotalHours("ЛАБ")
+    const totalSeminars = getTotalHours("СЕМ")
+    const totalExams = getTotalHours("ЕКЗ")
+
+    return new TableRow({
+      children: [
+        new TableCell({ children: [this.createTableParagraph(label)], columnSpan: 3 }),
+        new TableCell({ children: [this.createTableParagraph(String(totalLectures))] }),
+        new TableCell({ children: [this.createTableParagraph(String(totalPracticals))] }),
+        new TableCell({ children: [this.createTableParagraph(String(totalLaboratory))] }),
+        new TableCell({ children: [this.createTableParagraph(String(totalSeminars))] }),
+        new TableCell({ children: [this.createTableParagraph(String(totalExams))] }),
+      ],
+    })
+  }
+
+  public createReportTable(reports: TeacherReportType[]): Table {
+    return new Table({
+      width: {
+        size: 100, // 100% width
+        type: WidthType.PERCENTAGE,
+      },
+      margins: { top: 10, bottom: 10, left: 20, right: 20 },
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [this.createTableParagraph("№")],
+              verticalAlign: "center",
+            }),
+            new TableCell({
+              children: [this.createTableParagraph("Види робіт")],
+              verticalAlign: "center",
+            }),
+            new TableCell({
+              children: [this.createTableParagraph("К-ть "), this.createTableParagraph("годин")],
+              verticalAlign: "center",
+            }),
+            new TableCell({
+              children: [this.createTableParagraph("Зміст роботи")],
+              verticalAlign: "center",
+            }),
+            new TableCell({
+              children: [this.createTableParagraph("Термін"), this.createTableParagraph("виконання")],
+              verticalAlign: "center",
+            }),
+            new TableCell({
+              children: [
+                this.createTableParagraph("Позначка"),
+                this.createTableParagraph("про"),
+                this.createTableParagraph("виконання"),
+              ],
+              verticalAlign: "center",
+            }),
+          ],
+        }),
+
+        ...reports.map((el, index) => {
+          return new TableRow({
+            children: [
+              new TableCell({ children: [this.createTableParagraph(String(index + 1))] }),
+              new TableCell({
+                children: [this.createTableParagraph(el.individualWork.name, "left")],
+              }),
+              new TableCell({ children: [this.createTableParagraph(String(el.hours))] }),
+              new TableCell({ children: [this.createTableParagraph(el.description, "left")] }),
+              new TableCell({ children: [this.createTableParagraph(el.plannedDate)] }),
+              new TableCell({ children: [this.createTableParagraph("Виконано")] }),
+            ],
+          })
+        }),
+      ],
+    })
   }
 }

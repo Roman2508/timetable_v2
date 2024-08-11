@@ -11,6 +11,9 @@ import {
   IconButton,
   InputLabel,
   FormControl,
+  Button,
+  Stack,
+  OutlinedInput,
 } from "@mui/material"
 import React from "react"
 import { useSelector } from "react-redux"
@@ -19,13 +22,17 @@ import { EditOutlined } from "@ant-design/icons"
 import {
   findAllTeacherLessonsById,
   getInstructionalMaterials,
-} from "../../store/teacherProfile/teacherProfileAsyncActions"
-import EmptyCard from "../EmptyCard/EmptyCard"
-import { useAppDispatch } from "../../store/store"
-import { GroupLoadType } from "../../store/groups/groupsTypes"
+} from "../../../store/teacherProfile/teacherProfileAsyncActions"
+import EmptyCard from "../../EmptyCard/EmptyCard"
+import { customDayjs } from "../../Calendar/Calendar"
+import ExportLessonThemes from "./ExportLessonThemes"
+import { useAppDispatch } from "../../../store/store"
+import { LoadingStatusTypes } from "../../../store/appTypes"
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner"
+import { GroupLoadType } from "../../../store/groups/groupsTypes"
 import { InstructionalMaterialsModal } from "./InstructionalMaterialsModal"
-import { teacherProfileSelector } from "../../store/teacherProfile/teacherProfileSlice"
-import { InstructionalMaterialsType } from "../../store/teacherProfile/teacherProfileTypes"
+import { teacherProfileSelector } from "../../../store/teacherProfile/teacherProfileSlice"
+import { InstructionalMaterialsType } from "../../../store/teacherProfile/teacherProfileTypes"
 
 interface Props {}
 
@@ -37,10 +44,11 @@ interface IFilter {
 export const InstructionalMaterialsTab = React.memo(({}: Props) => {
   const dispatch = useAppDispatch()
 
-  const { filterLesson, instructionalMaterials } = useSelector(teacherProfileSelector)
+  const { filterLesson, instructionalMaterials, loadingStatus } = useSelector(teacherProfileSelector)
 
   const [semester, setSemester] = React.useState(1)
   const [isModalOpen, setIsModalOpen] = React.useState(false)
+  const [showedYear, setShowedYear] = React.useState(customDayjs().year())
   const [filter, setFilter] = React.useState<IFilter>({ ["1"]: [], ["2"]: [] })
   const [actionType, setActiveType] = React.useState<"create" | "update">("create")
   const [selectedLesson, setSelectedLesson] = React.useState<GroupLoadType | null>(null)
@@ -99,36 +107,76 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
         selectedLesson={selectedLesson}
       />
 
-      <div style={{ display: "flex", alignItems: "flex-start" }}>
-        <FormControl fullWidth sx={{ mb: 3 }}>
-          <InputLabel sx={{ overflow: "visible !important" }}>Семестр</InputLabel>
-          <Select onChange={(e) => setSemester(Number(e.target.value))} value={semester}>
-            {[1, 2].map((el) => (
-              <MenuItem value={el} key={el}>
-                {el}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      <div className="instructional-materials__actions">
+        <div
+          style={{
+            gap: 5,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            maxWidth: "210px",
+            margin: "0 auto",
+          }}
+        >
+          <Typography variant="button" sx={{ textTransform: "inherit" }}>
+            НМК за
+          </Typography>
+          <Stack spacing={1}>
+            <OutlinedInput
+              fullWidth
+              name="hours"
+              type="number"
+              value={showedYear}
+              onChange={(e) => setShowedYear(Number(e.target.value))}
+              sx={{ width: "70px", input: { padding: "8.2px 2px 8.2px 16px" } }}
+            />
+          </Stack>
+          <Typography variant="button" sx={{ textTransform: "inherit", width: "77px" }}>
+            - {showedYear + 1} н.р.
+          </Typography>
+        </div>
 
-        <FormControl fullWidth sx={{ mb: 3, ml: 2 }}>
-          <InputLabel sx={{ overflow: "visible !important" }}>Дисципліна</InputLabel>
-          <Select
-            value={selectedLesson ? selectedLesson.id : ""}
-            onChange={(e) => handleChangeSelectedLesson(Number(e.target.value))}
-          >
-            {/* @ts-ignore */}
-            {(filterLesson ? filter[semester] : []).map((el: GroupLoadType) => (
-              <MenuItem value={el.id} key={el.id}>{`${el.group.name} / ${el.typeRu} / ${el.name}`}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <div className="instructional-materials__filter">
+          <FormControl fullWidth>
+            <InputLabel sx={{ overflow: "visible !important" }}>Семестр</InputLabel>
+            <Select onChange={(e) => setSemester(Number(e.target.value))} value={semester}>
+              {[1, 2].map((el) => (
+                <MenuItem value={el} key={el}>
+                  {el}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel sx={{ overflow: "visible !important" }}>Дисципліна</InputLabel>
+            <Select
+              value={selectedLesson ? selectedLesson.id : ""}
+              onChange={(e) => handleChangeSelectedLesson(Number(e.target.value))}
+            >
+              {/* @ts-ignore */}
+              {(filterLesson ? filter[semester] : []).map((el: GroupLoadType) => (
+                <MenuItem value={el.id} key={el.id}>{`${el.group.name} / ${el.typeRu} / ${el.name}`}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+
+        <div className="instructional-materials__buttons">
+          <ExportLessonThemes instructionalMaterials={instructionalMaterials} />
+
+          <Button variant="outlined" style={{ textTransform: "initial", whiteSpace: "nowrap", padding: "7.32px 15px" }}>
+            Імпортувати теми
+          </Button>
+        </div>
       </div>
 
       <Divider sx={{ mb: 3 }} />
 
       {!selectedLesson ? (
         <EmptyCard text="Виберіть дисципліну" />
+      ) : loadingStatus === LoadingStatusTypes.LOADING ? (
+        <LoadingSpinner />
       ) : (
         <Table sx={{ minWidth: 450, mb: 10 }} size="small" aria-label="a dense table">
           <TableHead>

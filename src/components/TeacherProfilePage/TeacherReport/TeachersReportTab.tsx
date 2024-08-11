@@ -1,68 +1,87 @@
-import React from "react"
+import React, { useEffect } from "react"
+import { Packer } from "docx"
+import { saveAs } from "file-saver"
 import { useSelector } from "react-redux"
 import { Button, OutlinedInput, Stack, Typography } from "@mui/material"
 
-import { Packer } from "docx"
-import { saveAs } from "file-saver"
 import { DocumentCreator } from "./cv-generator"
-import { experiences, education, skills, achievements } from "./cv-data"
-
 import EmptyCard from "../../EmptyCard/EmptyCard"
 import TeachersReportItem from "./TeacherReportItem"
 import { useAppDispatch } from "../../../store/store"
 import { customDayjs } from "../../Calendar/Calendar"
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner"
 import { sortTeacherReports } from "../../../utils/sortTeacherReports"
+import { groupLessonsByFields } from "../../../utils/groupLessonsByFields"
+import splitWorkloadBySemesters from "../../../utils/splitWorkloadBySemesters"
+import splitTeacherReportsByType from "../../../utils/splitTeacherReportsByType"
 import { TeacherReportType } from "../../../store/teacherProfile/teacherProfileTypes"
-import { getTeacherReport } from "../../../store/teacherProfile/teacherProfileAsyncActions"
+import { getTeacherLoadById, getTeacherReport } from "../../../store/teacherProfile/teacherProfileAsyncActions"
 import { clearTeacherReports, teacherProfileSelector } from "../../../store/teacherProfile/teacherProfileSlice"
 
 const TeachersReportTab: React.FC = () => {
   const dispatch = useAppDispatch()
 
-  const generate = (): void => {
+  const { report, workload } = useSelector(teacherProfileSelector)
+
+  const [doneHours, setDoneHours] = React.useState(0)
+  const [showedYear, setShowedYear] = React.useState(customDayjs().year())
+
+  const generateDocx = (): void => {
+    if (!report || !workload) return
+
+    const doneReports = report.filter((el) => el.status)
+
+    const { firstSemesterLessons, secondSemesterLessons } = splitWorkloadBySemesters(workload)
+    const { methodicalWork, scientificWork, organizationalWork } = splitTeacherReportsByType(doneReports)
+
+    const first = groupLessonsByFields(firstSemesterLessons, { lessonName: true, groupName: true })
+    const second = groupLessonsByFields(secondSemesterLessons, { lessonName: true, groupName: true })
+
     const documentCreator = new DocumentCreator()
-    const doc = documentCreator.create([experiences, education, skills, achievements])
+    const doc = documentCreator.create(
+      first,
+      second,
+      methodicalWork,
+      scientificWork,
+      organizationalWork,
+      "Пташник Р.В.",
+      showedYear
+    )
 
     Packer.toBlob(doc).then((blob) => {
-      console.log(blob)
-      saveAs(blob, "example.docx")
+      saveAs(blob, "report.docx")
     })
   }
 
-  /*  */
-  /*  */
-  /*  */
-  // npm i docx-preview
-  // https://www.npmjs.com/package/docx-preview
-  /*  */
-  /*  */
-  /*  */
-
-  const [showedYear, setShowedYear] = React.useState(customDayjs().year())
-
-  const { report } = useSelector(teacherProfileSelector)
-
-  const getDoneHours = () => {
-    if (!report) return
-    const doneActivities = report.filter((el) => el.status)
-    return doneActivities.reduce((acc, cur) => Number(cur.hours) + acc, 0)
-  }
-
   React.useEffect(() => {
+    // 3 === teacher id
+    dispatch(getTeacherLoadById(3))
     dispatch(clearTeacherReports())
+    // 17 === teacher id
     dispatch(getTeacherReport({ year: showedYear, id: 17 }))
   }, [showedYear])
+
+  React.useEffect(() => {
+    if (!report) return
+    const doneActivities = report.filter((el) => el.status)
+    const doneHours = doneActivities.reduce((acc, cur) => Number(cur.hours) + acc, 0)
+    setDoneHours(doneHours)
+  }, [report])
 
   return (
     <div style={{ position: "relative" }}>
       <div style={{ marginBottom: "30px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <Button variant="outlined" sx={{ mr: 1 }} style={{ textTransform: "initial" }}>
+          {/* <Button variant="outlined" sx={{ mr: 1 }} style={{ textTransform: "initial" }}>
             Експортувати звіт в PDF
-          </Button>
+          </Button> */}
 
-          <Button variant="outlined" style={{ textTransform: "initial" }} onClick={generate}>
+          <Button
+            variant="outlined"
+            onClick={generateDocx}
+            disabled={!report || !workload}
+            style={{ textTransform: "initial" }}
+          >
             Експортувати звіт в WORD
           </Button>
         </div>
@@ -89,7 +108,7 @@ const TeachersReportTab: React.FC = () => {
 
       {!!report?.length && (
         <Typography variant="h5" sx={{ textAlign: "center", mb: 4 }}>
-          Всього виконано за н.р. {getDoneHours()} годин.
+          Всього виконано за н.р. {doneHours} годин.
         </Typography>
       )}
 
