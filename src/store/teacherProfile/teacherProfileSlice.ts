@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import {
   getTeacherReport,
@@ -17,17 +17,18 @@ import {
   createInstructionalMaterials,
   deleteInstructionalMaterials,
   updateInstructionalMaterials,
-} from "./teacherProfileAsyncActions"
+  importInstructionalMaterials,
+} from './teacherProfileAsyncActions'
 import {
   TeacherReportType,
   IndividualWorkPlanType,
   InstructionalMaterialsType,
   TeacherProfileInitialInitialState,
-} from "./teacherProfileTypes"
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupLoadType } from "../groups/groupsTypes"
-import { TeacherReportUploadFileResponceType } from "../../api/apiTypes"
+} from './teacherProfileTypes'
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupLoadType } from '../groups/groupsTypes'
+import { TeacherReportUploadFileResponceType } from '../../api/apiTypes'
 
 const teacherProfileInitialState: TeacherProfileInitialInitialState = {
   report: null,
@@ -40,7 +41,7 @@ const teacherProfileInitialState: TeacherProfileInitialInitialState = {
 }
 
 const teacherProfileSlice = createSlice({
-  name: "teacher-profile",
+  name: 'teacher-profile',
   initialState: teacherProfileInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -91,6 +92,14 @@ const teacherProfileSlice = createSlice({
         })
 
         state.instructionalMaterials = instructionalMaterials
+        state.loadingStatus = LoadingStatusTypes.SUCCESS
+      }
+    )
+    /* importInstructionalMaterials */
+    builder.addCase(
+      importInstructionalMaterials.fulfilled,
+      (state, action: PayloadAction<InstructionalMaterialsType[]>) => {
+        state.instructionalMaterials = action.payload
         state.loadingStatus = LoadingStatusTypes.SUCCESS
       }
     )

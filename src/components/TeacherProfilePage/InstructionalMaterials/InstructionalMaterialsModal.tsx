@@ -24,6 +24,7 @@ import { InstructionalMaterialsType } from '../../../store/teacherProfile/teache
 
 interface IInstructionalMaterialsModalProps {
   open: boolean
+  showedYear: number
   actionType: 'create' | 'update'
   selectedLesson: GroupLoadType | null
   setOpen: Dispatch<SetStateAction<boolean>>
@@ -31,7 +32,7 @@ interface IInstructionalMaterialsModalProps {
 }
 
 const InstructionalMaterialsModal: React.FC<IInstructionalMaterialsModalProps> = (props) => {
-  const { open, setOpen, editingTheme, actionType, selectedLesson } = props
+  const { open, setOpen, showedYear, editingTheme, actionType, selectedLesson } = props
 
   const dispatch = useAppDispatch()
 
@@ -55,7 +56,12 @@ const InstructionalMaterialsModal: React.FC<IInstructionalMaterialsModalProps> =
     setOpen(false)
 
     if (actionType === 'create') {
-      const payload = { name: data.name, lessonNumber: editingTheme.lessonNumber, lessonId: selectedLesson.id }
+      const payload = {
+        name: data.name,
+        lessonNumber: editingTheme.lessonNumber,
+        lessonId: selectedLesson.id,
+        year: showedYear,
+      }
       await dispatch(createInstructionalMaterials(payload))
       return
     }

@@ -1,7 +1,8 @@
-import React from "react"
-import * as XLSX from "xlsx"
-import { Button } from "@mui/material"
-import { InstructionalMaterialsType } from "../../../store/teacherProfile/teacherProfileTypes"
+import React from 'react'
+import * as XLSX from 'xlsx'
+import { Button } from '@mui/material'
+import { InstructionalMaterialsType } from '../../../store/teacherProfile/teacherProfileTypes'
+import { sortItemsByKey } from '../../../utils/sortItemsByKey'
 
 type Props = {
   instructionalMaterials: InstructionalMaterialsType[] | null
@@ -11,7 +12,9 @@ const ExportLessonThemes: React.FC<Props> = ({ instructionalMaterials }) => {
   const handleExport = () => {
     if (!instructionalMaterials) return
 
-    const themes = instructionalMaterials.map((el) => {
+    const sortedMaterials = sortItemsByKey(instructionalMaterials, 'lessonNumber')
+
+    const themes = sortedMaterials.map((el: InstructionalMaterialsType) => {
       return {
         lessonNumber: el.lessonNumber,
         lessonName: el.name,
@@ -25,12 +28,12 @@ const ExportLessonThemes: React.FC<Props> = ({ instructionalMaterials }) => {
 
     // Зміщую всі рядки на 1 вверх, щоб прибрати шапку таблиці
     for (var k in ws) {
-      if (k !== "!ref") {
+      if (k !== '!ref') {
         const rowNum = k.length === 2 ? k[1] : k.length === 3 ? `${k[1]}${k[2]}` : `${k[1]}${k[2]}${k[3]}`
 
         newObj[`${k[0]}${rowNum}`] = ws[`${k[0]}${Number(rowNum) + 1}`]
       } else {
-        newObj["!ref"] = ws["!ref"]
+        newObj['!ref'] = ws['!ref']
       }
     }
 
@@ -41,7 +44,7 @@ const ExportLessonThemes: React.FC<Props> = ({ instructionalMaterials }) => {
       }
     }
 
-    XLSX.utils.book_append_sheet(wb, newObj, "Лист 1")
+    XLSX.utils.book_append_sheet(wb, newObj, 'Лист 1')
     XLSX.writeFile(wb, `${instructionalMaterials[0].lesson.name}.xlsx`)
   }
 
@@ -50,7 +53,7 @@ const ExportLessonThemes: React.FC<Props> = ({ instructionalMaterials }) => {
       variant="outlined"
       onClick={handleExport}
       disabled={!instructionalMaterials}
-      style={{ textTransform: "initial", whiteSpace: "nowrap", padding: "7.32px 15px" }}
+      style={{ textTransform: 'initial', whiteSpace: 'nowrap', padding: '7.32px 15px' }}
     >
       Експортувати теми
     </Button>

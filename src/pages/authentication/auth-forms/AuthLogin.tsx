@@ -1,39 +1,25 @@
-import React from "react"
-import { Link as RouterLink } from "react-router-dom"
+import React from 'react'
+import jwt_decode from 'jwt-decode'
+import { Link as RouterLink } from 'react-router-dom'
 
 // material-ui
-import {
-  Button,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  Link,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Stack,
-  Typography,
-  Chip,
-} from "@mui/material"
-
-// third party
-// import * as Yup from 'yup';
-// import { Formik } from 'formik';
-
-// project import
-import FirebaseSocial from "./FirebaseSocial"
-import AnimateButton from "../../../components/@extended/AnimateButton"
+import { Button, FormHelperText, InputLabel, OutlinedInput, Stack, Typography } from '@mui/material'
 
 // assets
-import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { GoogleLogin } from '@react-oauth/google'
+import { useAppDispatch } from '../../../store/store'
+import { setAppAlert } from '../../../store/appStatus/appStatusSlice'
 
-// ============================|| FIREBASE - LOGIN ||============================ //
+interface IFormFields {
+  login: string
+  password: string
+}
 
 const AuthLogin = () => {
+  const dispatch = useAppDispatch()
+
   const [checked, setChecked] = React.useState(false)
 
   const [showPassword, setShowPassword] = React.useState(false)
@@ -50,11 +36,9 @@ const AuthLogin = () => {
     control,
     formState: { errors },
     handleSubmit,
-  } = useForm<{ name: string }>({
-    mode: "onBlur",
-  })
+  } = useForm<IFormFields>({ mode: 'onBlur' })
 
-  const onSubmit: SubmitHandler<{ name: string }> = async (data) => {
+  const onSubmit: SubmitHandler<IFormFields> = async (data) => {
     try {
       console.log(data)
     } catch (error) {
@@ -63,238 +47,99 @@ const AuthLogin = () => {
   }
 
   return (
-    <div>
-      {/* <Typography sx={{ mt: 2 }}>Вхід</Typography> */}
+    <div style={{ width: '100%' }}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* <Controller
-          name="name"
+        <Controller
+          name="login"
           control={control}
-          rules={{ required: 'Вкажіть назву категорії' }}
+          rules={{ required: "Це поле обов'язкове" }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="name">Назва*</InputLabel>
+                <InputLabel htmlFor="login" sx={errors.login ? { color: '#ff4d4f' } : {}}>
+                  Логін*
+                </InputLabel>
                 <OutlinedInput
-                  id="name"
-                  type="firstname"
-                  {...field}
-                  // value={values.firstname}
-                  name="name"
-                  // onBlur={handleBlur}
-                  // onChange={handleChange}
-                  placeholder="Назва ЦК"
                   fullWidth
-                  error={Boolean(errors.name)}
+                  {...field}
+                  id="login"
+                  type="text"
+                  sx={{ mt: '2px !important' }}
+                  error={Boolean(errors.login)}
                 />
-                {errors.name && (
-                  <FormHelperText error id="helper-text-name">
-                    {errors.name.message}
-                  </FormHelperText>
-                )}
+                {errors.login && <FormHelperText error>{errors.login.message}</FormHelperText>}
               </Stack>
             )
           }}
-        /> */}
+        />
 
-        <Stack spacing={1} sx={{ mt: 2 }}>
-          <InputLabel htmlFor="name">Логін*</InputLabel>
-          <OutlinedInput
-            id="name"
-            type="text"
-            name="name"
-            placeholder="test"
-            sx={{ mt: "2px !important" }}
-            fullWidth
-            error={Boolean(errors.name)}
-          />
-          {errors.name && (
-            <FormHelperText error id="helper-text-name">
-              {errors.name.message}
-            </FormHelperText>
-          )}
-        </Stack>
-
-        <Stack spacing={1} sx={{ mt: 2 }}>
-          <InputLabel htmlFor="name">Пароль*</InputLabel>
-          <OutlinedInput
-            id="name"
-            type="password"
-            sx={{ mt: "2px !important" }}
-            name="name"
-            placeholder="test"
-            fullWidth
-            error={Boolean(errors.name)}
-          />
-          {errors.name && (
-            <FormHelperText error id="helper-text-name">
-              {errors.name.message}
-            </FormHelperText>
-          )}
-        </Stack>
+        <Controller
+          name="password"
+          control={control}
+          rules={{ required: "Це поле обов'язкове" }}
+          render={({ field }) => {
+            return (
+              <Stack spacing={1} sx={{ mt: 2 }}>
+                <InputLabel htmlFor="password" sx={errors.password ? { color: '#ff4d4f' } : {}}>
+                  Пароль*
+                </InputLabel>
+                <OutlinedInput
+                  fullWidth
+                  {...field}
+                  id="password"
+                  type="password"
+                  sx={{ mt: '2px !important' }}
+                  error={Boolean(errors.password)}
+                />
+                {errors.password && <FormHelperText error>{errors.password.message}</FormHelperText>}
+              </Stack>
+            )
+          }}
+        />
 
         <Button
-          variant="contained"
+          type="submit"
           color="primary"
-          sx={{
-            textTransform: "capitalize",
-            width: "100%",
-            p: "7.44px 15px",
-            mt: 3,
-          }}
+          variant="contained"
+          sx={{ textTransform: 'capitalize', width: '100%', p: '7.44px 15px', mt: 3 }}
         >
           Увійти
         </Button>
+        {/* <Divider sx={{ mt: 1.5 }}>
+          <Chip label={'Або'} size="medium" sx={{ userSelect: 'none' }} />
+        </Divider> */}
 
-        <Divider sx={{ mt: 1.5 }}>
-          <Chip label={"Або"} size="medium" sx={{ userSelect: "none" }} />
-        </Divider>
+        <Typography sx={{ display: 'block', textAlign: 'center', my: 1.5 }} variant="overline">
+          або
+        </Typography>
 
-        {/* <Typography sx={{ py: 1 }}>Увійдіть використовуючи свій обліковий запис (...@pharm.zt.ua):</Typography> */}
+        <GoogleLogin
+          width={248}
+          onSuccess={async (credentialResponse) => {
+            const decoded = jwt_decode(credentialResponse.credential || '')
+            const response = decoded as any
 
-        <Button
-          variant="outlined"
-          color="primary"
-          sx={{
-            textTransform: "capitalize",
-            width: "100%",
-            p: "7.44px 15px",
-            mt: 1.5,
+            if (!Object.keys(response).length) {
+              console.log(response)
+              alert('error')
+              dispatch(setAppAlert({ message: 'Помилка авторизації!', status: 'error' }))
+              return
+            }
+
+            console.log(response)
+
+            /* 
+            response:
+            ==================================
+            email: "ptashnyk.roman@pharm.zt.ua"
+            name: "Пташник Роман"
+            picture: "https://lh3.googleusercontent.com/a/ACg8ocIi0NEbJA3hiboX8uXoBs_5gZv6l7GkCEl32osMqN1hlY6Lhw=s96-c"
+            ==================================
+            */
+            dispatch(setAppAlert({ message: 'Авторизований', status: 'success' }))
           }}
-        >
-          Вхід з акаунтом Google
-        </Button>
+        />
       </form>
-      {/* <Formik
-        initialValues={{
-          email: 'info@codedthemes.com',
-          password: '123456',
-          submit: null,
-        }}
-        validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required'),
-        })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            setStatus({ success: false })
-            setSubmitting(false)
-          } catch (err) {
-            setStatus({ success: false })
-            setErrors({ submit: err.message })
-            setSubmitting(false)
-          }
-        }}
-      >
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-          <form noValidate onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
-                  <OutlinedInput
-                    id="email-login"
-                    type="email"
-                    value={values.email}
-                    name="email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Enter email address"
-                    fullWidth
-                    error={Boolean(touched.email && errors.email)}
-                  />
-                  {touched.email && errors.email && (
-                    <FormHelperText error id="standard-weight-helper-text-email-login">
-                      {errors.email}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="password-login">Password</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.password && errors.password)}
-                    id="-password-login"
-                    type={showPassword ? 'text' : 'password'}
-                    value={values.password}
-                    name="password"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                          size="large"
-                        >
-                          {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                    placeholder="Enter password"
-                  />
-                  {touched.password && errors.password && (
-                    <FormHelperText error id="standard-weight-helper-text-password-login">
-                      {errors.password}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-
-              <Grid item xs={12} sx={{ mt: -1 }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checked}
-                        onChange={(event) => setChecked(event.target.checked)}
-                        name="checked"
-                        color="primary"
-                        size="small"
-                      />
-                    }
-                    label={<Typography variant="h6">Keep me sign in</Typography>}
-                  />
-                  <Link variant="h6" component={RouterLink} to="" color="text.primary">
-                    Forgot Password?
-                  </Link>
-                </Stack>
-              </Grid>
-              {errors.submit && (
-                <Grid item xs={12}>
-                  <FormHelperText error>{errors.submit}</FormHelperText>
-                </Grid>
-              )}
-              <Grid item xs={12}>
-                <AnimateButton>
-                  <Button
-                    disableElevation
-                    disabled={isSubmitting}
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                  >
-                    Login
-                  </Button>
-                </AnimateButton>
-              </Grid>
-              <Grid item xs={12}>
-                <Divider>
-                  <Typography variant="caption"> Login with</Typography>
-                </Divider>
-              </Grid>
-              <Grid item xs={12}>
-                <FirebaseSocial />
-              </Grid>
-            </Grid>
-          </form>
-        )}
-      </Formik> */}
     </div>
   )
 }

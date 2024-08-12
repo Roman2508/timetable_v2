@@ -14,31 +14,32 @@ import {
   Button,
   Stack,
   OutlinedInput,
-} from "@mui/material"
-import React from "react"
-import { useSelector } from "react-redux"
-import { EditOutlined } from "@ant-design/icons"
+} from '@mui/material'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { EditOutlined } from '@ant-design/icons'
 
 import {
   findAllTeacherLessonsById,
   getInstructionalMaterials,
-} from "../../../store/teacherProfile/teacherProfileAsyncActions"
-import EmptyCard from "../../EmptyCard/EmptyCard"
-import { customDayjs } from "../../Calendar/Calendar"
-import ExportLessonThemes from "./ExportLessonThemes"
-import { useAppDispatch } from "../../../store/store"
-import { LoadingStatusTypes } from "../../../store/appTypes"
-import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner"
-import { GroupLoadType } from "../../../store/groups/groupsTypes"
-import { InstructionalMaterialsModal } from "./InstructionalMaterialsModal"
-import { teacherProfileSelector } from "../../../store/teacherProfile/teacherProfileSlice"
-import { InstructionalMaterialsType } from "../../../store/teacherProfile/teacherProfileTypes"
+} from '../../../store/teacherProfile/teacherProfileAsyncActions'
+import EmptyCard from '../../EmptyCard/EmptyCard'
+import { customDayjs } from '../../Calendar/Calendar'
+import ExportLessonThemes from './ExportLessonThemes'
+import { useAppDispatch } from '../../../store/store'
+import { LoadingStatusTypes } from '../../../store/appTypes'
+import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner'
+import { GroupLoadType } from '../../../store/groups/groupsTypes'
+import { InstructionalMaterialsModal } from './InstructionalMaterialsModal'
+import { teacherProfileSelector } from '../../../store/teacherProfile/teacherProfileSlice'
+import { InstructionalMaterialsType } from '../../../store/teacherProfile/teacherProfileTypes'
+import ImportLessonThemes from './ImportLessonThemes'
 
 interface Props {}
 
 interface IFilter {
-  ["1"]: GroupLoadType[]
-  ["2"]: GroupLoadType[]
+  ['1']: GroupLoadType[]
+  ['2']: GroupLoadType[]
 }
 
 export const InstructionalMaterialsTab = React.memo(({}: Props) => {
@@ -49,8 +50,8 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
   const [semester, setSemester] = React.useState(1)
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [showedYear, setShowedYear] = React.useState(customDayjs().year())
-  const [filter, setFilter] = React.useState<IFilter>({ ["1"]: [], ["2"]: [] })
-  const [actionType, setActiveType] = React.useState<"create" | "update">("create")
+  const [filter, setFilter] = React.useState<IFilter>({ ['1']: [], ['2']: [] })
+  const [actionType, setActiveType] = React.useState<'create' | 'update'>('create')
   const [selectedLesson, setSelectedLesson] = React.useState<GroupLoadType | null>(null)
   const [editingTheme, setEditingTheme] = React.useState<InstructionalMaterialsType | null>(null)
 
@@ -61,17 +62,17 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
   }
 
   const handleEditTheme = (lessonNumber: number, theme?: InstructionalMaterialsType) => {
-    if (!selectedLesson) return alert("Урок не вибраний")
+    if (!selectedLesson) return alert('Урок не вибраний')
     setIsModalOpen(true)
 
     if (theme) {
-      setActiveType("update")
+      setActiveType('update')
       setEditingTheme(theme)
       return
     }
 
-    setActiveType("create")
-    setEditingTheme({ id: 0, lessonNumber, name: "", lesson: selectedLesson })
+    setActiveType('create')
+    setEditingTheme({ id: 0, lessonNumber, name: '', lesson: selectedLesson })
   }
 
   React.useEffect(() => {
@@ -81,19 +82,20 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
 
   React.useEffect(() => {
     if (!selectedLesson) return
-    dispatch(getInstructionalMaterials(selectedLesson.id))
-  }, [selectedLesson])
+    const payload = { id: selectedLesson.id, year: showedYear }
+    dispatch(getInstructionalMaterials(payload))
+  }, [selectedLesson, showedYear])
 
   React.useEffect(() => {
     if (!filterLesson) return
 
     filterLesson.forEach((el) => {
       if (el.semester === 1 || el.semester === 3 || el.semester === 5) {
-        setFilter((prev) => ({ ["1"]: [...prev["1"], el], ["2"]: [...prev["2"]] }))
+        setFilter((prev) => ({ ['1']: [...prev['1'], el], ['2']: [...prev['2']] }))
         return
       }
 
-      setFilter((prev) => ({ ["1"]: [...prev["1"]], ["2"]: [...prev["2"], el] }))
+      setFilter((prev) => ({ ['1']: [...prev['1']], ['2']: [...prev['2'], el] }))
     })
   }, [filterLesson])
 
@@ -101,6 +103,7 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
     <>
       <InstructionalMaterialsModal
         open={isModalOpen}
+        showedYear={showedYear}
         actionType={actionType}
         setOpen={setIsModalOpen}
         editingTheme={editingTheme}
@@ -111,14 +114,14 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
         <div
           style={{
             gap: 5,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            maxWidth: "210px",
-            margin: "0 auto",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            maxWidth: '210px',
+            margin: '0 auto',
           }}
         >
-          <Typography variant="button" sx={{ textTransform: "inherit" }}>
+          <Typography variant="button" sx={{ textTransform: 'inherit' }}>
             НМК за
           </Typography>
           <Stack spacing={1}>
@@ -128,17 +131,17 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
               type="number"
               value={showedYear}
               onChange={(e) => setShowedYear(Number(e.target.value))}
-              sx={{ width: "70px", input: { padding: "8.2px 2px 8.2px 16px" } }}
+              sx={{ width: '70px', input: { padding: '8.2px 2px 8.2px 16px' } }}
             />
           </Stack>
-          <Typography variant="button" sx={{ textTransform: "inherit", width: "77px" }}>
+          <Typography variant="button" sx={{ textTransform: 'inherit', width: '77px' }}>
             - {showedYear + 1} н.р.
           </Typography>
         </div>
 
         <div className="instructional-materials__filter">
           <FormControl fullWidth>
-            <InputLabel sx={{ overflow: "visible !important" }}>Семестр</InputLabel>
+            <InputLabel sx={{ overflow: 'visible !important' }}>Семестр</InputLabel>
             <Select onChange={(e) => setSemester(Number(e.target.value))} value={semester}>
               {[1, 2].map((el) => (
                 <MenuItem value={el} key={el}>
@@ -149,9 +152,9 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
           </FormControl>
 
           <FormControl fullWidth>
-            <InputLabel sx={{ overflow: "visible !important" }}>Дисципліна</InputLabel>
+            <InputLabel sx={{ overflow: 'visible !important' }}>Дисципліна</InputLabel>
             <Select
-              value={selectedLesson ? selectedLesson.id : ""}
+              value={selectedLesson ? selectedLesson.id : ''}
               onChange={(e) => handleChangeSelectedLesson(Number(e.target.value))}
             >
               {/* @ts-ignore */}
@@ -164,10 +167,7 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
 
         <div className="instructional-materials__buttons">
           <ExportLessonThemes instructionalMaterials={instructionalMaterials} />
-
-          <Button variant="outlined" style={{ textTransform: "initial", whiteSpace: "nowrap", padding: "7.32px 15px" }}>
-            Імпортувати теми
-          </Button>
+          <ImportLessonThemes selectedLesson={selectedLesson} showedYear={showedYear} />
         </div>
       </div>
 
@@ -181,11 +181,11 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
         <Table sx={{ minWidth: 450, mb: 10 }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
-              <TableCell sx={{ width: "50px", padding: "0px 6px" }} align="center">
+              <TableCell sx={{ width: '50px', padding: '0px 6px' }} align="center">
                 №
               </TableCell>
               <TableCell>Тема</TableCell>
-              <TableCell align="center" sx={{ width: "50px" }}>
+              <TableCell align="center" sx={{ width: '50px' }}>
                 Години
               </TableCell>
             </TableRow>
@@ -201,27 +201,27 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
 
                 return (
                   <TableRow key={i}>
-                    <TableCell component="th" align="center" sx={{ width: "50px", height: "48px", padding: "0px 6px" }}>
+                    <TableCell component="th" align="center" sx={{ width: '50px', height: '48px', padding: '0px 6px' }}>
                       {i + 1}
                     </TableCell>
 
                     <TableCell
                       align="left"
                       sx={{
-                        height: "48px",
-                        display: "flex",
-                        padding: "0px 6px",
-                        alignItems: "center",
-                        "&:hover span": { display: "inline-block !important" },
+                        height: '48px',
+                        display: 'flex',
+                        padding: '0px 6px',
+                        alignItems: 'center',
+                        '&:hover span': { display: 'inline-block !important' },
                       }}
                     >
                       <Typography style={{ flexGrow: 1, margin: 0 }}>{theme?.name}</Typography>
 
                       <IconButton onClick={() => handleEditTheme(i + 1, theme)}>
-                        <EditOutlined style={{ display: "none", cursor: "pointer" }} />
+                        <EditOutlined style={{ display: 'none', cursor: 'pointer' }} />
                       </IconButton>
                     </TableCell>
-                    <TableCell>{theme ? 2 : "-"}</TableCell>
+                    <TableCell>{theme ? 2 : '-'}</TableCell>
                   </TableRow>
                 )
               })}

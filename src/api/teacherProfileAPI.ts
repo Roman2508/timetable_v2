@@ -2,33 +2,38 @@ import {
   TeacherReportType,
   IndividualWorkPlanType,
   InstructionalMaterialsType,
-} from "../store/teacherProfile/teacherProfileTypes"
+} from '../store/teacherProfile/teacherProfileTypes'
 import {
+  GetTeacherReportType,
   CreateTeacherReportType,
   UpdateTeacherReportType,
+  TeacherReportDeleteFileType,
+  TeacherReportUploadFileType,
   CreateIndividualTeacherWorkType,
   UpdateIndividualTeacherWorkType,
+  TeacherReportDeleteFileResponceType,
+  TeacherReportUploadFileResponceType,
   CreateInstructionalMaterialsPayloadType,
   UpdateInstructionalMaterialsPayloadType,
-  TeacherReportUploadFileType,
-  TeacherReportUploadFileResponceType,
-  TeacherReportDeleteFileType,
-  TeacherReportDeleteFileResponceType,
-  GetTeacherReportType,
-} from "./apiTypes"
-import { instanse } from "./api"
+  ImportInstructionalMaterialsPayloadType,
+} from './apiTypes'
+import { instanse } from './api'
 
 export const teacherProfileAPI = {
   /* instructional-materials */
-  getInstructionalMaterials(id: number) {
-    return instanse.get<InstructionalMaterialsType[]>(`/instructional-materials/${id}`)
+  getInstructionalMaterials(payload: { id: number; year: number }) {
+    const { id, year } = payload
+    return instanse.get<InstructionalMaterialsType[]>(`/instructional-materials/${id}/${year}`)
   },
   createInstructionalMaterial(payload: CreateInstructionalMaterialsPayloadType) {
-    return instanse.post<InstructionalMaterialsType>("/instructional-materials", payload)
+    return instanse.post<InstructionalMaterialsType>('/instructional-materials', payload)
   },
   updateInstructionalMaterial(payload: UpdateInstructionalMaterialsPayloadType) {
     const { id, ...rest } = payload
     return instanse.patch<InstructionalMaterialsType>(`/instructional-materials/${id}`, rest)
+  },
+  importInstructionalMaterial(payload: ImportInstructionalMaterialsPayloadType) {
+    return instanse.post<InstructionalMaterialsType[]>('/instructional-materials/import', payload)
   },
   deleteInstructionalMaterial(id: number) {
     return instanse.delete<number>(`/instructional-materials/${id}`)
@@ -36,7 +41,7 @@ export const teacherProfileAPI = {
 
   /* individual-teacher-work */
   getIndividualTeacherWork() {
-    return instanse.get<IndividualWorkPlanType[]>("/individual-teacher-work")
+    return instanse.get<IndividualWorkPlanType[]>('/individual-teacher-work')
   },
   createIndividualTeacherWork(payload: CreateIndividualTeacherWorkType) {
     return instanse.post<IndividualWorkPlanType>(`/individual-teacher-work`, payload)
@@ -63,7 +68,7 @@ export const teacherProfileAPI = {
   },
   createFile(payload: TeacherReportUploadFileType) {
     const { id, file } = payload
-    const config = { headers: { "Content-Type": "multipart/form-data" } }
+    const config = { headers: { 'Content-Type': 'multipart/form-data' } }
     return instanse.patch<TeacherReportUploadFileResponceType>(`/teacher-report/file/${id}`, file, config)
   },
   deleteFile(payload: TeacherReportDeleteFileType) {
