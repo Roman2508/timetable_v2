@@ -1,16 +1,16 @@
-import React from 'react'
-import jwt_decode from 'jwt-decode'
-import { Link as RouterLink } from 'react-router-dom'
+import React from "react"
+import jwt_decode from "jwt-decode"
+import { Link as RouterLink } from "react-router-dom"
 
 // material-ui
-import { Button, FormHelperText, InputLabel, OutlinedInput, Stack, Typography } from '@mui/material'
+import { Button, FormHelperText, InputLabel, OutlinedInput, Stack, Typography } from "@mui/material"
 
 // assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { GoogleLogin } from '@react-oauth/google'
-import { useAppDispatch } from '../../../store/store'
-import { setAppAlert } from '../../../store/appStatus/appStatusSlice'
+import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { GoogleLogin } from "@react-oauth/google"
+import { useAppDispatch } from "../../../store/store"
+import { setAppAlert } from "../../../store/appStatus/appStatusSlice"
 
 interface IFormFields {
   login: string
@@ -36,7 +36,7 @@ const AuthLogin = () => {
     control,
     formState: { errors },
     handleSubmit,
-  } = useForm<IFormFields>({ mode: 'onBlur' })
+  } = useForm<IFormFields>({ mode: "onSubmit" })
 
   const onSubmit: SubmitHandler<IFormFields> = async (data) => {
     try {
@@ -47,7 +47,7 @@ const AuthLogin = () => {
   }
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: "100%" }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="login"
@@ -56,7 +56,7 @@ const AuthLogin = () => {
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="login" sx={errors.login ? { color: '#ff4d4f' } : {}}>
+                <InputLabel htmlFor="login" sx={errors.login ? { color: "#ff4d4f" } : {}}>
                   Логін*
                 </InputLabel>
                 <OutlinedInput
@@ -64,7 +64,7 @@ const AuthLogin = () => {
                   {...field}
                   id="login"
                   type="text"
-                  sx={{ mt: '2px !important' }}
+                  sx={{ mt: "2px !important" }}
                   error={Boolean(errors.login)}
                 />
                 {errors.login && <FormHelperText error>{errors.login.message}</FormHelperText>}
@@ -80,7 +80,7 @@ const AuthLogin = () => {
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="password" sx={errors.password ? { color: '#ff4d4f' } : {}}>
+                <InputLabel htmlFor="password" sx={errors.password ? { color: "#ff4d4f" } : {}}>
                   Пароль*
                 </InputLabel>
                 <OutlinedInput
@@ -88,7 +88,7 @@ const AuthLogin = () => {
                   {...field}
                   id="password"
                   type="password"
-                  sx={{ mt: '2px !important' }}
+                  sx={{ mt: "2px !important" }}
                   error={Boolean(errors.password)}
                 />
                 {errors.password && <FormHelperText error>{errors.password.message}</FormHelperText>}
@@ -101,7 +101,7 @@ const AuthLogin = () => {
           type="submit"
           color="primary"
           variant="contained"
-          sx={{ textTransform: 'capitalize', width: '100%', p: '7.44px 15px', mt: 3 }}
+          sx={{ textTransform: "capitalize", width: "100%", p: "7.44px 15px", mt: 3 }}
         >
           Увійти
         </Button>
@@ -109,20 +109,20 @@ const AuthLogin = () => {
           <Chip label={'Або'} size="medium" sx={{ userSelect: 'none' }} />
         </Divider> */}
 
-        <Typography sx={{ display: 'block', textAlign: 'center', my: 1.5 }} variant="overline">
+        <Typography sx={{ display: "block", textAlign: "center", my: 1.5 }} variant="overline">
           або
         </Typography>
 
         <GoogleLogin
           width={248}
           onSuccess={async (credentialResponse) => {
-            const decoded = jwt_decode(credentialResponse.credential || '')
+            const decoded = jwt_decode(credentialResponse.credential || "")
             const response = decoded as any
 
             if (!Object.keys(response).length) {
               console.log(response)
-              alert('error')
-              dispatch(setAppAlert({ message: 'Помилка авторизації!', status: 'error' }))
+              alert("error")
+              dispatch(setAppAlert({ message: "Помилка авторизації!", status: "error" }))
               return
             }
 
@@ -136,7 +136,7 @@ const AuthLogin = () => {
             picture: "https://lh3.googleusercontent.com/a/ACg8ocIi0NEbJA3hiboX8uXoBs_5gZv6l7GkCEl32osMqN1hlY6Lhw=s96-c"
             ==================================
             */
-            dispatch(setAppAlert({ message: 'Авторизований', status: 'success' }))
+            dispatch(setAppAlert({ message: "Авторизований", status: "success" }))
           }}
         />
       </form>
