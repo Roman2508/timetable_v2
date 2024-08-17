@@ -1,14 +1,12 @@
-// project import
-import pages from './pages'
-import dashboard from './dashboard'
-import utilities from './utilities'
-import support from './support'
-import grade from './grade'
-
-// ==============================|| MENU ITEMS ||============================== //
+import structure from "./structure"
+import studyLoad from "./study-load"
+import accounts from "./accounts"
+import timetable from "./timetable"
+import generalInfo from "./general-info"
+import settings from "./settings"
 
 const menuItems = {
-  items: [dashboard, pages, grade, utilities, support],
+  items: [structure, studyLoad, accounts, timetable, generalInfo, settings],
 }
 
 export type MenuItemType = (typeof menuItems.items)[0]

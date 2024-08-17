@@ -11,9 +11,11 @@ import { UserOutlined } from "@ant-design/icons"
 import { CalendarOutlined } from "@ant-design/icons"
 import { FormOutlined } from "@ant-design/icons"
 import { FileSearchOutlined } from "@ant-design/icons"
+import ApplicationIcon from "../components/Header/ApplicationIcon"
 
 // icons
 const icons = {
+  ApplicationIcon,
   DashboardOutlined,
   ApartmentOutlined,
   ProfileOutlined,
@@ -28,13 +30,43 @@ const icons = {
   SettingOutlined,
 }
 
-// ==============================|| MENU ITEMS - DASHBOARD ||============================== //
-
-const dashboard = {
-  id: "group-dashboard",
-  title: "Navigation",
+const structure = {
+  id: "structure",
+  title: "Структура",
   type: "group",
+  icon: icons.ApplicationIcon,
   children: [
+    {
+      id: "groups",
+      title: "Групи",
+      type: "item",
+      url: "/groups",
+      icon: icons.ApartmentOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: "streams",
+      title: "Потоки",
+      type: "item",
+      url: "/streams",
+      icon: icons.GroupOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: "auditories",
+      title: "Аудиторії",
+      type: "item",
+      url: "/auditories",
+      icon: icons.AppstoreOutlined,
+      breadcrumbs: false,
+    },
+  ],
+}
+
+export default structure
+
+/* 
+children: [
     {
       id: "groups",
       title: "Групи",
@@ -123,7 +155,6 @@ const dashboard = {
       icon: icons.CalendarOutlined,
       breadcrumbs: false,
     },
-    /*  */
 
     {
       id: "settings",
@@ -133,9 +164,4 @@ const dashboard = {
       icon: icons.SettingOutlined,
       breadcrumbs: false,
     },
-
-    /*  */
-  ],
-}
-
-export default dashboard
+ */

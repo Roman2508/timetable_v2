@@ -1,5 +1,5 @@
 import { summaryTypes } from "../components/GradeBookPage/AddSummaryModal"
-import { UserRoles } from "../store/auth/authTypes"
+import { UserRoles, UserType } from "../store/auth/authTypes"
 import { GradeBookSummaryTypes, GradeType } from "../store/gradeBook/gradeBookTypes"
 import { GroupsType } from "../store/groups/groupsTypes"
 import { LessonsTypeRu } from "../store/scheduleLessons/scheduleLessonsTypes"
@@ -436,6 +436,11 @@ export type LoginPayloadType = {
   email: string
   password: string
 }
-export type GetMePayloadType = { token: string }
+
 export type GoogleLoginPayloadType = Pick<LoginPayloadType, "email">
+
+export type AuthResponseType = {
+  user: UserType
+  accessToken: string
+}
 /* // auth */

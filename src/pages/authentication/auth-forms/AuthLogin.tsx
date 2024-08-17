@@ -1,73 +1,90 @@
 import React from "react"
 import jwt_decode from "jwt-decode"
-import { Link as RouterLink } from "react-router-dom"
-
-// material-ui
-import { Button, FormHelperText, InputLabel, OutlinedInput, Stack, Typography } from "@mui/material"
-
-// assets
-import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import { GoogleLogin } from "@react-oauth/google"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons"
+import { Button, FormHelperText, IconButton, InputLabel, OutlinedInput, Stack, Typography } from "@mui/material"
+
 import { useAppDispatch } from "../../../store/store"
+import { AuthResponseType } from "../../../api/apiTypes"
+import { authSelector } from "../../../store/auth/authSlice"
+import { validEmailPattern } from "../../../utils/validEmailPattern"
 import { setAppAlert } from "../../../store/appStatus/appStatusSlice"
+import { authLogin, authMe, googleLogin } from "../../../store/auth/authAsyncActions"
+import { getLocalStorageToken, setLocalStorageToken } from "../../../utils/localStorageToken"
 
 interface IFormFields {
-  login: string
+  email: string
   password: string
 }
 
 const AuthLogin = () => {
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
-  const [checked, setChecked] = React.useState(false)
+  const { user } = useSelector(authSelector)
 
   const [showPassword, setShowPassword] = React.useState(false)
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword)
-  }
 
-  const handleMouseDownPassword = (event: React.MouseEventHandler<HTMLButtonElement>) => {
-    // @ts-ignore
-    event.preventDefault()
-  }
+  const handleClickShowPassword = () => setShowPassword(!showPassword)
 
   const {
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm<IFormFields>({ mode: "onSubmit" })
 
   const onSubmit: SubmitHandler<IFormFields> = async (data) => {
     try {
-      console.log(data)
+      const { payload } = await dispatch(authLogin(data))
+      const response = payload as AuthResponseType
+      if (response.accessToken) setLocalStorageToken(response.accessToken)
     } catch (error) {
       console.log(error)
     }
   }
 
+  React.useEffect(() => {
+    const token = getLocalStorageToken()
+
+    if (token) {
+      const fetchData = async () => {
+        await dispatch(authMe(token))
+      }
+
+      fetchData()
+    }
+  }, [])
+
+  if (user) navigate("/")
+
   return (
     <div style={{ width: "100%" }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
-          name="login"
+          name="email"
           control={control}
-          rules={{ required: "Це поле обов'язкове" }}
+          rules={{
+            required: "Це поле обов'язкове",
+            pattern: { value: validEmailPattern, message: "Некоректний email" },
+          }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="login" sx={errors.login ? { color: "#ff4d4f" } : {}}>
-                  Логін*
+                <InputLabel htmlFor="email" sx={errors.email ? { color: "#ff4d4f" } : {}}>
+                  Ел.пошта*
                 </InputLabel>
                 <OutlinedInput
                   fullWidth
                   {...field}
-                  id="login"
+                  id="email"
                   type="text"
                   sx={{ mt: "2px !important" }}
-                  error={Boolean(errors.login)}
+                  error={Boolean(errors.email)}
                 />
-                {errors.login && <FormHelperText error>{errors.login.message}</FormHelperText>}
+                {errors.email && <FormHelperText error>{errors.email.message}</FormHelperText>}
               </Stack>
             )
           }}
@@ -76,7 +93,11 @@ const AuthLogin = () => {
         <Controller
           name="password"
           control={control}
-          rules={{ required: "Це поле обов'язкове" }}
+          rules={{
+            required: "Це поле обов'язкове",
+            minLength: { value: 6, message: "Мінімальна кількість символів - 6" },
+            maxLength: { value: 25, message: "Максимальна кількість символів - 25" },
+          }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
@@ -87,9 +108,14 @@ const AuthLogin = () => {
                   fullWidth
                   {...field}
                   id="password"
-                  type="password"
-                  sx={{ mt: "2px !important" }}
+                  type={showPassword ? "text" : "password"}
+                  sx={{ mt: "2px !important", pr: 0 }}
                   error={Boolean(errors.password)}
+                  endAdornment={
+                    <IconButton onClick={handleClickShowPassword}>
+                      {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+                    </IconButton>
+                  }
                 />
                 {errors.password && <FormHelperText error>{errors.password.message}</FormHelperText>}
               </Stack>
@@ -101,13 +127,11 @@ const AuthLogin = () => {
           type="submit"
           color="primary"
           variant="contained"
+          disabled={isSubmitting || !!Object.keys(errors).length}
           sx={{ textTransform: "capitalize", width: "100%", p: "7.44px 15px", mt: 3 }}
         >
           Увійти
         </Button>
-        {/* <Divider sx={{ mt: 1.5 }}>
-          <Chip label={'Або'} size="medium" sx={{ userSelect: 'none' }} />
-        </Divider> */}
 
         <Typography sx={{ display: "block", textAlign: "center", my: 1.5 }} variant="overline">
           або
@@ -117,16 +141,18 @@ const AuthLogin = () => {
           width={248}
           onSuccess={async (credentialResponse) => {
             const decoded = jwt_decode(credentialResponse.credential || "")
-            const response = decoded as any
+            const googleResponse = decoded as any
 
-            if (!Object.keys(response).length) {
-              console.log(response)
-              alert("error")
+            if (!Object.keys(googleResponse).length) {
+              console.log(googleResponse)
               dispatch(setAppAlert({ message: "Помилка авторизації!", status: "error" }))
               return
             }
 
-            console.log(response)
+            const { payload } = await dispatch(googleLogin({ email: googleResponse.email }))
+            const response = payload as AuthResponseType
+            if (response.accessToken) setLocalStorageToken(response.accessToken)
+            navigate("/")
 
             /* 
             response:
@@ -136,7 +162,6 @@ const AuthLogin = () => {
             picture: "https://lh3.googleusercontent.com/a/ACg8ocIi0NEbJA3hiboX8uXoBs_5gZv6l7GkCEl32osMqN1hlY6Lhw=s96-c"
             ==================================
             */
-            dispatch(setAppAlert({ message: "Авторизований", status: "success" }))
           }}
         />
       </form>

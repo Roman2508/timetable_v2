@@ -5,7 +5,7 @@ import { Route, Routes } from "react-router-dom"
 
 import "./App.css"
 import ThemeCustomization from "./themes"
-import MainLayout from "./layout/MainLayout"
+import MainLayout from "./layout/MainLayout/MainLayout"
 import ScrollTop from "./components/ScrollTop"
 import MinimalLayout from "./layout/MinimalLayout"
 // import PlansPage from './pages/Plans/PlansPage'
@@ -22,6 +22,8 @@ import AuthLogin from "./pages/authentication/auth-forms/AuthLogin"
 // import StudentsDivide from './pages/StudentsDivide/StudentsDivide'
 // import DistributionPage from './pages/Distribution/DistributionPage'
 import AuthRegister from "./pages/authentication/auth-forms/AuthRegister"
+import NotFoundPage from "./pages/ErrorPages/NotFoundPage"
+import InternalServerErrorPage from "./pages/ErrorPages/InternalServerErrorPage"
 // import FullTeachersPage from "./pages/FullTeacher/FullTeacherPage"
 // import StudentsAccounts from './pages/StudentsAccounts/StudentsAccounts'
 // import TeachingLessonsControl from './pages/TeachingLessonsControl/TeachingLessonsControl'
@@ -38,20 +40,20 @@ const AntIcons = Loadable(lazy(() => import("./pages/components-overview/AntIcon
 const Typography = Loadable(lazy(() => import("./pages/components-overview/Typography")))
 
 // lazy loading pages
-const LoadPage = Loadable(lazy(() => import('./pages/Load/LoadPage')))
-const PlansPage = Loadable(lazy(() => import('./pages/Plans/PlansPage')))
-const GroupsPage = Loadable(lazy(() => import('./pages/Groups/GroupsPage')))
-const StreamsPage = Loadable(lazy(() => import('./pages/Streams/StreamsPage')))
-const SettingsPage = Loadable(lazy(() => import('./pages/Settings/SettingsPage')))
-const TeachersPage = Loadable(lazy(() => import('./pages/Teachers/TeachersPage')))
-const FullPlanPage = Loadable(lazy(() => import('./pages/FullPlan/FullPlanPage')))
-const FullGroupPage = Loadable(lazy(() => import('./pages/FullGroup/FullGroupPage')))
-const AuditoriesPage = Loadable(lazy(() => import('./pages/Auditories/AuditoriesPage')))
-const StudentsDivide = Loadable(lazy(() => import('./pages/StudentsDivide/StudentsDivide')))
-const DistributionPage = Loadable(lazy(() => import('./pages/Distribution/DistributionPage')))
-const StudentsAccounts = Loadable(lazy(() => import('./pages/StudentsAccounts/StudentsAccounts')))
-const TeacherProfilePage = Loadable(lazy(() => import('./pages/TeacherProfile/TeacherProfilePage')))
-const TeachingLessonsControl = Loadable(lazy(() => import('./pages/TeachingLessonsControl/TeachingLessonsControl')))
+const LoadPage = Loadable(lazy(() => import("./pages/Load/LoadPage")))
+const PlansPage = Loadable(lazy(() => import("./pages/Plans/PlansPage")))
+const GroupsPage = Loadable(lazy(() => import("./pages/Groups/GroupsPage")))
+const StreamsPage = Loadable(lazy(() => import("./pages/Streams/StreamsPage")))
+const SettingsPage = Loadable(lazy(() => import("./pages/Settings/SettingsPage")))
+const TeachersPage = Loadable(lazy(() => import("./pages/Teachers/TeachersPage")))
+const FullPlanPage = Loadable(lazy(() => import("./pages/FullPlan/FullPlanPage")))
+const FullGroupPage = Loadable(lazy(() => import("./pages/FullGroup/FullGroupPage")))
+const AuditoriesPage = Loadable(lazy(() => import("./pages/Auditories/AuditoriesPage")))
+const StudentsDivide = Loadable(lazy(() => import("./pages/StudentsDivide/StudentsDivide")))
+const DistributionPage = Loadable(lazy(() => import("./pages/Distribution/DistributionPage")))
+const StudentsAccounts = Loadable(lazy(() => import("./pages/StudentsAccounts/StudentsAccounts")))
+const TeacherProfilePage = Loadable(lazy(() => import("./pages/TeacherProfile/TeacherProfilePage")))
+const TeachingLessonsControl = Loadable(lazy(() => import("./pages/TeachingLessonsControl/TeachingLessonsControl")))
 
 const App = () => {
   return (
@@ -96,9 +98,12 @@ const App = () => {
           </Route>
 
           <Route element={<MinimalLayout />}>
-            <Route element={<AuthLogin />} path="/login" />
+            <Route element={<AuthLogin />} path="/auth" />
             <Route element={<AuthRegister />} path="/register" />
           </Route>
+
+          <Route element={<NotFoundPage />} path="/404" />
+          <Route element={<InternalServerErrorPage />} path="/500" />
         </Routes>
       </ScrollTop>
     </ThemeCustomization>
@@ -134,6 +139,7 @@ export default App
 //     всі виставлені уроки і додати їх до календаря
 // 18. Треба зробити можливість ставити в розклад (поза планом, тобто не йде в навантаження) практики або інші види діяльності
 // 19. Перевірити як працює зміна року навчання
+// 20. Не оновлюється заміна в store
 
 // ========================================================
 // ================== Електронний журнал ==================
@@ -174,3 +180,8 @@ export default App
 // 1. InstructionalMaterialsTab.tsx рядок 83 - треба замість цифри 3 підставляти реальний ID
 // 2. MyTeachingLoadTab.tsx         рядок 27 - треба замість цифри 3 підставляти реальний ID
 // 3. Треба приховувати екзамени в фільтрі дисциплін бо екзамени не мають теми
+
+// ========================================================
+// ==================== Notification ======================
+// ========================================================
+// 1. Replace react-toastify to Sonner !!!!!!!

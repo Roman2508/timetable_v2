@@ -35,8 +35,13 @@ const groupsPersistConfig = {
   ],
 }
 
+const authPersistConfig = {
+  key: "auth",
+  storage: storage,
+  whitelist: ["user"],
+}
+
 const rootReducer = combineReducers({
-  auth: authSlice,
   plans: plansSlice,
   groups: groupsSlice,
   streams: streamsSlice,
@@ -47,6 +52,7 @@ const rootReducer = combineReducers({
   gradeBook: gradeBookSlice,
   auditories: auditoriesSlise,
   teacherProfile: teacherProfileSlice,
+  auth: persistReducer(authPersistConfig, authSlice),
   menu: persistReducer(menuPersistConfig, menuSlice),
   scheduleLessons: persistReducer(groupsPersistConfig, scheduleLessonsSlice),
 })

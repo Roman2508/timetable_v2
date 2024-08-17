@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types'
-import { useRef, useState } from 'react'
+import PropTypes from "prop-types"
+import { useRef, useState } from "react"
 
 // material-ui
-import { useTheme } from '@mui/material/styles'
+import { useTheme } from "@mui/material/styles"
 import {
   Avatar,
   Box,
@@ -17,17 +17,22 @@ import {
   Tab,
   Tabs,
   Typography,
-} from '@mui/material'
+} from "@mui/material"
 
 // project import
-import MainCard from '../../../../../components/MainCard'
-import Transitions from '../../../../../components/@extended/Transitions'
-import ProfileTab from './ProfileTab'
-import SettingTab from './SettingTab'
+import MainCard from "../../../../../components/MainCard"
+import Transitions from "../../../../../components/@extended/Transitions"
+import ProfileTab from "./ProfileTab"
+import SettingTab from "./SettingTab"
 
 // assets
-import avatar1 from '../../../../../assets/images/users/avatar-2.png'
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
+import avatar1 from "../../../../../assets/images/users/avatar-2.png"
+import { LogoutOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons"
+import { useAppDispatch } from "../../../../../store/store"
+import { authSelector, clearUser } from "../../../../../store/auth/authSlice"
+import { removeLocalStorageToken } from "../../../../../utils/localStorageToken"
+import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -53,7 +58,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `profile-tab-${index}`,
-    'aria-controls': `profile-tabpanel-${index}`,
+    "aria-controls": `profile-tabpanel-${index}`,
   }
 }
 
@@ -62,12 +67,21 @@ function a11yProps(index) {
 const Profile = () => {
   const theme = useTheme()
 
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+
+  const { user } = useSelector(authSelector)
+
   const handleLogout = async () => {
-    // logout
+    if (!window.confirm("Ви дійсно хочете вийти?")) return
+    dispatch(clearUser())
+    removeLocalStorageToken()
+    navigate("/auth")
   }
 
   const anchorRef = useRef(null)
   const [open, setOpen] = useState(false)
+
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen)
   }
@@ -85,26 +99,28 @@ const Profile = () => {
     setValue(newValue)
   }
 
-  const iconBackColorOpen = 'grey.300'
+  const iconBackColorOpen = "grey.300"
+
+  if (!user) return
 
   return (
     <Box sx={{ flexShrink: 0, ml: 0.75 }}>
       <ButtonBase
         sx={{
           p: 0.25,
-          bgcolor: open ? iconBackColorOpen : 'transparent',
+          bgcolor: open ? iconBackColorOpen : "transparent",
           borderRadius: 1,
-          '&:hover': { bgcolor: 'secondary.lighter' },
+          "&:hover": { bgcolor: "secondary.lighter" },
         }}
         aria-label="open profile"
         ref={anchorRef}
-        aria-controls={open ? 'profile-grow' : undefined}
+        aria-controls={open ? "profile-grow" : undefined}
         aria-haspopup="true"
         onClick={handleToggle}
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
-          <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-          <Typography variant="subtitle1">Пташник Р.В.</Typography>
+          <Avatar alt="profile user" src={user ? "" : ""} sx={{ width: 32, height: 32 }} />
+          <Typography variant="subtitle1">{user.login}</Typography>
         </Stack>
       </ButtonBase>
       <Popper
@@ -117,7 +133,7 @@ const Profile = () => {
         popperOptions={{
           modifiers: [
             {
-              name: 'offset',
+              name: "offset",
               options: {
                 offset: [0, 9],
               },
@@ -134,7 +150,7 @@ const Profile = () => {
                   width: 290,
                   minWidth: 240,
                   maxWidth: 290,
-                  [theme.breakpoints.down('md')]: {
+                  [theme.breakpoints.down("md")]: {
                     maxWidth: 250,
                   },
                 }}
@@ -147,45 +163,45 @@ const Profile = () => {
                           <Stack direction="row" spacing={1.25} alignItems="center">
                             <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
                             <Stack>
-                              <Typography variant="h6">Пташник Р.В.</Typography>
+                              <Typography variant="h6">{user.login}</Typography>
                               <Typography variant="body2" color="textSecondary">
-                                UI/UX Designer
+                                {user.email}
                               </Typography>
                             </Stack>
                           </Stack>
                         </Grid>
-                        <Grid item>
+                        {/* <Grid item>
                           <IconButton size="large" color="secondary" onClick={handleLogout}>
                             <LogoutOutlined />
                           </IconButton>
-                        </Grid>
+                        </Grid> */}
                       </Grid>
                     </CardContent>
                     {open && (
                       <>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                           <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="profile tabs">
                             <Tab
                               sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                textTransform: 'capitalize',
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                textTransform: "capitalize",
                               }}
-                              icon={<UserOutlined style={{ marginBottom: 0, marginRight: '10px' }} />}
+                              icon={<UserOutlined style={{ marginBottom: 0, marginRight: "10px" }} />}
                               label="Profile"
                               {...a11yProps(0)}
                             />
                             <Tab
                               sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                textTransform: 'capitalize',
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                textTransform: "capitalize",
                               }}
-                              icon={<SettingOutlined style={{ marginBottom: 0, marginRight: '10px' }} />}
+                              icon={<SettingOutlined style={{ marginBottom: 0, marginRight: "10px" }} />}
                               label="Setting"
                               {...a11yProps(1)}
                             />

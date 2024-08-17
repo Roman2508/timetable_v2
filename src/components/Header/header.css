@@ -1,0 +1,9 @@
+.collage-name {
+  display: block;
+}
+
+@media (max-width: 1350px) {
+  .collage-name {
+    display: none;
+  }
+}
