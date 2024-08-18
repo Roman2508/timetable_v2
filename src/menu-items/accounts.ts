@@ -9,8 +9,16 @@ const accounts = {
   icon: icons.UserOutlined,
   children: [
     {
+      id: "teachers",
+      title: "Педагогічний склад",
+      type: "item",
+      url: "/teachers",
+      icon: icons.UserOutlined,
+      breadcrumbs: false,
+    },
+    {
       id: "students-accounts",
-      title: "Облікові записи",
+      title: "Здобувачі освіти",
       type: "item",
       url: "/students/accounts",
       icon: icons.UserOutlined,

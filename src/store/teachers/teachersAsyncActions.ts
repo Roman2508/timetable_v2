@@ -1,179 +1,189 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
-import { teachersAPI } from '../../api/api'
+import { createAsyncThunk } from "@reduxjs/toolkit"
+import { teachersAPI } from "../../api/api"
 import {
   CreateTeacherCategoryPayloadType,
   CreateTeacherPayloadType,
   UpdateTeacherCategoryPayloadType,
   UpdateTeacherPayloadType,
-} from '../../api/apiTypes'
-import { setAppAlert } from '../appStatus/appStatusSlice'
-import { LoadingStatusTypes } from '../appTypes'
-import { setLoadingStatus } from './teachersSlice'
+} from "../../api/apiTypes"
+import { setAppAlert } from "../appStatus/appStatusSlice"
+import { LoadingStatusTypes } from "../appTypes"
+import { setLoadingStatus } from "./teachersSlice"
+import { toast } from "sonner"
 
 /* categories */
 
 export const getTeachersCategories = createAsyncThunk(
-  'teachers-categories/getTeachersCategories',
+  "teachers-categories/getTeachersCategories",
   async (isHide: boolean, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
-    try {
-      const { data } = await teachersAPI.getTeachersCategories(isHide)
-      // thunkAPI.dispatch(setAppAlert({ message: 'Викладачів завантажено', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
-      )
-      throw error
-    }
+    const promise = teachersAPI.getTeachersCategories(isHide)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Завантажено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const createTeacherCategory = createAsyncThunk(
-  'teachers-categories/createTeacherCategory',
+  "teachers-categories/createTeacherCategory",
   async (payload: CreateTeacherCategoryPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teachersAPI.createTeacherCategory(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Категорію створено', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
-      )
-      throw error
-    }
+    const promise = teachersAPI.createTeacherCategory(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Категорію створено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const updateTeacherCategory = createAsyncThunk(
-  'teachers-categories/updateTeacherCategory',
+  "teachers-categories/updateTeacherCategory",
   async (payload: UpdateTeacherCategoryPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teachersAPI.updateTeacherCategory(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Категорію оновлено', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
-      )
-      throw error
-    }
+    const promise = teachersAPI.updateTeacherCategory(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Категорію оновлено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const handleTeacherVisible = createAsyncThunk(
-  'teachers-categories/handleTeacherVisible',
+  "teachers-categories/handleTeacherVisible",
   async (id: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teachersAPI.handleTeacherVisible(id)
-      thunkAPI.dispatch(setAppAlert({ message: 'Викдача оновлено', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
-      )
-      throw error
-    }
+    const promise = teachersAPI.handleTeacherVisible(id)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Викладача оновлено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const deleteTeacherCategory = createAsyncThunk(
-  'teachers-categories/deleteTeacherCategory',
+  "teachers-categories/deleteTeacherCategory",
   async (id: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teachersAPI.deleteTeacherCategory(id)
-      thunkAPI.dispatch(setAppAlert({ message: 'Категорію видалено', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
-      )
-      throw error
-    }
+    const promise = teachersAPI.deleteTeacherCategory(id)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Категорію видалено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 /* teachers */
 
 export const createTeacher = createAsyncThunk(
-  'teachers/createTeacher',
+  "teachers/createTeacher",
   async (payload: CreateTeacherPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teachersAPI.createTeacher(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Викладача створено', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
-      )
-      throw error
-    }
+    const promise = teachersAPI.createTeacher(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Викладача створено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const updateTeacher = createAsyncThunk(
-  'teachers/updateTeacher',
+  "teachers/updateTeacher",
   async (payload: UpdateTeacherPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teachersAPI.updateTeacher(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Викладача оновлено', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
-      )
-      throw error
-    }
+    const promise = teachersAPI.updateTeacher(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Викладача оновлено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
-export const deleteTeacher = createAsyncThunk('teachers/deleteTeacher', async (id: number, thunkAPI) => {
+export const deleteTeacher = createAsyncThunk("teachers/deleteTeacher", async (id: number, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-  try {
-    const { data } = await teachersAPI.deleteTeacher(id)
-    thunkAPI.dispatch(setAppAlert({ message: 'Викладача видалено', status: 'success' }))
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-    return data
-  } catch (error: any) {
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-    thunkAPI.dispatch(
-      setAppAlert({ message: (error as any)?.response?.data?.message || error.message, status: 'error' })
-    )
-    throw error
-  }
+  const promise = teachersAPI.deleteTeacher(id)
+
+  toast.promise(promise, {
+    loading: "Завантаження...",
+    success: "Викладача видалено",
+    error: (error) => {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      return (error as any)?.response?.data?.message || error.message
+    },
+  })
+
+  const { data } = await promise
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+  return data
 })

@@ -1,26 +1,26 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Grid, IconButton, Tooltip, Typography } from '@mui/material'
-import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
+import React from "react"
+import { useSelector } from "react-redux"
+import { Grid, IconButton, Tooltip, Typography } from "@mui/material"
+import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons"
 
 import {
   deleteTeacher,
   handleTeacherVisible,
   getTeachersCategories,
   deleteTeacherCategory,
-} from '../../store/teachers/teachersAsyncActions'
-import MainCard from '../../components/MainCard'
-import { useAppDispatch } from '../../store/store'
-import { LoadingStatusTypes } from '../../store/appTypes'
-import EmptyCard from '../../components/EmptyCard/EmptyCard'
-import { TeachersType } from '../../store/teachers/teachersTypes'
-import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
-import CreateTeacherForm from '../../components/TeachersPage/CreateTeacherForm'
-import UpdateTeacherModal from '../../components/TeachersPage/UpdateTeacherModal'
-import { clearTeachers, teachersSelector } from '../../store/teachers/teachersSlice'
-import { AccordionItemsList } from '../../components/AccordionItemsList/AccordionItemsList'
-import CreateTeachersCategoryForm from '../../components/TeachersPage/CreateTeachersCategoryForm'
-import UpdateTeachersCategoryForm from '../../components/TeachersPage/UpdateTeachersCategoryForm'
+} from "../../store/teachers/teachersAsyncActions"
+import MainCard from "../../components/MainCard"
+import { useAppDispatch } from "../../store/store"
+import { LoadingStatusTypes } from "../../store/appTypes"
+import EmptyCard from "../../components/EmptyCard/EmptyCard"
+import { TeachersType } from "../../store/teachers/teachersTypes"
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
+import CreateTeacherForm from "../../components/TeachersPage/CreateTeacherForm"
+import UpdateTeacherModal from "../../components/TeachersPage/UpdateTeacherModal"
+import { clearTeachers, teachersSelector } from "../../store/teachers/teachersSlice"
+import { AccordionItemsList } from "../../components/AccordionItemsList/AccordionItemsList"
+import CreateTeachersCategoryForm from "../../components/TeachersPage/CreateTeachersCategoryForm"
+import UpdateTeachersCategoryForm from "../../components/TeachersPage/UpdateTeachersCategoryForm"
 
 // ==============================|| PLANS ||============================== //
 
@@ -44,7 +44,7 @@ const TeachersPage = () => {
 
   const onDeleteTeacher = (id: number) => {
     try {
-      if (window.confirm('Ви дійсно хочете видалити викладача?')) {
+      if (window.confirm("Ви дійсно хочете видалити викладача?")) {
         dispatch(deleteTeacher(id))
       }
     } catch (error) {
@@ -54,10 +54,10 @@ const TeachersPage = () => {
 
   const onDeleteTeacherCategory = (id: number, teachersCount: number) => {
     try {
-      if (!window.confirm('Ви дійсно хочете видалити категорію?')) return
+      if (!window.confirm("Ви дійсно хочете видалити категорію?")) return
 
       if (teachersCount > 0) {
-        alert('В категорії не повинно бути викладачів')
+        alert("В категорії не повинно бути викладачів")
       } else {
         dispatch(deleteTeacherCategory(id))
       }
@@ -83,16 +83,16 @@ const TeachersPage = () => {
         editingTeacherCategory={editingTeacherCategory}
       />
 
-      <Grid container rowSpacing={2.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
+      <Grid container rowSpacing={2.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
         {/* Категорії (відділення) */}
         <Grid item xs={12} md={10}>
           <Grid container>
-            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography variant="h5">Викладачі</Typography>
+            <Grid item sx={{ display: "flex", alignItems: "center" }}>
+              <Typography variant="h5">Педагогічний склад</Typography>
 
-              <Tooltip title={teachersVisible ? 'Показати видимих викладачів' : 'Показати прихованих викладачів'}>
+              <Tooltip title={teachersVisible ? "Показати видимих викладачів" : "Показати прихованих викладачів"}>
                 <IconButton
-                  sx={{ ml: '10px' }}
+                  sx={{ ml: "10px" }}
                   onClick={() => {
                     dispatch(clearTeachers())
                     setTeachersVisible((prev) => !prev)
@@ -106,11 +106,11 @@ const TeachersPage = () => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} md={10} sx={{ display: 'flex', alignItems: 'flex-start' }}>
+        <Grid item xs={12} md={10} sx={{ display: "flex", alignItems: "flex-start" }}>
           <Grid
             item
             xs={8}
-            sx={{ borderRadius: '8px', border: '1px solid #e6ebf1', overflow: 'hidden', backgroundColor: '#fff' }}
+            sx={{ borderRadius: "8px", border: "1px solid #e6ebf1", overflow: "hidden", backgroundColor: "#fff" }}
           >
             {/* TEACHERS LIST */}
             {!teachersCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
@@ -134,7 +134,7 @@ const TeachersPage = () => {
           <Grid item xs={4} sx={{ ml: 2 }}>
             <Grid item xs={12} sx={{ mb: 2 }}>
               <MainCard>
-                <Typography variant="button" sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase' }}>
+                <Typography variant="button" sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}>
                   Додати нового викладача
                 </Typography>
 
@@ -144,7 +144,7 @@ const TeachersPage = () => {
 
             <Grid item xs={12}>
               <MainCard>
-                <Typography variant="button" sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase' }}>
+                <Typography variant="button" sx={{ textAlign: "center", display: "block", textTransform: "uppercase" }}>
                   Додати нову категорію
                 </Typography>
 

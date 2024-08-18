@@ -1,32 +1,20 @@
 import { lazy } from "react"
-import Loadable from "./components/Loadable"
 import "react-toastify/dist/ReactToastify.css"
 import { Route, Routes } from "react-router-dom"
 
 import "./App.css"
 import ThemeCustomization from "./themes"
-import MainLayout from "./layout/MainLayout/MainLayout"
+import Loadable from "./components/Loadable"
 import ScrollTop from "./components/ScrollTop"
 import MinimalLayout from "./layout/MinimalLayout"
-// import PlansPage from './pages/Plans/PlansPage'
-// import GroupsPage from './pages/Groups/GroupsPage'
-// import StreamsPage from './pages/Streams/StreamsPage'
-// import FullGroupPage from './pages/FullGroup/FullGroupPage'
-import GradeBookPage from "./pages/GradeBook/GradeBookPage"
-// import FullPlanPage from './pages/FullPlan/FullPlanPage'
-// import TeachersPage from './pages/Teachers/TeachersPage'
-// import SettingsPage from './pages/Settings/SettingsPage'
-import { TimetablePage } from "./pages/Timetable/TimetablePage"
-// import AuditoriesPage from './pages/Auditories/AuditoriesPage'
-import AuthLogin from "./pages/authentication/auth-forms/AuthLogin"
-// import StudentsDivide from './pages/StudentsDivide/StudentsDivide'
-// import DistributionPage from './pages/Distribution/DistributionPage'
-import AuthRegister from "./pages/authentication/auth-forms/AuthRegister"
+import MainLayout from "./layout/MainLayout/MainLayout"
 import NotFoundPage from "./pages/ErrorPages/NotFoundPage"
+import GradeBookPage from "./pages/GradeBook/GradeBookPage"
+import { TimetablePage } from "./pages/Timetable/TimetablePage"
+import AuthLogin from "./pages/authentication/auth-forms/AuthLogin"
+import AuthRegister from "./pages/authentication/auth-forms/AuthRegister"
 import InternalServerErrorPage from "./pages/ErrorPages/InternalServerErrorPage"
-// import FullTeachersPage from "./pages/FullTeacher/FullTeacherPage"
-// import StudentsAccounts from './pages/StudentsAccounts/StudentsAccounts'
-// import TeachingLessonsControl from './pages/TeachingLessonsControl/TeachingLessonsControl'
+import ForbiddenErrorPage from "./pages/ErrorPages/ForbiddenErrorPage"
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import("./pages/dashboard")))
@@ -103,6 +91,7 @@ const App = () => {
           </Route>
 
           <Route element={<NotFoundPage />} path="/404" />
+          <Route element={<ForbiddenErrorPage />} path="/403" />
           <Route element={<InternalServerErrorPage />} path="/500" />
         </Routes>
       </ScrollTop>
@@ -184,4 +173,4 @@ export default App
 // ========================================================
 // ==================== Notification ======================
 // ========================================================
-// 1. Replace react-toastify to Sonner !!!!!!!
+// 1. Replace react-toastify to Sonner !!!!!!! Done. Need to check it !!!!!!!!!!!!

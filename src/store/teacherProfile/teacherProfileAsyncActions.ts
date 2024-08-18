@@ -1,4 +1,4 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import {
   CreateTeacherReportType,
@@ -11,337 +11,388 @@ import {
   TeacherReportDeleteFileType,
   GetTeacherReportType,
   ImportInstructionalMaterialsPayloadType,
-} from '../../api/apiTypes'
-import { LoadingStatusTypes } from '../appTypes'
-import { setLoadingStatus } from './teacherProfileSlice'
-import { setAppAlert } from '../appStatus/appStatusSlice'
-import { teacherProfileAPI } from '../../api/teacherProfileAPI'
-import { groupLoadLessonsAPI } from '../../api/groupLoadLessonsAPI'
+} from "../../api/apiTypes"
+import { LoadingStatusTypes } from "../appTypes"
+import { setLoadingStatus } from "./teacherProfileSlice"
+import { setAppAlert } from "../appStatus/appStatusSlice"
+import { teacherProfileAPI } from "../../api/teacherProfileAPI"
+import { groupLoadLessonsAPI } from "../../api/groupLoadLessonsAPI"
+import { toast } from "sonner"
 
 /* instructional-materials */
 export const getInstructionalMaterials = createAsyncThunk(
-  'teacher-profile/getInstructionalMaterials',
+  "teacher-profile/getInstructionalMaterials",
   async (payload: { id: number; year: number }, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.getInstructionalMaterials(payload)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.getInstructionalMaterials(payload)
+
+    toast.promise(promise, {
+      // loading: "Завантаження...",
+      // success: "Завантажено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const createInstructionalMaterials = createAsyncThunk(
-  'teacher-profile/createInstructionalMaterials',
+  "teacher-profile/createInstructionalMaterials",
   async (payload: CreateInstructionalMaterialsPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.createInstructionalMaterial(payload)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.createInstructionalMaterial(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Додано нову тему",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const updateInstructionalMaterials = createAsyncThunk(
-  'teacher-profile/updateInstructionalMaterials',
+  "teacher-profile/updateInstructionalMaterials",
   async (payload: UpdateInstructionalMaterialsPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.updateInstructionalMaterial(payload)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.updateInstructionalMaterial(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Додано тему уроку",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const importInstructionalMaterials = createAsyncThunk(
-  'teacher-profile/importInstructionalMaterials',
+  "teacher-profile/importInstructionalMaterials",
   async (payload: ImportInstructionalMaterialsPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.importInstructionalMaterial(payload)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.importInstructionalMaterial(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Імпортовано теми",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const deleteInstructionalMaterials = createAsyncThunk(
-  'teacher-profile/deleteInstructionalMaterials',
+  "teacher-profile/deleteInstructionalMaterials",
   async (id: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.deleteInstructionalMaterial(id)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.deleteInstructionalMaterial(id)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Видалено тему уроку",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const findAllTeacherLessonsById = createAsyncThunk(
-  'teacher-profile/findAllTeacherLessonsById',
+  "teacher-profile/findAllTeacherLessonsById",
   async (teacherId: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
-    try {
-      const { data } = await groupLoadLessonsAPI.findAllTeacherLessonsById(teacherId)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = groupLoadLessonsAPI.findAllTeacherLessonsById(teacherId)
+
+    toast.promise(promise, {
+      // loading: "Завантаження...",
+      // success: "Завантажено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 /* teacher load */
 export const getTeacherLoadById = createAsyncThunk(
-  'teacher-profile/getTeacherLoadById',
+  "teacher-profile/getTeacherLoadById",
   async (teacherId: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await groupLoadLessonsAPI.findAllTeacherLessonsById(teacherId)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = groupLoadLessonsAPI.findAllTeacherLessonsById(teacherId)
+
+    toast.promise(promise, {
+      // loading: "Завантаження...",
+      // success: "Завантажено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 /* individual-teacher-work */
 export const getIndividualTeacherWork = createAsyncThunk(
-  'teacher-profile/getIndividualTeacherWork',
+  "teacher-profile/getIndividualTeacherWork",
   async (_, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.getIndividualTeacherWork()
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.getIndividualTeacherWork()
+
+    toast.promise(promise, {
+      // loading: "Завантаження...",
+      // success: "Завантажено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const createIndividualTeacherWork = createAsyncThunk(
-  'teacher-profile/createIndividualTeacherWork',
+  "teacher-profile/createIndividualTeacherWork",
   async (payload: CreateIndividualTeacherWorkType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.createIndividualTeacherWork(payload)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.createIndividualTeacherWork(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Додано діяльність до індивідуального плану",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const updateIndividualTeacherWork = createAsyncThunk(
-  'teacher-profile/updateIndividualTeacherWork',
+  "teacher-profile/updateIndividualTeacherWork",
   async (payload: UpdateIndividualTeacherWorkType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.updateIndividualTeacherWork(payload)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.updateIndividualTeacherWork(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Оновлено діяльність індивідуального плану",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const deleteIndividualTeacherWork = createAsyncThunk(
-  'teacher-profile/deleteIndividualTeacherWork',
+  "teacher-profile/deleteIndividualTeacherWork",
   async (id: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.deleteIndividualTeacherWork(id)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.deleteIndividualTeacherWork(id)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Видалено діяльність з індивідуального плану",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 /* teacher-report */
 export const getTeacherReport = createAsyncThunk(
-  'teacher-profile/getTeacherReport',
+  "teacher-profile/getTeacherReport",
   async (payload: GetTeacherReportType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.getTeacherReport(payload)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.getTeacherReport(payload)
+
+    toast.promise(promise, {
+      // loading: "Завантаження...",
+      // success: "Завантажено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const createTeacherReport = createAsyncThunk(
-  'teacher-profile/createTeacherReport',
+  "teacher-profile/createTeacherReport",
   async (payload: CreateTeacherReportType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.createTeacherReport(payload)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.createTeacherReport(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Додано діяльність до звіту",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const updateTeacherReport = createAsyncThunk(
-  'teacher-profile/updateTeacherReport',
+  "teacher-profile/updateTeacherReport",
   async (payload: UpdateTeacherReportType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.updateTeacherReport(payload)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.updateTeacherReport(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Оновлено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const uploadTeacherReportFile = createAsyncThunk(
-  'teacher-profile/uploadTeacherReportFile',
+  "teacher-profile/uploadTeacherReportFile",
   async (payload: TeacherReportUploadFileType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.createFile(payload)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      thunkAPI.dispatch(setAppAlert({ message: 'Додано новий', status: 'success' }))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.createFile(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Додано файл до звіту",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const deleteTeacherReportFile = createAsyncThunk(
-  'teacher-profile/deleteTeacherReportFile',
+  "teacher-profile/deleteTeacherReportFile",
   async (payload: TeacherReportDeleteFileType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.deleteFile(payload)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      thunkAPI.dispatch(setAppAlert({ message: 'Файл видалено', status: 'success' }))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.deleteFile(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Файл видалено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const deleteTeacherReport = createAsyncThunk(
-  'teacher-profile/deleteTeacherReport',
+  "teacher-profile/deleteTeacherReport",
   async (id: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await teacherProfileAPI.deleteTeacherReport(id)
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      const message = (error as any)?.response?.data?.message || error.message
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(setAppAlert({ message, status: 'error' }))
-      throw error
-    }
+    const promise = teacherProfileAPI.deleteTeacherReport(id)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Видалено діяльність зі звіту",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )

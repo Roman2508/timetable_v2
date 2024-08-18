@@ -1,10 +1,7 @@
-// material-ui
-import { Stack, Button, MenuItem, TextField, InputLabel, OutlinedInput, FormHelperText, Tooltip } from "@mui/material"
-
-// project import
 import React from "react"
 import { useSelector } from "react-redux"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { Stack, Button, MenuItem, TextField, InputLabel, OutlinedInput, FormHelperText, Tooltip } from "@mui/material"
 
 import { useAppDispatch } from "../../store/store"
 import { emailRegex } from "../../utils/emailRegex"
@@ -13,12 +10,13 @@ import { teachersSelector } from "../../store/teachers/teachersSlice"
 import { createTeacher, updateTeacher } from "../../store/teachers/teachersAsyncActions"
 
 interface IAuditoriesFields {
+  email: string
+  category: number
+  lastName: string
+  password: string
   firstName: string
   middleName: string
-  lastName: string
-  email: string
   calendarId: string
-  category: number
 }
 
 interface ICreateTeacherFormProps {
@@ -42,9 +40,13 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
     formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm<IAuditoriesFields>({
-    mode: "onBlur",
+    mode: "onSubmit",
     defaultValues: editingTeacher ? { ...editingTeacher, category: editingTeacher.category.id } : {},
   })
+
+  const resetFields = () => {
+    reset({ firstName: "", lastName: "", middleName: "", email: "", password: "", calendarId: "" })
+  }
 
   const onSubmit: SubmitHandler<IAuditoriesFields> = async (data) => {
     try {
@@ -53,11 +55,11 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
         if (!editingTeacher) return
         await dispatch(updateTeacher({ ...data, id: editingTeacher.id }))
         handleClose()
-        reset({ calendarId: "", email: "", firstName: "", lastName: "", middleName: "" })
+        resetFields()
       } else {
         // Якщо форму відкрито НЕ в модалці - створення викладача
         await dispatch(createTeacher(data))
-        reset({ calendarId: "", email: "", firstName: "", lastName: "", middleName: "" })
+        resetFields()
       }
     } catch (error) {
       console.log(error)
@@ -81,7 +83,7 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
         <Controller
           name="lastName"
           control={control}
-          rules={{ required: "Вкажіть прізвище викладача" }}
+          rules={{ required: "Це поле обов'язкове" }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
@@ -108,7 +110,7 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
         <Controller
           name="firstName"
           control={control}
-          rules={{ required: "Вкажіть ім'я викладача" }}
+          rules={{ required: "Це поле обов'язкове" }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
@@ -135,7 +137,7 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
         <Controller
           name="middleName"
           control={control}
-          rules={{ required: "Вкажіть по батькові" }}
+          rules={{ required: "Це поле обов'язкове" }}
           render={({ field }) => {
             return (
               <Stack spacing={1} sx={{ mt: 2 }}>
@@ -159,11 +161,11 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
           }}
         />
 
-        {/*  <Controller
+        <Controller
           name="email"
           control={control}
           rules={{
-            required: "Вкажіть пошту викладача",
+            required: "Це поле обов'язкове",
             pattern: {
               value: emailRegex,
               message: "Не вірний формат пошти",
@@ -190,7 +192,37 @@ const CreateTeacherForm: React.FC<ICreateTeacherFormProps> = ({
               </Stack>
             )
           }}
-        />  */}
+        />
+
+        <Controller
+          name="password"
+          control={control}
+          rules={{
+            required: "Це поле обов'язкове",
+            minLength: { value: 8, message: "Мінімальна кількість символів - 8" },
+          }}
+          render={({ field }) => {
+            return (
+              <Stack spacing={1} sx={{ mt: 2 }}>
+                <InputLabel htmlFor="password">Пароль*</InputLabel>
+                <OutlinedInput
+                  fullWidth
+                  {...field}
+                  id="password"
+                  type="password"
+                  name="password"
+                  error={Boolean(errors.password)}
+                  placeholder="********"
+                />
+                {errors.password && (
+                  <FormHelperText error id="helper-text-password">
+                    {errors.password.message}
+                  </FormHelperText>
+                )}
+              </Stack>
+            )
+          }}
+        />
 
         <Controller
           name="calendarId"

@@ -55,14 +55,12 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 }
 
-function a11yProps(index) {
+function a11yProps(index: number) {
   return {
     id: `profile-tab-${index}`,
     "aria-controls": `profile-tabpanel-${index}`,
   }
 }
-
-// ==============================|| HEADER CONTENT - PROFILE ||============================== //
 
 const Profile = () => {
   const theme = useTheme()
@@ -120,7 +118,7 @@ const Profile = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={user ? "" : ""} sx={{ width: 32, height: 32 }} />
-          <Typography variant="subtitle1">{user.login}</Typography>
+          <Typography variant="subtitle1">{user.login ? user.login : user.email.split("@")[0]}</Typography>
         </Stack>
       </ButtonBase>
       <Popper
@@ -161,9 +159,9 @@ const Profile = () => {
                       <Grid container justifyContent="space-between" alignItems="center">
                         <Grid item>
                           <Stack direction="row" spacing={1.25} alignItems="center">
-                            <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+                            <Avatar alt="profile user" src={user ? "" : ""} sx={{ width: 32, height: 32 }} />
                             <Stack>
-                              <Typography variant="h6">{user.login}</Typography>
+                              <Typography variant="h6">{user.login ? user.login : user.email.split("@")[0]}</Typography>
                               <Typography variant="body2" color="textSecondary">
                                 {user.email}
                               </Typography>

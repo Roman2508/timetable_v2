@@ -1,4 +1,4 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import {
   AddGroupToStreamPayloadType,
@@ -6,216 +6,199 @@ import {
   DeleteGroupFromStreamPayloadType,
   AddLessonsToStreamPayloadType,
   DeleteLessonFromStreamPayloadType,
-} from '../../api/apiTypes'
-import { streamsAPI } from '../../api/api'
-import { StreamsType } from './streamsTypes'
-import { LoadingStatusTypes } from '../appTypes'
-import { setLoadingStatus } from './streamsSlice'
-import { setAppAlert } from '../appStatus/appStatusSlice'
+} from "../../api/apiTypes"
+import { streamsAPI } from "../../api/api"
+import { StreamsType } from "./streamsTypes"
+import { LoadingStatusTypes } from "../appTypes"
+import { setLoadingStatus } from "./streamsSlice"
+import { setAppAlert } from "../appStatus/appStatusSlice"
+import { toast } from "sonner"
 
-export const getStreams = createAsyncThunk('streams/getStreams', async (_, thunkAPI): Promise<StreamsType[]> => {
+export const getStreams = createAsyncThunk("streams/getStreams", async (_, thunkAPI): Promise<StreamsType[]> => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
-  try {
-    const { data } = await streamsAPI.getStreams()
-    // thunkAPI.dispatch(setAppAlert({ message: "Потоки завантажено", status: "success" }))
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-    return data
-  } catch (error: any) {
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-    thunkAPI.dispatch(
-      setAppAlert({
-        message: (error as any)?.response?.data?.message || error.message,
-        status: 'error',
-      })
-    )
+  const promise = streamsAPI.getStreams()
 
-    throw error
-  }
+  toast.promise(promise, {
+    // loading: "Завантаження...",
+    // success: "Потоки завантажено",
+    error: (error) => {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      return (error as any)?.response?.data?.message || error.message
+    },
+  })
+
+  const { data } = await promise
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+  return data
 })
 
-export const createStream = createAsyncThunk('streams/createStream', async (payload: { name: string }, thunkAPI) => {
+export const createStream = createAsyncThunk("streams/createStream", async (payload: { name: string }, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-  try {
-    const { data } = await streamsAPI.createStream(payload)
-    thunkAPI.dispatch(setAppAlert({ message: 'Потік створено', status: 'success' }))
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-    return data
-  } catch (error: any) {
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-    thunkAPI.dispatch(
-      setAppAlert({
-        message: (error as any)?.response?.data?.message || error.message,
-        status: 'error',
-      })
-    )
-    throw error
-  }
+  const promise = streamsAPI.createStream(payload)
+
+  toast.promise(promise, {
+    loading: "Завантаження...",
+    success: "Потік створено",
+    error: (error) => {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      return (error as any)?.response?.data?.message || error.message
+    },
+  })
+
+  const { data } = await promise
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+  return data
 })
 
 export const updateStream = createAsyncThunk(
-  'streams/updateStream',
+  "streams/updateStream",
   async (payload: UpdateEntityNamePayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await streamsAPI.updateStreamName(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Потік оновлено', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
-        })
-      )
-      throw error
-    }
+    const promise = streamsAPI.updateStreamName(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Потік оновлено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
-export const deleteStream = createAsyncThunk('streams/deleteStream', async (id: number, thunkAPI) => {
+export const deleteStream = createAsyncThunk("streams/deleteStream", async (id: number, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-  try {
-    const { data } = await streamsAPI.deleteStream(id)
-    thunkAPI.dispatch(setAppAlert({ message: 'Потік видалено', status: 'success' }))
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-    return data
-  } catch (error: any) {
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-    thunkAPI.dispatch(
-      setAppAlert({
-        message: (error as any)?.response?.data?.message || error.message,
-        status: 'error',
-      })
-    )
-    throw error
-  }
+  const promise = streamsAPI.deleteStream(id)
+
+  toast.promise(promise, {
+    loading: "Завантаження...",
+    success: "Потік видалено",
+    error: (error) => {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      return (error as any)?.response?.data?.message || error.message
+    },
+  })
+
+  const { data } = await promise
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+  return data
 })
 
 /* Stream Groups */
 export const addGroupToStream = createAsyncThunk(
-  'streams/addGroupToStream',
+  "streams/addGroupToStream",
   async (payload: AddGroupToStreamPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await streamsAPI.addGroupToStream(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Групу додано до потоку', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
-        })
-      )
-      throw error
-    }
+    const promise = streamsAPI.addGroupToStream(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Групу додано до потоку",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const deleteGroupFromStream = createAsyncThunk(
-  'streams/deleteGroupFromStream',
+  "streams/deleteGroupFromStream",
   async (payload: DeleteGroupFromStreamPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await streamsAPI.deleteGroupFromStream(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Групу видалено з потоку', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
-        })
-      )
-      throw error
-    }
+    const promise = streamsAPI.deleteGroupFromStream(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Групу видалено з потоку",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 /* Stream Lessons */
 
-export const getStreamLessons = createAsyncThunk('streams/getStreamLessons', async (id: number, thunkAPI) => {
+export const getStreamLessons = createAsyncThunk("streams/getStreamLessons", async (id: number, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-  thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-  try {
-    const { data } = await streamsAPI.getStreamLessonsByGroupId(id)
-    thunkAPI.dispatch(setAppAlert({ message: 'Дисципліни завантажено', status: 'success' }))
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-    return data
-  } catch (error: any) {
-    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-    thunkAPI.dispatch(
-      setAppAlert({
-        message: (error as any)?.response?.data?.message || error.message,
-        status: 'error',
-      })
-    )
-    throw error
-  }
+  const promise = streamsAPI.getStreamLessonsByGroupId(id)
+
+  toast.promise(promise, {
+    loading: "Завантаження...",
+    success: "Дисципліни завантажено",
+    error: (error) => {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      return (error as any)?.response?.data?.message || error.message
+    },
+  })
+
+  const { data } = await promise
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+  return data
 })
 
 export const addLessonToStream = createAsyncThunk(
-  'streams/addLessonToStream',
+  "streams/addLessonToStream",
   async (payload: AddLessonsToStreamPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await streamsAPI.addLessonToStream(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Потік оновлено', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
-        })
-      )
-      throw error
-    }
+    const promise = streamsAPI.addLessonToStream(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Потік оновлено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
 
 export const deleteLessonFromStream = createAsyncThunk(
-  'streams/deleteLessonFromStream',
+  "streams/deleteLessonFromStream",
   async (payload: DeleteLessonFromStreamPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
-    thunkAPI.dispatch(setAppAlert({ message: 'Завантаження...', status: 'info' }))
 
-    try {
-      const { data } = await streamsAPI.deleteLessonFromStream(payload)
-      thunkAPI.dispatch(setAppAlert({ message: 'Потік оновлено', status: 'success' }))
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
-      return data
-    } catch (error: any) {
-      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
-      thunkAPI.dispatch(
-        setAppAlert({
-          message: (error as any)?.response?.data?.message || error.message,
-          status: 'error',
-        })
-      )
-      throw error
-    }
+    const promise = streamsAPI.deleteLessonFromStream(payload)
+
+    toast.promise(promise, {
+      loading: "Завантаження...",
+      success: "Потік оновлено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
   }
 )
