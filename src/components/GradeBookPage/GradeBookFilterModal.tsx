@@ -123,6 +123,11 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
+        <p style={{ color: 'red' }}>ТРЕБА ДОДАТИ РІК В ЯКОМУ ДИСЦИПЛІНА ВИВЧАЛАСЬ</p>
+        <p style={{ color: 'red' }}>ТРЕБА ДОДАТИ РІК В ЯКОМУ ДИСЦИПЛІНА ВИВЧАЛАСЬ</p>
+        <p style={{ color: 'red' }}>ТРЕБА ДОДАТИ РІК В ЯКОМУ ДИСЦИПЛІНА ВИВЧАЛАСЬ</p>
+        <p style={{ color: 'red' }}>ТРЕБА ДОДАТИ РІК В ЯКОМУ ДИСЦИПЛІНА ВИВЧАЛАСЬ</p>
+        <p style={{ color: 'red' }}>ТРЕБА ДОДАТИ РІК В ЯКОМУ ДИСЦИПЛІНА ВИВЧАЛАСЬ</p>
         <DialogContent sx={{ padding: '0 24px 20px', maxWidth: '295px' }}>
           <Controller
             name="semester"
@@ -207,7 +212,6 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
             }}
           />
         </DialogContent>
-
         <DialogActions>
           <Button
             type="submit"

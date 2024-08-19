@@ -1,47 +1,48 @@
-import { lazy } from "react"
-import "react-toastify/dist/ReactToastify.css"
-import { Route, Routes } from "react-router-dom"
+import { lazy } from 'react'
+import 'react-toastify/dist/ReactToastify.css'
+import { Route, Routes } from 'react-router-dom'
 
-import "./App.css"
-import ThemeCustomization from "./themes"
-import Loadable from "./components/Loadable"
-import ScrollTop from "./components/ScrollTop"
-import MinimalLayout from "./layout/MinimalLayout"
-import MainLayout from "./layout/MainLayout/MainLayout"
-import NotFoundPage from "./pages/ErrorPages/NotFoundPage"
-import GradeBookPage from "./pages/GradeBook/GradeBookPage"
-import { TimetablePage } from "./pages/Timetable/TimetablePage"
-import AuthLogin from "./pages/authentication/auth-forms/AuthLogin"
-import AuthRegister from "./pages/authentication/auth-forms/AuthRegister"
-import InternalServerErrorPage from "./pages/ErrorPages/InternalServerErrorPage"
-import ForbiddenErrorPage from "./pages/ErrorPages/ForbiddenErrorPage"
+import './App.css'
+import ThemeCustomization from './themes'
+import Loadable from './components/Loadable'
+import ScrollTop from './components/ScrollTop'
+import MinimalLayout from './layout/MinimalLayout'
+import MainLayout from './layout/MainLayout/MainLayout'
+import NotFoundPage from './pages/ErrorPages/NotFoundPage'
+import GradeBookPage from './pages/GradeBook/GradeBookPage'
+import { TimetablePage } from './pages/Timetable/TimetablePage'
+import AuthLogin from './pages/authentication/auth-forms/AuthLogin'
+import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
+import InternalServerErrorPage from './pages/ErrorPages/InternalServerErrorPage'
+import ForbiddenErrorPage from './pages/ErrorPages/ForbiddenErrorPage'
 
 // render - dashboard
-const DashboardDefault = Loadable(lazy(() => import("./pages/dashboard")))
+const DashboardDefault = Loadable(lazy(() => import('./pages/dashboard')))
 
 // render - sample page
-const SamplePage = Loadable(lazy(() => import("./pages/extra-pages/SamplePage")))
+const SamplePage = Loadable(lazy(() => import('./pages/extra-pages/SamplePage')))
 
-const Color = Loadable(lazy(() => import("./pages/components-overview/Color")))
-const Shadow = Loadable(lazy(() => import("./pages/components-overview/Shadow")))
-const AntIcons = Loadable(lazy(() => import("./pages/components-overview/AntIcons")))
-const Typography = Loadable(lazy(() => import("./pages/components-overview/Typography")))
+const Color = Loadable(lazy(() => import('./pages/components-overview/Color')))
+const Shadow = Loadable(lazy(() => import('./pages/components-overview/Shadow')))
+const AntIcons = Loadable(lazy(() => import('./pages/components-overview/AntIcons')))
+const Typography = Loadable(lazy(() => import('./pages/components-overview/Typography')))
 
 // lazy loading pages
-const LoadPage = Loadable(lazy(() => import("./pages/Load/LoadPage")))
-const PlansPage = Loadable(lazy(() => import("./pages/Plans/PlansPage")))
-const GroupsPage = Loadable(lazy(() => import("./pages/Groups/GroupsPage")))
-const StreamsPage = Loadable(lazy(() => import("./pages/Streams/StreamsPage")))
-const SettingsPage = Loadable(lazy(() => import("./pages/Settings/SettingsPage")))
-const TeachersPage = Loadable(lazy(() => import("./pages/Teachers/TeachersPage")))
-const FullPlanPage = Loadable(lazy(() => import("./pages/FullPlan/FullPlanPage")))
-const FullGroupPage = Loadable(lazy(() => import("./pages/FullGroup/FullGroupPage")))
-const AuditoriesPage = Loadable(lazy(() => import("./pages/Auditories/AuditoriesPage")))
-const StudentsDivide = Loadable(lazy(() => import("./pages/StudentsDivide/StudentsDivide")))
-const DistributionPage = Loadable(lazy(() => import("./pages/Distribution/DistributionPage")))
-const StudentsAccounts = Loadable(lazy(() => import("./pages/StudentsAccounts/StudentsAccounts")))
-const TeacherProfilePage = Loadable(lazy(() => import("./pages/TeacherProfile/TeacherProfilePage")))
-const TeachingLessonsControl = Loadable(lazy(() => import("./pages/TeachingLessonsControl/TeachingLessonsControl")))
+const LoadPage = Loadable(lazy(() => import('./pages/Load/LoadPage')))
+const PlansPage = Loadable(lazy(() => import('./pages/Plans/PlansPage')))
+const GroupsPage = Loadable(lazy(() => import('./pages/Groups/GroupsPage')))
+const StreamsPage = Loadable(lazy(() => import('./pages/Streams/StreamsPage')))
+const SettingsPage = Loadable(lazy(() => import('./pages/Settings/SettingsPage')))
+const TeachersPage = Loadable(lazy(() => import('./pages/Teachers/TeachersPage')))
+const FullPlanPage = Loadable(lazy(() => import('./pages/FullPlan/FullPlanPage')))
+const FullGroupPage = Loadable(lazy(() => import('./pages/FullGroup/FullGroupPage')))
+const AuditoriesPage = Loadable(lazy(() => import('./pages/Auditories/AuditoriesPage')))
+const StudentsDivide = Loadable(lazy(() => import('./pages/StudentsDivide/StudentsDivide')))
+const DistributionPage = Loadable(lazy(() => import('./pages/Distribution/DistributionPage')))
+const StudentsAccounts = Loadable(lazy(() => import('./pages/StudentsAccounts/StudentsAccounts')))
+const TeacherProfilePage = Loadable(lazy(() => import('./pages/TeacherProfile/TeacherProfilePage')))
+const SchedulingСonstraints = Loadable(lazy(() => import('./pages/SchedulingСonstraints/SchedulingСonstraints')))
+const TeachingLessonsControl = Loadable(lazy(() => import('./pages/TeachingLessonsControl/TeachingLessonsControl')))
 
 const App = () => {
   return (
@@ -65,6 +66,7 @@ const App = () => {
             <Route element={<DistributionPage />} path="/distribution" />
             <Route element={<StreamsPage />} path="/streams" />
             <Route element={<TimetablePage />} path="/timetable" />
+            <Route element={<SchedulingСonstraints />} path="/scheduling-constraints" />
 
             <Route element={<SettingsPage />} path="/settings" />
 
@@ -174,3 +176,9 @@ export default App
 // ==================== Notification ======================
 // ========================================================
 // 1. Replace react-toastify to Sonner !!!!!!! Done. Need to check it !!!!!!!!!!!!
+
+// ========================================================
+// ================ Вибіркові дисципліни ==================
+// ========================================================
+// 1. Треба додати можливість вибору студентами вибіркових дисциплін
+//    - Якщо група не набирається треба продумати перевибір студентами дисциплін
