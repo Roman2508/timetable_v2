@@ -1,24 +1,24 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Box, Tab, Grid, Tabs, Button, Typography, Stack } from '@mui/material'
+import React from "react"
+import { useSelector } from "react-redux"
+import { useSearchParams } from "react-router-dom"
+import { Box, Tab, Grid, Tabs, Typography } from "@mui/material"
 
-import MainCard from '../../components/MainCard'
-import '../../components/SettingsPage/SettingsPage.css'
-import UsersTab from '../../components/SettingsPage/UsersTab'
-import ColorsTab from '../../components/SettingsPage/ColorsTab'
-import { settingsSelector } from '../../store/settings/settingsSlice'
-import UserRolesTab from '../../components/SettingsPage/UserRolesTab'
-import CallSchedulTab from '../../components/SettingsPage/CallSchedulTab'
-import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
-import TermsOfStudyTab from '../../components/SettingsPage/TermsOfStudyTab'
-import { useSearchParams } from 'react-router-dom'
+import MainCard from "../../components/MainCard"
+// import '../../components/SettingsPage/SettingsPage.css'
+import UsersTab from "../../components/SettingsPage/UsersTab"
+import ColorsTab from "../../components/SettingsPage/ColorsTab"
+import { settingsSelector } from "../../store/settings/settingsSlice"
+import UserRolesTab from "../../components/SettingsPage/UserRolesTab"
+import CallSchedulTab from "../../components/SettingsPage/CallSchedulTab"
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
+import TermsOfStudyTab from "../../components/SettingsPage/TermsOfStudyTab"
 
-const tabs = ['Розклад дзвінків', 'Терміни навчання', 'Користувачі', 'Ролі', 'Кольори']
+const tabs = ["Терміни навчання", "Розклад дзвінків", "Користувачі", "Ролі", "Кольори"]
 
 const SettingsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const [activeTab, setActiveTab] = React.useState(Number(searchParams.get('tab')) || 0)
+  const [activeTab, setActiveTab] = React.useState(Number(searchParams.get("tab")) || 0)
 
   const { settings } = useSelector(settingsSelector)
 
@@ -28,16 +28,16 @@ const SettingsPage = () => {
   }
 
   React.useEffect(() => {
-    const tab = searchParams.get('tab')
+    const tab = searchParams.get("tab")
     if (tab) setActiveTab(Number(tab))
   }, [searchParams])
 
   if (!settings) return <LoadingSpinner />
 
   return (
-    <div style={{ maxWidth: '1300px', margin: '0 auto' }}>
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center', p: 0 }}>
-        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    <div style={{ maxWidth: "1300px", margin: "0 auto" }}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center", p: 0 }}>
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "space-between" }}>
           <Grid item>
             <Typography variant="h5">Налаштування</Typography>
           </Grid>
@@ -46,11 +46,11 @@ const SettingsPage = () => {
         <Grid item xs={12}>
           <MainCard
             sx={{
-              '& .MuiCardContent-root': {
-                px: '0',
-                display: 'flex',
-                flexDirection: 'row',
-                minHeight: 'calc(100vh - 200px)',
+              "& .MuiCardContent-root": {
+                px: "0",
+                display: "flex",
+                flexDirection: "row",
+                minHeight: "calc(100vh - 200px)",
               },
             }}
           >
@@ -72,10 +72,10 @@ const SettingsPage = () => {
                 className="full-teacher__navigation-inner"
                 sx={{
                   borderLeft: 1,
-                  height: '100%',
-                  minWidth: '280px',
-                  borderColor: 'divider',
-                  '.MuiTabs-indicator': { left: 0 },
+                  height: "100%",
+                  minWidth: "280px",
+                  borderColor: "divider",
+                  ".MuiTabs-indicator": { left: 0 },
                 }}
               >
                 {tabs.map((el, index) => (
@@ -83,7 +83,7 @@ const SettingsPage = () => {
                     key={el}
                     label={el}
                     onClick={() => setActiveTab(index)}
-                    sx={{ textAlign: 'left', alignItems: 'flex-start', textTransform: 'initial' }}
+                    sx={{ textAlign: "left", alignItems: "flex-start", textTransform: "initial" }}
                   />
                 ))}
               </Tabs>

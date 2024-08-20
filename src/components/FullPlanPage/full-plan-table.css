@@ -1,0 +1,22 @@
+.full-plan-table__icon-wrapper {
+  display: none;
+  position: absolute;
+  right: 5px;
+  top: 6px;
+  background-color: #f5f5f5;
+}
+
+.full-plan-table__icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.full-plan-table__icon svg {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}

@@ -1,91 +1,78 @@
+import React from "react"
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import {
-  Box,
   Table,
   TableRow,
   TableBody,
   TableCell,
   TableHead,
-  IconButton,
   Typography,
   TableContainer,
-} from '@mui/material'
-import React from 'react'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+  Box,
+  TablePagination,
+} from "@mui/material"
 
-import { useAppDispatch } from '../../store/store'
-import { PlanSubjectType } from '../../store/plans/plansTypes'
-import { groupLessonsByName } from '../../utils/groupLessonsByName'
-import { searchItemsByField } from '../../utils/searchItemsByField'
-import { deletePlanSubjects } from '../../store/plans/plansAsyncActions'
-import { sortItemsByKey } from '../../utils/sortItemsByKey'
+import "./full-plan-table.css"
+import { useAppDispatch } from "../../store/store"
+import { sortItemsByKey } from "../../utils/sortItemsByKey"
+import { PlanSubjectType } from "../../store/plans/plansTypes"
+import { groupLessonsByName } from "../../utils/groupLessonsByName"
+import { searchItemsByField } from "../../utils/searchItemsByField"
+import { deletePlanSubjects } from "../../store/plans/plansAsyncActions"
 
-const cellStyles = { borderLeft: '1px solid rgb(235, 235, 235)' }
+const cellStyles = { borderLeft: "1px solid rgb(235, 235, 235)", padding: "8px 24px" /* backgroundColor: "#fff" */ }
 
 const OrderTableHead: React.FC = () => {
   return (
-    <TableHead>
+    <TableHead
+      sx={{
+        backgroundColor: "rgb(250, 250, 250) !important",
+        borderTop: "1px solid rgb(240, 240, 240)",
+        borderBottom: "1px solid rgb(240, 240, 240)",
+      }}
+    >
       <TableRow>
-        <TableCell sx={{ ...cellStyles, backgroundColor: '#fff !important' }} align="center" rowSpan={3} padding="none">
+        <TableCell rowSpan={3} align="center" padding="none" sx={{ ...cellStyles, borderLeft: 0 }}>
           Дисципліна
         </TableCell>
-        <TableCell sx={{ ...cellStyles, backgroundColor: '#fff !important' }} align="center" rowSpan={3} padding="none">
+        <TableCell sx={{ ...cellStyles }} align="center" rowSpan={3} padding="none">
           Всього
         </TableCell>
 
-        <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
-          align="center"
-          padding="none"
-          colSpan={6}
-        >
+        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none" colSpan={6}>
           Розподіл за курсами та семестрами
         </TableCell>
       </TableRow>
 
       <TableRow>
-        <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
-          align="center"
-          padding="none"
-          colSpan={2}
-        >
+        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none" colSpan={2}>
           1 курс
         </TableCell>
-        <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
-          align="center"
-          padding="none"
-          colSpan={2}
-        >
+        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none" colSpan={2}>
           2 курс
         </TableCell>
-        <TableCell
-          sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }}
-          align="center"
-          padding="none"
-          colSpan={2}
-        >
+        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none" colSpan={2}>
           3 курс
         </TableCell>
       </TableRow>
 
       <TableRow>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
           Семестр 1
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
           Семестр 2
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
           Семестр 3
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
           Семестр 4
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
           Семестр 5
         </TableCell>
-        <TableCell sx={{ ...cellStyles, p: 1, backgroundColor: '#fff !important' }} align="center" padding="none">
+        <TableCell sx={{ ...cellStyles, p: 1 }} align="center" padding="none">
           Семестр 6
         </TableCell>
       </TableRow>
@@ -100,7 +87,7 @@ interface IFullPlanTableProps {
   planSubjects: PlanSubjectType[]
   setSubjectsModalVisible: React.Dispatch<React.SetStateAction<boolean>>
   setSemesterHoursModalVisible: React.Dispatch<React.SetStateAction<boolean>>
-  setSubjectsModalType: React.Dispatch<React.SetStateAction<'create' | 'update'>>
+  setSubjectsModalType: React.Dispatch<React.SetStateAction<"create" | "update">>
   setSelectedSemester: React.Dispatch<React.SetStateAction<PlanSubjectType | null>>
   setEditingSubjectData: React.Dispatch<React.SetStateAction<{ name: string; cmk: number }>>
 }
@@ -116,9 +103,21 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
 }) => {
   const dispatch = useAppDispatch()
 
+  const [page, setPage] = React.useState(1)
+  const [rowsPerPage, setRowsPerPage] = React.useState(10)
+
+  const handleChangePage = (_: unknown, newPage: number) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
+
   const onDeleteSubject = (subjects: PlanSubjectType[]) => {
-    if (subjects.length > 1) return alert('Видаліть спочатку всі семестри')
-    if (window.confirm('Ви дійсно хочете видалити дисципліну?')) {
+    if (subjects.length > 1) return alert("Видаліть спочатку всі семестри")
+    if (window.confirm("Ви дійсно хочете видалити дисципліну?")) {
       dispatch(deletePlanSubjects(subjects[0].id))
     }
   }
@@ -150,27 +149,27 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
     <Box>
       <TableContainer
         sx={{
-          width: '100%',
-          overflowX: 'auto',
-          // maxHeight: '600px',
-          position: 'relative',
-          display: 'block',
-          maxWidth: '100%',
-          '& td, & th': { whiteSpace: 'nowrap' },
+          width: "100%",
+          overflowX: "auto",
+          position: "relative",
+          display: "block",
+          maxWidth: "100%",
+          "& td, & th": { whiteSpace: "nowrap" },
+          borderTop: "1px solid rgb(235, 235, 235)",
         }}
       >
         <Table
           stickyHeader
           aria-labelledby="tableTitle"
           sx={{
-            '& .MuiTableCell-root:first-of-type': { pl: 2 },
-            '& .MuiTableCell-root:last-of-type': { pr: 3 },
+            "& .MuiTableCell-root:first-of-type": { pl: 2 },
+            "& .MuiTableCell-root:last-of-type": { pr: 3 },
           }}
         >
           <OrderTableHead />
 
           <TableBody>
-            {searchItemsByField(sortItemsByKey(groupLessonsByName(planSubjects), 'name'), 'name', searchValue).map(
+            {searchItemsByField(sortItemsByKey(groupLessonsByName(planSubjects), "name"), "name", searchValue).map(
               (row: PlanSubjectType[], index: number) => {
                 const labelId = `enhanced-table-checkbox-${index}`
 
@@ -181,8 +180,9 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
                     <TableCell
                       sx={{
                         ...cellStyles,
-                        position: 'relative',
-                        ':hover *': { display: 'flex !important' },
+                        position: "relative",
+                        ":hover *": { display: "flex !important" },
+                        borderLeft: 0,
                       }}
                       component="th"
                       id={labelId}
@@ -191,31 +191,17 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
                     >
                       <Typography sx={{ flexGrow: 1 }}>{row[0].name}</Typography>
 
-                      <div
-                        style={{
-                          display: 'none',
-                          position: 'absolute',
-                          right: 5,
-                          top: 6,
-                          backgroundColor: '#f5f5f5',
-                        }}
-                      >
-                        <IconButton
-                          sx={{ mr: 1, background: '#fff', ':hover': { background: '#fff' } }}
+                      <div className="full-plan-table__icon-wrapper">
+                        <EditOutlined
+                          className="full-plan-table__icon"
                           onClick={() => {
                             setEditingSubjectData({ name: row[0].name, cmk: row[0].cmk.id })
-                            setSubjectsModalType('update')
+                            setSubjectsModalType("update")
                             setSubjectsModalVisible(true)
                           }}
-                        >
-                          <EditOutlined />
-                        </IconButton>
-                        <IconButton
-                          sx={{ background: '#fff', ':hover': { background: '#fff' } }}
-                          onClick={() => onDeleteSubject(row)}
-                        >
-                          <DeleteOutlined />
-                        </IconButton>
+                        />
+
+                        <DeleteOutlined className="full-plan-table__icon" onClick={() => onDeleteSubject(row)} />
                       </div>
                     </TableCell>
                     <TableCell sx={cellStyles} align="center">
@@ -234,12 +220,12 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
                             onClick={() => onSemesterClick(row[0], semester, semesterHours)}
                             sx={{
                               ...cellStyles,
-                              cursor: 'pointer',
-                              ':hover': { background: 'rgba(0, 0, 0, 0.05);' },
+                              cursor: "pointer",
+                              ":hover": { background: "rgba(0, 0, 0, 0.05);" },
                             }}
                             align="center"
                           >
-                            {semesterHours ? semesterHours.totalHours : ''}
+                            {semesterHours ? semesterHours.totalHours : ""}
                           </TableCell>
                         )
                       })}
@@ -250,6 +236,18 @@ const FullPlanTable: React.FC<IFullPlanTableProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <TablePagination
+          page={page}
+          component="div"
+          count={groupLessonsByName(planSubjects).length}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handleChangePage}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Box>
     </Box>
   )
 }
