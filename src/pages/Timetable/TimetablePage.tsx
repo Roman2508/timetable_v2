@@ -40,7 +40,6 @@ const TimetablePage = () => {
   const { lastOpenedSemester, lastOpenedWeek } = useSelector(lastSelectedDataSelector)
 
   const [weeksCount, setWeeksCount] = React.useState(0)
-  // const [currentWeekNumber, setCurrentWeekNumber] = React.useState(1)
   const [selectedSemester, setSelectedSemester] = React.useState<1 | 2>(1)
   const [slectedGroupId, setSlectedGroupId] = React.useState<number | null>(null)
   const [selectedTeacherId, setSelectedTeacherId] = React.useState<null | number>(null)
@@ -143,7 +142,6 @@ const TimetablePage = () => {
                 selectedTeacherId={selectedTeacherId}
                 setSelectedLesson={setSelectedLesson}
                 selectedAuditoryId={selectedAuditoryId}
-                // setCurrentWeekNumber={setCurrentWeekNumber}
                 setSelectedAuditoryId={setSelectedAuditoryId}
                 isPossibleToCreateLessons={isPossibleToCreateLessons}
                 setCopyTheScheduleModalVisible={setCopyTheScheduleModalVisible}

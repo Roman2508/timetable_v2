@@ -78,6 +78,8 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
 }) => {
   const dispatch = useAppDispatch()
 
+  const isToday = customDayjs().format('MM.DD.YYYY') === day.data.format('MM.DD.YYYY')
+
   const [colors, setColors] = React.useState(colorsInitialState)
   // if true day is outside the semester
   const [isDayOutsideTheSemester, setIsDayOutsideTheSemester] = React.useState(false)
@@ -111,10 +113,16 @@ const CalendarDay: React.FC<ICalendarDayProps> = ({
     setColors(settings.colors)
   }, [settings])
 
-
   return (
     <div className="day">
-      <div className="day-name" style={{ userSelect: 'none' }}>
+      <div
+        className="day-name"
+        style={
+          isToday
+            ? { userSelect: 'none', backgroundColor: 'rgba(22, 119, 255, 0.08)', fontWeight: '700' }
+            : { userSelect: 'none', whiteSpace: 'nowrap' }
+        }
+      >
         {dayNames[index]} {day.start}
       </div>
 

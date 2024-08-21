@@ -1,19 +1,16 @@
+import { toast } from "sonner"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import {
   GetGradesPayloadType,
   UpdateGradePayloadType,
-  CreateGradesPayloadType,
-  DeleteGradesPayloadType,
   GetGradeBookPayloadType,
   AddGradeBookSummaryPayloadType,
   DeleteGradeBookSummaryPayloadType,
 } from "../../api/apiTypes"
-import { gradeBookAPI, teacherProfileAPI } from "../../api/api"
 import { LoadingStatusTypes } from "../appTypes"
 import { setLoadingStatus } from "./gradeBookSlice"
-import { setAppAlert } from "../appStatus/appStatusSlice"
-import { toast } from "sonner"
+import { gradeBookAPI, teacherProfileAPI } from "../../api/api"
 
 export const getGradeBook = createAsyncThunk(
   "group/getGradeBook",
@@ -23,8 +20,8 @@ export const getGradeBook = createAsyncThunk(
     const promise = gradeBookAPI.get(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Завантажено",
+      // loading: "Завантаження...",
+      // success: "Завантажено",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -67,8 +64,8 @@ export const getLessonThemes = createAsyncThunk(
     const promise = teacherProfileAPI.getInstructionalMaterials(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Завантажено",
+      // loading: "Завантаження...",
+      // success: "Завантажено",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -111,8 +108,8 @@ export const getGrades = createAsyncThunk("group/getGrades", async (payload: Get
   const promise = gradeBookAPI.getGrades(payload)
 
   toast.promise(promise, {
-    loading: "Завантаження...",
-    success: "Завантажено рейтинг студента",
+    // loading: "Завантаження...",
+    // success: "Завантажено рейтинг студента",
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message

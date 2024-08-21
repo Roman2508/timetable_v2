@@ -1,26 +1,19 @@
-import React from "react"
 import {
   Box,
-  Tab,
-  Tabs,
-  Select,
-  Button,
-  Divider,
-  InputLabel,
-  Typography,
-  FormControl,
+  Chip,
+  Avatar,
   Table,
+  TableRow,
   TableHead,
   TableBody,
-  TableRow,
   TableCell,
-  Avatar,
-  Chip,
+  Typography,
   IconButton,
   TableContainer,
   TablePagination,
-} from "@mui/material"
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons"
+} from '@mui/material'
+import React from 'react'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -32,13 +25,13 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0
 }
 
-type Order = "asc" | "desc"
+type Order = 'asc' | 'desc'
 
 function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
 ): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
-  return order === "desc"
+  return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
@@ -58,8 +51,8 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
 const UsersTab = () => {
   const [page, setPage] = React.useState(1)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
-  const [order, setOrder] = React.useState<Order>("asc")
-  const [orderBy, setOrderBy] = React.useState("email")
+  const [order, setOrder] = React.useState<Order>('asc')
+  const [orderBy, setOrderBy] = React.useState('email')
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage)
@@ -75,10 +68,10 @@ const UsersTab = () => {
       .fill(null)
       .map(() => ({
         id: 1,
-        name: "asdasdas",
-        email: "sdasdds@pharm.zt.ua",
-        picture: "https://saaadsdas.com",
-        role: ["ADMIN", "TEACHER"],
+        name: 'asdasdas',
+        email: 'sdasdds@pharm.zt.ua',
+        picture: 'https://saaadsdas.com',
+        role: ['ADMIN', 'TEACHER'],
       })),
   ]
 
@@ -90,7 +83,7 @@ const UsersTab = () => {
 
   return (
     <div>
-      <Typography variant="h5" sx={{ textAlign: "center", mb: 2 }}>
+      <Typography variant="h5" sx={{ textAlign: 'center', mb: 2 }}>
         Користувачі
       </Typography>
 
@@ -98,9 +91,9 @@ const UsersTab = () => {
         <Table>
           <TableHead
             sx={{
-              backgroundColor: "rgb(250, 250, 250)",
-              borderTop: "1px solid rgb(240, 240, 240)",
-              borderBottom: "1px solid rgb(240, 240, 240)",
+              backgroundColor: 'rgb(250, 250, 250)',
+              borderTop: '1px solid rgb(240, 240, 240)',
+              borderBottom: '1px solid rgb(240, 240, 240)',
             }}
           >
             <TableRow>
@@ -119,11 +112,11 @@ const UsersTab = () => {
                 <TableCell align="center">{index + 1}</TableCell>
 
                 <TableCell>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Avatar />
                     <Box>
                       <Typography>William Jem</Typography>
-                      <Typography sx={{ color: "rgb(140, 140, 140)", fontSize: "12px" }}>Студент</Typography>
+                      <Typography sx={{ color: 'rgb(140, 140, 140)', fontSize: '12px' }}>Студент</Typography>
                     </Box>
                   </Box>
                 </TableCell>
@@ -150,7 +143,7 @@ const UsersTab = () => {
         </Table>
       </TableContainer>
 
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <TablePagination
           page={page}
           component="div"

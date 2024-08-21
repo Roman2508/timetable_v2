@@ -12,9 +12,10 @@ import NotFoundPage from './pages/ErrorPages/NotFoundPage'
 import GradeBookPage from './pages/GradeBook/GradeBookPage'
 import { TimetablePage } from './pages/Timetable/TimetablePage'
 import AuthLogin from './pages/authentication/auth-forms/AuthLogin'
+import ForbiddenErrorPage from './pages/ErrorPages/ForbiddenErrorPage'
 import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
 import InternalServerErrorPage from './pages/ErrorPages/InternalServerErrorPage'
-import ForbiddenErrorPage from './pages/ErrorPages/ForbiddenErrorPage'
+import AutomaticSchedulingPage from './pages/AutomaticScheduling/AutomaticSchedulingPage'
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('./pages/dashboard')))
@@ -66,6 +67,7 @@ const App = () => {
             <Route element={<DistributionPage />} path="/distribution" />
             <Route element={<StreamsPage />} path="/streams" />
             <Route element={<TimetablePage />} path="/timetable" />
+            <Route element={<AutomaticSchedulingPage />} path="/automatic-scheduling" />
             <Route element={<SchedulingСonstraints />} path="/scheduling-constraints" />
 
             <Route element={<SettingsPage />} path="/settings" />
@@ -108,12 +110,11 @@ export default App
 // ================== Розклад ==================
 // =============================================
 // 1. При зміні selectedItemId <Calendar /> 2 рази підвантажується
-//    і 2 рази відправляється http://localhost:7777/schedule-lessons/1/group/7
+//    і 2 рази відправляється http://localhost:7777/schedule-lessons/1/group/7 
 // 2. Заміна викладача
 // 3. Можливість ставити декілька елементів розкладу в один час, якщо це підгрупи або спец. групи
 //    - МОЖЛИВІ НАКЛАДКИ АУДИТОРІЙ (ТРЕБА ЗРОБИТИ ПЕРЕВІРКУ ЧИ АУДИТОРІЯ ВІЛЬНА)
 //    - МОЖЛИВІ НАКЛАДКИ ВИКЛАДАЧІВ
-// 4. Кнопка "Сьогодні" в <Calendar />
 // 5. Можливість закрити для викладача, групи або аудиторії певні дати
 // 6. Не оновлюється auditory overlay коли вибирати дисципліну не з таблиці а з календаря (date slot) ???
 // 7. При виборі аудиторії, при подвійному кліку з'являються зайняті аудиторії ???

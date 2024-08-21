@@ -19,6 +19,14 @@ const timetable = {
       breadcrumbs: false,
     },
     {
+      id: 'automatic-scheduling',
+      title: 'Автоматичне розставлення',
+      type: 'item',
+      url: '/automatic-scheduling',
+      icon: icons.FormOutlined,
+      breadcrumbs: false,
+    },
+    {
       id: 'scheduling-constraints',
       title: 'Обмеження розкладу',
       type: 'item',

@@ -1,22 +1,12 @@
-// material-ui
-import {
-  Stack,
-  Button,
-  MenuItem,
-  TextField,
-  InputLabel,
-  OutlinedInput,
-  FormHelperText,
-} from "@mui/material"
-import React from "react"
-import { useSelector } from "react-redux"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { Stack, Button, MenuItem, TextField, InputLabel, OutlinedInput, FormHelperText } from '@mui/material'
 
-// project import
-import { useAppDispatch } from "../../store/store"
-import { AuditoriesTypes } from "../../store/auditories/auditoriesTypes"
-import { auditoriesSelector } from "../../store/auditories/auditoriesSlise"
-import { createAuditory, updateAuditory } from "../../store/auditories/auditoriesAsyncActions"
+import { useAppDispatch } from '../../store/store'
+import { AuditoriesTypes } from '../../store/auditories/auditoriesTypes'
+import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
+import { createAuditory, updateAuditory } from '../../store/auditories/auditoriesAsyncActions'
 
 interface IAuditoriesFields {
   name: string
@@ -53,7 +43,7 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
     formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm<IAuditoriesFields>({
-    mode: "onBlur",
+    mode: 'onBlur',
     defaultValues: defaultFormValues,
   })
 
@@ -64,11 +54,11 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
         if (!editingAuditory) return
         await dispatch(updateAuditory({ ...data, id: editingAuditory.id }))
         handleClose()
-        reset({ name: "", seatsNumber: 1 })
+        reset({ name: '', seatsNumber: 1 })
       } else {
         // Якщо форму відкрито НЕ в модалці - створення викладача
         await dispatch(createAuditory(data))
-        reset({ name: "", seatsNumber: 1 })
+        reset({ name: '', seatsNumber: 1 })
       }
     } catch (error) {
       console.log(error)
@@ -80,7 +70,7 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
       <Controller
         name="name"
         control={control}
-        rules={{ required: "Вкажіть назву аудиторії" }}
+        rules={{ required: 'Вкажіть назву аудиторії' }}
         render={({ field }) => {
           return (
             <Stack spacing={1} sx={{ mt: 2 }}>
@@ -106,7 +96,7 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
       <Controller
         name="seatsNumber"
         control={control}
-        rules={{ required: "Вкажіть кількість місць в аудиторії" }}
+        rules={{ required: 'Вкажіть кількість місць в аудиторії' }}
         render={({ field }) => {
           return (
             <Stack spacing={1} sx={{ mt: 2 }}>
@@ -132,7 +122,7 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
       <Controller
         name="category"
         control={control}
-        rules={{ required: "Вкажіть категорію" }}
+        rules={{ required: 'Вкажіть категорію' }}
         render={({ field }) => {
           return (
             <Stack spacing={1} sx={{ mt: 2 }}>
@@ -142,7 +132,7 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
                 fullWidth
                 {...field}
                 id="category"
-                sx={{ "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" } }}
+                sx={{ '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' } }}
               >
                 {(!auditoriCategories ? [] : auditoriCategories).map((option) => (
                   <MenuItem key={option.id} value={option.id}>
@@ -160,13 +150,9 @@ const CreateAuditoryForm: React.FC<ICreateAuditoryFormProps> = ({
         color="primary"
         variant="contained"
         disabled={isSubmitting}
-        sx={{ textTransform: "capitalize", width: "100%", p: "7.44px 15px", mt: 3 }}
+        sx={{ textTransform: 'capitalize', width: '100%', p: '7.44px 15px', mt: 3 }}
       >
-        {isOpenInModal && !isSubmitting
-          ? "Оновити"
-          : !isSubmitting
-          ? "Створити"
-          : "Завантаження..."}
+        {isOpenInModal && !isSubmitting ? 'Оновити' : !isSubmitting ? 'Створити' : 'Завантаження...'}
       </Button>
     </form>
   )

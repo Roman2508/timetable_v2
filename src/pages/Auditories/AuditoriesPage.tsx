@@ -1,28 +1,24 @@
-// material-ui
-import { Grid, Typography } from '@mui/material'
-
-// project import
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { Grid, Typography } from '@mui/material'
+
+import {
+  deleteAuditory,
+  deleteAuditoryCategory,
+  getAuditoryCategories,
+} from '../../store/auditories/auditoriesAsyncActions'
 import MainCard from '../../components/MainCard'
 import { useAppDispatch } from '../../store/store'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { AuditoriesTypes } from '../../store/auditories/auditoriesTypes'
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
 import CreateAuditoryForm from '../../components/AuditoriesPage/CreateAuditoryForm'
 import UpdateAuditoryModal from '../../components/AuditoriesPage/UpdateAuditoryModal'
 import { AccordionItemsList } from '../../components/AccordionItemsList/AccordionItemsList'
 import CreateAuditoryCategoryForm from '../../components/AuditoriesPage/CreateAuditoryCategoryForm'
 import UpdateAuditoryCategoryForm from '../../components/AuditoriesPage/UpdateAuditoryCategoryModal'
-import {
-  deleteAuditory,
-  deleteAuditoryCategory,
-  getAuditoryCategories,
-} from '../../store/auditories/auditoriesAsyncActions'
-import { LoadingStatusTypes } from '../../store/appTypes'
-import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
-import EmptyCard from '../../components/EmptyCard/EmptyCard'
-import { AuditoriesTypes } from '../../store/auditories/auditoriesTypes'
-
-// ==============================|| AUDITORIES ||============================== //
 
 const AuditoriesPage = () => {
   const dispatch = useAppDispatch()

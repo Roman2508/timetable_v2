@@ -1,5 +1,5 @@
-import { toast } from "sonner"
-import { createAsyncThunk } from "@reduxjs/toolkit"
+import { toast } from 'sonner'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 
 import {
   AddStudentToLessonType,
@@ -18,25 +18,24 @@ import {
   FindLessonsForSchedulePayloadType,
   DeleteStudentsFromAllGroupLessonsType,
   FindGroupLoadLessonsByGroupIdAndSemesterPayloadType,
-} from "../../api/apiTypes"
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupLoadType } from "../groups/groupsTypes"
-import { TeachersType } from "../teachers/teachersTypes"
-import { setLoadingStatus } from "./scheduleLessonsSlice"
-import { setAppAlert } from "../appStatus/appStatusSlice"
-import { ScheduleLessonType } from "./scheduleLessonsTypes"
-import { groupLoadLessonsAPI, scheduleLessonsAPI } from "../../api/api"
+} from '../../api/apiTypes'
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupLoadType } from '../groups/groupsTypes'
+import { TeachersType } from '../teachers/teachersTypes'
+import { setLoadingStatus } from './scheduleLessonsSlice'
+import { ScheduleLessonType } from './scheduleLessonsTypes'
+import { groupLoadLessonsAPI, scheduleLessonsAPI } from '../../api/api'
 
 /* getScheduleLessons === Розклад (вже виставлений) */
 export const getScheduleLessons = createAsyncThunk(
-  "schedule-lessons/getScheduleLessons",
+  'schedule-lessons/getScheduleLessons',
   async (payload: GetScheduleLessonsPayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = scheduleLessonsAPI.getLessons(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Розклад завантажено",
+      // loading: "Завантаження...",
+      // success: "Розклад завантажено",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -75,13 +74,13 @@ export const getScheduleLessons = createAsyncThunk(
 /*  */
 
 export const getGroupLoadByCurrentCourse = createAsyncThunk(
-  "schedule-lessons/getGroupLoadByCurrentCourse",
+  'schedule-lessons/getGroupLoadByCurrentCourse',
   async (id: number, thunkAPI): Promise<GroupLoadType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = groupLoadLessonsAPI.getGroupLoadByCurrentCourse(id)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
+      // loading: "Завантаження...",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -119,13 +118,13 @@ export const getGroupLoadByCurrentCourse = createAsyncThunk(
 /*  */
 
 export const getGroupOverlay = createAsyncThunk(
-  "schedule-lessons/getGroupOverlay",
+  'schedule-lessons/getGroupOverlay',
   async (payload: GetGroupOverlayPayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = scheduleLessonsAPI.getGroupOverlay(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
+      // loading: "Завантаження...",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -159,14 +158,14 @@ export const getGroupOverlay = createAsyncThunk(
 
 // getScheduleLessons
 export const getTeacherLessons = createAsyncThunk(
-  "schedule-lessons/getTeacherLessons",
+  'schedule-lessons/getTeacherLessons',
   async (payload: GetScheduleLessonsPayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = scheduleLessonsAPI.getLessons(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Розклад завантажено",
+      // loading: "Завантаження...",
+      // success: "Розклад завантажено",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -205,13 +204,13 @@ export const getTeacherLessons = createAsyncThunk(
 /*  */
 
 export const getTeacherOverlay = createAsyncThunk(
-  "schedule-lessons/getTeacherOverlay",
+  'schedule-lessons/getTeacherOverlay',
   async (payload: GetTeachersOverlayPayloadType, thunkAPI): Promise<TeachersType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = scheduleLessonsAPI.getTeacherOverlay(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
+      // loading: "Завантаження...",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -249,13 +248,13 @@ export const getTeacherOverlay = createAsyncThunk(
 /*  */
 
 export const getAuditoryOverlay = createAsyncThunk(
-  "schedule-lessons/getAuditoryOverlay",
+  'schedule-lessons/getAuditoryOverlay',
   async (payload: GetAuditoryOverlayPayloadType, thunkAPI): Promise<{ id: number; name: string }[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = scheduleLessonsAPI.getAuditoryOverlay(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
+      // loading: "Завантаження...",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -293,14 +292,14 @@ export const getAuditoryOverlay = createAsyncThunk(
 /*  */
 
 export const createScheduleLesson = createAsyncThunk(
-  "schedule-lessons/createScheduleLesson",
+  'schedule-lessons/createScheduleLesson',
   async (payload: CreateScheduleLessonsPayloadType, thunkAPI): Promise<ScheduleLessonType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = scheduleLessonsAPI.create(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Додано елемент розкладу",
+      loading: 'Завантаження...',
+      success: 'Додано елемент розкладу',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -341,14 +340,14 @@ export const createScheduleLesson = createAsyncThunk(
 
 /* copy schedule */
 export const copyWeekSchedule = createAsyncThunk(
-  "schedule-lessons/copyWeekSchedule",
+  'schedule-lessons/copyWeekSchedule',
   async (payload: CopyWeekSchedulePayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = scheduleLessonsAPI.copyWeekSchedule(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Розклад скопійовано",
+      loading: 'Завантаження...',
+      success: 'Розклад скопійовано',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -388,14 +387,14 @@ export const copyWeekSchedule = createAsyncThunk(
 /*  */
 
 export const copyDaySchedule = createAsyncThunk(
-  "schedule-lessons/copyDaySchedule",
+  'schedule-lessons/copyDaySchedule',
   async (payload: CopyDaySchedulePayloadType, thunkAPI): Promise<ScheduleLessonType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = scheduleLessonsAPI.copyDaySchedule(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Розклад скопійовано",
+      loading: 'Завантаження...',
+      success: 'Розклад скопійовано',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -436,15 +435,15 @@ export const copyDaySchedule = createAsyncThunk(
 
 /* replacement */
 export const createReplacement = createAsyncThunk(
-  "schedule-lessons/createReplacement",
+  'schedule-lessons/createReplacement',
   async (payload: CreateReplacementPayloadType, thunkAPI): Promise<ScheduleLessonType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = scheduleLessonsAPI.createReplacement(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Зроблено заміну",
+      loading: 'Завантаження...',
+      success: 'Зроблено заміну',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -484,14 +483,14 @@ export const createReplacement = createAsyncThunk(
 /*  */
 
 export const deleteReplacement = createAsyncThunk(
-  "schedule-lessons/deleteReplacement",
+  'schedule-lessons/deleteReplacement',
   async (id: number, thunkAPI): Promise<number> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = scheduleLessonsAPI.deleteReplacement(id)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Видалено заміну",
+      loading: 'Завантаження...',
+      success: 'Видалено заміну',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -531,14 +530,14 @@ export const deleteReplacement = createAsyncThunk(
 /*  */
 
 export const updateScheduleLesson = createAsyncThunk(
-  "schedule-lessons/updateScheduleLesson",
+  'schedule-lessons/updateScheduleLesson',
   async (payload: UpdateScheduleLessonsPayloadType, thunkAPI): Promise<ScheduleLessonType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = scheduleLessonsAPI.update(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Оновлено елемент розкладу",
+      loading: 'Завантаження...',
+      success: 'Оновлено елемент розкладу',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -572,14 +571,14 @@ export const updateScheduleLesson = createAsyncThunk(
 /*  */
 
 export const deleteScheduleLesson = createAsyncThunk(
-  "schedule-lessons/deleteScheduleLesson",
+  'schedule-lessons/deleteScheduleLesson',
   async (id: number, thunkAPI): Promise<number> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = scheduleLessonsAPI.delete(id)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Видалено елемент розкладу",
+      loading: 'Завантаження...',
+      success: 'Видалено елемент розкладу',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -619,15 +618,15 @@ export const deleteScheduleLesson = createAsyncThunk(
 
 /* findLessonsForSchedule === Навантаження групи / викладача / аудиторії: <LessonsTable /> in timetable page */
 export const findLessonsForSchedule = createAsyncThunk(
-  "group/findLessonsForSchedule",
+  'group/findLessonsForSchedule',
   async (payload: FindLessonsForSchedulePayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = groupLoadLessonsAPI.findLessonsForSchedule(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Розклад завантажено",
+      // loading: "Завантаження...",
+      // success: "Розклад завантажено",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -667,13 +666,13 @@ export const findLessonsForSchedule = createAsyncThunk(
 /*  */
 
 /* getLessonStudents */
-export const getLessonStudents = createAsyncThunk("group/getLessonStudents", async (id: number, thunkAPI) => {
+export const getLessonStudents = createAsyncThunk('group/getLessonStudents', async (id: number, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
   const promise = groupLoadLessonsAPI.getLessonStudents(id)
 
   toast.promise(promise, {
-    loading: "Завантаження...",
-    success: "Завантажено",
+    // loading: "Завантаження...",
+    // success: "Завантажено",
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message
@@ -709,14 +708,14 @@ export const getLessonStudents = createAsyncThunk("group/getLessonStudents", asy
 
 /* get all semester lessons for students divide */
 export const findGroupLoadLessonsByGroupIdAndSemester = createAsyncThunk(
-  "group/findGroupLoadLessonsByGroupIdAndSemester",
+  'group/findGroupLoadLessonsByGroupIdAndSemester',
   async (payload: FindGroupLoadLessonsByGroupIdAndSemesterPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = groupLoadLessonsAPI.findGroupLoadLessonsByGroupIdAndSemester(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Завантажено",
+      // loading: "Завантаження...",
+      // success: "Завантажено",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -758,14 +757,14 @@ export const findGroupLoadLessonsByGroupIdAndSemester = createAsyncThunk(
 
 /* attachTeacher */
 export const attachTeacher = createAsyncThunk(
-  "group/attachTeacher",
+  'group/attachTeacher',
   async (payload: AttachTeacherPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = groupLoadLessonsAPI.attachTeacher(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Викладача прикріплено до дисципліни",
+      loading: 'Завантаження...',
+      success: 'Викладача прикріплено до дисципліни',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -804,13 +803,13 @@ export const attachTeacher = createAsyncThunk(
 /*  */
 
 /* unpinTeacher */
-export const unpinTeacher = createAsyncThunk("group/unpinTeacher", async (lessonId: number, thunkAPI) => {
+export const unpinTeacher = createAsyncThunk('group/unpinTeacher', async (lessonId: number, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
   const promise = groupLoadLessonsAPI.unpinTeacher(lessonId)
 
   toast.promise(promise, {
-    loading: "Завантаження...",
-    success: "Викладача відкріплено від дисципліни",
+    loading: 'Завантаження...',
+    success: 'Викладача відкріплено від дисципліни',
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message
@@ -846,15 +845,15 @@ export const unpinTeacher = createAsyncThunk("group/unpinTeacher", async (lesson
 
 /* add/delete students to/from lesson */
 export const addStudentToLesson = createAsyncThunk(
-  "group/addStudentToLesson",
+  'group/addStudentToLesson',
   async (payload: AddStudentToLessonType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = groupLoadLessonsAPI.addStudentsToLesson(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Студента зараховано на дисципліну",
+      loading: 'Завантаження...',
+      success: 'Студента зараховано на дисципліну',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -888,14 +887,14 @@ export const addStudentToLesson = createAsyncThunk(
 /*  */
 
 export const deleteStudentFromLesson = createAsyncThunk(
-  "group/deleteStudentFromLesson",
+  'group/deleteStudentFromLesson',
   async (payload: DeleteStudentFromLessonType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = groupLoadLessonsAPI.deleteStudentsFromLesson(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Студента відраховано з дисципліни",
+      loading: 'Завантаження...',
+      success: 'Студента відраховано з дисципліни',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -929,14 +928,14 @@ export const deleteStudentFromLesson = createAsyncThunk(
 /*  */
 
 export const addStudentsToAllGroupLessons = createAsyncThunk(
-  "group/addStudentsToAllGroupLessons",
+  'group/addStudentsToAllGroupLessons',
   async (payload: AddStudentsToAllGroupLessonsType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = groupLoadLessonsAPI.addStudentsToAllGroupLessons(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Студента зараховано на дисципліни",
+      loading: 'Завантаження...',
+      success: 'Студента зараховано на дисципліни',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -970,14 +969,14 @@ export const addStudentsToAllGroupLessons = createAsyncThunk(
 /*  */
 
 export const deleteStudentsFromAllGroupLessons = createAsyncThunk(
-  "group/deleteStudentsFromAllGroupLessons",
+  'group/deleteStudentsFromAllGroupLessons',
   async (payload: DeleteStudentsFromAllGroupLessonsType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = groupLoadLessonsAPI.deleteStudentsFromAllGroupLessons(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Студента відраховано з дисциплін",
+      loading: 'Завантаження...',
+      success: 'Студента відраховано з дисциплін',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message

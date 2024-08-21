@@ -1,3 +1,4 @@
+import { toast } from "sonner"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import {
@@ -8,8 +9,6 @@ import {
 import { setLoadingStatus } from "./plansSlice"
 import { LoadingStatusTypes } from "../appTypes"
 import { planSubjectsAPI, plansAPI } from "../../api/api"
-import { setAppAlert } from "../appStatus/appStatusSlice"
-import { toast } from "sonner"
 
 /* category */
 
@@ -19,8 +18,8 @@ export const getPlansCategories = createAsyncThunk("plans/getPlansCategories", a
   const promise = plansAPI.getPlansCategories()
 
   toast.promise(promise, {
-    loading: "Завантаження...",
-    success: "Плани завантажено",
+    // loading: "Завантаження...",
+    // success: "Плани завантажено",
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message
@@ -170,8 +169,8 @@ export const getPlanSubjects = createAsyncThunk(
     const promise = planSubjectsAPI.getPlanSubjects(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "План завантажено",
+      // loading: "Завантаження...",
+      // success: "План завантажено",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -190,8 +189,8 @@ export const getPlanName = createAsyncThunk("plans/getPlanName", async (id: numb
   const promise = plansAPI.getPlanName(id)
 
   toast.promise(promise, {
-    loading: "Завантаження...",
-    success: "План завантажено",
+    // loading: "Завантаження...",
+    // success: "План завантажено",
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message

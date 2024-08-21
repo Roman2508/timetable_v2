@@ -1,19 +1,18 @@
-import { createAsyncThunk } from "@reduxjs/toolkit"
+import { toast } from 'sonner'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 
 import {
   UpdateColorsPayloadType,
   UpdateCallSchedulePayloadType,
   UpdateSemesterTermsPayloadType,
-} from "../../api/apiTypes"
-import { settingsAPI } from "../../api/api"
-import { SettingsType } from "./settingsTypes"
-import { LoadingStatusTypes } from "../appTypes"
-import { setLoadingStatus } from "./settingsSlice"
-import { setAppAlert } from "../appStatus/appStatusSlice"
-import { toast } from "sonner"
+} from '../../api/apiTypes'
+import { settingsAPI } from '../../api/api'
+import { SettingsType } from './settingsTypes'
+import { LoadingStatusTypes } from '../appTypes'
+import { setLoadingStatus } from './settingsSlice'
 
 export const getSettings = createAsyncThunk(
-  "settings/getSettings",
+  'settings/getSettings',
   async (id: number, thunkAPI): Promise<SettingsType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
@@ -21,7 +20,7 @@ export const getSettings = createAsyncThunk(
 
     toast.promise(promise, {
       // loading: "Завантаження...",
-      // success: "Налаштування видалено",
+      // success: "Завантажено",
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -35,15 +34,15 @@ export const getSettings = createAsyncThunk(
 )
 
 export const updateSettings = createAsyncThunk(
-  "settings/updateSettings",
+  'settings/updateSettings',
   async (payload: SettingsType, thunkAPI): Promise<SettingsType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = settingsAPI.updateSettings(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Налаштування оновлено",
+      loading: 'Завантаження...',
+      success: 'Налаштування оновлено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -57,15 +56,15 @@ export const updateSettings = createAsyncThunk(
 )
 
 export const updateSemesterTerms = createAsyncThunk(
-  "settings/updateSemesterTerms",
+  'settings/updateSemesterTerms',
   async (payload: UpdateSemesterTermsPayloadType, thunkAPI): Promise<SettingsType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = settingsAPI.updateSemesterTerms(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Налаштування оновлено",
+      loading: 'Завантаження...',
+      success: 'Налаштування оновлено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -79,15 +78,15 @@ export const updateSemesterTerms = createAsyncThunk(
 )
 
 export const updateCallSchedule = createAsyncThunk(
-  "settings/updateCallSchedule",
+  'settings/updateCallSchedule',
   async (payload: UpdateCallSchedulePayloadType, thunkAPI): Promise<SettingsType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = settingsAPI.updateCallSchedule(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Налаштування оновлено",
+      loading: 'Завантаження...',
+      success: 'Налаштування оновлено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -101,15 +100,15 @@ export const updateCallSchedule = createAsyncThunk(
 )
 
 export const updateColors = createAsyncThunk(
-  "settings/updateColors",
+  'settings/updateColors',
   async (payload: UpdateColorsPayloadType, thunkAPI): Promise<SettingsType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = settingsAPI.updateColors(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Налаштування оновлено",
+      loading: 'Завантаження...',
+      success: 'Налаштування оновлено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message

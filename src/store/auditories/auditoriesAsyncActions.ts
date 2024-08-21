@@ -1,26 +1,26 @@
-import { createAsyncThunk } from "@reduxjs/toolkit"
-import { auditoriesAPI } from "../../api/api"
+import { toast } from 'sonner'
+import { createAsyncThunk } from '@reduxjs/toolkit'
+
 import {
   CreateAuditoryPayloadType,
-  UpdateAuditoryCategoryPayloadType,
   UpdateAuditoryPayloadType,
-} from "../../api/apiTypes"
-import { setAppAlert } from "../appStatus/appStatusSlice"
-import { setLoadingStatus } from "./auditoriesSlise"
-import { LoadingStatusTypes } from "../appTypes"
-import { toast } from "sonner"
+  UpdateAuditoryCategoryPayloadType,
+} from '../../api/apiTypes'
+import { auditoriesAPI } from '../../api/api'
+import { LoadingStatusTypes } from '../appTypes'
+import { setLoadingStatus } from './auditoriesSlise'
 
 /* categories */
 export const getAuditoryCategories = createAsyncThunk(
-  "auditory-categories/getAuditoryCategories",
+  'auditory-categories/getAuditoryCategories',
   async (_, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = auditoriesAPI.getAuditoryCategories()
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Аудиторії завантажено",
+      // loading: 'Завантаження...',
+      // success: 'Аудиторії завантажено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -34,15 +34,15 @@ export const getAuditoryCategories = createAsyncThunk(
 )
 
 export const createAuditoryCategory = createAsyncThunk(
-  "auditory-categories/createAuditoryCategory",
+  'auditory-categories/createAuditoryCategory',
   async (name: string, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = auditoriesAPI.createAuditoryCategory(name)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Категорію створено",
+      loading: 'Завантаження...',
+      success: 'Категорію створено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -56,15 +56,15 @@ export const createAuditoryCategory = createAsyncThunk(
 )
 
 export const updateAuditoryCategory = createAsyncThunk(
-  "auditory-categories/updateAuditoryCategory",
+  'auditory-categories/updateAuditoryCategory',
   async (payload: UpdateAuditoryCategoryPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = auditoriesAPI.updateAuditoryCategory(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Категорію оновлено",
+      loading: 'Завантаження...',
+      success: 'Категорію оновлено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -78,15 +78,15 @@ export const updateAuditoryCategory = createAsyncThunk(
 )
 
 export const deleteAuditoryCategory = createAsyncThunk(
-  "auditory-categories/deleteAuditoryCategory",
+  'auditory-categories/deleteAuditoryCategory',
   async (id: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = auditoriesAPI.deleteAuditoryCategory(id)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Категорію видалено",
+      loading: 'Завантаження...',
+      success: 'Категорію видалено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -102,15 +102,15 @@ export const deleteAuditoryCategory = createAsyncThunk(
 /* auditories */
 
 export const createAuditory = createAsyncThunk(
-  "auditory-categories/createAuditory",
+  'auditory-categories/createAuditory',
   async (payload: CreateAuditoryPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = auditoriesAPI.createAuditory(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Аудиторію створено",
+      loading: 'Завантаження...',
+      success: 'Аудиторію створено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -124,15 +124,15 @@ export const createAuditory = createAsyncThunk(
 )
 
 export const updateAuditory = createAsyncThunk(
-  "auditory-categories/updateAuditory",
+  'auditory-categories/updateAuditory',
   async (payload: UpdateAuditoryPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = auditoriesAPI.updateAuditory(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Аудиторію оновлено",
+      loading: 'Завантаження...',
+      success: 'Аудиторію оновлено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -145,14 +145,14 @@ export const updateAuditory = createAsyncThunk(
   }
 )
 
-export const deleteAuditory = createAsyncThunk("auditory-categories/deleteAuditory", async (id: number, thunkAPI) => {
+export const deleteAuditory = createAsyncThunk('auditory-categories/deleteAuditory', async (id: number, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
   const promise = auditoriesAPI.deleteAuditory(id)
 
   toast.promise(promise, {
-    loading: "Завантаження...",
-    success: "Аудиторію видалено",
+    loading: 'Завантаження...',
+    success: 'Аудиторію видалено',
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message

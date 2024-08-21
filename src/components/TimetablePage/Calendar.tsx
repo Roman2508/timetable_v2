@@ -42,7 +42,6 @@ interface ICalendarProps {
   selectedAuditoryId: number | null
   isPossibleToCreateLessons: boolean
   selectedLesson: ISelectedLesson | null
-  // setCurrentWeekNumber: Dispatch<SetStateAction<number>>
   setSelectedAuditoryId: Dispatch<SetStateAction<number | null>>
   setCopyTheScheduleModalVisible: Dispatch<SetStateAction<boolean>>
   setSelectedLesson: Dispatch<SetStateAction<ISelectedLesson | null>>
@@ -57,7 +56,6 @@ const Calendar: React.FC<ICalendarProps> = ({
   selectedAuditoryId,
   selectedTeacherId,
   setSelectedLesson,
-  // setCurrentWeekNumber,
   setSelectedAuditoryId,
   isPossibleToCreateLessons,
   setCopyTheScheduleModalVisible,
@@ -65,8 +63,8 @@ const Calendar: React.FC<ICalendarProps> = ({
   const dispatch = useAppDispatch()
 
   const { settings } = useSelector(settingsSelector)
-  const { lastSelectedScheduleType, lastSelectedItemId } = useSelector(lastSelectedDataSelector)
   const { scheduleLessons, teacherLessons, groupOverlay, loadingStatus } = useSelector(scheduleLessonsSelector)
+  const { lastSelectedScheduleType, lastSelectedItemId, lastOpenedSemester } = useSelector(lastSelectedDataSelector)
 
   const [isRemote, setIsRemote] = React.useState(false)
   const [modalVisible, setModalVisible] = React.useState(false)
@@ -109,6 +107,61 @@ const Calendar: React.FC<ICalendarProps> = ({
     const date = customDayjs(selectedTimeSlot?.data, { format: 'YYYY.MM.DD' }).format('YYYY.MM.DD')
     dispatch(getTeacherOverlay({ date, lessonNumber: selectedTimeSlot.lessonNumber }))
   }, [selectedTimeSlot])
+
+  const setToday = () => {
+    if (!settings) return
+
+    const now = customDayjs()
+
+    Array(weeksCount)
+      .fill(null)
+      .forEach((_, index) => {
+        const weekNumber = index + 1
+
+        const { firstSemesterStart, firstSemesterEnd, secondSemesterEnd, secondSemesterStart } = settings
+
+        let weekDays
+
+        if (lastOpenedSemester === 1) {
+          weekDays = getCalendarWeek(weekNumber, firstSemesterStart, firstSemesterEnd)
+        } else {
+          weekDays = getCalendarWeek(weekNumber, secondSemesterStart, secondSemesterEnd)
+        }
+
+        const isAfter = now.isAfter(weekDays[0].data)
+        const isBefore = now.isBefore(weekDays[6].data)
+
+        if (isBefore && isAfter) {
+          dispatch(setLastSelectedData({ lastOpenedWeek: weekNumber }))
+        }
+      })
+  }
+
+  const isTodayDisabled = () => {
+    if (!settings || weeksCount < 1) return true
+
+    const { firstSemesterStart, firstSemesterEnd, secondSemesterEnd, secondSemesterStart } = settings
+
+    let semesterStart
+    let semesterEnd
+
+    if (lastOpenedSemester === 1) {
+      semesterStart = getCalendarWeek(1, firstSemesterStart, firstSemesterEnd)[0]
+      semesterEnd = getCalendarWeek(weeksCount, firstSemesterStart, firstSemesterEnd)[6]
+    } else {
+      semesterStart = getCalendarWeek(1, secondSemesterStart, secondSemesterEnd)[0]
+      semesterEnd = getCalendarWeek(weeksCount, secondSemesterStart, secondSemesterEnd)[6]
+    }
+
+    const isTodayBeforeFirstSemesterDate = customDayjs().isBefore(semesterStart.data)
+    const isTodayAfterLastSemesterDate = customDayjs().isAfter(semesterEnd.data)
+
+    if (isTodayBeforeFirstSemesterDate || isTodayAfterLastSemesterDate) {
+      return true
+    }
+
+    return false
+  }
 
   // select date and time and open creating lessons modal
   const onTimeSlotClick = (data: Dayjs, lessonNumber: number) => {
@@ -245,7 +298,13 @@ const Calendar: React.FC<ICalendarProps> = ({
       <div className="calendar">
         <div className="header">
           <div className="header-left">
-            <Button variant="outlined" color="secondary" sx={{ mr: 1, padding: '0px 10px' }} disabled>
+            <Button
+              color="secondary"
+              variant="outlined"
+              onClick={setToday}
+              sx={{ mr: 1, padding: '0px 10px' }}
+              disabled={isTodayDisabled()}
+            >
               Сьогодні
             </Button>
             <Button

@@ -1,8 +1,8 @@
+import { toast } from "sonner"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import {
   UpdateGroupPayloadType,
-  AttachTeacherPayloadType,
   CreateSubgroupsPayloadType,
   UpdateEntityNamePayloadType,
   AttachSpecializationPayloadType,
@@ -13,9 +13,7 @@ import {
 import { setLoadingStatus } from "./groupsSlice"
 import { LoadingStatusTypes } from "../appTypes"
 import { GroupCategoriesType } from "./groupsTypes"
-import { setAppAlert } from "../appStatus/appStatusSlice"
 import { groupLoadLessonsAPI, groupsAPI } from "../../api/api"
-import { toast } from "sonner"
 
 export const getGroupCategories = createAsyncThunk(
   "groups-categories/getGroupCategories",
@@ -112,8 +110,8 @@ export const getGroup = createAsyncThunk("group/getGroup", async (id: string, th
   const promise = groupsAPI.getGroup(id)
 
   toast.promise(promise, {
-    loading: "Завантаження...",
-    success: "Групу завантажено",
+    // loading: "Завантаження...",
+    // success: "Групу завантажено",
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message
