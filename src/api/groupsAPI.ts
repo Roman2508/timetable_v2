@@ -37,6 +37,12 @@ export const groupsAPI = {
     const { id, ...rest } = payload
     return instanse.patch<GroupsType>(`/groups/${id}`, rest)
   },
+  incrementAllGroupsCourse() {
+    return instanse.patch<GroupsType[]>('/groups/increment-all-groups-course')
+  },
+  decrementAllGroupsCourse() {
+    return instanse.patch<GroupsType[]>('/groups/decrement-all-groups-course')
+  },
   deleteGroup(id: number) {
     return instanse.delete<number>(`/groups/${id}`)
   },

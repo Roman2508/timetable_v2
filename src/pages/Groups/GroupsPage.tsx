@@ -1,9 +1,23 @@
+import {
+  EyeOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  PlusCircleOutlined,
+  DoubleRightOutlined,
+  EyeInvisibleOutlined,
+} from '@ant-design/icons'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Grid, List, Typography, ListItemText, ListItemButton, IconButton, Tooltip } from '@mui/material'
-import { EditOutlined, DeleteOutlined, PlusCircleOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
 
+import {
+  deleteGroup,
+  getGroupCategories,
+  deleteGroupCategory,
+  incrementAllGroupsCourse,
+  decrementAllGroupsCourse,
+} from '../../store/groups/groupsAsyncActions'
 import MainCard from '../../components/MainCard'
 import { useAppDispatch } from '../../store/store'
 import { LoadingStatusTypes } from '../../store/appTypes'
@@ -13,7 +27,6 @@ import { GroupCategoriesType } from '../../store/groups/groupsTypes'
 import { GroupsTable } from '../../components/GroupsPage/GroupsTable'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import { GroupsActionsModal } from '../../components/GroupsPage/GroupsActionsModal'
-import { deleteGroup, getGroupCategories, deleteGroupCategory } from '../../store/groups/groupsAsyncActions'
 
 const GroupsPage = () => {
   const dispatch = useAppDispatch()
@@ -49,6 +62,30 @@ const GroupsPage = () => {
           return null
         })
       }
+    }
+  }
+
+  // Перевести всі групи на наступний або на попередній курс
+  const transferAllGroup = async (type: 'increment' | 'decrement') => {
+    const direction = type === 'increment' ? 'наступний' : 'попередній'
+    if (!window.confirm(`Ви дійсно хочете перевести всі групи на ${direction} курс?`)) return
+    try {
+      if (type === 'increment') {
+        await dispatch(incrementAllGroupsCourse())
+      } else {
+        await dispatch(decrementAllGroupsCourse())
+      }
+
+      setActiveGroupCategory((prev) => {
+        if (!prev) return null
+        const groups = prev.groups.map((el) => {
+          const courseNumber = type === 'increment' ? el.courseNumber + 1 : el.courseNumber - 1
+          return { ...el, courseNumber }
+        })
+        return { ...prev, groups }
+      })
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -94,13 +131,25 @@ const GroupsPage = () => {
                 </IconButton>
               </Tooltip>
 
-              <Tooltip title={groupsVisible ? 'Показати видимі групи' : 'Показати приховані групи'} enterDelay={1000}>
+              <Tooltip title={groupsVisible ? 'Показати активні групи' : 'Показати приховані групи'} enterDelay={1000}>
                 <IconButton
                   onClick={() => {
                     setGroupsVisible((prev) => !prev)
                   }}
                 >
                   {groupsVisible ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Перевести всі групи на наступний курс" enterDelay={1000}>
+                <IconButton onClick={() => transferAllGroup('increment')}>
+                  <DoubleRightOutlined style={{ transform: 'rotate(-90deg)' }} />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Перевести всі групи на попередній курс" enterDelay={1000}>
+                <IconButton onClick={() => transferAllGroup('decrement')}>
+                  <DoubleRightOutlined style={{ transform: 'rotate(90deg)' }} />
                 </IconButton>
               </Tooltip>
             </Grid>

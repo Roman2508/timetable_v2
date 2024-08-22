@@ -15,6 +15,8 @@ import {
   createSpecialization,
   updateSpecialization,
   deleteSpecialization,
+  incrementAllGroupsCourse,
+  decrementAllGroupsCourse,
 } from './groupsAsyncActions'
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
@@ -130,6 +132,34 @@ const groupsSlice = createSlice({
       })
       state.group = action.payload
       state.groupCategories = newGroups
+    })
+
+    builder.addCase(incrementAllGroupsCourse.fulfilled, (state, _: PayloadAction<GroupsType[]>) => {
+      if (!state.groupCategories) return
+
+      const groupCategories = state.groupCategories.map((category) => {
+        const groups = category.groups.map((group) => {
+          return { ...group, courseNumber: group.courseNumber + 1 }
+        })
+
+        return { ...category, groups }
+      })
+
+      state.groupCategories = groupCategories
+    })
+
+    builder.addCase(decrementAllGroupsCourse.fulfilled, (state, _: PayloadAction<GroupsType[]>) => {
+      if (!state.groupCategories) return
+
+      const groupCategories = state.groupCategories.map((category) => {
+        const groups = category.groups.map((group) => {
+          return { ...group, courseNumber: group.courseNumber - 1 }
+        })
+
+        return { ...category, groups }
+      })
+
+      state.groupCategories = groupCategories
     })
 
     /* deleteGroup */

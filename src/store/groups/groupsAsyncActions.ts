@@ -1,5 +1,5 @@
-import { toast } from "sonner"
-import { createAsyncThunk } from "@reduxjs/toolkit"
+import { toast } from 'sonner'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 
 import {
   UpdateGroupPayloadType,
@@ -9,14 +9,14 @@ import {
   CreateSpecializationPayloadType,
   DeleteSpecializationPayloadType,
   UpdateSpecializationPayloadType,
-} from "../../api/apiTypes"
-import { setLoadingStatus } from "./groupsSlice"
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupCategoriesType } from "./groupsTypes"
-import { groupLoadLessonsAPI, groupsAPI } from "../../api/api"
+} from '../../api/apiTypes'
+import { setLoadingStatus } from './groupsSlice'
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupCategoriesType } from './groupsTypes'
+import { groupLoadLessonsAPI, groupsAPI } from '../../api/api'
 
 export const getGroupCategories = createAsyncThunk(
-  "groups-categories/getGroupCategories",
+  'groups-categories/getGroupCategories',
   async (isHide: boolean = false, thunkAPI): Promise<GroupCategoriesType[]> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
@@ -38,15 +38,15 @@ export const getGroupCategories = createAsyncThunk(
 )
 
 export const createGroupCategory = createAsyncThunk(
-  "groups-categories/createGroupCategory",
+  'groups-categories/createGroupCategory',
   async (name: string, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = groupsAPI.createGroupCategory(name)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Категорію створено",
+      loading: 'Завантаження...',
+      success: 'Категорію створено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -60,15 +60,15 @@ export const createGroupCategory = createAsyncThunk(
 )
 
 export const updateGroupCategory = createAsyncThunk(
-  "group-categories/updateGroupCategory",
+  'group-categories/updateGroupCategory',
   async (payload: UpdateEntityNamePayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = groupsAPI.updateGroupCategory(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Категорію оновлено",
+      loading: 'Завантаження...',
+      success: 'Категорію оновлено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -82,15 +82,15 @@ export const updateGroupCategory = createAsyncThunk(
 )
 
 export const deleteGroupCategory = createAsyncThunk(
-  "group-categories/deleteGroupCategory",
+  'group-categories/deleteGroupCategory',
   async (id: number, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = groupsAPI.deleteGroupCategory(id)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Категорію видалено",
+      loading: 'Завантаження...',
+      success: 'Категорію видалено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -104,7 +104,7 @@ export const deleteGroupCategory = createAsyncThunk(
 )
 
 /* groups */
-export const getGroup = createAsyncThunk("group/getGroup", async (id: string, thunkAPI) => {
+export const getGroup = createAsyncThunk('group/getGroup', async (id: string, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
   const promise = groupsAPI.getGroup(id)
@@ -123,14 +123,14 @@ export const getGroup = createAsyncThunk("group/getGroup", async (id: string, th
   return data
 })
 
-export const createGroup = createAsyncThunk("group/createGroup", async (payload: UpdateGroupPayloadType, thunkAPI) => {
+export const createGroup = createAsyncThunk('group/createGroup', async (payload: UpdateGroupPayloadType, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
   const promise = groupsAPI.createGroup(payload)
 
   toast.promise(promise, {
-    loading: "Завантаження...",
-    success: "Групу створено",
+    loading: 'Завантаження...',
+    success: 'Групу створено',
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message
@@ -142,14 +142,14 @@ export const createGroup = createAsyncThunk("group/createGroup", async (payload:
   return data
 })
 
-export const updateGroup = createAsyncThunk("group/updateGroup", async (payload: UpdateGroupPayloadType, thunkAPI) => {
+export const updateGroup = createAsyncThunk('group/updateGroup', async (payload: UpdateGroupPayloadType, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
   const promise = groupsAPI.updateGroup(payload)
 
   toast.promise(promise, {
-    loading: "Завантаження...",
-    success: "Групу оновлено",
+    loading: 'Завантаження...',
+    success: 'Групу оновлено',
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message
@@ -161,14 +161,52 @@ export const updateGroup = createAsyncThunk("group/updateGroup", async (payload:
   return data
 })
 
-export const deleteGroup = createAsyncThunk("group/deleteGroup", async (id: number, thunkAPI) => {
+export const incrementAllGroupsCourse = createAsyncThunk('group/incrementAllGroupsCourse', async (_, thunkAPI) => {
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+  const promise = groupsAPI.incrementAllGroupsCourse()
+
+  toast.promise(promise, {
+    loading: 'Завантаження...',
+    success: 'Переведено всі групи на наступний курс',
+    error: (error) => {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      return (error as any)?.response?.data?.message || error.message
+    },
+  })
+
+  const { data } = await promise
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+  return data
+})
+
+export const decrementAllGroupsCourse = createAsyncThunk('group/decrementAllGroupsCourse', async (_, thunkAPI) => {
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+  const promise = groupsAPI.decrementAllGroupsCourse()
+
+  toast.promise(promise, {
+    loading: 'Завантаження...',
+    success: 'Переведено всі групи на попередній курc',
+    error: (error) => {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      return (error as any)?.response?.data?.message || error.message
+    },
+  })
+
+  const { data } = await promise
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+  return data
+})
+
+export const deleteGroup = createAsyncThunk('group/deleteGroup', async (id: number, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
   const promise = groupsAPI.deleteGroup(id)
 
   toast.promise(promise, {
-    loading: "Завантаження...",
-    success: "Групу видалено",
+    loading: 'Завантаження...',
+    success: 'Групу видалено',
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message
@@ -180,14 +218,14 @@ export const deleteGroup = createAsyncThunk("group/deleteGroup", async (id: numb
   return data
 })
 
-export const handleGroupVisible = createAsyncThunk("group/handleGroupVisible", async (id: number, thunkAPI) => {
+export const handleGroupVisible = createAsyncThunk('group/handleGroupVisible', async (id: number, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
   const promise = groupsAPI.handleGroupVisible(id)
 
   toast.promise(promise, {
-    loading: "Завантаження...",
-    success: "Групу оновлено",
+    loading: 'Завантаження...',
+    success: 'Групу оновлено',
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message
@@ -202,15 +240,15 @@ export const handleGroupVisible = createAsyncThunk("group/handleGroupVisible", a
 /* Specialization */
 
 export const attachSpecialization = createAsyncThunk(
-  "group/attachSpecialization",
+  'group/attachSpecialization',
   async (payload: AttachSpecializationPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = groupLoadLessonsAPI.attachSpecialization(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Спец. підгрупу оновлено",
+      loading: 'Завантаження...',
+      success: 'Спец. підгрупу оновлено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -224,15 +262,15 @@ export const attachSpecialization = createAsyncThunk(
 )
 
 export const createSpecialization = createAsyncThunk(
-  "group/createSpecialization",
+  'group/createSpecialization',
   async (payload: CreateSpecializationPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = groupsAPI.createSpecialization(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Спец. підгрупу створено",
+      loading: 'Завантаження...',
+      success: 'Спец. підгрупу створено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -246,15 +284,15 @@ export const createSpecialization = createAsyncThunk(
 )
 
 export const updateSpecialization = createAsyncThunk(
-  "group/updateSpecialization",
+  'group/updateSpecialization',
   async (payload: UpdateSpecializationPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = groupsAPI.updateSpecialization(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Спец. підгрупу оновлено",
+      loading: 'Завантаження...',
+      success: 'Спец. підгрупу оновлено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -268,15 +306,15 @@ export const updateSpecialization = createAsyncThunk(
 )
 
 export const deleteSpecialization = createAsyncThunk(
-  "group/deleteSpecialization",
+  'group/deleteSpecialization',
   async (payload: DeleteSpecializationPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = groupsAPI.deleteSpecialization(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Спец. підгрупу видалено",
+      loading: 'Завантаження...',
+      success: 'Спец. підгрупу видалено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
@@ -291,15 +329,15 @@ export const deleteSpecialization = createAsyncThunk(
 
 /* Subgroups */
 export const createSubgroups = createAsyncThunk(
-  "group/createSubgroups",
+  'group/createSubgroups',
   async (payload: CreateSubgroupsPayloadType, thunkAPI) => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
     const promise = groupLoadLessonsAPI.createSubgroups(payload)
 
     toast.promise(promise, {
-      loading: "Завантаження...",
-      success: "Кількість підгруп змінено",
+      loading: 'Завантаження...',
+      success: 'Кількість підгруп змінено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message
