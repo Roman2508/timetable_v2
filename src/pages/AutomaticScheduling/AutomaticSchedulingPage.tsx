@@ -1,9 +1,11 @@
 import {
   Box,
+  Chip,
   Grid,
   Paper,
   Stack,
   Table,
+  Select,
   Button,
   Tooltip,
   Divider,
@@ -16,11 +18,14 @@ import {
   Typography,
   IconButton,
   InputLabel,
+  OutlinedInput,
   TableContainer,
+  SelectChangeEvent,
 } from '@mui/material'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
+import { Theme, useTheme } from '@mui/material/styles'
 import { ColumnWidthOutlined, FilterOutlined, PrinterOutlined, SnippetsOutlined } from '@ant-design/icons'
 
 import { useAppDispatch } from '../../store/store'
@@ -44,6 +49,8 @@ const rows = [
 const AutomaticSchedulingPage = () => {
   const dispatch = useAppDispatch()
 
+  const theme = useTheme()
+
   const [searchParams, setSearchParams] = useSearchParams()
 
   const { gradeBook, loadingStatus } = useSelector(gradeBookSelector)
@@ -51,6 +58,18 @@ const AutomaticSchedulingPage = () => {
   const [isOpenFilterModal, setIsOpenFilterModal] = React.useState(false)
   const [isOpenSummaryModal, setIsOpenSummaryModal] = React.useState(false)
   const [gradeBookLessonDates, setGradeBookLessonDates] = React.useState<{ date: string }[]>([])
+
+  const [lessonNumbers, setLessonNumbers] = React.useState<string[]>([])
+
+  const handleChangeLessonNumbers = (event: SelectChangeEvent<typeof lessonNumbers>) => {
+    const {
+      target: { value },
+    } = event
+    setLessonNumbers(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value
+    )
+  }
 
   return (
     <>
@@ -228,11 +247,9 @@ const AutomaticSchedulingPage = () => {
                 }}
               >
                 <TableRow>
-                  <TableCell sx={cellStyles}>Група</TableCell>
+                  <TableCell sx={cellStyles}>Група/Дисц/Викл/Ауд</TableCell>
 
-                  <TableCell sx={cellStyles}>Дисц/Викл/Ауд</TableCell>
-
-                  <TableCell sx={cellStyles}>Дисц/Викл/Ауд</TableCell>
+                  <TableCell sx={cellStyles}>Дисц</TableCell>
 
                   <TableCell sx={cellStyles}>Має/Не може</TableCell>
 
@@ -242,38 +259,12 @@ const AutomaticSchedulingPage = () => {
 
                   <TableCell sx={cellStyles}>(Якщо вибрана дисц або викл) Має стояти в ауд</TableCell>
 
-                  <TableCell sx={cellStyles}>Вікна (Дозволено/Заборонено)</TableCell>
+                  <TableCell sx={cellStyles}>Вікна</TableCell>
                   <TableCell sx={cellStyles}>Дії</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 <TableRow sx={{ backgroundColor: 'rgb(250, 250, 250)', borderBottom: '1px solid rgb(240, 240, 240)' }}>
-                  <TableCell sx={cellStyles}>
-                    <TextField
-                      select
-                      fullWidth
-                      defaultValue={0}
-                      id="category"
-                      sx={{
-                        minWidth: '140px',
-                        maxWidth: '140px',
-                        textAlign: 'left',
-                        '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
-                      }}
-                    >
-                      {[
-                        { id: 0, name: 'Не вибрано' },
-                        { id: 1, name: 'PH9-24-1' },
-                        { id: 2, name: 'PH9-24-2' },
-                        { id: 3, name: 'PH9-24-3' },
-                      ].map((option) => (
-                        <MenuItem key={option.id} value={option.id}>
-                          {option.name}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </TableCell>
-
                   <TableCell sx={cellStyles}>
                     <TextField
                       select
@@ -289,8 +280,9 @@ const AutomaticSchedulingPage = () => {
                     >
                       {[
                         { id: 1, name: 'Дисципліна' },
-                        { id: 2, name: 'Викладач' },
-                        { id: 3, name: 'Аудиторія' },
+                        { id: 2, name: 'Група' },
+                        { id: 3, name: 'Викладач' },
+                        { id: 4, name: 'Аудиторія' },
                       ].map((option) => (
                         <MenuItem key={option.id} value={option.id}>
                           {option.name}
@@ -327,47 +319,85 @@ const AutomaticSchedulingPage = () => {
 
                   <TableCell sx={cellStyles}>
                     <TextField
+                      select
                       fullWidth
-                      InputProps={{ inputProps: { min: 0, max: 300 } }}
-                      size="small"
-                      type="number"
-                      placeholder=""
+                      defaultValue={1}
+                      id="category"
                       sx={{
-                        maxWidth: '100px',
-                        mr: '8px !important',
-                        '& .MuiInputBase-root': { p: 0 },
+                        minWidth: '140px',
+                        maxWidth: '140px',
+                        textAlign: 'left',
+                        '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
                       }}
-                    />
+                    >
+                      {[
+                        { id: 1, name: 'Має' },
+                        { id: 2, name: 'Не може' },
+                      ].map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                          {option.name}
+                        </MenuItem>
+                      ))}
+                    </TextField>
                   </TableCell>
 
                   <TableCell sx={cellStyles}>
                     <TextField
+                      select
                       fullWidth
-                      InputProps={{ inputProps: { min: 0, max: 300 } }}
-                      size="small"
-                      type="number"
-                      placeholder=""
+                      defaultValue={0}
+                      id="category"
                       sx={{
-                        maxWidth: '100px',
-                        mr: '8px !important',
-                        '& .MuiInputBase-root': { p: 0 },
+                        minWidth: '140px',
+                        maxWidth: '140px',
+                        textAlign: 'left',
+                        '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
                       }}
-                    />
+                    >
+                      {[
+                        { id: 0, name: 'Не вибрано' },
+                        { id: 1, name: 'Понеділок' },
+                        { id: 2, name: 'Вівторок' },
+                        { id: 3, name: 'Середа' },
+                        { id: 4, name: 'Четвер' },
+                        { id: 5, name: "П'ятниця" },
+                        { id: 6, name: 'Субота' },
+                        { id: 7, name: 'Неділя' },
+                        { id: 8, name: 'Всі дні' },
+                      ].map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                          {option.name}
+                        </MenuItem>
+                      ))}
+                    </TextField>
                   </TableCell>
 
                   <TableCell sx={cellStyles}>
-                    <TextField
-                      fullWidth
-                      InputProps={{ inputProps: { min: 0, max: 300 } }}
-                      size="small"
-                      type="number"
-                      placeholder=""
+                    <Select
+                      multiple
+                      value={lessonNumbers}
+                      onChange={handleChangeLessonNumbers}
+                      input={<OutlinedInput label="Chip" />}
                       sx={{
-                        maxWidth: '100px',
-                        mr: '8px !important',
-                        '& .MuiInputBase-root': { p: 0 },
+                        minWidth: '170px',
+                        maxWidth: '170px',
+                        textAlign: 'left',
+                        '& .MuiInputBase-input': { py: '10.4px', px: '5px', fontSize: '0.875rem' },
                       }}
-                    />
+                      renderValue={(selected) => (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                          {selected.map((value) => (
+                            <Chip key={value} label={value} sx={{ padding: '1px', height: '20px' }} />
+                          ))}
+                        </Box>
+                      )}
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7].map((name) => (
+                        <MenuItem key={name} value={name}>
+                          {name}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </TableCell>
 
                   <TableCell sx={cellStyles}>
@@ -398,17 +428,26 @@ const AutomaticSchedulingPage = () => {
 
                   <TableCell sx={cellStyles}>
                     <TextField
+                      select
                       fullWidth
-                      InputProps={{ inputProps: { min: 0, max: 300 } }}
-                      size="small"
-                      type="number"
-                      placeholder=""
+                      defaultValue={1}
+                      id="category"
                       sx={{
-                        maxWidth: '100px',
-                        mr: '8px !important',
-                        '& .MuiInputBase-root': { p: 0 },
+                        minWidth: '140px',
+                        maxWidth: '140px',
+                        textAlign: 'left',
+                        '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
                       }}
-                    />
+                    >
+                      {[
+                        { id: 1, name: 'Дозволено' },
+                        { id: 2, name: 'Заборонено' },
+                      ].map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                          {option.name}
+                        </MenuItem>
+                      ))}
+                    </TextField>
                   </TableCell>
 
                   <TableCell sx={cellStyles}>
@@ -418,8 +457,6 @@ const AutomaticSchedulingPage = () => {
 
                 {rows.map((_, index) => (
                   <TableRow key={index}>
-                    <TableCell sx={cellStyles}>PH9-24-1</TableCell>
-
                     <TableCell sx={cellStyles}>Дисципліна</TableCell>
 
                     <TableCell sx={cellStyles}>Інформаційні технології у фармації</TableCell>
