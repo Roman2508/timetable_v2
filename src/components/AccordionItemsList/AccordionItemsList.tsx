@@ -10,19 +10,20 @@ import {
   ListItemButton,
   AccordionSummary,
   AccordionDetails,
-} from '@mui/material'
-import { Dispatch, SetStateAction } from 'react'
-import { DeleteOutlined } from '@ant-design/icons'
-import { DownOutlined, PlusOutlined } from '@ant-design/icons'
-import { EditOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
+} from "@mui/material"
+import { Dispatch, SetStateAction } from "react"
+import { DeleteOutlined } from "@ant-design/icons"
+import { DownOutlined, PlusOutlined } from "@ant-design/icons"
+import { EditOutlined, EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons"
 
-import { GroupCategoriesType } from '../../store/groups/groupsTypes'
-import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
-import { TeachersCategoryType, TeachersType } from '../../store/teachers/teachersTypes'
-import { AuditoriesTypes, AuditoryCategoriesTypes } from '../../store/auditories/auditoriesTypes'
-import { sortItemsByKey } from '../../utils/sortItemsByKey'
+import { sortItemsByKey } from "../../utils/sortItemsByKey"
+import { GroupCategoriesType } from "../../store/groups/groupsTypes"
+import { getLastnameAndInitials } from "../../utils/getLastnameAndInitials"
+import { TeachersCategoryType, TeachersType } from "../../store/teachers/teachersTypes"
+import { AuditoriesTypes, AuditoryCategoriesTypes } from "../../store/auditories/auditoriesTypes"
 
 interface IAccordionItemsListProps {
+  disabled?: boolean
   selectedItemId?: number | null
   onDeleteItem?: (id: number) => void
   onChangeVisible?: (id: number) => void
@@ -45,40 +46,41 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
   onEditMainItem,
   onChangeVisible,
   onDeleteMainItem,
+  disabled = false,
   getSelectedItemName,
   setIsUpdateItemModalOpen,
   setIsUpdateCategoryModalOpen,
 }) => {
   const getItemsKeyName = (items: TeachersCategoryType[] | AuditoryCategoriesTypes[] | GroupCategoriesType[]) => {
-    if ('teachers' in items[0]) return 'teachers'
-    else if ('auditories' in items[0]) return 'auditories'
-    else if ('plans' in items[0]) return 'plans'
-    else if ('groups' in items[0]) return 'groups'
-    else return 'items'
+    if ("teachers" in items[0]) return "teachers"
+    else if ("auditories" in items[0]) return "auditories"
+    else if ("plans" in items[0]) return "plans"
+    else if ("groups" in items[0]) return "groups"
+    else return "items"
   }
 
   return (
     <>
-      {sortItemsByKey(items, 'name').map(
+      {sortItemsByKey(items, "name").map(
         (mainItem: TeachersCategoryType | AuditoryCategoriesTypes | GroupCategoriesType) => (
           <Accordion
             disableGutters
             key={mainItem.id}
             sx={{
               boxShadow: 0,
-              border: '',
-              '&:not(:first-of-type)': { borderTop: '1px solid #eaeaea' },
-              '&.Mui-expanded': { background: 'white' },
-              '&.Mui-expanded .MuiAccordionSummary-root': { background: '#fafafb' },
+              border: "",
+              "&:not(:first-of-type)": { borderTop: "1px solid #eaeaea" },
+              "&.Mui-expanded": { background: "white" },
+              "&.Mui-expanded .MuiAccordionSummary-root": { background: "#fafafb" },
             }}
           >
-            <AccordionSummary expandIcon={<DownOutlined />}>
+            <AccordionSummary expandIcon={<DownOutlined />} disabled={disabled}>
               <Typography
                 sx={{
                   flexGrow: 1,
                   fontWeight: 500,
-                  display: 'flex',
-                  alignItems: 'center',
+                  display: "flex",
+                  alignItems: "center",
                 }}
                 variant="h6"
               >
@@ -88,10 +90,10 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
               <Typography
                 sx={{
                   mr: 4,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'end',
-                  color: 'text.secondary',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "end",
+                  color: "text.secondary",
                 }}
               >
                 {/* @ts-ignore */}
@@ -105,7 +107,7 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                     onEditMainItem({ id: mainItem.id, name: mainItem.name })
                     setIsUpdateCategoryModalOpen(true)
                   }}
-                  sx={{ mr: '5px' }}
+                  sx={{ mr: "5px" }}
                 >
                   <EditOutlined />
                 </IconButton>
@@ -118,14 +120,14 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                     // @ts-ignore
                     onDeleteMainItem(mainItem.id, mainItem[getItemsKeyName(items)].length)
                   }}
-                  sx={{ mr: '15px' }}
+                  sx={{ mr: "15px" }}
                 >
                   <DeleteOutlined />
                 </IconButton>
               )}
             </AccordionSummary>
 
-            <AccordionDetails sx={{ p: 0, '.MuiList-root': { p: 0 } }}>
+            <AccordionDetails sx={{ p: 0, ".MuiList-root": { p: 0 } }}>
               <List>
                 {/* @ts-ignore */}
                 {mainItem[getItemsKeyName(items)]?.map((el) => (
@@ -135,19 +137,19 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                       disablePadding
                       selected={selectedItemId === el.id}
                       sx={{
-                        '&:hover .MuiButtonBase-root': { display: 'block' },
-                        '&:hover': { backgroundColor: '#f3f3f3' },
-                        '& div:hover': { backgroundColor: '#f3f3f3' },
-                        '&.MuiListItem-root.Mui-selected': { backgroundColor: '#ECF4FF ' },
-                        '&.MuiListItem-root.Mui-selected .MuiButtonBase-root:hover': {
-                          backgroundColor: '#ECF4FF',
+                        "&:hover .MuiButtonBase-root": { display: "block" },
+                        "&:hover": { backgroundColor: "#f3f3f3" },
+                        "& div:hover": { backgroundColor: "#f3f3f3" },
+                        "&.MuiListItem-root.Mui-selected": { backgroundColor: "#ECF4FF " },
+                        "&.MuiListItem-root.Mui-selected .MuiButtonBase-root:hover": {
+                          backgroundColor: "#ECF4FF",
                         },
-                        '&.MuiListItem-root.Mui-selected .MuiListItemText-root:hover': {
-                          backgroundColor: '#ECF4FF',
+                        "&.MuiListItem-root.Mui-selected .MuiListItemText-root:hover": {
+                          backgroundColor: "#ECF4FF",
                         },
                       }}
                     >
-                      <ListItemButton disableRipple sx={{ cursor: 'default' }}>
+                      <ListItemButton disableRipple sx={{ cursor: "default" }}>
                         <ListItemText primary={el.name ? el.name : getLastnameAndInitials(el)} />
                       </ListItemButton>
 
@@ -159,7 +161,7 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                               onEditItem(el)
                               setIsUpdateItemModalOpen(true)
                             }}
-                            sx={{ mr: '5px', display: 'none' }}
+                            sx={{ mr: "5px", display: "none" }}
                           >
                             <EditOutlined />
                           </IconButton>
@@ -167,13 +169,13 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                       )}
 
                       {onDeleteItem && (
-                        <Tooltip title={'Видалити'}>
+                        <Tooltip title={"Видалити"}>
                           <IconButton
                             onClick={(e) => {
                               e.stopPropagation()
                               onDeleteItem(el.id)
                             }}
-                            sx={{ mr: '5px', display: 'none' }}
+                            sx={{ mr: "5px", display: "none" }}
                           >
                             <DeleteOutlined />
                           </IconButton>
@@ -182,14 +184,14 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
 
                       {/* select group (streams page/distribution page) */}
                       {onSelectItem && (
-                        <Tooltip title={''}>
+                        <Tooltip title={""}>
                           <IconButton
                             onClick={(e) => {
                               e.stopPropagation()
                               onSelectItem(el.id)
                               getSelectedItemName && getSelectedItemName(el?.name)
                             }}
-                            sx={{ mr: '5px', display: 'none' }}
+                            sx={{ mr: "5px", display: "none" }}
                           >
                             <PlusOutlined />
                           </IconButton>
@@ -197,8 +199,8 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
                       )}
 
                       {onChangeVisible && (
-                        <Tooltip title={el.isHide ? 'Показати викладача' : 'Приховати викладача'}>
-                          <IconButton onClick={() => onChangeVisible(el.id)} sx={{ mr: '5px', display: 'none' }}>
+                        <Tooltip title={el.isHide ? "Показати викладача" : "Приховати викладача"}>
+                          <IconButton onClick={() => onChangeVisible(el.id)} sx={{ mr: "5px", display: "none" }}>
                             {el.isHide ? <EyeOutlined /> : <EyeInvisibleOutlined />}
                           </IconButton>
                         </Tooltip>

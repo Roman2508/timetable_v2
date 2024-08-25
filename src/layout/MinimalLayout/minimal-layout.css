@@ -21,6 +21,7 @@
   flex-direction: column;
   justify-content: flex-start;
   padding-top: 80px;
+  padding-bottom: 80px;
 }
 
 .minimal-layout__inner {
@@ -49,11 +50,13 @@
 @media (max-width: 1550px) {
   .minimal-layout__wrapper {
     padding-top: 40px;
+    padding-bottom: 40px;
   }
 }
 
 @media (max-width: 1366px) {
   .minimal-layout__wrapper {
     padding-top: 20px;
+    padding-bottom: 20px;
   }
 }

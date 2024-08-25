@@ -206,6 +206,7 @@ export type GetTeachersOverlayPayloadType = {
 export type CreateScheduleLessonsPayloadType = {
   name: string
   date: string
+  currentLessonHours: number
   subgroupNumber: number | null
   typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ"
   lessonNumber: number
@@ -239,6 +240,7 @@ export type UpdateScheduleLessonsPayloadType = {
   // schedule lesson id
   id: number
   auditoryId: number | null
+  currentLessonHours: number
   auditoryName?: string
   seatsNumber?: number
   isRemote: boolean

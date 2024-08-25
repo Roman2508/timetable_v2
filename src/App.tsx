@@ -1,49 +1,49 @@
-import { lazy } from 'react'
-import 'react-toastify/dist/ReactToastify.css'
-import { Route, Routes } from 'react-router-dom'
+import { lazy } from "react"
+import "react-toastify/dist/ReactToastify.css"
+import { Route, Routes } from "react-router-dom"
 
-import './App.css'
-import ThemeCustomization from './themes'
-import Loadable from './components/Loadable'
-import ScrollTop from './components/ScrollTop'
-import MinimalLayout from './layout/MinimalLayout'
-import MainLayout from './layout/MainLayout/MainLayout'
-import NotFoundPage from './pages/ErrorPages/NotFoundPage'
-import GradeBookPage from './pages/GradeBook/GradeBookPage'
-import { TimetablePage } from './pages/Timetable/TimetablePage'
-import AuthLogin from './pages/authentication/auth-forms/AuthLogin'
-import ForbiddenErrorPage from './pages/ErrorPages/ForbiddenErrorPage'
-import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
-import InternalServerErrorPage from './pages/ErrorPages/InternalServerErrorPage'
-import AutomaticSchedulingPage from './pages/AutomaticScheduling/AutomaticSchedulingPage'
+import "./App.css"
+import ThemeCustomization from "./themes"
+import Loadable from "./components/Loadable"
+import ScrollTop from "./components/ScrollTop"
+import MinimalLayout from "./layout/MinimalLayout"
+import MainLayout from "./layout/MainLayout/MainLayout"
+import NotFoundPage from "./pages/ErrorPages/NotFoundPage"
+import GradeBookPage from "./pages/GradeBook/GradeBookPage"
+import { TimetablePage } from "./pages/Timetable/TimetablePage"
+import AuthLogin from "./pages/authentication/auth-forms/AuthLogin"
+import ForbiddenErrorPage from "./pages/ErrorPages/ForbiddenErrorPage"
+import AuthRegister from "./pages/authentication/auth-forms/AuthRegister"
+import InternalServerErrorPage from "./pages/ErrorPages/InternalServerErrorPage"
+import AutomaticSchedulingPage from "./pages/AutomaticScheduling/AutomaticSchedulingPage"
 
 // render - dashboard
-const DashboardDefault = Loadable(lazy(() => import('./pages/dashboard')))
+const DashboardDefault = Loadable(lazy(() => import("./pages/dashboard")))
 
 // render - sample page
-const SamplePage = Loadable(lazy(() => import('./pages/extra-pages/SamplePage')))
+const SamplePage = Loadable(lazy(() => import("./pages/extra-pages/SamplePage")))
 
-const Color = Loadable(lazy(() => import('./pages/components-overview/Color')))
-const Shadow = Loadable(lazy(() => import('./pages/components-overview/Shadow')))
-const AntIcons = Loadable(lazy(() => import('./pages/components-overview/AntIcons')))
-const Typography = Loadable(lazy(() => import('./pages/components-overview/Typography')))
+const Color = Loadable(lazy(() => import("./pages/components-overview/Color")))
+const Shadow = Loadable(lazy(() => import("./pages/components-overview/Shadow")))
+const AntIcons = Loadable(lazy(() => import("./pages/components-overview/AntIcons")))
+const Typography = Loadable(lazy(() => import("./pages/components-overview/Typography")))
 
 // lazy loading pages
-const LoadPage = Loadable(lazy(() => import('./pages/Load/LoadPage')))
-const PlansPage = Loadable(lazy(() => import('./pages/Plans/PlansPage')))
-const GroupsPage = Loadable(lazy(() => import('./pages/Groups/GroupsPage')))
-const StreamsPage = Loadable(lazy(() => import('./pages/Streams/StreamsPage')))
-const SettingsPage = Loadable(lazy(() => import('./pages/Settings/SettingsPage')))
-const TeachersPage = Loadable(lazy(() => import('./pages/Teachers/TeachersPage')))
-const FullPlanPage = Loadable(lazy(() => import('./pages/FullPlan/FullPlanPage')))
-const FullGroupPage = Loadable(lazy(() => import('./pages/FullGroup/FullGroupPage')))
-const AuditoriesPage = Loadable(lazy(() => import('./pages/Auditories/AuditoriesPage')))
-const StudentsDivide = Loadable(lazy(() => import('./pages/StudentsDivide/StudentsDivide')))
-const DistributionPage = Loadable(lazy(() => import('./pages/Distribution/DistributionPage')))
-const StudentsAccounts = Loadable(lazy(() => import('./pages/StudentsAccounts/StudentsAccounts')))
-const TeacherProfilePage = Loadable(lazy(() => import('./pages/TeacherProfile/TeacherProfilePage')))
-const SchedulingСonstraints = Loadable(lazy(() => import('./pages/SchedulingСonstraints/SchedulingСonstraints')))
-const TeachingLessonsControl = Loadable(lazy(() => import('./pages/TeachingLessonsControl/TeachingLessonsControl')))
+const LoadPage = Loadable(lazy(() => import("./pages/Load/LoadPage")))
+const PlansPage = Loadable(lazy(() => import("./pages/Plans/PlansPage")))
+const GroupsPage = Loadable(lazy(() => import("./pages/Groups/GroupsPage")))
+const StreamsPage = Loadable(lazy(() => import("./pages/Streams/StreamsPage")))
+const SettingsPage = Loadable(lazy(() => import("./pages/Settings/SettingsPage")))
+const TeachersPage = Loadable(lazy(() => import("./pages/Teachers/TeachersPage")))
+const FullPlanPage = Loadable(lazy(() => import("./pages/FullPlan/FullPlanPage")))
+const FullGroupPage = Loadable(lazy(() => import("./pages/FullGroup/FullGroupPage")))
+const AuditoriesPage = Loadable(lazy(() => import("./pages/Auditories/AuditoriesPage")))
+const StudentsDivide = Loadable(lazy(() => import("./pages/StudentsDivide/StudentsDivide")))
+const DistributionPage = Loadable(lazy(() => import("./pages/Distribution/DistributionPage")))
+const StudentsAccounts = Loadable(lazy(() => import("./pages/StudentsAccounts/StudentsAccounts")))
+const TeacherProfilePage = Loadable(lazy(() => import("./pages/TeacherProfile/TeacherProfilePage")))
+const SchedulingСonstraints = Loadable(lazy(() => import("./pages/SchedulingСonstraints/SchedulingСonstraints")))
+const TeachingLessonsControl = Loadable(lazy(() => import("./pages/TeachingLessonsControl/TeachingLessonsControl")))
 
 const App = () => {
   return (
@@ -110,19 +110,20 @@ export default App
 // ================== Розклад ==================
 // =============================================
 // 1. При зміні selectedItemId <Calendar /> 2 рази підвантажується
-//    і 2 рази відправляється http://localhost:7777/schedule-lessons/1/group/7 
+//    і 2 рази відправляється http://localhost:7777/schedule-lessons/1/group/7
 // 2. Заміна викладача
-// 3. Можливість ставити декілька елементів розкладу в один час, якщо це підгрупи або спец. групи
+// 3. Якщо у викладача стоїть заміна - треба заборонити ставити йому інші пари в той час
+// 4. Не оновлюється заміна в store
+// 5. Можливість ставити декілька елементів розкладу в один час, якщо це підгрупи або спец. групи
 //    - МОЖЛИВІ НАКЛАДКИ АУДИТОРІЙ (ТРЕБА ЗРОБИТИ ПЕРЕВІРКУ ЧИ АУДИТОРІЯ ВІЛЬНА)
 //    - МОЖЛИВІ НАКЛАДКИ ВИКЛАДАЧІВ
-// 5. Можливість закрити для викладача, групи або аудиторії певні дати
-// 6. Не оновлюється auditory overlay коли вибирати дисципліну не з таблиці а з календаря (date slot) ???
-// 7. При виборі аудиторії, при подвійному кліку з'являються зайняті аудиторії ???
-// 8. При зміні типу розкладу треба очищати teachers overlay
-// 9. Екз.конс. треба дозволити ставити в розклад
-// 10. Не правильно видаляються з redux store ел.розкладу які поділені на підгрупи
-// 11. При копіюванні підгруп, які стоять в один час вставлється лише 1 підгрупа 2 рази
-// 12. Якщо у викладача стоїть заміна - треба заборонити ставити йому інші пари в той час
+// 6. Можливість закрити для викладача, групи або аудиторії певні дати
+// 7. Не оновлюється auditory overlay коли вибирати дисципліну не з таблиці а з календаря (date slot) ???
+// 8. При виборі аудиторії, при подвійному кліку з'являються зайняті аудиторії ???
+// 9. При зміні типу розкладу треба очищати teachers overlay
+// 10. Екз.конс. треба дозволити ставити в розклад
+// 11. Не правильно видаляються з redux store ел.розкладу які поділені на підгрупи
+// 12. При копіюванні підгруп, які стоять в один час вставлється лише 1 підгрупа 2 рази
 // 13. При зміні типу розкладу (group | teacher | auditory) треба очищати overlay
 // 14. При зміні групи в розкладі треба очищати список всіх виставлених уроків
 // 15. Якщо в списку спец.груп вибрано, що дисципліна не читається - треба приховати її в schedule-lessons
@@ -131,7 +132,7 @@ export default App
 //     всі виставлені уроки і додати їх до календаря
 // 18. Треба зробити можливість ставити в розклад (поза планом, тобто не йде в навантаження) практики або інші види діяльності
 // 19. Перевірити як працює зміна року навчання
-// 20. Не оновлюється заміна в store
+// 20. В один час можна ставити тільки підгрупи та спец.групи
 
 // ========================================================
 // ================== Електронний журнал ==================
@@ -145,8 +146,8 @@ export default App
 // 1. Можливо треба додати друк списку студентів групи
 // 2. Можливо треба додати рейтинг здобувачів, який буде формуватись по електронному журналу
 // 3. Треба зробити друк відомостей
-// 4. Індивідуальні плани роботи викладача && Звіт викладача
-// 5. При створенні викладачів треба додавати логін та пароль і перевіряти унікалькість логіна
+// 4. Індивідуальні плани роботи викладача && Звіт викладача -------------------------------------------------------------------
+// 5. При створенні викладачів треба додавати логін та пароль і перевіряти унікалькість логіна ---------------------------------
 // 6. Поділ на підгрупи - need to disable all tabs if select "all lessons"
 // 7. Сторінка "Розподіл навантаження" кнопки "прикріпити всі" і "відкріпити всі" працює тільки при подвійному кліку
 // 8. Облікові записи. Має бути масове оновлення та видалення студентів

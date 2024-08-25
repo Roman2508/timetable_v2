@@ -1,26 +1,24 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { FilterOutlined } from '@ant-design/icons'
-import { Grid, Divider, Tooltip, Typography, IconButton } from '@mui/material'
+import React from "react"
+import { useSelector } from "react-redux"
+import { FilterOutlined, UserSwitchOutlined } from "@ant-design/icons"
+import { Grid, Divider, Tooltip, Typography, IconButton, ListItem, ListItemButton, ListItemText } from "@mui/material"
 
-import MainCard from '../../components/MainCard'
-import { useAppDispatch } from '../../store/store'
-import { LoadingStatusTypes } from '../../store/appTypes'
-import EmptyCard from '../../components/EmptyCard/EmptyCard'
-import { GroupLoadType } from '../../store/groups/groupsTypes'
-import { groupsSelector } from '../../store/groups/groupsSlice'
-import { teachersSelector } from '../../store/teachers/teachersSlice'
-import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
-import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
-import { getTeachersCategories } from '../../store/teachers/teachersAsyncActions'
-import { SelectGroupModal } from '../../components/DistributionPage/SelectGroupModal'
-import { clearGroupLoad, scheduleLessonsSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
-import { AccordionItemsList } from '../../components/AccordionItemsList/AccordionItemsList'
-import { getGroupLoadByCurrentCourse } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
-import { DistributionLessonsTable } from '../../components/DistributionPage/DistributionLessonsTable'
-import DistributionTeachersToLessons from '../../components/DistributionPage/DistributionTeachersToLessons'
-
-// ==============================|| AUDITORIES ||============================== //
+import MainCard from "../../components/MainCard"
+import { useAppDispatch } from "../../store/store"
+import { LoadingStatusTypes } from "../../store/appTypes"
+import EmptyCard from "../../components/EmptyCard/EmptyCard"
+import { GroupLoadType } from "../../store/groups/groupsTypes"
+import { groupsSelector } from "../../store/groups/groupsSlice"
+import { teachersSelector } from "../../store/teachers/teachersSlice"
+import { getGroupCategories } from "../../store/groups/groupsAsyncActions"
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
+import { getTeachersCategories } from "../../store/teachers/teachersAsyncActions"
+import { SelectGroupModal } from "../../components/DistributionPage/SelectGroupModal"
+import { AccordionItemsList } from "../../components/AccordionItemsList/AccordionItemsList"
+import { getGroupLoadByCurrentCourse } from "../../store/scheduleLessons/scheduleLessonsAsyncActions"
+import { DistributionLessonsTable } from "../../components/DistributionPage/DistributionLessonsTable"
+import { clearGroupLoad, scheduleLessonsSelector } from "../../store/scheduleLessons/scheduleLessonsSlice"
+import DistributionTeachersToLessons from "../../components/DistributionPage/DistributionTeachersToLessons"
 
 const DistributionPage = () => {
   const dispatch = useAppDispatch()
@@ -30,6 +28,7 @@ const DistributionPage = () => {
   const { groupCategories, loadingStatus: groupsLoadingStatus } = useSelector(groupsSelector)
 
   const [isLessonsLoading, setIsLessonsLoading] = React.useState(false)
+  const [isVacancySelected, setIsVacancySelected] = React.useState(false)
   const [selectGroupModalVisible, setSelectGroupModalVisible] = React.useState(false)
   const [selectedTeacherId, setSelectedTeacherId] = React.useState<number | null>(null)
   const [selectedLesson, setSelectedLesson] = React.useState<null | GroupLoadType[]>(null)
@@ -72,7 +71,7 @@ const DistributionPage = () => {
         setSelectedLesson={setSelectedLesson}
       />
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: 'center' }}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ justifyContent: "center" }}>
         <Grid item xs={12}>
           <Grid container>
             <Grid item>
@@ -82,17 +81,17 @@ const DistributionPage = () => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} sx={{ display: 'flex', alignItems: 'flex-start' }}>
+        <Grid item xs={12} sx={{ display: "flex", alignItems: "flex-start" }}>
           <Grid item xs={4}>
-            <MainCard sx={{ '& .MuiCardContent-root': { px: 1 } }}>
+            <MainCard sx={{ "& .MuiCardContent-root": { px: 1 } }}>
               <div
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}
               >
                 <Typography
                   variant="button"
-                  sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase', px: 2 }}
+                  sx={{ textAlign: "center", display: "block", textTransform: "uppercase", px: 2 }}
                 >
-                  {selectedGroup?.name ? `Навантаження групи: ${selectedGroup.name}` : 'Виберіть групу'}
+                  {selectedGroup?.name ? `Навантаження групи: ${selectedGroup.name}` : "Виберіть групу"}
                 </Typography>
 
                 <Tooltip title="Вибрати групу">
@@ -109,7 +108,7 @@ const DistributionPage = () => {
               {!groupLoad?.length && groupsLoadingStatus !== LoadingStatusTypes.LOADING && !isLessonsLoading ? (
                 <EmptyCard />
               ) : (
-                ''
+                ""
               )}
 
               {groupLoad?.length && !isLessonsLoading ? (
@@ -121,7 +120,7 @@ const DistributionPage = () => {
               ) : isLessonsLoading ? (
                 <LoadingSpinner />
               ) : (
-                ''
+                ""
               )}
               {/* // DISTRIBUTION TABLE */}
             </MainCard>
@@ -137,16 +136,35 @@ const DistributionPage = () => {
             {/* // DISTRIBUTION LESSONS */}
           </Grid>
 
-          <Grid item xs={4} sx={{ borderRadius: '8px', border: '1px solid #e6ebf1', overflow: 'hidden' }}>
-            <MainCard sx={{ '& .MuiCardContent-root': { px: 0, pb: 0 } }}>
-              <Typography
-                variant="button"
-                sx={{ textAlign: 'center', display: 'block', textTransform: 'uppercase', mb: '18px' }}
+          <Grid item xs={4} sx={{ borderRadius: "8px", overflow: "hidden" }}>
+            <MainCard sx={{ "& .MuiCardContent-root": { px: 0, pb: 0 } }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "10px",
+                  padding: "0 8px",
+                }}
               >
-                Викладачі
-              </Typography>
-
-              <Divider />
+                <Typography
+                  variant="button"
+                  sx={{ textAlign: "center", display: "block", textTransform: "uppercase", px: 2 }}
+                >
+                  Викладачі
+                </Typography>
+                <Tooltip title="Вакансія">
+                  <IconButton
+                    onClick={() => setIsVacancySelected((prev) => !prev)}
+                    sx={{
+                      backgroundColor: isVacancySelected ? "rgba(22, 119, 255, 0.08)" : "#fff",
+                      "&:hover": { background: isVacancySelected ? "rgba(22, 119, 255, 0.08)" : "rgb(250, 250, 250)" },
+                    }}
+                  >
+                    <UserSwitchOutlined style={{ color: isVacancySelected ? "rgb(22, 119, 255)" : "#262626" }} />
+                  </IconButton>
+                </Tooltip>
+              </div>
 
               {/* TEACHERS LIST */}
               {!teachersCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
@@ -154,6 +172,7 @@ const DistributionPage = () => {
               {teachersCategories?.length && (
                 <AccordionItemsList
                   items={teachersCategories}
+                  disabled={isVacancySelected}
                   selectedItemId={selectedTeacherId}
                   onSelectItem={setSelectedTeacherId}
                 />

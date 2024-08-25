@@ -1,11 +1,11 @@
-import { ScheduleLessonType } from '../store/scheduleLessons/scheduleLessonsTypes'
+import { ScheduleLessonType } from "../store/scheduleLessons/scheduleLessonsTypes"
 
 export const findLessonsCountForLessonsTable = (
   name: string,
   groupId: number,
   subgroupNumber: number | null,
   streamId: number | undefined,
-  typeRu: 'ЛК' | 'ПЗ' | 'ЛАБ' | 'СЕМ' | 'ЕКЗ' | 'КОНС' | 'МЕТОД',
+  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ" | "КОНС" | "МЕТОД",
   scheduleLessons: ScheduleLessonType[] | null
 ): number => {
   if (!scheduleLessons) return 0
@@ -20,9 +20,11 @@ export const findLessonsCountForLessonsTable = (
     const isTypeRuSame = el.typeRu === typeRu
 
     if (isNameSame && isGroupIdSame && isSubgroupNumberSame && isStreamSame && isTypeRuSame) {
-      ++matchingCount
+      // ++matchingCount
+      matchingCount = matchingCount + el.currentLessonHours
     }
   })
 
-  return matchingCount * 2
+  return matchingCount
+  // return matchingCount * 2
 }

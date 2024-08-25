@@ -1,16 +1,16 @@
-import { LoadingStatusTypes } from '../appTypes'
-import { GroupLoadType } from '../groups/groupsTypes'
-import { StreamsType } from '../streams/streamsTypes'
-import { StudentType } from '../students/studentsTypes'
-import { TeachersType } from '../teachers/teachersTypes'
-import { AuditoriesTypes } from '../auditories/auditoriesTypes'
+import { LoadingStatusTypes } from "../appTypes"
+import { GroupLoadType } from "../groups/groupsTypes"
+import { StreamsType } from "../streams/streamsTypes"
+import { StudentType } from "../students/studentsTypes"
+import { TeachersType } from "../teachers/teachersTypes"
+import { AuditoriesTypes } from "../auditories/auditoriesTypes"
 
 export enum LessonsTypeRu {
-  LECTURES = 'ЛК',
-  PRACTICAL = 'ПЗ',
-  LABORATORY = 'ЛАБ',
-  SEMINARS = 'СЕМ',
-  EXAMS = 'ЕКЗ',
+  LECTURES = "ЛК",
+  PRACTICAL = "ПЗ",
+  LABORATORY = "ЛАБ",
+  SEMINARS = "СЕМ",
+  EXAMS = "ЕКЗ",
 }
 
 export type ScheduleLessonInitialStateType = {
@@ -37,7 +37,7 @@ export type ScheduleLessonInitialStateType = {
   lastOpenedWeek: number
   lastOpenedSemester: 1 | 2
   lastSelectedItemId: number
-  lastSelectedScheduleType: 'group' | 'teacher' | 'auditory'
+  lastSelectedScheduleType: "group" | "teacher" | "auditory"
   lastSelectedStructuralUnitId: number
 }
 
@@ -49,9 +49,10 @@ export type ScheduleLessonType = {
   lessonNumber: number
   semester: number
   hours: number
-  typeRu: 'ЛК' | 'ПЗ' | 'ЛАБ' | 'СЕМ' | 'ЕКЗ'
+  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ"
   isRemote: boolean
   students: number
+  currentLessonHours: number
   replacement: TeachersType | null
   note: string
   group: { id: number; name: string }
@@ -67,5 +68,5 @@ export interface ILastSelectedData {
   lastOpenedWeek?: number
   lastSelectedItemId?: number
   lastSelectedStructuralUnitId?: number
-  lastSelectedScheduleType?: 'group' | 'teacher' | 'auditory'
+  lastSelectedScheduleType?: "group" | "teacher" | "auditory"
 }
