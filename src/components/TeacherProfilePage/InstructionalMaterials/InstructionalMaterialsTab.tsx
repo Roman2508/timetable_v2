@@ -1,4 +1,5 @@
 import {
+  Stack,
   Table,
   Select,
   Divider,
@@ -11,8 +12,6 @@ import {
   IconButton,
   InputLabel,
   FormControl,
-  Button,
-  Stack,
   OutlinedInput,
 } from '@mui/material'
 import React from 'react'
@@ -27,13 +26,13 @@ import EmptyCard from '../../EmptyCard/EmptyCard'
 import { customDayjs } from '../../Calendar/Calendar'
 import ExportLessonThemes from './ExportLessonThemes'
 import { useAppDispatch } from '../../../store/store'
+import ImportLessonThemes from './ImportLessonThemes'
 import { LoadingStatusTypes } from '../../../store/appTypes'
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner'
 import { GroupLoadType } from '../../../store/groups/groupsTypes'
 import { InstructionalMaterialsModal } from './InstructionalMaterialsModal'
 import { teacherProfileSelector } from '../../../store/teacherProfile/teacherProfileSlice'
 import { InstructionalMaterialsType } from '../../../store/teacherProfile/teacherProfileTypes'
-import ImportLessonThemes from './ImportLessonThemes'
 
 interface Props {}
 
@@ -154,13 +153,22 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
           <FormControl fullWidth>
             <InputLabel sx={{ overflow: 'visible !important' }}>Дисципліна</InputLabel>
             <Select
+              defaultValue={0}
               value={selectedLesson ? selectedLesson.id : ''}
               onChange={(e) => handleChangeSelectedLesson(Number(e.target.value))}
             >
+              {!filterLesson && (
+                <MenuItem value={0} sx={{ height: '34px' }} disabled>
+                  {/* <LoadingSpinner size={20} /> */}
+                  Завантаження...
+                </MenuItem>
+              )}
+
               {/* @ts-ignore */}
               {(filterLesson ? filter[semester] : []).map((el: GroupLoadType) => (
                 <MenuItem value={el.id} key={el.id}>{`${el.group.name} / ${el.typeRu} / ${el.name}`}</MenuItem>
               ))}
+              
             </Select>
           </FormControl>
         </div>
