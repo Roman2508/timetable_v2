@@ -143,7 +143,7 @@ const AutomaticSchedulingPage = () => {
                   minWidth: "300px",
                   textAlign: "left",
                   "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
-                  "& .MuiFormLabel-root": { lineHeight: 1, transform: "translate(14px, 14px) scale(1)" },
+                  "& .MuiFormLabel-root": { lineHeight: 1, transform: "translate(14px, 14px) scale(1)", height: '16px' },
                 }}
               >
                 {[
@@ -167,7 +167,7 @@ const AutomaticSchedulingPage = () => {
                   minWidth: "300px",
                   textAlign: "left",
                   "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
-                  "& .MuiFormLabel-root": { lineHeight: 1, transform: "translate(14px, 14px) scale(1)" },
+                  "& .MuiFormLabel-root": { lineHeight: 1, transform: "translate(14px, 14px) scale(1)", height: '16px' },
                 }}
               >
                 {[
