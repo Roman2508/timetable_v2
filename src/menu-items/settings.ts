@@ -1,4 +1,4 @@
-import { SettingOutlined } from "@ant-design/icons"
+import { BarChartOutlined, SettingOutlined, SnippetsOutlined } from "@ant-design/icons"
 
 // assets
 import { ChromeOutlined, QuestionOutlined } from "@ant-design/icons"
@@ -22,6 +22,8 @@ const icons = {
   AntDesignOutlined,
   LoadingOutlined,
   AppstoreAddOutlined,
+  BarChartOutlined,
+  SnippetsOutlined,
 }
 
 const settings = {
@@ -42,16 +44,18 @@ const settings = {
       id: "stats",
       title: "Статистика",
       type: "item",
-      url: "/stats",
-      icon: icons.SettingOutlined,
+      url: "/404",
+      // url: "/stats",
+      icon: icons.BarChartOutlined,
       breadcrumbs: false,
     },
     {
       id: "reports",
       title: "Звіти",
       type: "item",
-      url: "/reports",
-      icon: icons.SettingOutlined,
+      url: "/404",
+      // url: "/reports",
+      icon: icons.SnippetsOutlined,
       breadcrumbs: false,
     },
 

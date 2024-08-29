@@ -1,13 +1,15 @@
-import { UserOutlined } from "@ant-design/icons"
+import { BookOutlined, BranchesOutlined, ProfileOutlined } from "@ant-design/icons"
 
 const icons = {
-  UserOutlined,
+  ProfileOutlined,
+  BookOutlined,
+  BranchesOutlined,
 }
 
 const profile = {
   id: "profile",
   title: "Загальні відомості",
-  icon: icons.UserOutlined,
+  icon: icons.ProfileOutlined,
   type: "group",
   children: [
     {
@@ -15,7 +17,16 @@ const profile = {
       title: "Мій профіль",
       type: "item",
       url: "/teacher/:id",
-      icon: icons.UserOutlined,
+      icon: icons.ProfileOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: "optional-disciplines",
+      title: "Вибіркові дисципліни",
+      type: "item",
+      url: "/404",
+      // url: "/optional-disciplines",
+      icon: icons.BranchesOutlined,
       breadcrumbs: false,
     },
     {
@@ -23,7 +34,7 @@ const profile = {
       title: "Електронний журнал",
       type: "item",
       url: "/grade-book",
-      icon: icons.UserOutlined,
+      icon: icons.BookOutlined,
       breadcrumbs: false,
     },
   ],
