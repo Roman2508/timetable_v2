@@ -75,7 +75,7 @@ const StreamSelections: React.FC<IStreamSelectionsProps> = ({
                   px: 3,
                 }}
               >
-                Виберіть потік
+                Потоки:
               </Typography>
 
               <Tooltip title="Створити потік">

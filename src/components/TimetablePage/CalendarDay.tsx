@@ -13,24 +13,14 @@ import { getAuditoryOverlay } from "../../store/scheduleLessons/scheduleLessonsA
 
 const dayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
 
-// export const colors = {
-//   ['ЛК']: 'rgb(232, 255, 82)',
-//   ['ПЗ']: 'rgb(24, 176, 71)',
-//   ['ЛАБ']: 'rgb(43, 163, 185)',
-//   ['СЕМ']: 'rgb(82, 27, 172)',
-//   ['ЕКЗ']: 'rgb(176, 24, 24)',
-// }
-
 export const colorsInitialState = {
   lectures: "rgb(255, 255, 255)",
   practical: "rgb(255, 255, 255)",
   laboratory: "rgb(255, 255, 255)",
   seminars: "rgb(255, 255, 255)",
   exams: "rgb(255, 255, 255)",
+  examsConsulation: "rgb(255, 255, 255)",
 }
-
-// colors[lesson[0].type]
-// colors[convertColorKeys[lesson[0].type]]
 
 export const convertColorKeys = {
   ["ЛК"]: "lectures",
@@ -38,6 +28,7 @@ export const convertColorKeys = {
   ["ЛАБ"]: "laboratory",
   ["СЕМ"]: "seminars",
   ["ЕКЗ"]: "exams",
+  ["КОНС"]: "examsConsulation",
 } as const
 
 interface ICalendarDayProps {

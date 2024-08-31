@@ -16,7 +16,7 @@ export const formFields = [
   { label: "Лабораторні", value: "laboratory" },
   { label: "Семінари", value: "seminars" },
   { label: "Екзамени", value: "exams" },
-  { label: "Консультації перед екзаменом", value: "examsConsulation" },
+  { label: "Консультація перед екзаменом", value: "examsConsulation" },
   { label: "Методичне керівництво", value: "metodologicalGuidance" },
   { label: "Самостійна робота", value: "independentWork" },
   { label: "Загальна кількість годин", value: "totalHours" },

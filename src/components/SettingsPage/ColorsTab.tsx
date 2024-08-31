@@ -13,6 +13,7 @@ const colorsInitialState = {
   ["Лабораторні"]: "#fffffff" as string,
   ["Семінари"]: "#fffffff" as string,
   ["Екзамен"]: "#fffffff" as string,
+  ["Консультація перед екзаменом"]: "#fffffff" as string,
 } as const
 
 const ColorsTab = () => {
@@ -36,6 +37,7 @@ const ColorsTab = () => {
         laboratory: colors["Лабораторні"],
         seminars: colors["Семінари"],
         exams: colors["Екзамен"],
+        examsConsulation: colors["Консультація перед екзаменом"],
       }
       await dispatch(updateColors(payload))
     } catch (error) {
@@ -55,6 +57,7 @@ const ColorsTab = () => {
         ["Лабораторні"]: settings.colors.laboratory,
         ["Семінари"]: settings.colors.seminars,
         ["Екзамен"]: settings.colors.exams,
+        ["Консультація перед екзаменом"]: settings.colors.examsConsulation,
       }
     })
   }, [settings])
@@ -65,26 +68,28 @@ const ColorsTab = () => {
         Налаштування кольорів
       </Typography>
 
-      {(["Лекції", "Практичні", "Лабораторні", "Семінари", "Екзамен"] as const).map((el) => {
-        return (
-          <div
-            key={el}
-            style={{
-              gap: "16px",
-              display: "flex",
-              marginBottom: "6px",
-              justifyContent: "center",
-            }}
-          >
-            <Typography variant="h6" sx={{ textAlign: "left", mt: 1, width: "90px" }}>
-              {el}
-            </Typography>
-            <MuiColorInput value={colors[el]} onChange={(newColor) => handleChangeColor(el, newColor)} />
-          </div>
-        )
-      })}
+      {(["Лекції", "Практичні", "Лабораторні", "Семінари", "Екзамен", "Консультація перед екзаменом"] as const).map(
+        (el) => {
+          return (
+            <div
+              key={el}
+              style={{
+                gap: "16px",
+                display: "flex",
+                marginBottom: "6px",
+                justifyContent: "center",
+              }}
+            >
+              <Typography variant="h6" sx={{ textAlign: "left", mt: 1, width: "220px" }}>
+                {el}
+              </Typography>
+              <MuiColorInput value={colors[el]} onChange={(newColor) => handleChangeColor(el, newColor)} />
+            </div>
+          )
+        }
+      )}
 
-      <div style={{ maxWidth: "370px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "500px", margin: "0 auto" }}>
         <Button
           type="submit"
           color="primary"

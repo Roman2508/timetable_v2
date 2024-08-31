@@ -120,7 +120,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
       alert("Аудиторія не вибрана")
       return
     }
-    if (selectedLesson.typeRu === "КОНС" || selectedLesson.typeRu === "МЕТОД") return
+    if (selectedLesson.typeRu === "МЕТОД") return
 
     const date = selectedTimeSlot.data.format("YYYY-MM-DD")
     const stream = selectedLesson.stream ? selectedLesson.stream.id : null
@@ -130,6 +130,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
       stream,
       isRemote,
       currentLessonHours,
+      id: selectedLesson.id,
       semester: selectedSemester,
       name: selectedLesson.name,
       auditory: selectedAuditoryId,
@@ -225,7 +226,14 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
       dispatch(deleteTeacherOverlay(deletedItemId))
       handleClose()
       setIsAddNewLesson(false)
-      setSeveralLessonsList((prev) => prev.filter((el) => el.id !== deletedItemId))
+      
+      setSeveralLessonsList((prev) => {
+        const lessons = prev.filter((el) => el.id !== deletedItemId)
+        if (!lessons.length) {
+          setSeveralLessonsModalVisible(false)
+        }
+        return lessons
+      })
     }
   }
 

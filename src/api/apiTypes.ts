@@ -208,7 +208,7 @@ export type CreateScheduleLessonsPayloadType = {
   date: string
   currentLessonHours: number
   subgroupNumber: number | null
-  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ"
+  typeRu: "ЛК" | "ПЗ" | "ЛАБ" | "СЕМ" | "ЕКЗ" | "КОНС"
   lessonNumber: number
   isRemote: boolean
   semester: number

@@ -135,11 +135,12 @@ const TimetablePage = () => {
                 weeksCount={weeksCount}
                 slectedGroupId={slectedGroupId}
                 selectedLesson={selectedLesson}
-                selectedSemester={lastOpenedSemester}
                 currentWeekNumber={lastOpenedWeek}
+                selectedSemester={lastOpenedSemester}
                 selectedTeacherId={selectedTeacherId}
                 setSelectedLesson={setSelectedLesson}
                 selectedAuditoryId={selectedAuditoryId}
+                setSelectedTeacherId={setSelectedTeacherId}
                 setSelectedAuditoryId={setSelectedAuditoryId}
                 isPossibleToCreateLessons={isPossibleToCreateLessons}
                 setCopyTheScheduleModalVisible={setCopyTheScheduleModalVisible}

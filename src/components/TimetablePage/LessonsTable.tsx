@@ -63,51 +63,55 @@ const LessonsTable: React.FC<ILessonsTable> = ({
     }
   }, [lastSelectedItemId, /* lastSelectedScheduleType, */ selectedSemester])
 
-  // При першому рендері вибираю з таблиці LessonsTable перший елемент
   React.useEffect(() => {
-    if (lastSelectedScheduleType !== "auditory") {
-      if (!groupLoad) return
-      const sortedGroupLoad = sortLessonsByLessonType(groupLoad)
-      const firstLesson = sortedGroupLoad[0]
-      if (!firstLesson) return
-
-      handleSelectLesson(firstLesson)
-      // set selected teacher on first render
-      if (!firstLesson.teacher) return
-      setSelectedTeacherId(firstLesson.teacher.id)
-    } else {
-      if (!scheduleLessons) return
-      const sortedScheduleLessons = groupAndSortAuditoryLessons(scheduleLessons)
-      const firstLesson = sortedScheduleLessons[0]
-      if (!firstLesson) return
-      handleSelectLesson(firstLesson)
-      // set selected teacher on first render
-      if (!firstLesson.teacher) return
-      setSelectedTeacherId(firstLesson.teacher.id)
-    }
-  }, [groupLoad, scheduleLessons])
-
-  const handleSelectLesson = (lesson: GroupLoadType | ScheduleLessonType) => {
-    if (!lesson) return
-    if (!lesson.teacher) return
-
+    if (!selectedLesson) return
     // К-ть виставлених годин
     const exhibitedLessonsCount = findLessonsCountForLessonsTable(
-      lesson.name,
-      lesson.group.id,
-      lesson.subgroupNumber,
-      lesson.stream?.id,
-      lesson.typeRu,
+      selectedLesson.name,
+      selectedLesson.group.id,
+      selectedLesson.subgroupNumber,
+      selectedLesson.stream?.id,
+      selectedLesson.typeRu,
       scheduleLessons
     )
 
-    if (exhibitedLessonsCount === lesson.hours) {
+    if (exhibitedLessonsCount === selectedLesson.totalHours) {
       // Якщо виставлено ел.розкладу стільки скільки заплановано
       // false === заборонено створювати нові ел.розкладу
       setIsPossibleToCreateLessons(false)
     } else {
       setIsPossibleToCreateLessons(true)
     }
+  }, [selectedLesson, scheduleLessons])
+
+  // Баг: після кожного створення ел.розкладу завжди вибирається перший елемент !!!!!!!
+
+  // При першому рендері вибираю з таблиці LessonsTable перший елемент
+  // React.useEffect(() => {
+  //   if (lastSelectedScheduleType !== "auditory") {
+  //     if (!groupLoad) return
+  //     const sortedGroupLoad = sortLessonsByLessonType(groupLoad)
+  //     const firstLesson = sortedGroupLoad[0]
+  //     if (!firstLesson) return
+
+  //     handleSelectLesson(firstLesson)
+  //     // set selected teacher on first render
+  //     if (!firstLesson.teacher) return
+  //     setSelectedTeacherId(firstLesson.teacher.id)
+  //   } else {
+  //     if (!scheduleLessons) return
+  //     const sortedScheduleLessons = groupAndSortAuditoryLessons(scheduleLessons)
+  //     const firstLesson = sortedScheduleLessons[0]
+  //     if (!firstLesson) return
+  //     handleSelectLesson(firstLesson)
+  //     // set selected teacher on first render
+  //     if (!firstLesson.teacher) return
+  //     setSelectedTeacherId(firstLesson.teacher.id)
+  //   }
+  // }, [groupLoad, scheduleLessons])
+
+  const handleSelectLesson = (lesson: GroupLoadType | ScheduleLessonType) => {
+    if (!lesson || !lesson.teacher) return
 
     const studentsCount = typeof lesson.students === "number" ? lesson.students : lesson.students?.length
 
@@ -179,6 +183,7 @@ const LessonsTable: React.FC<ILessonsTable> = ({
           : []
         ).map((lesson) => {
           const teacherName = lesson.teacher && getLastnameAndInitials(lesson.teacher)
+          const streamGroups = lesson.stream?.groups.map((group) => group.name).join(", ")
 
           const remark = getLessonRemark({
             stream: lesson.stream,
@@ -235,7 +240,10 @@ const LessonsTable: React.FC<ILessonsTable> = ({
               <TableCell sx={{ ...tableCellStyles, maxWidth: "60px" }} padding="none" align="center">
                 <Tooltip
                   enterDelay={1000}
-                  title={`${remark} ${lastSelectedScheduleType !== "group" ? ` ⋅ Група: ${lesson.group.name}` : ""}`}
+                  title={`
+                    ${remark} 
+                    ${lastSelectedScheduleType !== "group" ? ` ⋅ Група: ${lesson.group.name}` : ""} 
+                    ${lesson.stream ? ` ⋅ Групи потоку: ${streamGroups}` : ""}`}
                 >
                   <Typography sx={{ width: "100%", overflow: "hidden", textOverflow: "ellipsis" }}>{remark}</Typography>
                 </Tooltip>

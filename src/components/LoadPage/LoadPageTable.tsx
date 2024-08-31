@@ -189,7 +189,7 @@ const OrderTableHead: React.FC<IOrderTableHeadProps> = () => {
           Екзамен
         </TableCell>
         <TableCell sx={tableHeadCellStyles} align="center" padding="none">
-          <p>Консультації</p>
+          <p>Консультаця</p>
           <p>перед екзаменом</p>
         </TableCell>
         <TableCell sx={tableHeadCellStyles} align="center" padding="none">

@@ -11,14 +11,15 @@ import {
   DialogContent,
   ListItemButton,
   FormControlLabel,
-} from '@mui/material'
-import { useSelector } from 'react-redux'
-import { CloseOutlined } from '@ant-design/icons'
-import React, { Dispatch, SetStateAction } from 'react'
+  ListItemIcon,
+} from "@mui/material"
+import { useSelector } from "react-redux"
+import { CloseOutlined } from "@ant-design/icons"
+import React, { Dispatch, SetStateAction } from "react"
 
-import { AuditoriesTypes } from '../../store/auditories/auditoriesTypes'
-import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
-import { scheduleLessonsSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
+import { AuditoriesTypes } from "../../store/auditories/auditoriesTypes"
+import { auditoriesSelector } from "../../store/auditories/auditoriesSlise"
+import { scheduleLessonsSelector } from "../../store/scheduleLessons/scheduleLessonsSlice"
 
 interface ISelectAuditoryModalProps {
   open: boolean
@@ -69,6 +70,8 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
     if (!auditoryOverlay) return
 
     const freeAuditories: AuditoriesTypes[] = []
+
+    // console.log("auditoryOverlay:", auditoryOverlay, "auditoriesList:", auditoriesList)
 
     auditoriesList.forEach((el) => {
       const auditory = auditoryOverlay.find((a) => {
@@ -124,15 +127,8 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
   }, [auditoryOverlay, selectedCategoryId])
 
   return (
-    <Dialog
-      open={open}
-      maxWidth="sm"
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-      sx={{ '& .MuiPaper-root': { width: '100%' } }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <Dialog open={open} maxWidth="sm" onClose={handleClose} sx={{ "& .MuiPaper-root": { width: "100%" } }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <DialogTitle id="alert-dialog-title">Аудиторії</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
@@ -140,30 +136,36 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
         </IconButton>
       </div>
 
-      <DialogContent sx={{ padding: '0 24px 20px' }}>
+      <DialogContent sx={{ padding: "0 24px 20px" }}>
         <div className="auditory-modal-wrapper">
           <div className="auditory-modal__categories">
-            <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 1 } }}>
+            <List sx={{ p: 0 }}>
               {auditoriCategories?.map((category) => (
                 <ListItemButton
                   divider
                   key={category.id}
                   sx={{ py: 0 }}
-                  onClick={() => onSelectCategory(category.id)}
+                  onClick={() => {
+                    if (category.id === selectedCategoryId) return
+                    onSelectCategory(category.id)
+                  }}
                   selected={category.id === selectedCategoryId}
                 >
-                  <ListItemText primary={category.name} sx={{ p: '0 0 0 10px' }} />
+                  <ListItemIcon>
+                    <Checkbox edge="start" checked={category.id === selectedCategoryId} tabIndex={-1} disableRipple />
+                  </ListItemIcon>
+                  <ListItemText primary={category.name} sx={{ p: "0 0 0 10px" }} />
                 </ListItemButton>
               ))}
             </List>
           </div>
 
           <div>
-            <Divider orientation="vertical" sx={{ height: '100% !important' }} />
+            <Divider orientation="vertical" sx={{ height: "100% !important" }} />
           </div>
 
           <div className="auditory-modal__list">
-            <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 1 } }}>
+            <List sx={{ p: 0 }}>
               {auditoriesList.map((auditory) => (
                 <ListItemButton
                   divider
@@ -175,7 +177,15 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
                     setPreConfirmationAuditoryId(auditory.id)
                   }}
                 >
-                  <ListItemText primary={auditory.name} sx={{ p: '0 0 0 10px' }} />
+                  <ListItemIcon>
+                    <Checkbox
+                      edge="start"
+                      checked={auditory.id === preConfirmationAuditoryId}
+                      tabIndex={-1}
+                      disableRipple
+                    />
+                  </ListItemIcon>
+                  <ListItemText primary={auditory.name} sx={{ p: "0 0 0 10px" }} />
                 </ListItemButton>
               ))}
             </List>
@@ -183,7 +193,7 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
         </div>
       </DialogContent>
 
-      <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <DialogActions sx={{ display: "flex", justifyContent: "space-between" }}>
         <FormControlLabel
           sx={{ ml: 2, mb: 1 }}
           checked={isRemote}
@@ -192,7 +202,7 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
             onClickRemote(!isRemote)
           }}
           control={<Checkbox defaultChecked={isRemote} checked={isRemote} />}
-          label={'Дистанційно'}
+          label={"Дистанційно"}
         />
 
         <Button

@@ -1,9 +1,9 @@
-import { CloseOutlined } from '@ant-design/icons'
-import React, { Dispatch, SetStateAction } from 'react'
-import { Dialog, Button, IconButton, DialogTitle, DialogContent, DialogActions } from '@mui/material'
+import { CloseOutlined } from "@ant-design/icons"
+import React, { Dispatch, SetStateAction } from "react"
+import { Dialog, Button, IconButton, DialogTitle, DialogContent, DialogActions } from "@mui/material"
 
-import { GroupCategoriesType, GroupLoadType } from '../../store/groups/groupsTypes'
-import { AccordionItemsList } from '../AccordionItemsList/AccordionItemsList'
+import { GroupCategoriesType, GroupLoadType } from "../../store/groups/groupsTypes"
+import { AccordionItemsList } from "../AccordionItemsList/AccordionItemsList"
 
 interface ISelectGroupModalProps {
   open: boolean
@@ -29,21 +29,21 @@ const SelectGroupModal: React.FC<ISelectGroupModalProps> = (props) => {
       setSelectedLesson(null)
       handleClose()
     } else {
-      alert('Групу не вибрано')
+      alert("Групу не вибрано")
     }
   }
 
   return (
-    <Dialog open={open} maxWidth="sm" onClose={handleClose} sx={{ '& .MuiPaper-root': { width: '100%' } }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <DialogTitle>{`Відкрити навантаження групи: ${groupName ? groupName : ''}`}</DialogTitle>
+    <Dialog open={open} maxWidth="sm" onClose={handleClose} sx={{ "& .MuiPaper-root": { width: "100%" } }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <DialogTitle>{`Відкрити навантаження групи: ${groupName ? groupName : ""}`}</DialogTitle>
 
         <IconButton sx={{ mt: 1, mr: 1 }} onClick={handleClose}>
           <CloseOutlined />
         </IconButton>
       </div>
 
-      <DialogContent sx={{ padding: '0 24px 20px' }}>
+      <DialogContent sx={{ padding: "0 24px 20px", minHeight: "40vh" }}>
         <AccordionItemsList
           selectedItemId={groupId}
           items={groupCategories ? groupCategories : []}

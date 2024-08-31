@@ -1,4 +1,4 @@
-import { LoadingStatusTypes } from '../appTypes'
+import { LoadingStatusTypes } from "../appTypes"
 
 export type SettingsInitialStateType = {
   settings: SettingsType | null
@@ -12,31 +12,31 @@ export type SettingsType = {
   secondSemesterStart: string
   secondSemesterEnd: string
   callSchedule: {
-    '1': {
+    "1": {
       start: string
       end: string
     }
-    '2': {
+    "2": {
       start: string
       end: string
     }
-    '3': {
+    "3": {
       start: string
       end: string
     }
-    '4': {
+    "4": {
       start: string
       end: string
     }
-    '5': {
+    "5": {
       start: string
       end: string
     }
-    '6': {
+    "6": {
       start: string
       end: string
     }
-    '7': {
+    "7": {
       start: string
       end: string
     }
@@ -47,5 +47,6 @@ export type SettingsType = {
     laboratory: string
     seminars: string
     exams: string
+    examsConsulation: string
   }
 }

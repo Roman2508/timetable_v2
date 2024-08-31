@@ -1,4 +1,5 @@
 import { Dayjs } from "dayjs"
+import { toast } from "sonner"
 import { Button } from "@mui/material"
 import { useSelector } from "react-redux"
 import React, { Dispatch, SetStateAction } from "react"
@@ -42,6 +43,7 @@ interface ICalendarProps {
   selectedAuditoryId: number | null
   isPossibleToCreateLessons: boolean
   selectedLesson: ISelectedLesson | null
+  setSelectedTeacherId: Dispatch<SetStateAction<number | null>>
   setSelectedAuditoryId: Dispatch<SetStateAction<number | null>>
   setCopyTheScheduleModalVisible: Dispatch<SetStateAction<boolean>>
   setSelectedLesson: Dispatch<SetStateAction<ISelectedLesson | null>>
@@ -53,9 +55,10 @@ const Calendar: React.FC<ICalendarProps> = ({
   selectedLesson,
   selectedSemester,
   currentWeekNumber,
-  selectedAuditoryId,
-  selectedTeacherId,
   setSelectedLesson,
+  selectedTeacherId,
+  selectedAuditoryId,
+  setSelectedTeacherId,
   setSelectedAuditoryId,
   isPossibleToCreateLessons,
   setCopyTheScheduleModalVisible,
@@ -165,7 +168,11 @@ const Calendar: React.FC<ICalendarProps> = ({
 
   // select date and time and open creating lessons modal
   const onTimeSlotClick = (data: Dayjs, lessonNumber: number) => {
-    if (!selectedLesson) return alert("Дисципліна не вибрана")
+    if (!selectedLesson) {
+      toast.warning("Дисципліна не вибрана", { duration: 3000 })
+      return
+    }
+    // if (!selectedLesson) return alert("Дисципліна не вибрана")
     setSelectedTimeSlot({ data, lessonNumber })
     setModalVisible(true)
   }
@@ -177,7 +184,6 @@ const Calendar: React.FC<ICalendarProps> = ({
 
   // on click in schedule lesson item
   const onEditLesson = (lesson: ScheduleLessonType, data: Dayjs, lessonNumber: number) => {
-    onTimeSlotClick(data, lessonNumber)
     const auditory = lesson.auditory ? lesson.auditory.id : null
     setIsRemote(!auditory)
     setSelectedAuditoryId(auditory)
@@ -195,8 +201,10 @@ const Calendar: React.FC<ICalendarProps> = ({
       currentLessonHours: lesson.currentLessonHours,
       group: { id: lesson.group.id, name: lesson.group.name },
     })
+    setSelectedTeacherId(lesson.teacher.id)
     const replacement = lesson.replacement ? lesson.replacement.id : null
     setReplacementTeacherId(replacement)
+    onTimeSlotClick(data, lessonNumber)
   }
 
   const handleOpenSeveralLessonModal = (
@@ -292,6 +300,7 @@ const Calendar: React.FC<ICalendarProps> = ({
         severalLessonsList={severalLessonsList}
         setOpen={setSeveralLessonsModalVisible}
         setActionsModalVisible={setModalVisible}
+        setSelectedTeacherId={setSelectedTeacherId}
         onGetAuditoryOverlay={onGetAuditoryOverlay}
         setSelectedAuditoryId={setSelectedAuditoryId}
       />
