@@ -309,7 +309,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
         >
           {/* &nbsp; */}
           {selectedLesson.name} ({selectedLesson.typeRu}) - Група {selectedLesson.group.name}
-          {selectedLesson.subgroupNumber ? `${selectedLesson.subgroupNumber} підгрупа` : ""}{" "}
+          {selectedLesson.subgroupNumber ? `. ${selectedLesson.subgroupNumber} підгрупа` : ""}{" "}
           <span style={{ whiteSpace: "nowrap" }}>
             {selectedLesson.stream ? `Потік: ${selectedLesson.stream.name}` : ""}
           </span>

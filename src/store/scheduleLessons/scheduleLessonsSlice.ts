@@ -60,13 +60,21 @@ const scheduleLessonsSlice = createSlice({
     setLoadingStatus(state, action) {
       state.loadingStatus = action.payload
     },
+    clearScheduleLessons(state) {
+      state.scheduleLessons = null
+    },
     clearGroupLoad(state) {
       state.groupLoad = null
     },
+    // Delete one teacher lesson
     deleteTeacherOverlay(state, action: PayloadAction<number>) {
       if (!state.teacherLessons) return
       const lessons = state.teacherLessons.filter((el) => el.id !== action.payload)
       state.teacherLessons = lessons
+    },
+    // Delete all teacher lessons
+    clearTeacherLessons(state) {
+      state.teacherLessons = []
     },
     clearLessonStudents(state) {
       state.lessonStudents = []
@@ -304,8 +312,10 @@ export const {
   clearGroupOverlay,
   clearTeacherOverlay,
   setLastSelectedData,
+  clearTeacherLessons,
   clearLessonStudents,
   deleteTeacherOverlay,
+  clearScheduleLessons,
 } = scheduleLessonsSlice.actions
 
 export default scheduleLessonsSlice.reducer

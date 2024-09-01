@@ -167,8 +167,10 @@ const Calendar: React.FC<ICalendarProps> = ({
   }
 
   // select date and time and open creating lessons modal
-  const onTimeSlotClick = (data: Dayjs, lessonNumber: number) => {
-    if (!selectedLesson) {
+  const onTimeSlotClick = (data: Dayjs, lessonNumber: number, skip = true) => {
+    // skip = Якщо skip = true то необхідно перевірити чи вибрано дисципліну, якщо false то така перевірка не потрібна
+    // бо був клік на виставлений ел.розкладу в календарі
+    if (!selectedLesson && skip) {
       toast.warning("Дисципліна не вибрана", { duration: 3000 })
       return
     }
@@ -204,7 +206,7 @@ const Calendar: React.FC<ICalendarProps> = ({
     setSelectedTeacherId(lesson.teacher.id)
     const replacement = lesson.replacement ? lesson.replacement.id : null
     setReplacementTeacherId(replacement)
-    onTimeSlotClick(data, lessonNumber)
+    onTimeSlotClick(data, lessonNumber, false)
   }
 
   const handleOpenSeveralLessonModal = (
@@ -239,9 +241,15 @@ const Calendar: React.FC<ICalendarProps> = ({
       return
     }
 
-    // Перевіряю чи може вибрана дисципліна стояти з іншими в один час
-    // Може якщо вона розбита на підгрупи або якщо вона має спец. групи
-    if (selectedLesson.subgroupNumber || selectedLesson.specialization) {
+    // Якщо дисципліна на яку нажато в календарі немає підгруп або спецгруп - вона не може читатись одночасно з іншою
+    const isScheduleElementCanStandWithOther = scheduledElement.subgroupNumber || scheduledElement.specialization
+    // Дисципліна яку вибрано може читатись одночасно з іншими коли вона має підгрупу або спецгрупу
+    const isSelectedLessonHasSubgroupsOrSpecialization = selectedLesson.subgroupNumber || selectedLesson.specialization
+
+    if (isScheduleElementCanStandWithOther && isSelectedLessonHasSubgroupsOrSpecialization) {
+      // Перевіряю чи може вибрана дисципліна стояти з іншими в один час
+      // Може якщо вона розбита на підгрупи або якщо вона має спец. групи
+      // if (selectedLesson.subgroupNumber || selectedLesson.specialization) {
       setSelectedTimeSlot({ data: date, lessonNumber })
       setSeveralLessonsModalVisible(true)
     } else {
