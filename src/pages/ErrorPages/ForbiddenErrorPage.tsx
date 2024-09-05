@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Button, Typography } from '@mui/material'
 
-import ForbiddenErrorImage from '../../assets/images/Error403.png'
+import ForbiddenErrorImage from '../../assets/images/Error-403.png'
 
 const ForbiddenErrorPage = () => {
   return (

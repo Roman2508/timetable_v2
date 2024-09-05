@@ -1,7 +1,7 @@
-import { BarChartOutlined, SettingOutlined, SnippetsOutlined } from "@ant-design/icons"
+import { BarChartOutlined, SettingOutlined, SnippetsOutlined } from '@ant-design/icons'
 
 // assets
-import { ChromeOutlined, QuestionOutlined } from "@ant-design/icons"
+import { ChromeOutlined, QuestionOutlined } from '@ant-design/icons'
 // assets
 import {
   AppstoreAddOutlined,
@@ -10,7 +10,7 @@ import {
   BgColorsOutlined,
   FontSizeOutlined,
   LoadingOutlined,
-} from "@ant-design/icons"
+} from '@ant-design/icons'
 
 const icons = {
   SettingOutlined,
@@ -27,34 +27,32 @@ const icons = {
 }
 
 const settings = {
-  id: "settings",
-  title: "Налаштування",
+  id: 'settings',
+  title: 'Налаштування',
   icon: icons.SettingOutlined,
-  type: "group",
+  type: 'group',
   children: [
     {
-      id: "settings",
-      title: "Налаштування",
-      type: "item",
-      url: "/settings",
+      id: 'settings',
+      title: 'Налаштування',
+      type: 'item',
+      url: '/settings',
       icon: icons.SettingOutlined,
       breadcrumbs: false,
     },
     {
-      id: "stats",
-      title: "Статистика",
-      type: "item",
-      url: "/404",
-      // url: "/stats",
+      id: 'stats',
+      title: 'Статистика',
+      type: 'item',
+      url: '/stats',
       icon: icons.BarChartOutlined,
       breadcrumbs: false,
     },
     {
-      id: "reports",
-      title: "Звіти",
-      type: "item",
-      url: "/404",
-      // url: "/reports",
+      id: 'reports',
+      title: 'Звіти',
+      type: 'item',
+      url: '/reports',
       icon: icons.SnippetsOutlined,
       breadcrumbs: false,
     },
@@ -62,47 +60,47 @@ const settings = {
     /*  */
 
     {
-      id: "sample-page",
-      title: "Sample Page",
-      type: "item",
-      url: "/sample-page",
+      id: 'sample-page',
+      title: 'Sample Page',
+      type: 'item',
+      url: '/sample-page',
       icon: icons.ChromeOutlined,
     },
     {
-      id: "documentation",
-      title: "Documentation",
-      type: "item",
-      url: "https://codedthemes.gitbook.io/mantis/",
+      id: 'documentation',
+      title: 'Documentation',
+      type: 'item',
+      url: 'https://codedthemes.gitbook.io/mantis/',
       icon: icons.QuestionOutlined,
       external: true,
       target: true,
     },
     {
-      id: "util-typography",
-      title: "Typography",
-      type: "item",
-      url: "/typography",
+      id: 'util-typography',
+      title: 'Typography',
+      type: 'item',
+      url: '/typography',
       icon: icons.FontSizeOutlined,
     },
     {
-      id: "util-color",
-      title: "Color",
-      type: "item",
-      url: "/color",
+      id: 'util-color',
+      title: 'Color',
+      type: 'item',
+      url: '/color',
       icon: icons.BgColorsOutlined,
     },
     {
-      id: "util-shadow",
-      title: "Shadow",
-      type: "item",
-      url: "/shadow",
+      id: 'util-shadow',
+      title: 'Shadow',
+      type: 'item',
+      url: '/shadow',
       icon: icons.BarcodeOutlined,
     },
     {
-      id: "ant-icons",
-      title: "Ant Icons",
-      type: "item",
-      url: "/icons/ant",
+      id: 'ant-icons',
+      title: 'Ant Icons',
+      type: 'item',
+      url: '/icons/ant',
       icon: icons.AntDesignOutlined,
       breadcrumbs: false,
     },

@@ -27,6 +27,7 @@ import { StudentsForm } from '../../components/StudentsAccounts/StudentsForm'
 import { getStudentsByGroupId } from '../../store/students/studentsAsyncActions'
 import { ImportStudents } from '../../components/StudentsAccounts/ImportStudents'
 import HelperModal from '../../components/StudentsAccounts/HelperModal'
+import ExportStudents from '../../components/StudentsAccounts/ExportStudents'
 
 const bageColors = {
   ['Навчається']: 'primary',
@@ -149,7 +150,10 @@ const StudentsAccounts = () => {
                     selected={selectedStudent?.id === student.id}
                   >
                     <ListItemButton sx={{ py: '0px' }}>
-                      <ListItemText primary={`${index + 1}. ${student.name}`} />
+                      <ListItemText
+                        primary={`${index + 1}. ${student.name}`}
+                        sx={{ '& span': { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }}
+                      />
 
                       <Chip
                         size="small"
@@ -173,7 +177,11 @@ const StudentsAccounts = () => {
                 {editMode === 'create' ? 'ДОДАТИ НОВОГО СТУДЕНТА' : 'ОНОВИТИ СТУДЕНТА'}
               </Typography>
 
-              <ImportStudents setHelperModalVisible={setHelperModalVisible} />
+              <div style={{ position: 'absolute', top: '-6px', right: 0, backgroundColor: '#fff' }}>
+                <ImportStudents setHelperModalVisible={setHelperModalVisible} />
+
+                <ExportStudents groupId={selectedGroup ? selectedGroup.id : undefined} />
+              </div>
             </div>
 
             <StudentsForm

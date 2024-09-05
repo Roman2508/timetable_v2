@@ -78,7 +78,7 @@ const ImportStudents: React.FC<IImportStudentsProps> = ({ setHelperModalVisible 
   }
 
   return (
-    <div style={{ position: 'absolute', top: '-6px', right: 0, backgroundColor: '#fff' }}>
+    <>
       <input type="file" ref={fileRef} onChange={handleChangeUpload} style={{ display: 'none' }} />
       <Tooltip title="В якому форматі має бути Excel файл?">
         <IconButton onClick={() => setHelperModalVisible(true)}>
@@ -91,7 +91,7 @@ const ImportStudents: React.FC<IImportStudentsProps> = ({ setHelperModalVisible 
           <UploadOutlined style={{ width: '32px', height: '32px', padding: '6px' }} />
         </IconButton>
       </Tooltip>
-    </div>
+    </>
   )
 }
 

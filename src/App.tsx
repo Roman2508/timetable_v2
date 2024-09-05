@@ -1,49 +1,49 @@
-import { lazy } from "react"
-import "react-toastify/dist/ReactToastify.css"
-import { Route, Routes } from "react-router-dom"
+import { lazy } from 'react'
+import 'react-toastify/dist/ReactToastify.css'
+import { Route, Routes } from 'react-router-dom'
 
-import "./App.css"
-import ThemeCustomization from "./themes"
-import Loadable from "./components/Loadable"
-import ScrollTop from "./components/ScrollTop"
-import MinimalLayout from "./layout/MinimalLayout"
-import MainLayout from "./layout/MainLayout/MainLayout"
-import NotFoundPage from "./pages/ErrorPages/NotFoundPage"
-import GradeBookPage from "./pages/GradeBook/GradeBookPage"
-import { TimetablePage } from "./pages/Timetable/TimetablePage"
-import AuthLogin from "./pages/authentication/auth-forms/AuthLogin"
-import ForbiddenErrorPage from "./pages/ErrorPages/ForbiddenErrorPage"
-import AuthRegister from "./pages/authentication/auth-forms/AuthRegister"
-import InternalServerErrorPage from "./pages/ErrorPages/InternalServerErrorPage"
-import AutomaticSchedulingPage from "./pages/AutomaticScheduling/AutomaticSchedulingPage"
+import './App.css'
+import ThemeCustomization from './themes'
+import Loadable from './components/Loadable'
+import ScrollTop from './components/ScrollTop'
+import MinimalLayout from './layout/MinimalLayout'
+import MainLayout from './layout/MainLayout/MainLayout'
+import NotFoundPage from './pages/ErrorPages/NotFoundPage'
+import GradeBookPage from './pages/GradeBook/GradeBookPage'
+import { TimetablePage } from './pages/Timetable/TimetablePage'
+import AuthLogin from './pages/authentication/auth-forms/AuthLogin'
+import ForbiddenErrorPage from './pages/ErrorPages/ForbiddenErrorPage'
+import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
+import InternalServerErrorPage from './pages/ErrorPages/InternalServerErrorPage'
+import AutomaticSchedulingPage from './pages/AutomaticScheduling/AutomaticSchedulingPage'
 
 // render - dashboard
-const DashboardDefault = Loadable(lazy(() => import("./pages/dashboard")))
+const DashboardDefault = Loadable(lazy(() => import('./pages/dashboard')))
 
 // render - sample page
-const SamplePage = Loadable(lazy(() => import("./pages/extra-pages/SamplePage")))
+const SamplePage = Loadable(lazy(() => import('./pages/extra-pages/SamplePage')))
 
-const Color = Loadable(lazy(() => import("./pages/components-overview/Color")))
-const Shadow = Loadable(lazy(() => import("./pages/components-overview/Shadow")))
-const AntIcons = Loadable(lazy(() => import("./pages/components-overview/AntIcons")))
-const Typography = Loadable(lazy(() => import("./pages/components-overview/Typography")))
+const Color = Loadable(lazy(() => import('./pages/components-overview/Color')))
+const Shadow = Loadable(lazy(() => import('./pages/components-overview/Shadow')))
+const AntIcons = Loadable(lazy(() => import('./pages/components-overview/AntIcons')))
+const Typography = Loadable(lazy(() => import('./pages/components-overview/Typography')))
 
 // lazy loading pages
-const LoadPage = Loadable(lazy(() => import("./pages/Load/LoadPage")))
-const PlansPage = Loadable(lazy(() => import("./pages/Plans/PlansPage")))
-const GroupsPage = Loadable(lazy(() => import("./pages/Groups/GroupsPage")))
-const StreamsPage = Loadable(lazy(() => import("./pages/Streams/StreamsPage")))
-const SettingsPage = Loadable(lazy(() => import("./pages/Settings/SettingsPage")))
-const TeachersPage = Loadable(lazy(() => import("./pages/Teachers/TeachersPage")))
-const FullPlanPage = Loadable(lazy(() => import("./pages/FullPlan/FullPlanPage")))
-const FullGroupPage = Loadable(lazy(() => import("./pages/FullGroup/FullGroupPage")))
-const AuditoriesPage = Loadable(lazy(() => import("./pages/Auditories/AuditoriesPage")))
-const StudentsDivide = Loadable(lazy(() => import("./pages/StudentsDivide/StudentsDivide")))
-const DistributionPage = Loadable(lazy(() => import("./pages/Distribution/DistributionPage")))
-const StudentsAccounts = Loadable(lazy(() => import("./pages/StudentsAccounts/StudentsAccounts")))
-const TeacherProfilePage = Loadable(lazy(() => import("./pages/TeacherProfile/TeacherProfilePage")))
-const SchedulingСonstraints = Loadable(lazy(() => import("./pages/SchedulingСonstraints/SchedulingСonstraints")))
-const TeachingLessonsControl = Loadable(lazy(() => import("./pages/TeachingLessonsControl/TeachingLessonsControl")))
+const LoadPage = Loadable(lazy(() => import('./pages/Load/LoadPage')))
+const PlansPage = Loadable(lazy(() => import('./pages/Plans/PlansPage')))
+const GroupsPage = Loadable(lazy(() => import('./pages/Groups/GroupsPage')))
+const StreamsPage = Loadable(lazy(() => import('./pages/Streams/StreamsPage')))
+const SettingsPage = Loadable(lazy(() => import('./pages/Settings/SettingsPage')))
+const TeachersPage = Loadable(lazy(() => import('./pages/Teachers/TeachersPage')))
+const FullPlanPage = Loadable(lazy(() => import('./pages/FullPlan/FullPlanPage')))
+const FullGroupPage = Loadable(lazy(() => import('./pages/FullGroup/FullGroupPage')))
+const AuditoriesPage = Loadable(lazy(() => import('./pages/Auditories/AuditoriesPage')))
+const StudentsDivide = Loadable(lazy(() => import('./pages/StudentsDivide/StudentsDivide')))
+const DistributionPage = Loadable(lazy(() => import('./pages/Distribution/DistributionPage')))
+const StudentsAccounts = Loadable(lazy(() => import('./pages/StudentsAccounts/StudentsAccounts')))
+const TeacherProfilePage = Loadable(lazy(() => import('./pages/TeacherProfile/TeacherProfilePage')))
+const SchedulingСonstraints = Loadable(lazy(() => import('./pages/SchedulingСonstraints/SchedulingСonstraints')))
+const TeachingLessonsControl = Loadable(lazy(() => import('./pages/TeachingLessonsControl/TeachingLessonsControl')))
 
 const App = () => {
   return (
@@ -94,9 +94,10 @@ const App = () => {
             <Route element={<AuthRegister />} path="/register" />
           </Route>
 
-          <Route element={<NotFoundPage />} path="/404" />
-          <Route element={<ForbiddenErrorPage />} path="/403" />
           <Route element={<InternalServerErrorPage />} path="/500" />
+          <Route element={<ForbiddenErrorPage />} path="/403" />
+          <Route element={<NotFoundPage />} path="/404" />
+          <Route element={<NotFoundPage />} path="*" />
         </Routes>
       </ScrollTop>
     </ThemeCustomization>
@@ -128,6 +129,7 @@ export default App
 // 14. Треба зробити можливість ставити в розклад (поза планом, тобто не йде в навантаження) практики або інші види діяльності ????
 // 15. Перевірити як працює зміна року навчання
 // 16. Накладки аудиторій при виставленні підгруп (можна поставити 2 пари в 1 аудиторію) - fix it
+// 17. На розклад повинна висвічуватись кількість студентів в яких статус "Навчається"
 
 // ========================================================
 // ================== Електронний журнал ==================
