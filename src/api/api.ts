@@ -1,20 +1,21 @@
-import axios from "axios"
+import axios from 'axios'
+import { getLocalStorageToken } from '../utils/localStorageToken'
 
-export { plansAPI } from "./plansAPI"
-export { groupsAPI } from "./groupsAPI"
-export { streamsAPI } from "./streamsAPI"
-export { settingsAPI } from "./settingsAPI"
-export { teachersAPI } from "./teachersAPI"
-export { studentsAPI } from "./studentsAPI"
-export { gradeBookAPI } from "./gradeBookAPI"
-export { auditoriesAPI } from "./auditoriesAPI"
-export { planSubjectsAPI } from "./planSubjectsAPI"
-export { teacherProfileAPI } from "./teacherProfileAPI"
-export { scheduleLessonsAPI } from "./scheduleLessonsAPI"
-export { groupLoadLessonsAPI } from "./groupLoadLessonsAPI"
+export { plansAPI } from './plansAPI'
+export { groupsAPI } from './groupsAPI'
+export { streamsAPI } from './streamsAPI'
+export { settingsAPI } from './settingsAPI'
+export { teachersAPI } from './teachersAPI'
+export { studentsAPI } from './studentsAPI'
+export { gradeBookAPI } from './gradeBookAPI'
+export { auditoriesAPI } from './auditoriesAPI'
+export { planSubjectsAPI } from './planSubjectsAPI'
+export { teacherProfileAPI } from './teacherProfileAPI'
+export { scheduleLessonsAPI } from './scheduleLessonsAPI'
+export { groupLoadLessonsAPI } from './groupLoadLessonsAPI'
 
 export const instanse = axios.create({
-  baseURL: "http://localhost:7777/",
+  baseURL: 'http://localhost:7777/',
   // headers: {
   //   ['Content-Type']: 'application/json',
   //   responseType: 'json',
@@ -23,14 +24,25 @@ export const instanse = axios.create({
 })
 
 // Якщо є токен, вшиваю його в конфігурацію axios
-// @ts-ignore
 instanse.interceptors.request.use((config) => {
   if (config.headers) {
-    config.headers.Authorization = String(
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzIzNTY1NDUxLCJleHAiOjE3MjYxNTc0NTF9.JYRj4VGXXeRQbSewnqTnSFIjXIzhqQOKc7yjxBwHUfo"
-    )
+    const token = getLocalStorageToken()
+    config.headers.Authorization = String(`Bearer ${token}`)
     // config.headers.Authorization = String(window.localStorage.getItem('token'))
-
-    return config
   }
+  return config
 })
+
+instanse.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Any status codes that fall outside the range of 2xx trigger this function
+    if (error.response && error.response.status === 401) {
+      // window.location.replace('/auth')
+      // localStorage.removeItem('token')
+    }
+
+    // Return the error to be handled elsewhere (if necessary)
+    return Promise.reject(error)
+  }
+)
