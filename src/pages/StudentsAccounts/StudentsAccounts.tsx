@@ -133,7 +133,7 @@ const StudentsAccounts = () => {
               {selectedGroup ? `Група: ${selectedGroup.name}` : 'ВИБЕРІТЬ ГРУПУ'}
             </Typography>
 
-            <List sx={{ maxHeight: '575px', overflow: 'auto' }}>
+            <List sx={{ maxHeight: 'calc(100vh - 220px)', overflow: 'auto' }}>
               {loadingStatus === LoadingStatusTypes.LOADING ? (
                 <LoadingSpinner />
               ) : !students || !students.length ? (

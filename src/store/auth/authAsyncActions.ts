@@ -32,7 +32,7 @@ export const authLogin = createAsyncThunk(
   async (payload: LoginPayloadType, thunkAPI): Promise<AuthResponseType> => {
     thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
     const promise = authAPI.login(payload)
-
+    
     toast.promise(promise, {
       loading: "Завантаження...",
       success: "Авторизований",
