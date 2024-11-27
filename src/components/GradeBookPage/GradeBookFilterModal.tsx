@@ -126,8 +126,6 @@ const GradeBookFilterModal: React.FC<IGradeBookFilterModalProps> = ({
         <p style={{ color: 'red' }}>ТРЕБА ДОДАТИ РІК В ЯКОМУ ДИСЦИПЛІНА ВИВЧАЛАСЬ</p>
         <p style={{ color: 'red' }}>ТРЕБА ДОДАТИ РІК В ЯКОМУ ДИСЦИПЛІНА ВИВЧАЛАСЬ</p>
         <p style={{ color: 'red' }}>ТРЕБА ДОДАТИ РІК В ЯКОМУ ДИСЦИПЛІНА ВИВЧАЛАСЬ</p>
-        <p style={{ color: 'red' }}>ТРЕБА ДОДАТИ РІК В ЯКОМУ ДИСЦИПЛІНА ВИВЧАЛАСЬ</p>
-        <p style={{ color: 'red' }}>ТРЕБА ДОДАТИ РІК В ЯКОМУ ДИСЦИПЛІНА ВИВЧАЛАСЬ</p>
         <DialogContent sx={{ padding: '0 24px 20px', maxWidth: '295px' }}>
           <Controller
             name="semester"

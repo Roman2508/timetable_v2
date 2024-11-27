@@ -19,6 +19,7 @@ import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
 import { AuditoryCategoriesTypes } from '../../store/auditories/auditoriesTypes'
 import { getTeachersCategories } from '../../store/teachers/teachersAsyncActions'
 import { getAuditoryCategories } from '../../store/auditories/auditoriesAsyncActions'
+import { convertFieldResponseIntoMuiTextFieldProps } from '@mui/x-date-pickers/internals'
 
 interface IListItem {
   label: string
@@ -34,8 +35,13 @@ interface ITimetablePageHeaderProps {
   setSelectedAuditoryId: Dispatch<SetStateAction<number | null>>
 }
 
-const useTimetableTabClick = () => {
+const useTimetableFilter = () => {
+  const { lastSelectedItemId, lastSelectedScheduleType, lastSelectedStructuralUnitId } =
+    useSelector(lastSelectedDataSelector)
+
   const [a, b] = React.useState()
+
+  console.log(lastSelectedItemId, lastSelectedScheduleType, lastSelectedStructuralUnitId)
 }
 
 const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
@@ -47,6 +53,9 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
   setSelectedAuditoryId,
 }) => {
   const dispatch = useAppDispatch()
+
+  const isMountingTabRef = React.useRef(false)
+  const isMountingCategoryRef = React.useRef(false)
 
   const { groupCategories } = useSelector(groupsSelector)
   const { teachersCategories } = useSelector(teachersSelector)
@@ -76,8 +85,13 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
     if (lastSelectedScheduleType === 'auditory') setSelectedAuditoryId(lastSelectedItemId)
   }, [lastSelectedItemId, lastSelectedScheduleType])
 
-  // on tab click
+  // on tab click (disable on first render)
   React.useEffect(() => {
+    if (!isMountingTabRef.current) {
+      isMountingTabRef.current = true
+      return
+    }
+
     if (!lastSelectedStructuralUnitId) return
 
     if (lastSelectedScheduleType === 'group') {
@@ -165,6 +179,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
       if (!lastSelectedScheduleType || !lastSelectedStructuralUnitId || !lastSelectedItemId) {
         dispatch(
           setLastSelectedData({
+            lastSelectedScheduleType,
             lastSelectedItemId: groupsPayload[0].groups[0]?.id,
             lastSelectedStructuralUnitId: groupsPayload[0].id,
           })
@@ -236,6 +251,11 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
 
   // on change category (disabled on first render)
   React.useEffect(() => {
+    if (!isMountingCategoryRef.current) {
+      isMountingCategoryRef.current = true
+      return
+    }
+
     if (!lastSelectedStructuralUnitId) return
 
     dispatch(clearTeacherLessons())

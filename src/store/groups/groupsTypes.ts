@@ -30,7 +30,10 @@ export type GroupsType = {
   educationPlan: { id: number; name: string } | null
 }
 
-export type GroupsShortType = Pick<GroupsType, 'id' | 'name' | 'courseNumber' | 'students' | 'isHide'>
+export type GroupsShortType = Pick<
+  GroupsType,
+  'id' | 'name' | 'courseNumber' | 'yearOfAdmission' | 'students' | 'isHide'
+>
 
 export type GroupFormType = {
   name: string
