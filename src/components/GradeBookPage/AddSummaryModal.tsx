@@ -111,7 +111,12 @@ const AddSummaryModal: React.FC<IAddSummaryModalProps> = ({ open, setOpen, grade
   }
 
   return (
-    <Dialog open={open} maxWidth="sm" onClose={handleClose} sx={{ '& .MuiDialog-paper': { width: '340px' } }}>
+    <Dialog
+      open={open}
+      maxWidth="sm"
+      onClose={handleClose}
+      sx={{ '& .MuiDialog-paper': { width: '340px', height: '340px' } }}
+    >
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <DialogTitle id="alert-dialog-title">Підсумок:</DialogTitle>
 
@@ -120,14 +125,15 @@ const AddSummaryModal: React.FC<IAddSummaryModalProps> = ({ open, setOpen, grade
         </IconButton>
       </div>
 
-      <DialogContent sx={{ padding: '0 24px 10px' }}>
+      {/* <DialogContent sx={{ padding: '0 24px 10px' }}>*/}
+      <DialogContent sx={{ padding: '0' }}>
         <Tabs value={summaryType} onChange={handleChangeSummaryType}>
           <Tab label="Створити" sx={{ width: '50%' }} value={'add'} />
           <Tab label="Видалити" sx={{ width: '50%' }} value={'delete'} />
         </Tabs>
 
         {summaryType === 'add' && (
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)} style={{ padding: '0 24px 10px' }}>
             <Controller
               name="type"
               control={control}
@@ -223,7 +229,7 @@ const AddSummaryModal: React.FC<IAddSummaryModalProps> = ({ open, setOpen, grade
             )}
             <List>
               {summarySortedList.map((summary: GradeBookSummaryType, index: number) => (
-                <ListItem key={index} sx={{ p: '4px 8px', alignItems: 'flex-end' }}>
+                <ListItem key={index} sx={{ p: '4px 16px', alignItems: 'flex-end' }}>
                   <ListItemText sx={{ m: 0 }}>
                     <Typography sx={{ flex: 1 }} variant="caption">
                       {summary.afterLesson} урок

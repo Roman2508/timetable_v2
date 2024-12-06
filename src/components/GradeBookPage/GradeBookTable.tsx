@@ -29,6 +29,8 @@ const cellInitialState = {
 }
 
 // Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
+// Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
+// Коли студент відраховується з дисципліни - треба очищати всі оцінки з цієї дисципліни
 
 const GradeBookTable: React.FC<IGradeBookTablePops> = ({ gradeBook, gradeBookLessonDates }) => {
   const dispatch = useAppDispatch()

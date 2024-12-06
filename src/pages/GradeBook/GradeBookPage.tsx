@@ -136,12 +136,31 @@ const GradeBookPage = () => {
             </Grid>
 
             <Grid item>
-              <Typography variant="h5">
-                {gradeBook &&
-                  `${gradeBook.lesson.name} 
-                  ${gradeBook.lesson.semester} семестр. Група ${gradeBook.group.name}
-                  . Викладач: ${getLastnameAndInitials(gradeBook.lesson.teacher)}`}
-              </Typography>
+              {gradeBook && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                  <div style={{ borderRight: '1px solid #ddd', paddingRight: '20px' }}>
+                    <Typography variant="body2">Дисципліна</Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{ lineHeight: '1.3' }}
+                    >{`${gradeBook.lesson.name}, ${gradeBook.lesson.semester} семестр`}</Typography>
+                  </div>
+
+                  <div style={{ borderRight: '1px solid #ddd', paddingRight: '20px' }}>
+                    <Typography variant="body2">Група</Typography>
+                    <Typography variant="h5" sx={{ lineHeight: '1.3' }}>
+                      {gradeBook.group.name}
+                    </Typography>
+                  </div>
+
+                  <div>
+                    <Typography variant="body2">Викладач</Typography>
+                    <Typography variant="h5" sx={{ lineHeight: '1.3' }}>
+                      {getLastnameAndInitials(gradeBook.lesson.teacher)}
+                    </Typography>
+                  </div>
+                </div>
+              )}
             </Grid>
           </Grid>
         </Grid>

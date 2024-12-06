@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getLocalStorageToken } from '../utils/localStorageToken'
+import { getLocalStorageToken, TOKEN_NAME } from '../utils/localStorageToken'
 
 export { plansAPI } from './plansAPI'
 export { groupsAPI } from './groupsAPI'
@@ -39,7 +39,7 @@ instanse.interceptors.response.use(
     // Any status codes that fall outside the range of 2xx trigger this function
     if (error.response && error.response.status === 401) {
       // window.location.replace('/auth')
-      // localStorage.removeItem('token')
+      // localStorage.removeItem(TOKEN_NAME)
     }
 
     // Return the error to be handled elsewhere (if necessary)
