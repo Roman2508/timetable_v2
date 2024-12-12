@@ -20,28 +20,28 @@ import {
   OutlinedInput,
   TableContainer,
   SelectChangeEvent,
-} from "@mui/material"
-import React from "react"
-import { useSelector } from "react-redux"
-import { useTheme } from "@mui/material/styles"
-import { useSearchParams } from "react-router-dom"
-import { ColumnWidthOutlined, FilterOutlined, PrinterOutlined, SnippetsOutlined } from "@ant-design/icons"
+} from '@mui/material'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { useTheme } from '@mui/material/styles'
+import { useSearchParams } from 'react-router-dom'
+import { ColumnWidthOutlined, FilterOutlined, PrinterOutlined, SnippetsOutlined } from '@ant-design/icons'
 
-import { useAppDispatch } from "../../store/store"
-import { CustomDatePicker } from "../../components/CustomDatePicker"
-import { gradeBookSelector } from "../../store/gradeBook/gradeBookSlice"
+import { useAppDispatch } from '../../store/store'
+import { CustomDatePicker } from '../../components/CustomDatePicker'
+import { gradeBookSelector } from '../../store/gradeBook/gradeBookSlice'
 
-const cellStyles = { padding: "6px", border: "1px solid #efefef", textAlign: "center !important" }
+const cellStyles = { padding: '6px', border: '1px solid #efefef', textAlign: 'center !important' }
 
 const rows = [
   ...Array(10)
     .fill(null)
     .map((_, index) => ({
       id: index + 1,
-      name: "asdasdas",
-      email: "sdasdds@pharm.zt.ua",
-      picture: "https://saaadsdas.com",
-      role: ["ADMIN", "TEACHER"],
+      name: 'asdasdas',
+      email: 'sdasdds@pharm.zt.ua',
+      picture: 'https://saaadsdas.com',
+      role: ['ADMIN', 'TEACHER'],
     })),
 ]
 
@@ -66,7 +66,7 @@ const AutomaticSchedulingPage = () => {
     } = event
     setLessonNumbers(
       // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
+      typeof value === 'string' ? value.split(',') : value
     )
   }
 
@@ -74,8 +74,8 @@ const AutomaticSchedulingPage = () => {
     <>
       <Grid container sx={{ mb: 2, pt: 0 }}>
         <Grid item xs={12}>
-          <Grid container sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Grid item style={{ display: "flex", alignItems: "center" }}>
+          <Grid container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Grid item style={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="h5" sx={{ mr: 1 }}>
                 Автоматичне розставлення розкладу
               </Typography>
@@ -116,9 +116,9 @@ const AutomaticSchedulingPage = () => {
         </Grid>
       </Grid>
 
-      <Paper sx={{ p: 4, textAlign: "center" }}>
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <Box sx={{ display: "flex", alignItems: "flex-end", gap: 2 }}>
+      <Paper sx={{ p: 4, textAlign: 'center' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 2 }}>
             <CustomDatePicker
               label="Початкова дата"
               setValue={(e) => {}}
@@ -140,15 +140,19 @@ const AutomaticSchedulingPage = () => {
                 fullWidth
                 label="Група*"
                 sx={{
-                  minWidth: "300px",
-                  textAlign: "left",
-                  "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
-                  "& .MuiFormLabel-root": { lineHeight: 1, transform: "translate(14px, 14px) scale(1)", height: '16px' },
+                  minWidth: '300px',
+                  textAlign: 'left',
+                  '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
+                  '& .MuiFormLabel-root': {
+                    lineHeight: 1,
+                    transform: 'translate(14px, 14px) scale(1)',
+                    height: '16px',
+                  },
                 }}
               >
                 {[
-                  { id: 1, name: "11111" },
-                  { id: 2, name: "22222" },
+                  { id: 1, name: '11111' },
+                  { id: 2, name: '22222' },
                 ].map((option) => (
                   <MenuItem key={option.id} value={option.id}>
                     {option.name}
@@ -164,15 +168,19 @@ const AutomaticSchedulingPage = () => {
                 id="category"
                 label="Семестр*"
                 sx={{
-                  minWidth: "300px",
-                  textAlign: "left",
-                  "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
-                  "& .MuiFormLabel-root": { lineHeight: 1, transform: "translate(14px, 14px) scale(1)", height: '16px' },
+                  minWidth: '300px',
+                  textAlign: 'left',
+                  '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
+                  '& .MuiFormLabel-root': {
+                    lineHeight: 1,
+                    transform: 'translate(14px, 14px) scale(1)',
+                    height: '16px',
+                  },
                 }}
               >
                 {[
-                  { id: 1, name: "11111" },
-                  { id: 2, name: "22222" },
+                  { id: 1, name: '11111' },
+                  { id: 2, name: '22222' },
                 ].map((option) => (
                   <MenuItem key={option.id} value={option.id}>
                     {option.name}
@@ -184,22 +192,23 @@ const AutomaticSchedulingPage = () => {
 
           <Box></Box>
 
-          <Typography variant="h5" sx={{ textAlign: "center", mb: 2, mt: 5 }}>
+          <Typography variant="h5" sx={{ textAlign: 'center', mb: 2, mt: 5 }}>
             Має бути виставлено
           </Typography>
-          <TableContainer sx={{ maxWidth: "1000px", margin: "0 auto" }}>
+          <TableContainer sx={{ maxWidth: '1000px', margin: '0 auto' }}>
             <Table>
               <TableHead
                 sx={{
-                  backgroundColor: "rgb(250, 250, 250)",
-                  borderTop: "1px solid rgb(240, 240, 240)",
-                  borderBottom: "1px solid rgb(240, 240, 240)",
+                  backgroundColor: 'rgb(250, 250, 250)',
+                  borderTop: '1px solid rgb(240, 240, 240)',
+                  borderBottom: '1px solid rgb(240, 240, 240)',
                 }}
               >
                 <TableRow>
                   <TableCell width="80px">№</TableCell>
                   <TableCell>Назва</TableCell>
                   <TableCell>Кількість годин</TableCell>
+                  <TableCell align="center">Дата</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -217,9 +226,35 @@ const AutomaticSchedulingPage = () => {
                         placeholder=""
                         InputProps={{ inputProps: { min: 0, max: 300 } }}
                         sx={{
-                          maxWidth: "100px",
-                          mr: "8px !important",
-                          "& .MuiInputBase-root": { p: 0 },
+                          maxWidth: '100px',
+                          mr: '8px !important',
+                          '& .MuiInputBase-root': { p: 0 },
+                        }}
+                      />
+                    </TableCell>
+
+                    <TableCell sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        type="date"
+                        placeholder=""
+                        InputProps={{ inputProps: { min: 0, max: 300 } }}
+                        sx={{
+                          maxWidth: '130px',
+                          '& .MuiInputBase-root': { p: 0 },
+                        }}
+                      />
+                      -
+                      <TextField
+                        fullWidth
+                        size="small"
+                        type="date"
+                        placeholder=""
+                        InputProps={{ inputProps: { min: 0, max: 300 } }}
+                        sx={{
+                          maxWidth: '130px',
+                          '& .MuiInputBase-root': { p: 0 },
                         }}
                       />
                     </TableCell>
@@ -229,16 +264,16 @@ const AutomaticSchedulingPage = () => {
             </Table>
           </TableContainer>
 
-          <Typography variant="h5" sx={{ textAlign: "center", mb: 2, mt: 5 }}>
+          <Typography variant="h5" sx={{ textAlign: 'center', mb: 2, mt: 5 }}>
             Обмеження
           </Typography>
           <TableContainer>
             <Table>
               <TableHead
                 sx={{
-                  backgroundColor: "rgb(250, 250, 250)",
-                  borderTop: "1px solid rgb(240, 240, 240)",
-                  borderBottom: "1px solid rgb(240, 240, 240)",
+                  backgroundColor: 'rgb(250, 250, 250)',
+                  borderTop: '1px solid rgb(240, 240, 240)',
+                  borderBottom: '1px solid rgb(240, 240, 240)',
                 }}
               >
                 <TableRow>
@@ -259,7 +294,7 @@ const AutomaticSchedulingPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow sx={{ backgroundColor: "rgb(250, 250, 250)", borderBottom: "1px solid rgb(240, 240, 240)" }}>
+                <TableRow sx={{ backgroundColor: 'rgb(250, 250, 250)', borderBottom: '1px solid rgb(240, 240, 240)' }}>
                   <TableCell sx={cellStyles}>
                     <TextField
                       select
@@ -267,17 +302,17 @@ const AutomaticSchedulingPage = () => {
                       id="category"
                       defaultValue={1}
                       sx={{
-                        minWidth: "140px",
-                        maxWidth: "140px",
-                        textAlign: "left",
-                        "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
+                        minWidth: '140px',
+                        maxWidth: '140px',
+                        textAlign: 'left',
+                        '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
                       }}
                     >
                       {[
-                        { id: 1, name: "Дисципліна" },
-                        { id: 2, name: "Група" },
-                        { id: 3, name: "Викладач" },
-                        { id: 4, name: "Аудиторія" },
+                        { id: 1, name: 'Дисципліна' },
+                        { id: 2, name: 'Група' },
+                        { id: 3, name: 'Викладач' },
+                        { id: 4, name: 'Аудиторія' },
                       ].map((option) => (
                         <MenuItem key={option.id} value={option.id}>
                           {option.name}
@@ -293,17 +328,17 @@ const AutomaticSchedulingPage = () => {
                       id="category"
                       defaultValue={0}
                       sx={{
-                        minWidth: "250px",
-                        maxWidth: "250px",
-                        textAlign: "left",
-                        "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
+                        minWidth: '250px',
+                        maxWidth: '250px',
+                        textAlign: 'left',
+                        '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
                       }}
                     >
                       {[
-                        { id: 0, name: "Не вибрано" },
-                        { id: 1, name: "Інформатика" },
-                        { id: 2, name: "Технології" },
-                        { id: 3, name: "Інформаційні технології у фармації" },
+                        { id: 0, name: 'Не вибрано' },
+                        { id: 1, name: 'Інформатика' },
+                        { id: 2, name: 'Технології' },
+                        { id: 3, name: 'Інформаційні технології у фармації' },
                       ].map((option) => (
                         <MenuItem key={option.id} value={option.id}>
                           {option.name}
@@ -319,15 +354,15 @@ const AutomaticSchedulingPage = () => {
                       id="category"
                       defaultValue={1}
                       sx={{
-                        minWidth: "140px",
-                        maxWidth: "140px",
-                        textAlign: "left",
-                        "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
+                        minWidth: '140px',
+                        maxWidth: '140px',
+                        textAlign: 'left',
+                        '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
                       }}
                     >
                       {[
-                        { id: 1, name: "Має" },
-                        { id: 2, name: "Не може" },
+                        { id: 1, name: 'Має' },
+                        { id: 2, name: 'Не може' },
                       ].map((option) => (
                         <MenuItem key={option.id} value={option.id}>
                           {option.name}
@@ -343,22 +378,22 @@ const AutomaticSchedulingPage = () => {
                       id="category"
                       defaultValue={0}
                       sx={{
-                        minWidth: "140px",
-                        maxWidth: "140px",
-                        textAlign: "left",
-                        "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
+                        minWidth: '140px',
+                        maxWidth: '140px',
+                        textAlign: 'left',
+                        '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
                       }}
                     >
                       {[
-                        { id: 0, name: "Не вибрано" },
-                        { id: 1, name: "Понеділок" },
-                        { id: 2, name: "Вівторок" },
-                        { id: 3, name: "Середа" },
-                        { id: 4, name: "Четвер" },
+                        { id: 0, name: 'Не вибрано' },
+                        { id: 1, name: 'Понеділок' },
+                        { id: 2, name: 'Вівторок' },
+                        { id: 3, name: 'Середа' },
+                        { id: 4, name: 'Четвер' },
                         { id: 5, name: "П'ятниця" },
-                        { id: 6, name: "Субота" },
-                        { id: 7, name: "Неділя" },
-                        { id: 8, name: "Всі дні" },
+                        { id: 6, name: 'Субота' },
+                        { id: 7, name: 'Неділя' },
+                        { id: 8, name: 'Всі дні' },
                       ].map((option) => (
                         <MenuItem key={option.id} value={option.id}>
                           {option.name}
@@ -374,15 +409,15 @@ const AutomaticSchedulingPage = () => {
                       onChange={handleChangeLessonNumbers}
                       input={<OutlinedInput label="Chip" />}
                       sx={{
-                        minWidth: "170px",
-                        maxWidth: "170px",
-                        textAlign: "left",
-                        "& .MuiInputBase-input": { py: "10.4px", px: "5px", fontSize: "0.875rem" },
+                        minWidth: '170px',
+                        maxWidth: '170px',
+                        textAlign: 'left',
+                        '& .MuiInputBase-input': { py: '10.4px', px: '5px', fontSize: '0.875rem' },
                       }}
                       renderValue={(selected) => (
-                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                           {selected.map((value) => (
-                            <Chip key={value} label={value} sx={{ padding: "1px", height: "20px" }} />
+                            <Chip key={value} label={value} sx={{ padding: '1px', height: '20px' }} />
                           ))}
                         </Box>
                       )}
@@ -402,17 +437,17 @@ const AutomaticSchedulingPage = () => {
                       id="category"
                       defaultValue={0}
                       sx={{
-                        minWidth: "140px",
-                        maxWidth: "140px",
-                        textAlign: "left",
-                        "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
+                        minWidth: '140px',
+                        maxWidth: '140px',
+                        textAlign: 'left',
+                        '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
                       }}
                     >
                       {[
-                        { id: 0, name: "Не вибрано" },
-                        { id: 1, name: "206" },
-                        { id: 2, name: "207" },
-                        { id: 3, name: "217" },
+                        { id: 0, name: 'Не вибрано' },
+                        { id: 1, name: '206' },
+                        { id: 2, name: '207' },
+                        { id: 3, name: '217' },
                       ].map((option) => (
                         <MenuItem key={option.id} value={option.id}>
                           {option.name}
@@ -428,15 +463,15 @@ const AutomaticSchedulingPage = () => {
                       id="category"
                       defaultValue={1}
                       sx={{
-                        minWidth: "140px",
-                        maxWidth: "140px",
-                        textAlign: "left",
-                        "& .MuiInputBase-input": { py: "10.4px", fontSize: "0.875rem" },
+                        minWidth: '140px',
+                        maxWidth: '140px',
+                        textAlign: 'left',
+                        '& .MuiInputBase-input': { py: '10.4px', fontSize: '0.875rem' },
                       }}
                     >
                       {[
-                        { id: 1, name: "Дозволено" },
-                        { id: 2, name: "Заборонено" },
+                        { id: 1, name: 'Дозволено' },
+                        { id: 2, name: 'Заборонено' },
                       ].map((option) => (
                         <MenuItem key={option.id} value={option.id}>
                           {option.name}
