@@ -8,6 +8,7 @@ import {
   setLastSelectedData,
   scheduleLessonsSelector,
   lastSelectedDataSelector,
+  clearAuditoryOverlay,
 } from '../../store/scheduleLessons/scheduleLessonsSlice'
 import {
   getTeacherLessons,
@@ -181,7 +182,8 @@ const Calendar: React.FC<ICalendarProps> = ({
 
   const onGetAuditoryOverlay = (_date: Dayjs, lessonNumber: number, auditoryId: number) => {
     const date = customDayjs(_date).format('YYYY.MM.DD')
-    dispatch(getAuditoryOverlay({ date, lessonNumber, auditoryId }))
+    dispatch(clearAuditoryOverlay()) // Очищаю старі накладки
+    dispatch(getAuditoryOverlay({ date, lessonNumber, auditoryId })) // Отримую нові (актуальні) накладки для вибраного ел.розкладу
   }
 
   // on click in schedule lesson item
@@ -222,7 +224,8 @@ const Calendar: React.FC<ICalendarProps> = ({
 
     if (!selectedLesson) {
       onEditLesson(scheduledElement, date, lessonNumber)
-      onGetAuditoryOverlay(date, lessonNumber, auditory)
+      dispatch(clearAuditoryOverlay()) // Очищаю старі накладки
+      onGetAuditoryOverlay(date, lessonNumber, auditory) // Отримую нові (актуальні) накладки для вибраного ел.розкладу
       return
     }
 
@@ -237,7 +240,8 @@ const Calendar: React.FC<ICalendarProps> = ({
     // Якщо виставлений ел. розкладу і вибраний - це одна і та ж дисципліна
     if (isLessonsSame) {
       onEditLesson(scheduledElement, date, lessonNumber)
-      onGetAuditoryOverlay(date, lessonNumber, auditory)
+      dispatch(clearAuditoryOverlay()) // Очищаю старі накладки
+      onGetAuditoryOverlay(date, lessonNumber, auditory) // Отримую нові (актуальні) накладки для вибраного ел.розкладу
       return
     }
 

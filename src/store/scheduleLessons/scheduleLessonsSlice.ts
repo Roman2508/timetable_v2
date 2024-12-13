@@ -1,4 +1,4 @@
-import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 
 import {
   unpinTeacher,
@@ -20,16 +20,16 @@ import {
   deleteStudentFromLesson,
   getGroupLoadByCurrentCourse,
   findGroupLoadLessonsByGroupIdAndSemester,
-} from "./scheduleLessonsAsyncActions"
-import { RootState } from "../store"
-import { LoadingStatusTypes } from "../appTypes"
-import { GroupLoadType } from "../groups/groupsTypes"
-import { StudentType } from "../students/studentsTypes"
-import { TeachersType } from "../teachers/teachersTypes"
-import { ILastSelectedData, ScheduleLessonInitialStateType, ScheduleLessonType } from "./scheduleLessonsTypes"
+} from './scheduleLessonsAsyncActions'
+import { RootState } from '../store'
+import { LoadingStatusTypes } from '../appTypes'
+import { GroupLoadType } from '../groups/groupsTypes'
+import { StudentType } from '../students/studentsTypes'
+import { TeachersType } from '../teachers/teachersTypes'
+import { ILastSelectedData, ScheduleLessonInitialStateType, ScheduleLessonType } from './scheduleLessonsTypes'
 
 const getLocalStorageData = () => {
-  const data = window.localStorage.getItem("persist:scheduleLessons")
+  const data = window.localStorage.getItem('persist:scheduleLessons')
   if (data) return JSON.parse(data)
   return {}
 }
@@ -47,14 +47,14 @@ const scheduleLessonsInitialState: ScheduleLessonInitialStateType = {
   lastOpenedSemester: getLocalStorageData().lastOpenedSemester || 1,
   lastOpenedWeek: getLocalStorageData().lastOpenedWeek || 1,
   lastSelectedItemId: getLocalStorageData().lastSelectedItemId || 1,
-  lastSelectedScheduleType: getLocalStorageData().lastSelectedScheduleType || "group",
+  lastSelectedScheduleType: getLocalStorageData().lastSelectedScheduleType || 'group',
   lastSelectedStructuralUnitId: getLocalStorageData().lastSelectedStructuralUnitId || 1,
 
   loadingStatus: LoadingStatusTypes.NEVER,
 }
 
 const scheduleLessonsSlice = createSlice({
-  name: "scheduleLessons",
+  name: 'scheduleLessons',
   initialState: scheduleLessonsInitialState,
   reducers: {
     setLoadingStatus(state, action) {
@@ -81,6 +81,9 @@ const scheduleLessonsSlice = createSlice({
     },
     clearGroupOverlay(state) {
       state.groupOverlay = []
+    },
+    clearAuditoryOverlay(state) {
+      state.auditoryOverlay = null
     },
     clearTeacherOverlay(state) {
       state.teacherOverlay = []
@@ -288,12 +291,12 @@ export const lessonsForGradeBookSelector = createSelector(
     if (!groupLoad) return { lessons: [] }
 
     const lessons = groupLoad.filter(
-      (el) => el.typeRu === "ЛК" || el.typeRu === "ПЗ" || el.typeRu === "ЛАБ" || el.typeRu === "СЕМ"
+      (el) => el.typeRu === 'ЛК' || el.typeRu === 'ПЗ' || el.typeRu === 'ЛАБ' || el.typeRu === 'СЕМ'
     )
 
     const lessonsCopy = JSON.parse(JSON.stringify(lessons))
 
-    const typeOrder = ["ЛК", "ПЗ", "ЛАБ", "СЕМ"]
+    const typeOrder = ['ЛК', 'ПЗ', 'ЛАБ', 'СЕМ']
 
     lessonsCopy.sort((a: GroupLoadType, b: GroupLoadType) => {
       if (a.name < b.name) return -1
@@ -315,6 +318,7 @@ export const {
   clearTeacherLessons,
   clearLessonStudents,
   deleteTeacherOverlay,
+  clearAuditoryOverlay,
   clearScheduleLessons,
 } = scheduleLessonsSlice.actions
 
