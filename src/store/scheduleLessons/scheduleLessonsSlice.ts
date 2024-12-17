@@ -114,8 +114,9 @@ const scheduleLessonsSlice = createSlice({
 
     /* getGroupOverlay */
     builder.addCase(getGroupOverlay.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
-      if (!state.groupOverlay) return
-      state.groupOverlay = [...state.groupOverlay, ...action.payload]
+      // if (!state.groupOverlay) return
+      // state.groupOverlay = [...state.groupOverlay, ...action.payload]
+      state.groupOverlay = action.payload
     })
 
     /* getTeacherLessons */

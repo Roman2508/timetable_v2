@@ -19,7 +19,7 @@ import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
 import { AuditoryCategoriesTypes } from '../../store/auditories/auditoriesTypes'
 import { getTeachersCategories } from '../../store/teachers/teachersAsyncActions'
 import { getAuditoryCategories } from '../../store/auditories/auditoriesAsyncActions'
-import { convertFieldResponseIntoMuiTextFieldProps } from '@mui/x-date-pickers/internals'
+import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
 
 interface IListItem {
   label: string
@@ -33,15 +33,7 @@ interface ITimetablePageHeaderProps {
   setSlectedGroupId: Dispatch<SetStateAction<number | null>>
   setSelectedTeacherId: Dispatch<SetStateAction<number | null>>
   setSelectedAuditoryId: Dispatch<SetStateAction<number | null>>
-}
-
-const useTimetableFilter = () => {
-  const { lastSelectedItemId, lastSelectedScheduleType, lastSelectedStructuralUnitId } =
-    useSelector(lastSelectedDataSelector)
-
-  const [a, b] = React.useState()
-
-  console.log(lastSelectedItemId, lastSelectedScheduleType, lastSelectedStructuralUnitId)
+  setSelectedLesson: Dispatch<SetStateAction<ISelectedLesson | null>>
 }
 
 const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
@@ -49,6 +41,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
   selectedSemester,
   currentWeekNumber,
   setSlectedGroupId,
+  setSelectedLesson,
   setSelectedTeacherId,
   setSelectedAuditoryId,
 }) => {
@@ -79,6 +72,7 @@ const TimetablePageHeader: React.FC<ITimetablePageHeaderProps> = ({
   React.useEffect(() => {
     dispatch(clearScheduleLessons())
     dispatch(clearTeacherLessons())
+    setSelectedLesson(null)
 
     if (lastSelectedScheduleType === 'group') setSlectedGroupId(lastSelectedItemId)
     if (lastSelectedScheduleType === 'teacher') setSelectedTeacherId(lastSelectedItemId)

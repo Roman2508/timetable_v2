@@ -76,6 +76,7 @@ const Calendar: React.FC<ICalendarProps> = ({
   const [teacherModalVisible, setTeacherModalVisible] = React.useState(false)
   const [auditoryModalVisible, setAuditoryModalVisible] = React.useState(false)
 
+  const [selectedAuditoryName, setSelectedAuditoryName] = React.useState('')
   const [severalLessonsModalVisible, setSeveralLessonsModalVisible] = React.useState(false)
   const [replacementTeacherId, setReplacementTeacherId] = React.useState<number | null>(null)
   const [severalLessonsList, setSeveralLessonsList] = React.useState<ScheduleLessonType[]>([])
@@ -276,9 +277,11 @@ const Calendar: React.FC<ICalendarProps> = ({
         currentWeekNumber={currentWeekNumber}
         setIsAddNewLesson={setIsAddNewLesson}
         selectedAuditoryId={selectedAuditoryId}
+        selectedAuditoryName={selectedAuditoryName}
         setSeveralLessonsList={setSeveralLessonsList}
         setTeacherModalVisible={setTeacherModalVisible}
         setAuditoryModalVisible={setAuditoryModalVisible}
+        setSelectedAuditoryName={setSelectedAuditoryName}
         setSeveralLessonsModalVisible={setSeveralLessonsModalVisible}
       />
 
@@ -315,6 +318,7 @@ const Calendar: React.FC<ICalendarProps> = ({
         setSelectedTeacherId={setSelectedTeacherId}
         onGetAuditoryOverlay={onGetAuditoryOverlay}
         setSelectedAuditoryId={setSelectedAuditoryId}
+        setSelectedAuditoryName={setSelectedAuditoryName}
       />
 
       <div className="calendar">

@@ -19,7 +19,7 @@ const AppAlert: React.FC = () => {
     dispatch(clearAppAlert())
   }, [message, status, dispatch])
 
-  return <Toaster expand richColors closeButton position="top-right" toastOptions={{ duration: 1500 }} />
+  return <Toaster expand richColors closeButton position="top-right" toastOptions={{ duration: 2000 }} />
 }
 
 export default AppAlert

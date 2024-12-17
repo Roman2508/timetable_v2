@@ -84,8 +84,8 @@ const LessonsTable: React.FC<ILessonsTable> = ({
     }
   }, [selectedLesson, scheduleLessons])
 
+  
   // Баг: після кожного створення ел.розкладу завжди вибирається перший елемент !!!!!!!
-
   // При першому рендері вибираю з таблиці LessonsTable перший елемент
   // React.useEffect(() => {
   //   if (lastSelectedScheduleType !== "auditory") {

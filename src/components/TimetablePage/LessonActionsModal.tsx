@@ -58,11 +58,13 @@ interface ILessonActionsModalProps {
   isAddNewLesson: boolean
   selectedSemester: 1 | 2
   currentWeekNumber: number
+  selectedAuditoryName: string
   selectedAuditoryId: number | null
   selectedLesson: ISelectedLesson | null
   selectedTimeSlot: ISelectedTimeSlot | null
   setOpen: Dispatch<SetStateAction<boolean>>
   setIsAddNewLesson: Dispatch<SetStateAction<boolean>>
+  setSelectedAuditoryName: Dispatch<SetStateAction<string>>
   setTeacherModalVisible: Dispatch<SetStateAction<boolean>>
   setAuditoryModalVisible: Dispatch<SetStateAction<boolean>>
   setSeveralLessonsModalVisible: Dispatch<SetStateAction<boolean>>
@@ -80,9 +82,11 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
   setIsAddNewLesson,
   currentWeekNumber,
   selectedAuditoryId,
+  selectedAuditoryName,
   setSeveralLessonsList,
   setTeacherModalVisible,
   setAuditoryModalVisible,
+  setSelectedAuditoryName,
   setSeveralLessonsModalVisible,
 }) => {
   const dispatch = useAppDispatch()
@@ -91,7 +95,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
   const { auditoryOverlay } = useSelector(scheduleLessonsSelector)
 
   const [currentLessonHours, setCurrentLessonHours] = React.useState(2)
-  const [selectedAuditoryName, setSelectedAuditoryName] = React.useState('')
+  // const [selectedAuditoryName, setSelectedAuditoryName] = React.useState('')
 
   const handleClose = () => {
     setOpen(false)
