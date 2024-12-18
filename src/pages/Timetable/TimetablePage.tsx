@@ -14,7 +14,11 @@ import LessonsTable from '../../components/TimetablePage/LessonsTable'
 import { TimetablePageHeader } from '../../components/TimetablePage/TimetablePageHeader'
 import { getGroupOverlay } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 import { CopyTheScheduleModal } from '../../components/TimetablePage/CopyTheScheduleModal'
-import { clearGroupOverlay, lastSelectedDataSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
+import {
+  clearGroupLoad,
+  clearGroupOverlay,
+  lastSelectedDataSelector,
+} from '../../store/scheduleLessons/scheduleLessonsSlice'
 
 export interface ISelectedLesson {
   id: number
@@ -89,6 +93,13 @@ const TimetablePage = () => {
       })
     )
   }, [selectedLesson])
+
+  React.useEffect(() => {
+    // очищаю group load для сторінки з розподілом навантаження
+    return () => {
+      dispatch(clearGroupLoad())
+    }
+  }, [])
 
   return (
     <>

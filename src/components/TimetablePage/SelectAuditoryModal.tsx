@@ -61,7 +61,11 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
     if (!category) return
 
     if (auditoryOverlay && auditoryOverlay.length) {
-      const free = category.auditories.filter((el) => auditoryOverlay.some((s) => s.id !== el.id))
+      // масив ID зайнятих аудиторій
+      const overlaySet = new Set(auditoryOverlay.map((el) => el.id))
+      // вільні аудиторії
+      const free = category.auditories.filter((el) => !overlaySet.has(el.id))
+
       setAuditoriesList(free)
     } else {
       setAuditoriesList(category.auditories)

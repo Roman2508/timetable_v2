@@ -91,6 +91,7 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
           attachmentType={attachmentType}
           onUnpinTeacher={onUnpinTeacher}
           onAttachTeacher={onAttachTeacher}
+          selectedTeacherId={selectedTeacherId}
           setAttachmentType={setAttachmentType}
         />
         <Divider />

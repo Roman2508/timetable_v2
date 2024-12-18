@@ -7,9 +7,10 @@ import { AttachmentTypes } from './DistributionTeachersToLessons'
 
 interface IDistributionActionsProps {
   attachmentType: AttachmentTypes
+  selectedTeacherId: number | null
   selectedLesson: GroupLoadType[] | null
-  onAttachTeacher: (lessonId: number) => void
   onUnpinTeacher: (lessonId: number) => void
+  onAttachTeacher: (lessonId: number) => void
   setAttachmentType: Dispatch<SetStateAction<AttachmentTypes>>
 }
 
@@ -25,6 +26,7 @@ const DistributionActions: React.FC<IDistributionActionsProps> = ({
   selectedLesson,
   onUnpinTeacher,
   onAttachTeacher,
+  selectedTeacherId,
   setAttachmentType,
 }) => {
   const handleAttachment = (_: React.MouseEvent<HTMLElement>, newAttachment: AttachmentTypes) => {
@@ -32,19 +34,19 @@ const DistributionActions: React.FC<IDistributionActionsProps> = ({
   }
 
   const onClickActionButton = (type: AttachmentTypes) => {
-    console.log(type)
     if (type !== 'attach-all' && type !== 'unpin-all') return
     if (!selectedLesson) return
 
     const lessonsIds = selectedLesson.map((el) => el.id)
 
-    if (attachmentType === 'attach-all') {
+    if (type === 'attach-all') {
       lessonsIds.map((id) => {
         onAttachTeacher(id)
       })
       return
     }
-    if (attachmentType === 'unpin-all') {
+   
+    if (type === 'unpin-all') {
       if (!window.confirm('Ви дійсно хочете відкріпити викладача від всіх видів занять?')) return
       lessonsIds.map((id) => {
         onUnpinTeacher(id)
@@ -62,7 +64,13 @@ const DistributionActions: React.FC<IDistributionActionsProps> = ({
     >
       {attachmentButtons.map((el) => (
         <Tooltip key={el.title} title={el.title} onClick={() => onClickActionButton(el.type)}>
-          <ToggleButton value={el.type}>{el.icon}</ToggleButton>
+          <ToggleButton
+            value={el.type}
+            disabled={el.type === 'attach-all' && !selectedTeacherId}
+            sx={{ '&.Mui-disabled': { border: '1px solid #f0f0f0' } }}
+          >
+            {el.icon}
+          </ToggleButton>
         </Tooltip>
       ))}
     </ToggleButtonGroup>

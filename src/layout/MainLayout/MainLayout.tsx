@@ -1,11 +1,12 @@
 import { useSelector } from "react-redux"
 import { useEffect, useState } from "react"
-import { Box, Toolbar, useMediaQuery, useTheme } from "@mui/material"
 import { Outlet, useNavigate } from "react-router-dom"
+import { Box, Toolbar, useMediaQuery, useTheme } from "@mui/material"
 // import { useTheme } from '@mui/material/styles'
 
 import navigation from "../../menu-items"
 import { useAppDispatch } from "../../store/store"
+import Header from "../../components/Header/Header"
 import { openDrawer } from "../../store/menu/menuSlice"
 import AppAlert from "../../components/AppAlert/AppAlert"
 import { authSelector } from "../../store/auth/authSlice"
@@ -13,7 +14,6 @@ import MainDrawer from "../../components/Drawer/MainDrawer"
 import Breadcrumbs from "../../components/@extended/Breadcrumbs"
 import { settingsSelector } from "../../store/settings/settingsSlice"
 import { getSettings } from "../../store/settings/settingsAsyncActions"
-import Header from "../../components/Header/Header"
 
 const MainLayout = () => {
   const navigate = useNavigate()
