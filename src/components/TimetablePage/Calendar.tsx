@@ -9,6 +9,7 @@ import {
   scheduleLessonsSelector,
   lastSelectedDataSelector,
   clearAuditoryOverlay,
+  clearTeacherOverlay,
 } from '../../store/scheduleLessons/scheduleLessonsSlice'
 import {
   getTeacherLessons,
@@ -110,6 +111,9 @@ const Calendar: React.FC<ICalendarProps> = ({
   React.useEffect(() => {
     if (!selectedTimeSlot) return
     const date = customDayjs(selectedTimeSlot?.data, { format: 'YYYY.MM.DD' }).format('YYYY.MM.DD')
+    // Очищаю список накладок які вже були завантажені
+    dispatch(clearTeacherOverlay())
+    // Отримаю список нових (актуальних) накладок
     dispatch(getTeacherOverlay({ date, lessonNumber: selectedTimeSlot.lessonNumber }))
   }, [selectedTimeSlot])
 
@@ -264,6 +268,10 @@ const Calendar: React.FC<ICalendarProps> = ({
     }
   }
 
+  React.useEffect(() => {
+    console.log(scheduleLessons)
+  }, [scheduleLessons])
+
   return (
     <>
       <LessonActionsModal
@@ -303,6 +311,7 @@ const Calendar: React.FC<ICalendarProps> = ({
         setLessonActionsModalVisible={setModalVisible}
         setReplacementTeacherId={setReplacementTeacherId}
         selectedLessonId={selectedLesson ? selectedLesson.id : null}
+        isReplacementExist={selectedLesson && selectedLesson.replacement ? true : false}
       />
 
       <PutSeveralLessonsAtSameTimeModal

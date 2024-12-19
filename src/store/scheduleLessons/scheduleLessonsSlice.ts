@@ -20,6 +20,7 @@ import {
   deleteStudentFromLesson,
   getGroupLoadByCurrentCourse,
   findGroupLoadLessonsByGroupIdAndSemester,
+  deleteReplacement,
 } from './scheduleLessonsAsyncActions'
 import { RootState } from '../store'
 import { LoadingStatusTypes } from '../appTypes'
@@ -86,7 +87,7 @@ const scheduleLessonsSlice = createSlice({
       state.auditoryOverlay = null
     },
     clearTeacherOverlay(state) {
-      state.teacherOverlay = []
+      state.teacherOverlay = null
     },
     setLastSelectedData(state, action: PayloadAction<ILastSelectedData>) {
       if (action.payload.lastSelectedScheduleType) {
@@ -141,7 +142,6 @@ const scheduleLessonsSlice = createSlice({
     })
 
     /* copyWeekSchedule */
-
     builder.addCase(copyWeekSchedule.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
       if (!state.scheduleLessons) return
       state.scheduleLessons = [...state.scheduleLessons, ...action.payload]
@@ -154,16 +154,37 @@ const scheduleLessonsSlice = createSlice({
     })
 
     /* createReplacement */
-    builder.addCase(createReplacement.fulfilled, (state, action: PayloadAction<ScheduleLessonType>) => {
+    builder.addCase(
+      createReplacement.fulfilled,
+      (state, action: PayloadAction<{ id: number; teacher: TeachersType }>) => {
+        if (!state.scheduleLessons) return
+        const updatedLessons = state.scheduleLessons.map((el) => {
+          if (el.id === action.payload.id) return { ...el, replacement: action.payload.teacher }
+          return el
+        })
+        // @ts-ignore // в action.payload є не всі параметри з TeachersType
+        state.scheduleLessons = updatedLessons
+      }
+    )
+
+    /* deleteReplacement */
+    builder.addCase(deleteReplacement.fulfilled, (state, action: PayloadAction<number>) => {
       if (!state.scheduleLessons) return
 
-      const updatedLessons = state.scheduleLessons.map((el) => {
-        if (el.id === action.payload.id) {
-          return { ...el, ...action.payload }
-        }
-        return el
-      })
-      state.scheduleLessons = updatedLessons
+      if (state.lastSelectedScheduleType !== 'teacher') {
+        const updatedLessons = state.scheduleLessons.map((el) => {
+          if (el.id === action.payload) {
+            return { ...el, replacement: null }
+          }
+          return el
+        })
+
+        state.scheduleLessons = updatedLessons
+        return
+      }
+
+      const scheduleLessons = state.scheduleLessons.filter((el) => el.id !== action.payload)
+      state.scheduleLessons = scheduleLessons
     })
 
     /* updateScheduleLesson */

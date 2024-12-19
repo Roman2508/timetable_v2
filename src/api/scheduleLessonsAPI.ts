@@ -45,7 +45,7 @@ export const scheduleLessonsAPI = {
   },
 
   createReplacement(payload: CreateReplacementPayloadType) {
-    return instanse.patch<ScheduleLessonType>(`/schedule-lessons/replacement`, payload)
+    return instanse.patch<{ id: number; teacher: TeachersType }>(`/schedule-lessons/replacement`, payload)
   },
   deleteReplacement(id: number) {
     return instanse.delete<number>(`/schedule-lessons/replacement/${id}`)

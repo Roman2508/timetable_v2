@@ -29,20 +29,16 @@ import {
 } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 import { ISelectedTimeSlot } from './Calendar'
 import { useAppDispatch } from '../../store/store'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
 import { ISelectedLesson } from '../../pages/Timetable/TimetablePage'
 import { getLastnameAndInitials } from '../../utils/getLastnameAndInitials'
 import { auditoriesSelector } from '../../store/auditories/auditoriesSlise'
 import { ScheduleLessonType } from '../../store/scheduleLessons/scheduleLessonsTypes'
-import {
-  clearAuditoryOverlay,
-  deleteTeacherOverlay,
-  scheduleLessonsSelector,
-} from '../../store/scheduleLessons/scheduleLessonsSlice'
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import { deleteTeacherOverlay, scheduleLessonsSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
 
-const dayNames = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота', 'Неділя']
+const DAY_NAMES = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота', 'Неділя']
 
-const lessonsTime = [
+const LESSONS_TIME = [
   '08:30 – 09:50',
   '10:00 – 11:20',
   '12:00 – 13:20',
@@ -92,10 +88,9 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
   const dispatch = useAppDispatch()
 
   const { auditoriCategories } = useSelector(auditoriesSelector)
-  const { auditoryOverlay } = useSelector(scheduleLessonsSelector)
+  const { auditoryOverlay, teacherOverlay } = useSelector(scheduleLessonsSelector)
 
   const [currentLessonHours, setCurrentLessonHours] = React.useState(2)
-  // const [selectedAuditoryName, setSelectedAuditoryName] = React.useState('')
 
   const handleClose = () => {
     setOpen(false)
@@ -123,7 +118,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
 
   if (!selectedLesson || !selectedTimeSlot) return
 
-  const dayName = selectedTimeSlot.data.day() !== 0 ? dayNames[selectedTimeSlot.data.day() - 1] : dayNames[6]
+  const dayName = selectedTimeSlot.data.day() !== 0 ? DAY_NAMES[selectedTimeSlot.data.day() - 1] : DAY_NAMES[6]
 
   const onCreateScheduleLesson = async () => {
     if (!selectedAuditoryId && !isRemote) {
@@ -255,8 +250,6 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
         handleClose()
         setIsAddNewLesson(false)
       }}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
       sx={{ '& .MuiPaper-root': { width: '440px' } }}
     >
       <div
@@ -326,18 +319,34 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
         </Typography>
 
         <Typography sx={{ fontSize: '14px', fontweight: 400, letterSpacing: '.2px', padding: '0 16px 4px' }}>
-          {dayName}, {selectedTimeSlot.data.format('DD MMMM')} ⋅ {lessonsTime[selectedTimeSlot.lessonNumber - 1]}
+          {dayName}, {selectedTimeSlot.data.format('DD MMMM')} ⋅ {LESSONS_TIME[selectedTimeSlot.lessonNumber - 1]}
         </Typography>
 
         <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 1 } }}>
           {!isAddNewLesson && (
-            <ListItemButton divider sx={{ mt: 1, py: 0 }} onClick={() => setTeacherModalVisible(true)}>
+            <ListItemButton
+              divider
+              sx={{ mt: 1, py: 0 }}
+              onClick={() => setTeacherModalVisible(true)}
+              disabled={!teacherOverlay}
+            >
               <SyncOutlined />
               <ListItemText
                 primary={
-                  selectedLesson.replacement
-                    ? `Заміна! ${getLastnameAndInitials(selectedLesson.replacement)}`
-                    : 'Зробити заміну'
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    {!auditoryOverlay ? (
+                      <>
+                        Зробити заміну:
+                        <LoadingSpinner size={22} disablePadding />
+                      </>
+                    ) : (
+                      `${
+                        selectedLesson.replacement
+                          ? `Заміна! ${getLastnameAndInitials(selectedLesson.replacement)}`
+                          : 'Зробити заміну'
+                      }`
+                    )}
+                  </div>
                 }
                 sx={{ p: '0 0 0 10px' }}
               />
@@ -368,12 +377,6 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
                       selectedAuditoryName ? selectedAuditoryName : isRemote ? 'Дистанційно' : 'не вибрана'
                     }`
                   )}
-
-                  {/* {`Аудиторія: ${
-                    selectedAuditoryName ? selectedAuditoryName : isRemote ? 'Дистанційно' : 'не вибрана'
-                  }`}
-
-                  {!auditoryOverlay && <LoadingSpinner size={22} disablePadding />} */}
                 </div>
               }
             />

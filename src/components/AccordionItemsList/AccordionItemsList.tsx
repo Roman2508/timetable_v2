@@ -10,6 +10,9 @@ import {
   ListItemButton,
   AccordionSummary,
   AccordionDetails,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
 } from '@mui/material'
 import { Dispatch, SetStateAction } from 'react'
 import { DeleteOutlined } from '@ant-design/icons'
@@ -128,6 +131,13 @@ const AccordionItemsList: React.FC<IAccordionItemsListProps> = ({
             </AccordionSummary>
 
             <AccordionDetails sx={{ p: 0, '.MuiList-root': { p: 0 } }}>
+              {/* <RadioGroup sx={{ ml: 4 }}>
+                <FormControlLabel value="female" control={<Radio />} label="Female" />
+                <FormControlLabel value="male" control={<Radio />} label="Male" />
+                <FormControlLabel value="other" control={<Radio />} label="Other" />
+                <FormControlLabel value="disabled" disabled control={<Radio />} label="other" />
+              </RadioGroup> */}
+
               <List>
                 {/* @ts-ignore */}
                 {mainItem[getItemsKeyName(items)]?.map((el) => (
