@@ -90,6 +90,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
   const { auditoriCategories } = useSelector(auditoriesSelector)
   const { auditoryOverlay, teacherOverlay } = useSelector(scheduleLessonsSelector)
 
+  const [isLoading, setIsLoading] = React.useState(false)
   const [currentLessonHours, setCurrentLessonHours] = React.useState(2)
 
   const handleClose = () => {
@@ -121,111 +122,124 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
   const dayName = selectedTimeSlot.data.day() !== 0 ? DAY_NAMES[selectedTimeSlot.data.day() - 1] : DAY_NAMES[6]
 
   const onCreateScheduleLesson = async () => {
-    if (!selectedAuditoryId && !isRemote) {
-      alert('Аудиторія не вибрана')
-      return
-    }
-    if (selectedLesson.typeRu === 'МЕТОД') return
+    try {
+      setIsLoading(true)
 
-    const date = selectedTimeSlot.data.format('YYYY-MM-DD')
-    const stream = selectedLesson.stream ? selectedLesson.stream.id : null
+      if (!selectedAuditoryId && !isRemote) {
+        alert('Аудиторія не вибрана')
+        return
+      }
+      if (selectedLesson.typeRu === 'МЕТОД') return
 
-    const payload = {
-      date,
-      stream,
-      isRemote,
-      currentLessonHours,
-      id: selectedLesson.id,
-      semester: selectedSemester,
-      name: selectedLesson.name,
-      auditory: selectedAuditoryId,
-      typeRu: selectedLesson.typeRu,
-      group: selectedLesson.group.id,
-      hours: selectedLesson.totalHours,
-      students: selectedLesson.students,
-      teacher: selectedLesson.teacher.id,
-      lessonNumber: selectedTimeSlot.lessonNumber,
-      specialization: selectedLesson.specialization,
-      subgroupNumber: selectedLesson.subgroupNumber,
+      const date = selectedTimeSlot.data.format('YYYY-MM-DD')
+      const stream = selectedLesson.stream ? selectedLesson.stream.id : null
+
+      const payload = {
+        date,
+        stream,
+        isRemote,
+        currentLessonHours,
+        id: selectedLesson.id,
+        semester: selectedSemester,
+        name: selectedLesson.name,
+        auditory: selectedAuditoryId,
+        typeRu: selectedLesson.typeRu,
+        group: selectedLesson.group.id,
+        hours: selectedLesson.totalHours,
+        students: selectedLesson.students,
+        teacher: selectedLesson.teacher.id,
+        lessonNumber: selectedTimeSlot.lessonNumber,
+        specialization: selectedLesson.specialization,
+        subgroupNumber: selectedLesson.subgroupNumber,
+      }
+      const data = await dispatch(createScheduleLesson(payload))
+      setOpen(false)
+      const lesson = data.payload as ScheduleLessonType
+      if (lesson) {
+        setSeveralLessonsList((prev) => [...prev, lesson])
+      }
+      setIsAddNewLesson(false)
+    } finally {
+      setIsLoading(false)
     }
-    const data = await dispatch(createScheduleLesson(payload))
-    setOpen(false)
-    const lesson = data.payload as ScheduleLessonType
-    if (lesson) {
-      setSeveralLessonsList((prev) => [...prev, lesson])
-    }
-    setIsAddNewLesson(false)
   }
 
   const onUpdateLesson = async () => {
-    if (!auditoriCategories) return
-    if (!selectedAuditoryId && !isRemote) return alert('Error')
+    try {
+      setIsLoading(true)
+      if (!auditoriCategories) return
+      if (!selectedAuditoryId && !isRemote) return alert('Error')
 
-    let lesson = {} as ScheduleLessonType
+      let lesson = {} as ScheduleLessonType
 
-    if (!selectedAuditoryId) {
-      const { payload } = await dispatch(
-        updateScheduleLesson({
-          id: selectedLesson.id,
-          currentLessonHours,
-          auditoryId: null,
-          isRemote,
+      if (!selectedAuditoryId) {
+        const { payload } = await dispatch(
+          updateScheduleLesson({
+            id: selectedLesson.id,
+            currentLessonHours,
+            auditoryId: null,
+            isRemote,
+          })
+        )
+
+        lesson = payload as ScheduleLessonType
+        //
+      } else {
+        let seatsNumber
+        let auditoryName
+
+        auditoriCategories.forEach((category) => {
+          const auditory = category.auditories.find((a) => a.id === selectedAuditoryId)
+
+          if (auditory) {
+            seatsNumber = auditory.seatsNumber
+            auditoryName = auditory.name
+          }
         })
-      )
 
-      lesson = payload as ScheduleLessonType
-      //
-    } else {
-      let seatsNumber
-      let auditoryName
-
-      auditoriCategories.forEach((category) => {
-        const auditory = category.auditories.find((a) => a.id === selectedAuditoryId)
-
-        if (auditory) {
-          seatsNumber = auditory.seatsNumber
-          auditoryName = auditory.name
+        if (!seatsNumber || !auditoryName) {
+          return alert('Error')
         }
-      })
 
-      if (!seatsNumber || !auditoryName) {
-        return alert('Error')
+        const { payload } = await dispatch(
+          updateScheduleLesson({
+            isRemote,
+            seatsNumber,
+            auditoryName,
+            currentLessonHours,
+            id: selectedLesson.id,
+            auditoryId: selectedAuditoryId,
+          })
+        )
+
+        if (!payload) return alert('Error')
+
+        lesson = payload as ScheduleLessonType
       }
 
-      const { payload } = await dispatch(
-        updateScheduleLesson({
-          isRemote,
-          seatsNumber,
-          auditoryName,
-          currentLessonHours,
-          id: selectedLesson.id,
-          auditoryId: selectedAuditoryId,
+      setSeveralLessonsList((prev) => {
+        const lessons = prev.map((el) => {
+          if (el.id === lesson.id) {
+            return { ...el, ...lesson }
+          }
+
+          return el
         })
-      )
 
-      if (!payload) return alert('Error')
-
-      lesson = payload as ScheduleLessonType
-    }
-
-    setSeveralLessonsList((prev) => {
-      const lessons = prev.map((el) => {
-        if (el.id === lesson.id) {
-          return { ...el, ...lesson }
-        }
-
-        return el
+        return lessons
       })
 
-      return lessons
-    })
-
-    setSeveralLessonsModalVisible(false)
-    handleClose()
+      setSeveralLessonsModalVisible(false)
+      handleClose()
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const onDeleteLesson = async (id: number) => {
-    if (window.confirm('Ви дійсно хочете видалити ел. розкладу?')) {
+    try {
+      if (!window.confirm('Ви дійсно хочете видалити ел. розкладу?')) return
+      setIsLoading(true)
       const { payload } = await dispatch(deleteScheduleLesson(id))
       const deletedItemId = payload as number
       dispatch(deleteTeacherOverlay(deletedItemId))
@@ -239,6 +253,8 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
         }
         return lessons
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -265,7 +281,7 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
         <div>
           {!isAddNewLesson && (
             <Tooltip title="Видалити">
-              <IconButton sx={{ mr: 1 }} onClick={() => onDeleteLesson(selectedLesson.id)}>
+              <IconButton sx={{ mr: 1 }} onClick={() => onDeleteLesson(selectedLesson.id)} disabled={isLoading}>
                 <DeleteOutlined />
               </IconButton>
             </Tooltip>
@@ -273,13 +289,13 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
 
           {isAddNewLesson ? (
             <Tooltip title="Зберегти">
-              <IconButton sx={{ mr: 1 }} onClick={onCreateScheduleLesson}>
+              <IconButton sx={{ mr: 1 }} onClick={onCreateScheduleLesson} disabled={isLoading}>
                 <PlusSquareOutlined />
               </IconButton>
             </Tooltip>
           ) : (
             <Tooltip title="Оновити">
-              <IconButton sx={{ mr: 1 }} onClick={onUpdateLesson}>
+              <IconButton sx={{ mr: 1 }} onClick={onUpdateLesson} disabled={isLoading}>
                 <PlusSquareOutlined />
               </IconButton>
             </Tooltip>
