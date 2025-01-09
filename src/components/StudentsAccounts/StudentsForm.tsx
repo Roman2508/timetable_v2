@@ -64,8 +64,10 @@ const StudentsForm: React.FC<IStudentsProps> = ({ editMode, setEditMode, editing
       if (editMode === 'create') {
         // Якщо editMode === 'create' - створення викладача
         const { status, ...rest } = data
-        await dispatch(createStudent(rest))
-        reset(defaultValues)
+        const { payload } = await dispatch(createStudent(rest))
+        if (payload) {
+          reset(defaultValues)
+        }
       }
     } catch (error) {
       console.log(error)
