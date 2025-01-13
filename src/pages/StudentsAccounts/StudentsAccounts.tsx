@@ -28,6 +28,7 @@ import { getStudentsByGroupId } from '../../store/students/studentsAsyncActions'
 import { ImportStudents } from '../../components/StudentsAccounts/ImportStudents'
 import HelperModal from '../../components/StudentsAccounts/HelperModal'
 import ExportStudents from '../../components/StudentsAccounts/ExportStudents'
+import { UpdateStudents } from '../../components/StudentsAccounts/UpdateStudents'
 
 const bageColors = {
   ['Навчається']: 'primary',
@@ -86,7 +87,7 @@ const StudentsAccounts = () => {
           <Paper sx={{ pt: 2 }}>
             <Grid container columnSpacing={2.75}>
               <Grid item xs={12}>
-                <Typography sx={{ mb: 2, textAlign: 'center' }}>ГРУПИ</Typography>
+                <Typography sx={{ mb: 2, textAlign: 'left', pl: 2 }}>ГРУПИ</Typography>
 
                 <List>
                   {groupCategories ? (
@@ -129,7 +130,7 @@ const StudentsAccounts = () => {
 
         <Grid item xs={3.8}>
           <Paper sx={{ pt: 2 }}>
-            <Typography sx={{ mb: 2, textAlign: 'center' }}>
+            <Typography sx={{ mb: 2, textAlign: 'left', pl: 2 }}>
               {selectedGroup ? `Група: ${selectedGroup.name}` : 'ВИБЕРІТЬ ГРУПУ'}
             </Typography>
 
@@ -172,13 +173,21 @@ const StudentsAccounts = () => {
 
         <Grid item xs={3.8}>
           <Paper sx={{ p: 2 }}>
-            <div style={{ position: 'relative' }}>
+            <div
+              style={{
+                /* position: 'relative', */ display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
               <Typography sx={{ textAlign: 'center' }}>
                 {editMode === 'create' ? 'ДОДАТИ НОВОГО СТУДЕНТА' : 'ОНОВИТИ СТУДЕНТА'}
               </Typography>
 
-              <div style={{ position: 'absolute', top: '-6px', right: 0, backgroundColor: '#fff' }}>
+              <div style={{ /* position: 'absolute', top: '-6px', right: 0, */ backgroundColor: '#fff' }}>
                 <ImportStudents setHelperModalVisible={setHelperModalVisible} />
+
+                <UpdateStudents />
 
                 <ExportStudents groupId={selectedGroup ? selectedGroup.id : undefined} />
               </div>

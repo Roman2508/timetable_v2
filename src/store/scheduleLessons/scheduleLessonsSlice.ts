@@ -115,8 +115,6 @@ const scheduleLessonsSlice = createSlice({
 
     /* getGroupOverlay */
     builder.addCase(getGroupOverlay.fulfilled, (state, action: PayloadAction<ScheduleLessonType[]>) => {
-      // if (!state.groupOverlay) return
-      // state.groupOverlay = [...state.groupOverlay, ...action.payload]
       state.groupOverlay = action.payload
     })
 
@@ -205,6 +203,9 @@ const scheduleLessonsSlice = createSlice({
       if (!state.scheduleLessons) return
       const lessons = state.scheduleLessons.find((el) => el.id === action.payload)
 
+      console.log(JSON.parse(JSON.stringify(lessons)))
+      console.log(JSON.parse(JSON.stringify(state.groupOverlay)))
+      // ХЗ для чого це, перевірити:
       // Якщо це дисципліна потоку - видаляю всі інші дисципліни потоку які стоять в цей час
       if (lessons?.stream && state.teacherLessons) {
         const teacherLessons = state.teacherLessons.filter(
@@ -212,6 +213,17 @@ const scheduleLessonsSlice = createSlice({
         )
         state.teacherLessons = teacherLessons
         state.teacherOverlay = null
+      }
+
+      // Якщо це дисципліна потоку - видаляю всі інші дисципліни потоку які стоять в цей час
+      if (lessons?.stream && state.groupOverlay) {
+        const groupOverlay = state.groupOverlay.filter((el) => {
+          const isDateSame = el.date === lessons.date
+          const isLessonNumberSame = el.lessonNumber === lessons.lessonNumber
+          const isStreamSame = el.stream?.id === lessons.stream.id
+          return !(isDateSame && isLessonNumberSame && isStreamSame)
+        })
+        state.groupOverlay = groupOverlay
       }
 
       const updatedLessons = state.scheduleLessons.filter((el) => el.id !== action.payload)

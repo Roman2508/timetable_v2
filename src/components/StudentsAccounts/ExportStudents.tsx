@@ -35,7 +35,7 @@ const ExportStudents: React.FC<IExportStudentsProps> = ({ groupId }) => {
       }
 
       const newData = students.map((student) => {
-        const { name, login, email, password, status, group } = student
+        const { name, login, email, password, status, group, id } = student
 
         return {
           ['Name [Required]']: name,
@@ -44,6 +44,7 @@ const ExportStudents: React.FC<IExportStudentsProps> = ({ groupId }) => {
           ['Email Address [Required]']: email,
           ['Status [Required]']: status,
           ['Group ID [Required]']: group.id,
+          ['ID [Required]']: id,
         }
       })
 

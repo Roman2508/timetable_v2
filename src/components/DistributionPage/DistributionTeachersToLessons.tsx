@@ -102,9 +102,15 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
           {selectedLesson &&
             sortLessonsByLessonType(selectedLesson).map((lesson) => {
               const stream = lesson.stream ? `${lesson.stream.name} ` : ''
+              const streamGroups = lesson.stream ? lesson.stream.groups.map((el) => el.name).join(', ') : ''
+
               const subgroup = lesson.subgroupNumber ? `підгр. ${lesson.subgroupNumber}` : ''
               const specialization = lesson.specialization ? `${lesson.specialization} спец. ` : ''
+
               const remark = (stream || specialization || subgroup) && `(${stream}${specialization}${subgroup})`
+              const tooltipRemark =
+                (stream || specialization || subgroup) &&
+                `(${stream} Групи потоку: ${streamGroups}${specialization}${subgroup})`
 
               const teacher = lesson.teacher ? getLastnameAndInitials(lesson.teacher) : ''
 
@@ -114,7 +120,7 @@ const DistributionTeachersToLessons: React.FC<IDistributionTeachersToLessonsProp
                   key={lesson.id}
                   sx={{ mt: 1, display: 'flex', flexDirection: 'row', alignItems: 'center' }}
                 >
-                  <Tooltip title={`${lesson.typeRu} ${remark}`}>
+                  <Tooltip title={`${lesson.typeRu} ${tooltipRemark}`}>
                     <InputLabel htmlFor="name" sx={{ flexGrow: 1, mt: '8px !important' }}>
                       {lesson.typeRu} {remark}
                     </InputLabel>
