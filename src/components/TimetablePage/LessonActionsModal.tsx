@@ -88,9 +88,10 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
   const dispatch = useAppDispatch()
 
   const { auditoriCategories } = useSelector(auditoriesSelector)
-  const { auditoryOverlay, teacherOverlay } = useSelector(scheduleLessonsSelector)
+  const { auditoryOverlay, teacherOverlay, groupLoad } = useSelector(scheduleLessonsSelector)
 
   const [isLoading, setIsLoading] = React.useState(false)
+  const [studentsCount, setStudentsCount] = React.useState(0)
   const [currentLessonHours, setCurrentLessonHours] = React.useState(2)
 
   const handleClose = () => {
@@ -116,6 +117,26 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
     if (!selectedLesson) return
     setCurrentLessonHours(selectedLesson.currentLessonHours)
   }, [selectedLesson])
+
+  React.useEffect(() => {
+    if (!selectedLesson || !groupLoad) return
+
+    const selectedGroupLoadLesson = groupLoad.find((el) => {
+      return (
+        el.name === selectedLesson.name &&
+        el.group.id === selectedLesson.group.id &&
+        el.stream?.id === selectedLesson.stream?.id &&
+        el.subgroupNumber === selectedLesson.subgroupNumber &&
+        el.typeRu === selectedLesson.typeRu &&
+        el.specialization === selectedLesson.specialization &&
+        el.hours === selectedLesson.totalHours
+      )
+    })
+
+    if (selectedGroupLoadLesson) {
+      setStudentsCount(selectedGroupLoadLesson.students.length)
+    }
+  }, [selectedLesson, groupLoad])
 
   if (!selectedLesson || !selectedTimeSlot) return
 
@@ -428,7 +449,8 @@ const LessonActionsModal: React.FC<ILessonActionsModalProps> = ({
 
           <ListItemButton divider disableRipple sx={{ py: 0, cursor: 'default', ':hover': { background: '#fff' } }}>
             <TeamOutlined />
-            <ListItemText sx={{ p: '0 0 0 10px' }} primary={`Студентів: ${selectedLesson.students}`} />
+            <ListItemText sx={{ p: '0 0 0 10px' }} primary={`Студентів: ${studentsCount ? studentsCount : '-'}`} />
+            {/* <ListItemText sx={{ p: '0 0 0 10px' }} primary={`Студентів: ${selectedLesson.students}`} /> */}
           </ListItemButton>
         </List>
       </DialogContent>

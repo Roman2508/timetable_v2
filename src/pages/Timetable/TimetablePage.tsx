@@ -2,6 +2,11 @@ import React from 'react'
 import { Grid } from '@mui/material'
 import { useSelector } from 'react-redux'
 
+import {
+  clearGroupLoad,
+  clearGroupOverlay,
+  lastSelectedDataSelector,
+} from '../../store/scheduleLessons/scheduleLessonsSlice'
 import MainCard from '../../components/MainCard'
 import { useAppDispatch } from '../../store/store'
 import Calendar from '../../components/TimetablePage/Calendar'
@@ -14,11 +19,6 @@ import LessonsTable from '../../components/TimetablePage/LessonsTable'
 import { TimetablePageHeader } from '../../components/TimetablePage/TimetablePageHeader'
 import { getGroupOverlay } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 import { CopyTheScheduleModal } from '../../components/TimetablePage/CopyTheScheduleModal'
-import {
-  clearGroupLoad,
-  clearGroupOverlay,
-  lastSelectedDataSelector,
-} from '../../store/scheduleLessons/scheduleLessonsSlice'
 
 export interface ISelectedLesson {
   id: number

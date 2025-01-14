@@ -17,6 +17,9 @@ const plansSlice = createSlice({
     setLoadingStatus(state, action) {
       state.loadingStatus = action.payload
     },
+    clearStudents(state) {
+      state.students = []
+    },
   },
   extraReducers: (builder) => {
     /* getStudentsByGroupId */
@@ -52,7 +55,7 @@ const plansSlice = createSlice({
   },
 })
 
-export const { setLoadingStatus } = plansSlice.actions
+export const { setLoadingStatus, clearStudents } = plansSlice.actions
 
 export default plansSlice.reducer
 

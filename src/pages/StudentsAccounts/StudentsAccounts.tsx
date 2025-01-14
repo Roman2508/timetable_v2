@@ -20,7 +20,7 @@ import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import { groupsSelector } from '../../store/groups/groupsSlice'
 import { GroupsShortType } from '../../store/groups/groupsTypes'
 import { StudentType } from '../../store/students/studentsTypes'
-import { studentsSelector } from '../../store/students/studentsSlice'
+import { clearStudents, studentsSelector } from '../../store/students/studentsSlice'
 import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import { StudentsForm } from '../../components/StudentsAccounts/StudentsForm'
@@ -65,6 +65,10 @@ const StudentsAccounts = () => {
   React.useEffect(() => {
     if (!selectedGroup) return
     dispatch(getStudentsByGroupId(selectedGroup.id))
+
+    return () => {
+      dispatch(clearStudents())
+    }
   }, [selectedGroup])
 
   return (
