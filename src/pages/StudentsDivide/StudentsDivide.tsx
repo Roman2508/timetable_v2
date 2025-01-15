@@ -27,8 +27,10 @@ const StudentsDivide = () => {
   const { group } = useSelector(groupsSelector)
   const { lessonStudents, loadingStatus } = useSelector(scheduleLessonsSelector)
 
+  const [isLoading, setIsLoading] = React.useState(false)
   const [studentsToAdd, setStudentsToAdd] = React.useState<string[]>([])
   const [filter, setFilter] = React.useState({ groupId: 0, semester: 0 })
+  const [openedLessonsIds, setOpenedLessonsIds] = React.useState<string[]>([])
   const [studentsToDelete, setStudentsToDelete] = React.useState<string[]>([])
   const [dividingType, setDividingType] = React.useState<'all' | 'one'>('all')
   const [selectedLesson, setSelectedLesson] = React.useState<GroupLoadType | null>(null)
@@ -116,7 +118,14 @@ const StudentsDivide = () => {
             </Grid>
 
             <Grid sx={{ display: 'flex', gap: 3 }}>
-              <StudentsDivideFilter setFilter={setFilter} />
+              <StudentsDivideFilter
+                setFilter={setFilter}
+                setIsLoading={setIsLoading}
+                setDividingType={setDividingType}
+                setStudentsToAdd={setStudentsToAdd}
+                setSelectedLesson={setSelectedLesson}
+                setOpenedLessonsIds={setOpenedLessonsIds}
+              />
             </Grid>
           </Grid>
         </Grid>
@@ -128,7 +137,7 @@ const StudentsDivide = () => {
             <div
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}
             >
-              <Typography>ЗДОБУВАЧІ</Typography>
+              <Typography>{group.name ? `ЗДОБУВАЧІ ГРУПИ ${group.name}` : 'ЗДОБУВАЧІ'}</Typography>
 
               <Tooltip title="Зарахувати вибраних студентів на дисципліну">
                 <IconButton
@@ -143,7 +152,9 @@ const StudentsDivide = () => {
               </Tooltip>
             </div>
 
-            {!group || !group.students.length ? (
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : !group || !group.students.length ? (
               <EmptyCard />
             ) : (
               <FormControl
@@ -172,10 +183,13 @@ const StudentsDivide = () => {
 
         <Grid item xs={3.8}>
           <StudentsDivideLessons
+            isLoading={isLoading}
             dividingType={dividingType}
             selectedLesson={selectedLesson}
             setDividingType={setDividingType}
             setSelectedLesson={setSelectedLesson}
+            openedLessonsIds={openedLessonsIds}
+            setOpenedLessonsIds={setOpenedLessonsIds}
           />
         </Grid>
 
@@ -215,7 +229,9 @@ const StudentsDivide = () => {
               </Tooltip>
             </div>
 
-            {!group || !group.students.length ? (
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : !group || !group.students.length ? (
               <EmptyCard />
             ) : (
               <FormControl

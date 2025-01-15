@@ -33,6 +33,8 @@ import { GroupLoadType } from '../../../store/groups/groupsTypes'
 import { InstructionalMaterialsModal } from './InstructionalMaterialsModal'
 import { teacherProfileSelector } from '../../../store/teacherProfile/teacherProfileSlice'
 import { InstructionalMaterialsType } from '../../../store/teacherProfile/teacherProfileTypes'
+import { authSelector } from '../../../store/auth/authSlice'
+import { UserRoles } from '../../../store/auth/authTypes'
 
 interface Props {}
 
@@ -44,6 +46,7 @@ interface IFilter {
 export const InstructionalMaterialsTab = React.memo(({}: Props) => {
   const dispatch = useAppDispatch()
 
+  const { user } = useSelector(authSelector)
   const { filterLesson, instructionalMaterials, loadingStatus } = useSelector(teacherProfileSelector)
 
   const [semester, setSemester] = React.useState(1)
@@ -75,9 +78,18 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
   }
 
   React.useEffect(() => {
-    if (filterLesson) return
-    dispatch(findAllTeacherLessonsById(3))
-  }, [])
+    // if (filterLesson) return
+    if (!user) return
+
+    if (user.role === UserRoles.TEACHER) {
+      dispatch(findAllTeacherLessonsById(user.id))
+    } else {
+      alert(
+        'Якщо роль не викладач (скоріше за все адміністратор, методист і т.д.) то потрібно підвантажувати всі дисципліни'
+      )
+    }
+    // dispatch(findAllTeacherLessonsById(3))
+  }, [user])
 
   React.useEffect(() => {
     if (!selectedLesson) return
@@ -168,7 +180,6 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
               {(filterLesson ? filter[semester] : []).map((el: GroupLoadType) => (
                 <MenuItem value={el.id} key={el.id}>{`${el.group.name} / ${el.typeRu} / ${el.name}`}</MenuItem>
               ))}
-              
             </Select>
           </FormControl>
         </div>

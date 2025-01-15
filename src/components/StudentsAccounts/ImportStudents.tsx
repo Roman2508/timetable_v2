@@ -1,10 +1,11 @@
 import React from 'react'
 import * as XLSX from 'xlsx'
-import { QuestionOutlined, UploadOutlined } from '@ant-design/icons'
 import { Tooltip, IconButton } from '@mui/material'
+import { QuestionOutlined, UploadOutlined } from '@ant-design/icons'
+
 import { useAppDispatch } from '../../store/store'
-import { createStudent } from '../../store/students/studentsAsyncActions'
 import { CreateStudentsPayloadType } from '../../api/apiTypes'
+import { createStudent } from '../../store/students/studentsAsyncActions'
 
 interface IImportStudentsProps {
   setHelperModalVisible: React.Dispatch<React.SetStateAction<boolean>>
@@ -75,6 +76,8 @@ const ImportStudents: React.FC<IImportStudentsProps> = ({ setHelperModalVisible 
       )
     }
     reader.readAsBinaryString(f)
+    if (!fileRef.current) return
+    fileRef.current.value = ''
   }
 
   return (

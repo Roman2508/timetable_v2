@@ -5,11 +5,18 @@ import { Stack, Button, MenuItem, TextField, InputLabel } from '@mui/material'
 
 import { useAppDispatch } from '../../store/store'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
-import { groupsListSelector } from '../../store/groups/groupsSlice'
+import { clearGroupData, groupsListSelector } from '../../store/groups/groupsSlice'
 import { getGroup, getGroupCategories } from '../../store/groups/groupsAsyncActions'
 import { findGroupLoadLessonsByGroupIdAndSemester } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
+import { clearGroupLoad, clearLessonStudents } from '../../store/scheduleLessons/scheduleLessonsSlice'
+import { GroupLoadType } from '../../store/groups/groupsTypes'
 
 interface IStudentsDivideFilterProps {
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setStudentsToAdd: React.Dispatch<React.SetStateAction<string[]>>
+  setOpenedLessonsIds: React.Dispatch<React.SetStateAction<string[]>>
+  setDividingType: React.Dispatch<React.SetStateAction<'all' | 'one'>>
+  setSelectedLesson: React.Dispatch<React.SetStateAction<GroupLoadType | null>>
   setFilter: React.Dispatch<React.SetStateAction<{ groupId: number; semester: number }>>
 }
 
@@ -18,7 +25,14 @@ interface IGradeBookFilterFields {
   group: number
 }
 
-const StudentsDivideFilter: React.FC<IStudentsDivideFilterProps> = ({ setFilter }) => {
+const StudentsDivideFilter: React.FC<IStudentsDivideFilterProps> = ({
+  setFilter,
+  setIsLoading,
+  setDividingType,
+  setStudentsToAdd,
+  setSelectedLesson,
+  setOpenedLessonsIds,
+}) => {
   const dispatch = useAppDispatch()
 
   const { groups } = useSelector(groupsListSelector)
@@ -32,6 +46,15 @@ const StudentsDivideFilter: React.FC<IStudentsDivideFilterProps> = ({ setFilter 
 
   const onSubmit: SubmitHandler<IGradeBookFilterFields> = async (data) => {
     try {
+      setIsLoading(true)
+      setStudentsToAdd([])
+      setDividingType('all')
+      setSelectedLesson(null)
+      setOpenedLessonsIds([])
+      dispatch(clearGroupData())
+      dispatch(clearGroupLoad())
+      dispatch(clearLessonStudents())
+
       // dispatch(findLessonStudents({ semester: data.semester, groupId: data.group }))
       await dispatch(findGroupLoadLessonsByGroupIdAndSemester({ semester: data.semester, groupId: data.group }))
 
@@ -40,6 +63,8 @@ const StudentsDivideFilter: React.FC<IStudentsDivideFilterProps> = ({ setFilter 
       await dispatch(getGroup(String(data.group)))
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 

@@ -1,29 +1,32 @@
-import React from "react"
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
+import React from 'react'
+import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 
-import "./FullTeacherPage.css"
-import { useAppDispatch } from "../../store/store"
-import { GroupLoadType } from "../../store/groups/groupsTypes"
-import { getTeacherLoadById } from "../../store/teacherProfile/teacherProfileAsyncActions"
-import { useSelector } from "react-redux"
-import { teacherProfileSelector } from "../../store/teacherProfile/teacherProfileSlice"
-import { LoadingStatusTypes } from "../../store/appTypes"
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"
-import splitWorkloadBySemesters from "../../utils/splitWorkloadBySemesters"
+import './FullTeacherPage.css'
+import { useAppDispatch } from '../../store/store'
+import { GroupLoadType } from '../../store/groups/groupsTypes'
+import { getTeacherLoadById } from '../../store/teacherProfile/teacherProfileAsyncActions'
+import { useSelector } from 'react-redux'
+import { teacherProfileSelector } from '../../store/teacherProfile/teacherProfileSlice'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import splitWorkloadBySemesters from '../../utils/splitWorkloadBySemesters'
+import { authSelector } from '../../store/auth/authSlice'
+import { UserRoles } from '../../store/auth/authTypes'
 
 interface Props {}
 
 const sellStyles = {
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
-  overflow: "hidden",
-  padding: "6px",
-  height: "40px",
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  padding: '6px',
+  height: '40px',
 }
 
 export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
   const dispatch = useAppDispatch()
 
+  const { user } = useSelector(authSelector)
   const { workload, loadingStatus } = useSelector(teacherProfileSelector)
 
   const [firstSemesterLessons, setFirstSemesterLessons] = React.useState<GroupLoadType[]>([])
@@ -42,8 +45,12 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
       return
     }
 
+    if (!user) return
+    if (user.role !== UserRoles.TEACHER) return
+
     const fetchData = async () => {
-      const { payload } = await dispatch(getTeacherLoadById(3))
+      const { payload } = await dispatch(getTeacherLoadById(user.id))
+      // const { payload } = await dispatch(getTeacherLoadById(3))
       const workload = payload as GroupLoadType[]
       handleSemesterLessons(workload)
     }
@@ -55,6 +62,10 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
     <>
       {loadingStatus === LoadingStatusTypes.LOADING ? (
         <LoadingSpinner />
+      ) : user && user.role !== UserRoles.TEACHER ? (
+        <Typography align="center" sx={{ mt: 2 }}>
+          Ця сторінка доступна лише для викладачів
+        </Typography>
       ) : (
         <Table size="small" aria-label="a dense table">
           <TableHead>
@@ -76,7 +87,7 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
             </TableRow>
 
             {firstSemesterLessons.map((lesson: GroupLoadType, index) => {
-              const subgroup = lesson.subgroupNumber ? ` ⋅ Підгр.${lesson.subgroupNumber}` : "Вся група"
+              const subgroup = lesson.subgroupNumber ? `Підгр.${lesson.subgroupNumber}` : 'Вся група'
 
               return (
                 <TableRow key={lesson.id}>
@@ -100,7 +111,7 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
                     {lesson.typeRu}
                   </TableCell>
 
-                  <TableCell sx={{ width: "100px", ...sellStyles }} align="center">
+                  <TableCell sx={{ width: '100px', ...sellStyles }} align="center">
                     {lesson.hours}
                   </TableCell>
                 </TableRow>
@@ -123,7 +134,7 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
             </TableRow>
 
             {secondSemesterLessons.map((lesson: GroupLoadType, index) => {
-              const subgroup = lesson.subgroupNumber ? ` ⋅ Підгр.${lesson.subgroupNumber}` : "Вся група"
+              const subgroup = lesson.subgroupNumber ? `Підгр.${lesson.subgroupNumber}` : 'Вся група'
 
               return (
                 <TableRow key={lesson.id}>
@@ -147,7 +158,7 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
                     {lesson.typeRu}
                   </TableCell>
 
-                  <TableCell sx={{ width: "100px", ...sellStyles }} align="center">
+                  <TableCell sx={{ width: '100px', ...sellStyles }} align="center">
                     {lesson.hours}
                   </TableCell>
                 </TableRow>

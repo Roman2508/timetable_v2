@@ -20,25 +20,32 @@ import { GroupLoadType } from '../../store/groups/groupsTypes'
 import { groupLessonsByFields } from '../../utils/groupLessonsByFields'
 import { getLessonStudents } from '../../store/scheduleLessons/scheduleLessonsAsyncActions'
 import { clearLessonStudents, lessonsForGradeBookSelector } from '../../store/scheduleLessons/scheduleLessonsSlice'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
 
 interface IStudentsDivideLessonsProps {
+  isLoading: boolean
+  openedLessonsIds: string[]
   dividingType: 'all' | 'one'
   selectedLesson: GroupLoadType | null
+  setOpenedLessonsIds: React.Dispatch<React.SetStateAction<string[]>>
   setDividingType: React.Dispatch<React.SetStateAction<'all' | 'one'>>
   setSelectedLesson: React.Dispatch<React.SetStateAction<GroupLoadType | null>>
 }
 
 const StudentsDivideLessons: React.FC<IStudentsDivideLessonsProps> = ({
+  isLoading,
   dividingType,
   setDividingType,
   selectedLesson,
+  openedLessonsIds,
   setSelectedLesson,
+  setOpenedLessonsIds
 }) => {
   const dispatch = useAppDispatch()
 
   const { lessons } = useSelector(lessonsForGradeBookSelector)
 
-  const [openedLessonsIds, setOpenedLessonsIds] = React.useState<string[]>([])
+  // const [openedLessonsIds, setOpenedLessonsIds] = React.useState<string[]>([])
 
   const groupLoadLessons = groupLessonsByFields(lessons, { lessonName: true })
 
@@ -70,7 +77,9 @@ const StudentsDivideLessons: React.FC<IStudentsDivideLessonsProps> = ({
     <Paper sx={{ pt: 2 }}>
       <Typography sx={{ mb: 2, textAlign: 'center' }}>ДИСЦИПЛІНИ</Typography>
 
-      {!groupLoadLessons.length ? (
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : !groupLoadLessons.length ? (
         <EmptyCard />
       ) : (
         <List>
