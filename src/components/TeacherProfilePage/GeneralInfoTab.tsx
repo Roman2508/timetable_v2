@@ -1,7 +1,14 @@
-import { OutputBlockData } from '@editorjs/editorjs'
-import { Button } from '@mui/material'
 import React from 'react'
 import Editor from './Editor'
+import { useSelector } from 'react-redux'
+import { Button, Typography } from '@mui/material'
+
+import { useAppDispatch } from '../../store/store'
+import { OutputBlockData } from '@editorjs/editorjs'
+import { UserRoles } from '../../store/auth/authTypes'
+import { authSelector } from '../../store/auth/authSlice'
+import { updateTeacherBio } from '../../store/auth/authAsyncActions'
+import { EditorJSItemType } from '../../store/teachers/teachersTypes'
 
 const initialData = [
   {
@@ -49,10 +56,38 @@ const initialData = [
 ]
 
 const GeneralInfoTab = () => {
-  const [blocks, setBlocks] = React.useState<OutputBlockData<string, any>[]>(initialData)
+  const dispatch = useAppDispatch()
+
+  const { user } = useSelector(authSelector)
+
+  const [isFetching, setIsFetching] = React.useState(false)
+  const [blocks, setBlocks] = React.useState<EditorJSItemType[]>([])
+  // const [blocks, setBlocks] = React.useState<OutputBlockData<string, any>[]>(initialData)
 
   const onSubmit = async () => {
-    console.log(blocks)
+    if (!user || !user.teacher) return
+    try {
+      setIsFetching(true)
+      await dispatch(updateTeacherBio({ id: user.teacher.id, data: blocks }))
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsFetching(false)
+    }
+  }
+
+  React.useEffect(() => {
+    if (user && user.role === UserRoles.TEACHER && user.teacher) {
+      setBlocks(user.teacher.bio)
+    }
+  }, [user])
+
+  if (user && user.role !== UserRoles.TEACHER) {
+    return (
+      <Typography align="center" sx={{ mt: 1 }}>
+        Сторінка доступна лише викладачам!
+      </Typography>
+    )
   }
 
   return (
@@ -69,9 +104,9 @@ const GeneralInfoTab = () => {
             onClick={onSubmit}
             variant="contained"
             sx={{ maxWidth: '84%' }}
-            disabled={!blocks.length}
+            disabled={!blocks.length || isFetching}
           >
-            Зберегти
+            {isFetching ? 'Завантаження...' : 'Зберегти'}
           </Button>
         </div>
       </div>

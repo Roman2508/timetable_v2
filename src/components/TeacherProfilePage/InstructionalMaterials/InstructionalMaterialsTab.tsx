@@ -20,6 +20,7 @@ import { EditOutlined } from '@ant-design/icons'
 
 import {
   findAllTeacherLessonsById,
+  findAllTeacherLessonsByIdAndYear,
   getInstructionalMaterials,
 } from '../../../store/teacherProfile/teacherProfileAsyncActions'
 import EmptyCard from '../../EmptyCard/EmptyCard'
@@ -78,18 +79,17 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
   }
 
   React.useEffect(() => {
-    // if (filterLesson) return
     if (!user) return
 
     if (user.role === UserRoles.TEACHER) {
-      dispatch(findAllTeacherLessonsById(user.id))
+      dispatch(findAllTeacherLessonsByIdAndYear({ teacherId: user.id, year: showedYear }))
+      // dispatch(findAllTeacherLessonsById(user.id))
     } else {
       alert(
         'Якщо роль не викладач (скоріше за все адміністратор, методист і т.д.) то потрібно підвантажувати всі дисципліни'
       )
     }
-    // dispatch(findAllTeacherLessonsById(3))
-  }, [user])
+  }, [user, showedYear])
 
   React.useEffect(() => {
     if (!selectedLesson) return
@@ -141,7 +141,10 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
               name="hours"
               type="number"
               value={showedYear}
-              onChange={(e) => setShowedYear(Number(e.target.value))}
+              onChange={(e) => {
+                setFilter({ ['1']: [], ['2']: [] })
+                setShowedYear(Number(e.target.value))
+              }}
               sx={{ width: '70px', input: { padding: '8.2px 2px 8.2px 16px' } }}
             />
           </Stack>
@@ -153,7 +156,13 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
         <div className="instructional-materials__filter">
           <FormControl fullWidth>
             <InputLabel sx={{ overflow: 'visible !important' }}>Семестр</InputLabel>
-            <Select onChange={(e) => setSemester(Number(e.target.value))} value={semester}>
+            <Select
+              onChange={(e) => {
+                setFilter({ ['1']: [], ['2']: [] })
+                setSemester(Number(e.target.value))
+              }}
+              value={semester}
+            >
               {[1, 2].map((el) => (
                 <MenuItem value={el} key={el}>
                   {el}
@@ -215,7 +224,7 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
               .fill(null)
               .map((_, i) => {
                 // const lesson = rows.find((el) => el.id === i + 1)
-
+                const isLast = selectedLesson?.hours === i + 1
                 const theme = instructionalMaterials?.find((el) => el.lessonNumber === i + 1)
 
                 return (
@@ -240,7 +249,7 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
                         <EditOutlined style={{ display: 'none', cursor: 'pointer' }} />
                       </IconButton>
                     </TableCell>
-                    <TableCell>{theme ? 2 : '-'}</TableCell>
+                    <TableCell>{theme && !isLast ? 2 : theme && isLast ? 1 : '-'}</TableCell>
                   </TableRow>
                 )
               })}

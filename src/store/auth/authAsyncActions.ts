@@ -4,7 +4,13 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { authAPI } from '../../api/authAPI'
 import { clearUser, setLoadingStatus } from './authSlice'
 import { LoadingStatusTypes } from '../appTypes'
-import { LoginPayloadType, RegisterPayloadType, AuthResponseType, GoogleLoginPayloadType } from '../../api/apiTypes'
+import {
+  LoginPayloadType,
+  RegisterPayloadType,
+  AuthResponseType,
+  GoogleLoginPayloadType,
+  UpdateEditorDataType,
+} from '../../api/apiTypes'
 
 export const authRegister = createAsyncThunk(
   'auth/authRegister',
@@ -62,7 +68,6 @@ export const authMe = createAsyncThunk('auth/authMe', async (token: string, thun
   })
 
   const { data } = await promise
-  console.log(data)
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
   return data
 })
@@ -76,6 +81,51 @@ export const googleLogin = createAsyncThunk(
     toast.promise(promise, {
       loading: 'Завантаження...',
       success: 'Авторизований',
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
+  }
+)
+
+/* teacher */
+export const updateTeacherBio = createAsyncThunk(
+  'teachers/updateTeacherBio',
+  async (payload: UpdateEditorDataType, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+    const promise = authAPI.updateTeacherBio(payload)
+
+    toast.promise(promise, {
+      loading: 'Завантаження...',
+      success: 'Оновлено',
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
+  }
+)
+
+export const updateTeacherPrintedWorks = createAsyncThunk(
+  'teachers/updateTeacherPrintedWorks',
+  async (payload: UpdateEditorDataType, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+    const promise = authAPI.updateTeacherPrintedWorks(payload)
+
+    toast.promise(promise, {
+      loading: 'Завантаження...',
+      success: 'Оновлено',
       error: (error) => {
         thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
         return (error as any)?.response?.data?.message || error.message

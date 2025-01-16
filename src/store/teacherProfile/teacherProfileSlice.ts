@@ -18,6 +18,7 @@ import {
   deleteInstructionalMaterials,
   updateInstructionalMaterials,
   importInstructionalMaterials,
+  findAllTeacherLessonsByIdAndYear,
 } from './teacherProfileAsyncActions'
 import {
   TeacherReportType,
@@ -116,6 +117,13 @@ const teacherProfileSlice = createSlice({
 
     /* findAllTeacherLessonsById */
     builder.addCase(findAllTeacherLessonsById.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
+      state.filterLesson = action.payload
+      state.loadingStatus = LoadingStatusTypes.SUCCESS
+    })
+
+    // Для instruction-materials
+    /* findAllTeacherLessonsByIdAndYear */
+    builder.addCase(findAllTeacherLessonsByIdAndYear.fulfilled, (state, action: PayloadAction<GroupLoadType[]>) => {
       state.filterLesson = action.payload
       state.loadingStatus = LoadingStatusTypes.SUCCESS
     })

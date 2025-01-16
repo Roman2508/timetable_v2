@@ -151,6 +151,29 @@ export const findAllTeacherLessonsById = createAsyncThunk(
   }
 )
 
+// Для instructional-materials
+export const findAllTeacherLessonsByIdAndYear = createAsyncThunk(
+  'teacher-profile/findAllTeacherLessonsByIdAndYear',
+  async (payload: { teacherId: number; year: number }, thunkAPI) => {
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+    const promise = groupLoadLessonsAPI.findAllTeacherLessonsByIdAndYear(payload)
+
+    toast.promise(promise, {
+      // loading: "Завантаження...",
+      // success: "Завантажено",
+      error: (error) => {
+        thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+        return (error as any)?.response?.data?.message || error.message
+      },
+    })
+
+    const { data } = await promise
+    thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+    return data
+  }
+)
+
 /* teacher load */
 export const getTeacherLoadById = createAsyncThunk(
   'teacher-profile/getTeacherLoadById',

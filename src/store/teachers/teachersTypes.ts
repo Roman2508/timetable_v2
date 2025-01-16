@@ -1,4 +1,4 @@
-import { LoadingStatusTypes } from "../appTypes"
+import { LoadingStatusTypes } from '../appTypes'
 
 export type TeachersInitialState = {
   teachersCategories: TeachersCategoryType[] | null
@@ -17,5 +17,25 @@ export type TeachersType = {
   middleName: string
   lastName: string
   calendarId: string
+  folderId: string
+  isHide: boolean
   category: { id: number; name: string }
+  position: string
+  bio: EditorJSItemType[]
+  printedWorks: EditorJSItemType[]
+}
+
+export type EditorJSItemType = {
+  id: string
+  type: string
+  data: EditorJSItemTextDataType | EditorJSItemListDataType
+}
+
+export type EditorJSItemTextDataType = {
+  text: string
+}
+
+export type EditorJSItemListDataType = {
+  items: string[]
+  style: string
 }

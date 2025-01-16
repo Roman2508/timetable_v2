@@ -12,6 +12,8 @@ import TeachersReportTab from '../../components/TeacherProfilePage/TeacherReport
 import IndividualTeacherWorkTab from '../../components/TeacherProfilePage/IndividualTeacherWorkPlan/IndividualTeacherWorkTab'
 import { InstructionalMaterialsTab } from '../../components/TeacherProfilePage/InstructionalMaterials/InstructionalMaterialsTab'
 import { EditOutlined } from '@ant-design/icons'
+import { authSelector } from '../../store/auth/authSlice'
+import { useSelector } from 'react-redux'
 
 const tabs = [
   'Загальна інформація',
@@ -24,7 +26,7 @@ const tabs = [
 ]
 
 const FullTeachersPage = () => {
-  const dispatch = useAppDispatch()
+  const { user } = useSelector(authSelector)
 
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -71,7 +73,7 @@ const FullTeachersPage = () => {
                   </div>
 
                   <Typography variant="h5" sx={{ whiteSpace: 'nowrap', pt: 2, pb: 1 }}>
-                    Пташник Р.В.
+                    {user ? 'Пташник Р.В.' : ''}
                   </Typography>
                   <Typography variant="body1" sx={{ whiteSpace: 'nowrap', textTransform: 'initial' }}>
                     Викладач-спеціаліст
