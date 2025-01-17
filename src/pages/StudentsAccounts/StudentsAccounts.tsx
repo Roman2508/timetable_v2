@@ -9,10 +9,11 @@ import {
   Typography,
   ListItemText,
   ListItemButton,
+  Checkbox,
 } from '@mui/material'
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { DownOutlined, UpOutlined } from '@ant-design/icons'
+import { DownOutlined, UpOutlined, DeleteOutlined } from '@ant-design/icons'
 
 import { useAppDispatch } from '../../store/store'
 import { LoadingStatusTypes } from '../../store/appTypes'
@@ -20,15 +21,16 @@ import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import { groupsSelector } from '../../store/groups/groupsSlice'
 import { GroupsShortType } from '../../store/groups/groupsTypes'
 import { StudentType } from '../../store/students/studentsTypes'
-import { clearStudents, studentsSelector } from '../../store/students/studentsSlice'
+import HelperModal from '../../components/StudentsAccounts/HelperModal'
 import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import { StudentsForm } from '../../components/StudentsAccounts/StudentsForm'
-import { getStudentsByGroupId } from '../../store/students/studentsAsyncActions'
-import { ImportStudents } from '../../components/StudentsAccounts/ImportStudents'
-import HelperModal from '../../components/StudentsAccounts/HelperModal'
 import ExportStudents from '../../components/StudentsAccounts/ExportStudents'
+import { getStudentsByGroupId } from '../../store/students/studentsAsyncActions'
 import { UpdateStudents } from '../../components/StudentsAccounts/UpdateStudents'
+import { ImportStudents } from '../../components/StudentsAccounts/ImportStudents'
+import { clearStudents, studentsSelector } from '../../store/students/studentsSlice'
+import DeleteStudents from '../../components/StudentsAccounts/DeleteStudents'
 
 const bageColors = {
   ['Навчається']: 'primary',
@@ -43,9 +45,11 @@ const StudentsAccounts = () => {
 
   const { groupCategories } = useSelector(groupsSelector)
 
+  const [deleteMode, setDeleteMode] = React.useState(false)
   const [helperModalVisible, setHelperModalVisible] = React.useState(false)
   const [editMode, setEditMode] = React.useState<'create' | 'update'>('create')
   const [openCategoryId, setOpenCategoryId] = React.useState<number | null>(null)
+  const [studentsIdsToDelete, setStudentsIdsToDelete] = React.useState<number[]>([])
   const [selectedGroup, setSelectedGroup] = React.useState<GroupsShortType | null>(null)
   const [selectedStudent, setSelectedStudent] = React.useState<StudentType | null>(null)
 
@@ -55,6 +59,16 @@ const StudentsAccounts = () => {
     } else {
       setOpenCategoryId(id)
     }
+  }
+
+  const handleAddStudentToDelete = (id: number) => {
+    setStudentsIdsToDelete((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((studentId) => studentId !== id)
+      }
+
+      return [...prev, id]
+    })
   }
 
   React.useEffect(() => {
@@ -134,9 +148,29 @@ const StudentsAccounts = () => {
 
         <Grid item xs={3.8}>
           <Paper sx={{ pt: 2 }}>
-            <Typography sx={{ mb: 2, textAlign: 'left', pl: 2 }}>
-              {selectedGroup ? `Група: ${selectedGroup.name}` : 'ВИБЕРІТЬ ГРУПУ'}
-            </Typography>
+            <div
+              style={{
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '10px',
+                padding: '0 16px',
+                display: 'flex',
+                height: '36px',
+              }}
+            >
+              <Typography>{selectedGroup ? `Група: ${selectedGroup.name}` : 'ВИБЕРІТЬ ГРУПУ'}</Typography>
+
+              {students && !!students.length && (
+                <DeleteStudents
+                  deleteMode={deleteMode}
+                  setDeleteMode={setDeleteMode}
+                  studentsIdsToDelete={studentsIdsToDelete}
+                  setStudentsIdsToDelete={setStudentsIdsToDelete}
+                />
+              )}
+            </div>
+
+            <Divider />
 
             <List sx={{ maxHeight: 'calc(100vh - 220px)', overflow: 'auto' }}>
               {loadingStatus === LoadingStatusTypes.LOADING ? (
@@ -145,30 +179,71 @@ const StudentsAccounts = () => {
                 <EmptyCard />
               ) : students ? (
                 students.map((student, index) => (
-                  <ListItem
-                    disablePadding
-                    key={student.id}
-                    onClick={() => {
-                      setEditMode('update')
-                      setSelectedStudent(student)
-                    }}
-                    selected={selectedStudent?.id === student.id}
-                  >
-                    <ListItemButton sx={{ py: '0px' }}>
-                      <ListItemText
-                        primary={`${index + 1}. ${student.name}`}
-                        sx={{ '& span': { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }}
-                      />
+                  <React.Fragment key={student.id}>
+                    {deleteMode && index === 0 && (
+                      <>
+                        {/* ВИБРАТИ ВСІХ */}
+                        <div style={{ display: 'flex', alignItems: 'center', padding: '0 16px', height: '30px' }}>
+                          <b style={{ flex: 1 }}>Вибрати всіх:</b>
 
-                      <Chip
-                        size="small"
-                        variant="filled"
-                        label={student.status}
-                        sx={{ height: '20px', fontSize: '12px' }}
-                        color={bageColors[student.status] || 'primary'}
-                      />
-                    </ListItemButton>
-                  </ListItem>
+                          <Checkbox
+                            size="small"
+                            sx={{ p: 0 }}
+                            onChange={() => {
+                              if (studentsIdsToDelete.length === students.length) {
+                                setStudentsIdsToDelete([])
+                              } else {
+                                setStudentsIdsToDelete(students.map((student) => student.id))
+                              }
+                            }}
+                          />
+                        </div>
+                        <Divider sx={{ my: 1 }} />
+                        {/* // ВИБРАТИ ВСІХ */}
+                      </>
+                    )}
+
+                    <div
+                      key={student.id}
+                      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                    >
+                      <ListItem
+                        disablePadding
+                        key={student.id}
+                        onClick={() => {
+                          setEditMode('update')
+                          setSelectedStudent(student)
+                        }}
+                        selected={selectedStudent?.id === student.id}
+                      >
+                        <ListItemButton sx={{ py: '0px' }}>
+                          <ListItemText
+                            primary={`${index + 1}. ${student.name}`}
+                            sx={{ '& span': { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }}
+                          />
+
+                          <Chip
+                            size="small"
+                            variant="filled"
+                            label={student.status}
+                            sx={{ height: '20px', fontSize: '12px' }}
+                            color={bageColors[student.status] || 'primary'}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+
+                      {deleteMode && (
+                        <div style={{ paddingRight: '16px' }}>
+                          <Checkbox
+                            size="small"
+                            sx={{ p: 0 }}
+                            checked={studentsIdsToDelete.includes(student.id)}
+                            onChange={() => handleAddStudentToDelete(student.id)}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </React.Fragment>
                 ))
               ) : null}
             </List>
@@ -177,18 +252,12 @@ const StudentsAccounts = () => {
 
         <Grid item xs={3.8}>
           <Paper sx={{ p: 2 }}>
-            <div
-              style={{
-                /* position: 'relative', */ display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography sx={{ textAlign: 'center' }}>
                 {editMode === 'create' ? 'ДОДАТИ НОВОГО СТУДЕНТА' : 'ОНОВИТИ СТУДЕНТА'}
               </Typography>
 
-              <div style={{ /* position: 'absolute', top: '-6px', right: 0, */ backgroundColor: '#fff' }}>
+              <div style={{ backgroundColor: '#fff' }}>
                 <ImportStudents setHelperModalVisible={setHelperModalVisible} />
 
                 <UpdateStudents />

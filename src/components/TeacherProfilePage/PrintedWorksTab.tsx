@@ -62,7 +62,7 @@ const PrintedWorksTab = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100% - 50px)' }}>
       <div style={{ flex: 1 }}>
-        <Editor blocks={blocks} setBlocks={setBlocks} />
+        <Editor blocks={user?.teacher?.printedWorks || []} setBlocks={setBlocks} />
       </div>
 
       <div style={{ textAlign: 'center' }}>

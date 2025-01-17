@@ -1,17 +1,17 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 
 import './FullTeacherPage.css'
 import { useAppDispatch } from '../../store/store'
-import { GroupLoadType } from '../../store/groups/groupsTypes'
-import { getTeacherLoadById } from '../../store/teacherProfile/teacherProfileAsyncActions'
-import { useSelector } from 'react-redux'
-import { teacherProfileSelector } from '../../store/teacherProfile/teacherProfileSlice'
-import { LoadingStatusTypes } from '../../store/appTypes'
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
-import splitWorkloadBySemesters from '../../utils/splitWorkloadBySemesters'
-import { authSelector } from '../../store/auth/authSlice'
 import { UserRoles } from '../../store/auth/authTypes'
+import { LoadingStatusTypes } from '../../store/appTypes'
+import { authSelector } from '../../store/auth/authSlice'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import { GroupLoadType } from '../../store/groups/groupsTypes'
+import splitWorkloadBySemesters from '../../utils/splitWorkloadBySemesters'
+import { teacherProfileSelector } from '../../store/teacherProfile/teacherProfileSlice'
+import { getTeacherLoadById } from '../../store/teacherProfile/teacherProfileAsyncActions'
 
 interface Props {}
 
@@ -45,12 +45,11 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
       return
     }
 
-    if (!user) return
-    if (user.role !== UserRoles.TEACHER) return
-
     const fetchData = async () => {
-      const { payload } = await dispatch(getTeacherLoadById(user.id))
-      // const { payload } = await dispatch(getTeacherLoadById(3))
+      if (!user || !user.teacher || user.role !== UserRoles.TEACHER) {
+        return
+      }
+      const { payload } = await dispatch(getTeacherLoadById(user.teacher.id))
       const workload = payload as GroupLoadType[]
       handleSemesterLessons(workload)
     }

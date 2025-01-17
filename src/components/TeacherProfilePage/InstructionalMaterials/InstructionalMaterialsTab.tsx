@@ -19,23 +19,22 @@ import { useSelector } from 'react-redux'
 import { EditOutlined } from '@ant-design/icons'
 
 import {
-  findAllTeacherLessonsById,
-  findAllTeacherLessonsByIdAndYear,
   getInstructionalMaterials,
+  findAllTeacherLessonsByIdAndYear,
 } from '../../../store/teacherProfile/teacherProfileAsyncActions'
 import EmptyCard from '../../EmptyCard/EmptyCard'
 import { customDayjs } from '../../Calendar/Calendar'
 import ExportLessonThemes from './ExportLessonThemes'
 import { useAppDispatch } from '../../../store/store'
 import ImportLessonThemes from './ImportLessonThemes'
+import { UserRoles } from '../../../store/auth/authTypes'
+import { authSelector } from '../../../store/auth/authSlice'
 import { LoadingStatusTypes } from '../../../store/appTypes'
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner'
 import { GroupLoadType } from '../../../store/groups/groupsTypes'
 import { InstructionalMaterialsModal } from './InstructionalMaterialsModal'
 import { teacherProfileSelector } from '../../../store/teacherProfile/teacherProfileSlice'
 import { InstructionalMaterialsType } from '../../../store/teacherProfile/teacherProfileTypes'
-import { authSelector } from '../../../store/auth/authSlice'
-import { UserRoles } from '../../../store/auth/authTypes'
 
 interface Props {}
 
@@ -100,14 +99,23 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
   React.useEffect(() => {
     if (!filterLesson) return
 
-    filterLesson.forEach((el) => {
-      if (el.semester === 1 || el.semester === 3 || el.semester === 5) {
-        setFilter((prev) => ({ ['1']: [...prev['1'], el], ['2']: [...prev['2']] }))
-        return
-      }
+    const firstSemesterLessons = filterLesson.filter(
+      (el) => el.semester === 1 || el.semester === 3 || el.semester === 5
+    )
+    const secondSemesterLessons = filterLesson.filter(
+      (el) => el.semester === 2 || el.semester === 4 || el.semester === 6
+    )
 
-      setFilter((prev) => ({ ['1']: [...prev['1']], ['2']: [...prev['2'], el] }))
-    })
+    setFilter({ ['1']: firstSemesterLessons, ['2']: secondSemesterLessons })
+
+    // filterLesson.forEach((el) => {
+    //   if (el.semester === 1 || el.semester === 3 || el.semester === 5) {
+    //     setFilter((prev) => ({ ['1']: [...prev['1'], el], ['2']: [...prev['2']] }))
+    //     return
+    //   }
+
+    //   setFilter((prev) => ({ ['1']: [...prev['1']], ['2']: [...prev['2'], el] }))
+    // })
   }, [filterLesson])
 
   return (
@@ -158,7 +166,7 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
             <InputLabel sx={{ overflow: 'visible !important' }}>Семестр</InputLabel>
             <Select
               onChange={(e) => {
-                setFilter({ ['1']: [], ['2']: [] })
+                // setFilter({ ['1']: [], ['2']: [] })
                 setSemester(Number(e.target.value))
               }}
               value={semester}

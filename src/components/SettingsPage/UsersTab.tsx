@@ -63,6 +63,8 @@ const UsersTab = () => {
     setPage(0)
   }
 
+  React.useEffect(() => {}, [])
+
   const rows = [
     ...Array(50)
       .fill(null)
