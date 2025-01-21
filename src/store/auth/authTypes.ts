@@ -4,6 +4,7 @@ import { TeachersType } from '../teachers/teachersTypes'
 
 export type AuthInitialState = {
   user: UserType | null
+  users: UserType[] | null
   loadingStatus: LoadingStatusTypes
 }
 
@@ -20,7 +21,10 @@ export type UserType = {
   id: number
   login: string // ??????
   email: string
-  role: UserRoles
+  role: typeof userRoles
+  // role: ['ADMIN' | 'GUEST' | 'TEACHER' | 'STUDENT' | 'HEAD_OF_DEPARTMENT' | 'METHODIST']
   teacher: TeachersType | null
   student: StudentType | null
 }
+
+export const userRoles = ['ADMIN', 'GUEST', 'TEACHER', 'STUDENT', 'HEAD_OF_DEPARTMENT', 'METHODIST'] as const

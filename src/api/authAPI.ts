@@ -7,6 +7,7 @@ import {
 } from './apiTypes'
 import { instanse } from './api'
 import { TeachersType } from '../store/teachers/teachersTypes'
+import { UserType } from '../store/auth/authTypes'
 
 export const authAPI = {
   register(payload: RegisterPayloadType) {
@@ -33,5 +34,10 @@ export const authAPI = {
   updateTeacherPrintedWorks(payload: UpdateEditorDataType) {
     const { id, data } = payload
     return instanse.patch<TeachersType>(`/teachers/printed-works/${id}`, data)
+  },
+
+  /* users */
+  getUsers() {
+    return instanse.get<[UserType[], number]>('/users')
   },
 }

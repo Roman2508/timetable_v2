@@ -4,8 +4,7 @@ import { SyncOutlined } from '@ant-design/icons'
 import { Tooltip, IconButton } from '@mui/material'
 
 import { useAppDispatch } from '../../store/store'
-import { createStudent, updateStudent } from '../../store/students/studentsAsyncActions'
-import { CreateStudentsPayloadType } from '../../api/apiTypes'
+import { updateStudent } from '../../store/students/studentsAsyncActions'
 
 interface IUpdateStudentsProps {}
 

@@ -80,7 +80,7 @@ export const InstructionalMaterialsTab = React.memo(({}: Props) => {
   React.useEffect(() => {
     if (!user) return
 
-    if (user.role === UserRoles.TEACHER) {
+    if (user.role.includes(UserRoles.TEACHER)) {
       dispatch(findAllTeacherLessonsByIdAndYear({ teacherId: user.id, year: showedYear }))
       // dispatch(findAllTeacherLessonsById(user.id))
     } else {

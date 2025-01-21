@@ -1,14 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { RootState } from '../store'
-import { AuthInitialState } from './authTypes'
+import { AuthInitialState, UserType } from './authTypes'
 import { LoadingStatusTypes } from '../appTypes'
 import { AuthResponseType } from '../../api/apiTypes'
 import { TeachersType } from '../teachers/teachersTypes'
-import { authLogin, authMe, googleLogin, updateTeacherBio, updateTeacherPrintedWorks } from './authAsyncActions'
+import { authLogin, authMe, getUsers, googleLogin, updateTeacherBio, updateTeacherPrintedWorks } from './authAsyncActions'
 
 const authInitialState: AuthInitialState = {
   user: null,
+  users: null,
   loadingStatus: LoadingStatusTypes.NEVER,
 }
 
@@ -45,6 +46,12 @@ const authSlice = createSlice({
     builder.addCase(updateTeacherPrintedWorks.fulfilled, (state, action: PayloadAction<TeachersType>) => {
       if (!state.user) return
       state.user.teacher = action.payload
+    })
+
+    /* getUsers */
+    builder.addCase(getUsers.fulfilled, (state, action: PayloadAction<[UserType[], number]>) => {
+      if (!state.user) return
+      state.users = action.payload[0]
     })
   },
 })

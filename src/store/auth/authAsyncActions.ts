@@ -137,3 +137,20 @@ export const updateTeacherPrintedWorks = createAsyncThunk(
     return data
   }
 )
+
+export const getUsers = createAsyncThunk('users/getUsers', async (payload: any, thunkAPI) => {
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+  const promise = authAPI.getUsers()
+
+  toast.promise(promise, {
+    error: (error) => {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      return (error as any)?.response?.data?.message || error.message
+    },
+  })
+
+  const { data } = await promise
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+  return data
+})

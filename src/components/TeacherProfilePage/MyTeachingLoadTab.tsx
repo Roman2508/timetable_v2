@@ -46,7 +46,7 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
     }
 
     const fetchData = async () => {
-      if (!user || !user.teacher || user.role !== UserRoles.TEACHER) {
+      if (!user || !user.teacher || !user.role.includes(UserRoles.TEACHER)) {
         return
       }
       const { payload } = await dispatch(getTeacherLoadById(user.teacher.id))
@@ -61,7 +61,7 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
     <>
       {loadingStatus === LoadingStatusTypes.LOADING ? (
         <LoadingSpinner />
-      ) : user && user.role !== UserRoles.TEACHER ? (
+      ) : user && !user.role.includes(UserRoles.TEACHER) ? (
         <Typography align="center" sx={{ mt: 2 }}>
           Ця сторінка доступна лише для викладачів
         </Typography>

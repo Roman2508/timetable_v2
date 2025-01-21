@@ -172,7 +172,7 @@ const StudentsAccounts = () => {
 
             <Divider />
 
-            <List sx={{ maxHeight: 'calc(100vh - 220px)', overflow: 'auto' }}>
+            <List sx={{ maxHeight: 'calc(100vh - 220px)', overflow: 'auto', minHeight: '495px' }}>
               {loadingStatus === LoadingStatusTypes.LOADING ? (
                 <LoadingSpinner />
               ) : !students || !students.length ? (
