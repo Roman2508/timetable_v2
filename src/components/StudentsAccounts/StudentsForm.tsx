@@ -21,8 +21,8 @@ interface IStudentFields {
 interface IStudentsProps {
   editMode: 'create' | 'update'
   editingsStudent: StudentType | null
-  setEditMode: Dispatch<SetStateAction<'create' | 'update'>>
-  setSelectedStudent: Dispatch<SetStateAction<StudentType | null>>
+  setEditMode?: Dispatch<SetStateAction<'create' | 'update'>>
+  setSelectedStudent?: Dispatch<SetStateAction<StudentType | null>>
 }
 
 const defaultValues = {
@@ -57,7 +57,7 @@ const StudentsForm: React.FC<IStudentsProps> = ({ editMode, setEditMode, editing
         if (!editingsStudent) return
         const { payload } = await dispatch(updateStudent({ ...data, id: editingsStudent.id }))
         const newStudent = payload as StudentType
-        setSelectedStudent(newStudent)
+        setSelectedStudent && setSelectedStudent(newStudent)
         return
       }
 
@@ -283,8 +283,8 @@ const StudentsForm: React.FC<IStudentsProps> = ({ editMode, setEditMode, editing
             sx={{ width: '50%', ml: 1 }}
             onClick={() => {
               reset(defaultValues)
-              setEditMode('create')
-              setSelectedStudent(null)
+              setEditMode && setEditMode('create')
+              setSelectedStudent && setSelectedStudent(null)
             }}
           >
             Відмінити

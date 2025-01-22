@@ -1,16 +1,18 @@
 import { toast } from 'sonner'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-import { authAPI } from '../../api/authAPI'
-import { clearUser, setLoadingStatus } from './authSlice'
-import { LoadingStatusTypes } from '../appTypes'
 import {
   LoginPayloadType,
-  RegisterPayloadType,
   AuthResponseType,
-  GoogleLoginPayloadType,
+  RegisterPayloadType,
   UpdateEditorDataType,
+  GoogleLoginPayloadType,
+  UpdateUserPayloadType,
+  CreateUserPayloadType,
 } from '../../api/apiTypes'
+import { authAPI } from '../../api/authAPI'
+import { setLoadingStatus } from './authSlice'
+import { LoadingStatusTypes } from '../appTypes'
 
 export const authRegister = createAsyncThunk(
   'auth/authRegister',
@@ -138,12 +140,70 @@ export const updateTeacherPrintedWorks = createAsyncThunk(
   }
 )
 
+/* USERS */
+
 export const getUsers = createAsyncThunk('users/getUsers', async (payload: any, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
   const promise = authAPI.getUsers()
 
   toast.promise(promise, {
+    error: (error) => {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      return (error as any)?.response?.data?.message || error.message
+    },
+  })
+
+  const { data } = await promise
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+  return data
+})
+
+export const createUser = createAsyncThunk('users/createUser', async (payload: CreateUserPayloadType, thunkAPI) => {
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+  const promise = authAPI.createUser(payload)
+
+  toast.promise(promise, {
+    loading: 'Завантаження...',
+    error: (error) => {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      return (error as any)?.response?.data?.message || error.message
+    },
+  })
+
+  const { data } = await promise
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+  return data
+})
+
+export const updateUser = createAsyncThunk('users/updateUser', async (payload: UpdateUserPayloadType, thunkAPI) => {
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+  const promise = authAPI.updateUser(payload)
+
+  toast.promise(promise, {
+    loading: 'Завантаження...',
+    success: 'Оновлено',
+    error: (error) => {
+      thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
+      return (error as any)?.response?.data?.message || error.message
+    },
+  })
+
+  const { data } = await promise
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.SUCCESS))
+  return data
+})
+
+export const deleteUser = createAsyncThunk('users/deleteUser', async (id: number, thunkAPI) => {
+  thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
+
+  const promise = authAPI.deleteUser(id)
+
+  toast.promise(promise, {
+    loading: 'Завантаження...',
+    success: 'Видалено',
     error: (error) => {
       thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
       return (error as any)?.response?.data?.message || error.message

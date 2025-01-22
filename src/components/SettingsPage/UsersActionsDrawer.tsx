@@ -11,30 +11,42 @@ import {
   OutlinedInput,
   FormHelperText,
   SelectChangeEvent,
+  Divider,
 } from '@mui/material'
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-
-import ActionDrawer from '../ActionDrawer/ActionDrawer'
-import { userRoles, UserType } from '../../store/auth/authTypes'
 import { CloseOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons'
+
+import cutUserName from '../../utils/cutUserName'
+import { useAppDispatch } from '../../store/store'
+import ActionDrawer from '../ActionDrawer/ActionDrawer'
+import { StudentsForm } from '../StudentsAccounts/StudentsForm'
+import { userRoles, UserType } from '../../store/auth/authTypes'
+import CreateTeacherForm from '../TeachersPage/CreateTeacherForm'
+import { createUser, updateUser } from '../../store/auth/authAsyncActions'
+import { getGroupCategories } from '../../store/groups/groupsAsyncActions'
+import { getTeachersCategories } from '../../store/teachers/teachersAsyncActions'
 
 interface IUsersActionsDrawer {
   isOpenActionDrawer: boolean
   editedUser: UserType | null
+  actionMode: 'create' | 'update'
+  setEditedUser: React.Dispatch<React.SetStateAction<UserType | null>>
   setIsOpenActionDrawer: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface IUserFormFields {
   email: string
-  role: typeof userRoles
+  role: (typeof userRoles)[number][]
+  roleId?: number
   password: string
 }
 
 const UsersActionsDrawer: React.FC<IUsersActionsDrawer> = (props) => {
-  const { isOpenActionDrawer, setIsOpenActionDrawer, editedUser } = props
+  const { isOpenActionDrawer, setIsOpenActionDrawer, editedUser, setEditedUser, actionMode } = props
 
-  const [personName, setPersonName] = React.useState<string[]>([])
+  const dispatch = useAppDispatch()
+
   const [showPassword, setShowPassword] = React.useState(false)
 
   const {
@@ -46,49 +58,68 @@ const UsersActionsDrawer: React.FC<IUsersActionsDrawer> = (props) => {
     formState: { errors, isSubmitting },
   } = useForm<IUserFormFields>({
     mode: 'onBlur',
+    defaultValues: { email: '', password: '', role: [] },
   })
 
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-    const {
-      target: { value },
-    } = event
-    setValue(
-      'role',
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    )
+  const handleChange = (e: SelectChangeEvent<typeof userRoles>) => {
+    const value = e.target.value
+    let roles = typeof value === 'string' ? value.split(',') : value
+
+    // Одночасно може бути роль викладач або студент
+    // Якщо раніше була роль "викладач" то при виборі ролі "студент", роль "викладач" видаляється
+    if (watch('role').includes('TEACHER') && roles[roles.length - 1] === 'STUDENT') {
+      roles = roles.filter((el) => el !== 'TEACHER')
+    }
+
+    // Якщо раніше була роль "студент" то при виборі ролі "викладач", роль "студент" видаляється
+    if (watch('role').includes('STUDENT') && roles[roles.length - 1] === 'TEACHER') {
+      roles = roles.filter((el) => el !== 'STUDENT')
+    }
+
+    // console.log(roles)
+    setValue('role', roles as (typeof userRoles)[number][])
   }
 
   const onSubmit: SubmitHandler<IUserFormFields> = async (data) => {
     try {
-      console.log(data)
-      // Якщо editMode === 'update' - оновлення викладача
-      //   if (editMode === 'update') {
-      //     if (!editingsStudent) return
-      //     const { payload } = await dispatch(updateStudent({ ...data, id: editingsStudent.id }))
-      //     const newStudent = payload as StudentType
-      //     setSelectedStudent(newStudent)
-      //     return
-      //   }
-      //   if (editMode === 'create') {
-      //     // Якщо editMode === 'create' - створення викладача
-      //     const { status, ...rest } = data
-      //     const { payload } = await dispatch(createStudent(rest))
-      //     if (payload) {
-      //       reset(defaultValues)
-      //     }
-      //   }
+      if (actionMode === 'update') {
+        if (!editedUser) return
+        const { payload } = await dispatch(updateUser({ ...data, id: editedUser.id }))
+        if (payload) {
+          setIsOpenActionDrawer(false)
+        }
+        return
+      }
+
+      if (actionMode === 'create') {
+        await dispatch(createUser({ ...data }))
+      }
     } catch (error) {
       console.log(error)
     }
   }
 
   React.useEffect(() => {
-    if (!editedUser) return
+    if (actionMode === 'create') {
+      setEditedUser(null)
+      reset({ email: '', role: [], password: '' })
+    }
 
-    setValue('email', editedUser.email)
-    setValue('role', editedUser.role)
-  }, [editedUser])
+    if (editedUser) {
+      setValue('email', editedUser.email)
+      setValue('role', [...editedUser.role])
+    }
+  }, [editedUser, actionMode])
+
+  React.useEffect(() => {
+    if (watch('role').includes('TEACHER')) {
+      dispatch(getTeachersCategories(false))
+    }
+
+    if (watch('role').includes('STUDENT')) {
+      dispatch(getGroupCategories(false))
+    }
+  }, [watch('role')])
 
   return (
     <ActionDrawer
@@ -98,7 +129,7 @@ const UsersActionsDrawer: React.FC<IUsersActionsDrawer> = (props) => {
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h5" sx={{ pb: 2 }}>
-          Оновити користувача
+          {actionMode === 'create' ? 'Створити користувача' : 'Оновити користувача'}
         </Typography>
 
         <IconButton onClick={() => setIsOpenActionDrawer(false)}>
@@ -106,59 +137,64 @@ const UsersActionsDrawer: React.FC<IUsersActionsDrawer> = (props) => {
         </IconButton>
       </div>
 
-      <Typography variant="subtitle1">Doe Doe John</Typography>
+      {editedUser && <Typography variant="subtitle1">{cutUserName(editedUser)}</Typography>}
 
       <form style={{ marginBottom: '40px' }} onSubmit={handleSubmit(onSubmit)}>
-        <Controller
-          name="email"
-          control={control}
-          rules={{ required: "Це обов'язкове поле" }}
-          render={({ field }) => {
-            return (
-              <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="email">Ел.пошта*</InputLabel>
-                <OutlinedInput
-                  fullWidth
-                  {...field}
-                  id="email"
-                  type="email"
-                  name="email"
-                  placeholder="test@mail.com"
-                  error={Boolean(errors.email)}
-                />
-                {errors.email && <FormHelperText error>{errors.email.message}</FormHelperText>}
-              </Stack>
-            )
-          }}
-        />
+        {!watch('role').includes('TEACHER') && !watch('role').includes('STUDENT') && (
+          <>
+            <Controller
+              name="email"
+              control={control}
+              rules={{ required: "Це обов'язкове поле" }}
+              render={({ field }) => {
+                return (
+                  <Stack spacing={1} sx={{ mt: 2 }}>
+                    <InputLabel htmlFor="email">Ел.пошта*</InputLabel>
+                    <OutlinedInput
+                      fullWidth
+                      {...field}
+                      id="email"
+                      type="email"
+                      name="email"
+                      placeholder="test@mail.com"
+                      error={Boolean(errors.email)}
+                    />
+                    {errors.email && <FormHelperText error>{errors.email.message}</FormHelperText>}
+                  </Stack>
+                )
+              }}
+            />
 
-        <Controller
-          name="password"
-          control={control}
-          render={({ field }) => {
-            return (
-              <Stack spacing={1} sx={{ mt: 2 }}>
-                <InputLabel htmlFor="password">Пароль</InputLabel>
-                <OutlinedInput
-                  fullWidth
-                  {...field}
-                  id="password"
-                  sx={{ pr: 0 }}
-                  name="password"
-                  placeholder="********"
-                  error={Boolean(errors.password)}
-                  type={showPassword ? 'text' : 'password'}
-                  endAdornment={
-                    <IconButton onClick={() => setShowPassword(!showPassword)} type="button">
-                      {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-                    </IconButton>
-                  }
-                />
-                {errors.password && <FormHelperText error>{errors.password.message}</FormHelperText>}
-              </Stack>
-            )
-          }}
-        />
+            <Controller
+              name="password"
+              control={control}
+              rules={actionMode === 'create' ? { required: "Це обов'язкове поле" } : {}}
+              render={({ field }) => {
+                return (
+                  <Stack spacing={1} sx={{ mt: 2 }}>
+                    <InputLabel htmlFor="password">Пароль</InputLabel>
+                    <OutlinedInput
+                      fullWidth
+                      {...field}
+                      id="password"
+                      sx={{ pr: 0 }}
+                      name="password"
+                      placeholder="********"
+                      error={Boolean(errors.password)}
+                      type={showPassword ? 'text' : 'password'}
+                      endAdornment={
+                        <IconButton onClick={() => setShowPassword(!showPassword)} type="button">
+                          {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+                        </IconButton>
+                      }
+                    />
+                    {errors.password && <FormHelperText error>{errors.password.message}</FormHelperText>}
+                  </Stack>
+                )
+              }}
+            />
+          </>
+        )}
 
         <Controller
           name="role"
@@ -171,6 +207,7 @@ const UsersActionsDrawer: React.FC<IUsersActionsDrawer> = (props) => {
                 <Select
                   multiple
                   {...field}
+                  // @ts-ignore
                   value={watch('role')}
                   onChange={handleChange}
                   input={<OutlinedInput />}
@@ -206,10 +243,26 @@ const UsersActionsDrawer: React.FC<IUsersActionsDrawer> = (props) => {
           }}
         />
 
-        <Button variant="contained" type="submit" sx={{ width: '100%', mt: 4 }} disabled={isSubmitting}>
-          Зберегти
-        </Button>
+        {!watch('role').includes('TEACHER') && !watch('role').includes('STUDENT') && (
+          <Button variant="contained" type="submit" sx={{ width: '100%', mt: 4 }} disabled={isSubmitting}>
+            {actionMode === 'create' ? 'Створити' : 'Оновити'}
+          </Button>
+        )}
       </form>
+
+      {watch('role').includes('TEACHER') && (
+        <>
+          <Divider sx={{ mb: 1 }} />
+          <CreateTeacherForm editingTeacher={null} />
+        </>
+      )}
+
+      {watch('role').includes('STUDENT') && (
+        <>
+          <Divider sx={{ mb: 1 }} />
+          <StudentsForm editMode="create" editingsStudent={null} />
+        </>
+      )}
     </ActionDrawer>
   )
 }

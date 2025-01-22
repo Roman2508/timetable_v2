@@ -5,7 +5,17 @@ import { AuthInitialState, UserType } from './authTypes'
 import { LoadingStatusTypes } from '../appTypes'
 import { AuthResponseType } from '../../api/apiTypes'
 import { TeachersType } from '../teachers/teachersTypes'
-import { authLogin, authMe, getUsers, googleLogin, updateTeacherBio, updateTeacherPrintedWorks } from './authAsyncActions'
+import {
+  authLogin,
+  authMe,
+  createUser,
+  deleteUser,
+  getUsers,
+  googleLogin,
+  updateTeacherBio,
+  updateTeacherPrintedWorks,
+  updateUser,
+} from './authAsyncActions'
 
 const authInitialState: AuthInitialState = {
   user: null,
@@ -50,8 +60,34 @@ const authSlice = createSlice({
 
     /* getUsers */
     builder.addCase(getUsers.fulfilled, (state, action: PayloadAction<[UserType[], number]>) => {
-      if (!state.user) return
       state.users = action.payload[0]
+    })
+
+    /* createUser */
+    builder.addCase(createUser.fulfilled, (state, action: PayloadAction<UserType>) => {
+      if (!state.users) return
+      state.users.push(action.payload)
+    })
+
+    /* updateUser */
+    builder.addCase(updateUser.fulfilled, (state, action: PayloadAction<UserType>) => {
+      if (!state.users) return
+      const users = state.users.map((el) => {
+        if (el.id === action.payload.id) {
+          return { ...el, ...action.payload }
+        }
+
+        return el
+      })
+
+      state.users = users
+    })
+
+    /* deleteUser */
+    builder.addCase(deleteUser.fulfilled, (state, action: PayloadAction<number>) => {
+      if (!state.users) return
+      const users = state.users.filter((el) => el.id !== action.payload)
+      state.users = users
     })
   },
 })

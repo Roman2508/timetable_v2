@@ -1,8 +1,9 @@
 import {
   Box,
   Chip,
-  Avatar,
   Table,
+  Avatar,
+  Button,
   TableRow,
   TableHead,
   TableBody,
@@ -13,14 +14,18 @@ import {
   TablePagination,
 } from '@mui/material'
 import React from 'react'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
-import { getUsers } from '../../store/auth/authAsyncActions'
-import { useAppDispatch } from '../../store/store'
 import { useSelector } from 'react-redux'
-import { authSelector } from '../../store/auth/authSlice'
-import { UserRoles, UserType } from '../../store/auth/authTypes'
+import { DeleteOutlined, EditOutlined, FilterOutlined, PlusOutlined } from '@ant-design/icons'
+
 import cutUserName from '../../utils/cutUserName'
+import { useAppDispatch } from '../../store/store'
 import UsersActionsDrawer from './UsersActionsDrawer'
+import { authSelector } from '../../store/auth/authSlice'
+import { deleteUser, getUsers } from '../../store/auth/authAsyncActions'
+import { UserRoles, UserType } from '../../store/auth/authTypes'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import { deleteTeacher } from '../../store/teachers/teachersAsyncActions'
+import { deleteStudent } from '../../store/students/studentsAsyncActions'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -59,8 +64,10 @@ const UsersTab = () => {
   const dispatch = useAppDispatch()
 
   const [total, setTotal] = React.useState(0)
+  const [isDeleting, setIsDeleting] = React.useState(false)
   const [isOpenActionDrawer, setIsOpenActionDrawer] = React.useState(false)
   const [editedUser, setEditedUser] = React.useState<UserType | null>(null)
+  const [actionMode, setActionMode] = React.useState<'create' | 'update'>('create')
 
   const [page, setPage] = React.useState(1)
   const [rowsPerPage, setItemsPerPage] = React.useState(10)
@@ -78,6 +85,29 @@ const UsersTab = () => {
     setPage(0)
   }
 
+  const onDeleteUser = async (user: UserType) => {
+    try {
+      setIsDeleting(true)
+      if (user.role.includes('TEACHER') && user.teacher) {
+        await dispatch(deleteUser(user.id))
+        await dispatch(deleteTeacher(user.teacher.id))
+        return
+      }
+
+      if (user.role.includes('STUDENT') && user.student) {
+        await dispatch(deleteUser(user.id))
+        await dispatch(deleteStudent(user.student.id))
+        return
+      }
+
+      await dispatch(deleteUser(user.id))
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   React.useEffect(() => {
     const fetchData = async () => {
       const { payload } = await dispatch(getUsers({}))
@@ -88,28 +118,30 @@ const UsersTab = () => {
     fetchData()
   }, [])
 
-  const rows = [
-    ...Array(50)
-      .fill(null)
-      .map(() => ({
-        id: 1,
-        name: 'asdasdas',
-        email: 'sdasdds@pharm.zt.ua',
-        picture: 'https://saaadsdas.com',
-        role: ['ADMIN', 'TEACHER'],
-      })),
-  ]
+  // const rows = [
+  //   ...Array(50)
+  //     .fill(null)
+  //     .map(() => ({
+  //       id: 1,
+  //       name: 'asdasdas',
+  //       email: 'sdasdds@pharm.zt.ua',
+  //       picture: 'https://saaadsdas.com',
+  //       role: ['ADMIN', 'TEACHER'],
+  //     })),
+  // ]
 
-  const visibleRows = React.useMemo(
-    // @ts-ignore
-    () => stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage]
-  )
+  // const visibleRows = React.useMemo(
+  //   // @ts-ignore
+  //   () => stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+  //   [order, orderBy, page, rowsPerPage]
+  // )
 
   return (
     <>
       <UsersActionsDrawer
         editedUser={editedUser}
+        actionMode={actionMode}
+        setEditedUser={setEditedUser}
         isOpenActionDrawer={isOpenActionDrawer}
         setIsOpenActionDrawer={setIsOpenActionDrawer}
       />
@@ -139,6 +171,14 @@ const UsersTab = () => {
               </TableRow>
             </TableHead>
             <TableBody>
+              {!users && (
+                <TableRow>
+                  <TableCell colSpan={5} sx={{ py: 12 }}>
+                    <LoadingSpinner />
+                  </TableCell>
+                </TableRow>
+              )}
+
               {(users ? users : []).map((user, index) => (
                 <TableRow key={user.id}>
                   <TableCell align="center">{index + 1}</TableCell>
@@ -190,15 +230,17 @@ const UsersTab = () => {
 
                   <TableCell align="center">
                     <IconButton
+                      disabled={isDeleting}
                       onClick={() => {
                         setEditedUser(user)
+                        setActionMode('update')
                         setIsOpenActionDrawer(true)
                       }}
                     >
                       <EditOutlined />
                     </IconButton>
 
-                    <IconButton>
+                    <IconButton onClick={() => onDeleteUser(user)} disabled={isDeleting}>
                       <DeleteOutlined />
                     </IconButton>
                   </TableCell>
@@ -208,17 +250,36 @@ const UsersTab = () => {
           </Table>
         </TableContainer>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 2, alignItems: 'center' }}>
           <TablePagination
             page={page}
             component="div"
-            count={rows.length}
             rowsPerPage={rowsPerPage}
+            count={users ? users.length : 0}
             onPageChange={handleChangePage}
             labelRowsPerPage="На одній сторінці:"
             onRowsPerPageChange={handleChangeRowsPerPage}
             rowsPerPageOptions={[10, 25, 50, 100, 200, 500]}
           />
+
+          <div>
+            <Button
+              variant="outlined"
+              sx={{ mr: 2 }}
+              onClick={() => {
+                setActionMode('create')
+                setIsOpenActionDrawer(true)
+              }}
+            >
+              <PlusOutlined style={{ marginRight: '8px' }} />
+              <span>Створити користувача</span>
+            </Button>
+
+            <Button variant="outlined">
+              <FilterOutlined style={{ marginRight: '8px' }} />
+              <span>Фільтр</span>
+            </Button>
+          </div>
         </Box>
       </div>
     </>

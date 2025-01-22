@@ -1,5 +1,5 @@
 import { summaryTypes } from '../components/GradeBookPage/AddSummaryModal'
-import { UserRoles, UserType } from '../store/auth/authTypes'
+import { userRoles, UserRoles, UserType } from '../store/auth/authTypes'
 import { GradeBookSummaryTypes, GradeType } from '../store/gradeBook/gradeBookTypes'
 import { GroupsType } from '../store/groups/groupsTypes'
 import { LessonsTypeRu } from '../store/scheduleLessons/scheduleLessonsTypes'
@@ -452,4 +452,13 @@ export type AuthResponseType = {
   user: UserType
   accessToken: string
 }
+
+export type UpdateUserPayloadType = {
+  id: number
+  email: string
+  password: string
+  role: (typeof userRoles)[number][]
+}
+
+export type CreateUserPayloadType = Omit<UpdateUserPayloadType, 'id'> & { roleId?: number }
 /* // auth */
