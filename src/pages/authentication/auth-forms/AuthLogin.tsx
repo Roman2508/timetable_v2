@@ -43,7 +43,7 @@ const AuthLogin = () => {
       const { payload } = await dispatch(authLogin(data))
       const response = payload as AuthResponseType
 
-      if (response.accessToken) {
+      if (response?.accessToken) {
         setLocalStorageToken(response.accessToken)
         navigate('/')
       }

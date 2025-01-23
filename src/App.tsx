@@ -1,6 +1,7 @@
+import React from 'react'
 import { lazy } from 'react'
 import 'react-toastify/dist/ReactToastify.css'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 
 import './App.css'
 import ThemeCustomization from './themes'
@@ -16,6 +17,10 @@ import ForbiddenErrorPage from './pages/ErrorPages/ForbiddenErrorPage'
 import AuthRegister from './pages/authentication/auth-forms/AuthRegister'
 import InternalServerErrorPage from './pages/ErrorPages/InternalServerErrorPage'
 import AutomaticSchedulingPage from './pages/AutomaticScheduling/AutomaticSchedulingPage'
+import { getLocalStorageToken, removeLocalStorageToken } from './utils/localStorageToken'
+import { useAppDispatch } from './store/store'
+import { clearUser } from './store/auth/authSlice'
+import { authMe } from './store/auth/authAsyncActions'
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('./pages/dashboard')))
@@ -46,6 +51,8 @@ const SchedulingСonstraints = Loadable(lazy(() => import('./pages/SchedulingСo
 const TeachingLessonsControl = Loadable(lazy(() => import('./pages/TeachingLessonsControl/TeachingLessonsControl')))
 
 const App = () => {
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   /* 
   export function checkHttpStatus(response) {
     if (response.status >= 200 && response.status < 300) {
@@ -57,6 +64,25 @@ const App = () => {
     }
 }
   */
+
+  React.useEffect(() => {
+    const token = getLocalStorageToken()
+
+    if (token) {
+      const fetchData = async () => {
+        const res = await dispatch(authMe(token))
+
+        if (!res.payload) {
+          removeLocalStorageToken()
+          dispatch(clearUser())
+        }
+      }
+
+      fetchData()
+    }
+  }, [])
+
+  // if (user) navigate('/')
 
   return (
     <ThemeCustomization>
@@ -194,6 +220,3 @@ export default App
 // ========================================================
 // 1. Треба додати можливість вибору студентами вибіркових дисциплін
 //    - Якщо група не набирається треба продумати перевибір студентами дисциплін
-
-
-

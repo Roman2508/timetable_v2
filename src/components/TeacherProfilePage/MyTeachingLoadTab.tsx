@@ -57,6 +57,14 @@ export const MyTeachingLoadTab: React.FC<Props> = ({}) => {
     fetchData()
   }, [])
 
+  if (user && user.role.includes(UserRoles.TEACHER)) {
+    return (
+      <Typography align="center" sx={{ mt: 1 }}>
+        Сторінка доступна лише викладачам!
+      </Typography>
+    )
+  }
+
   return (
     <>
       {loadingStatus === LoadingStatusTypes.LOADING ? (

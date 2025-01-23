@@ -267,10 +267,10 @@ const StudentsAccounts = () => {
             </div>
 
             <StudentsForm
-              editingsStudent={selectedStudent}
-              setSelectedStudent={setSelectedStudent}
               editMode={editMode}
               setEditMode={setEditMode}
+              editingsStudent={selectedStudent}
+              setSelectedStudent={setSelectedStudent}
             />
           </Paper>
         </Grid>

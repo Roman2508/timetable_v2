@@ -1,9 +1,12 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
+import { EditOutlined } from '@ant-design/icons'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Avatar, Button, Grid, IconButton, Tab, Tabs, Typography } from '@mui/material'
 
 import MainCard from '../../components/MainCard'
 import { useAppDispatch } from '../../store/store'
+import { authSelector } from '../../store/auth/authSlice'
 import GeneralInfoTab from '../../components/TeacherProfilePage/GeneralInfoTab'
 import PrintedWorksTab from '../../components/TeacherProfilePage/PrintedWorksTab'
 import { MyTeachingLoadTab } from '../../components/TeacherProfilePage/MyTeachingLoadTab'
@@ -11,9 +14,6 @@ import { ListsOfStudentsTab } from '../../components/TeacherProfilePage/ListsOfS
 import TeachersReportTab from '../../components/TeacherProfilePage/TeacherReport/TeachersReportTab'
 import IndividualTeacherWorkTab from '../../components/TeacherProfilePage/IndividualTeacherWorkPlan/IndividualTeacherWorkTab'
 import { InstructionalMaterialsTab } from '../../components/TeacherProfilePage/InstructionalMaterials/InstructionalMaterialsTab'
-import { EditOutlined } from '@ant-design/icons'
-import { authSelector } from '../../store/auth/authSlice'
-import { useSelector } from 'react-redux'
 
 const tabs = [
   'Загальна інформація',
@@ -94,6 +94,11 @@ const FullTeachersPage = () => {
                     {tabs[activeTab]}
                   </Typography>
 
+                  {/* npm i react-swipeable-views */}
+                  {/* npm i react-swipeable-views */}
+                  {/* npm i react-swipeable-views */}
+                  {/* npm i react-swipeable-views */}
+                  {/* npm i react-swipeable-views */}
                   {/* npm i react-swipeable-views */}
                   {/* <SwipeableViews
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}

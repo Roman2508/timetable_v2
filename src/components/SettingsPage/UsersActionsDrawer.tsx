@@ -42,6 +42,16 @@ interface IUserFormFields {
   password: string
 }
 
+const isShowFormInputs = (roles: (typeof userRoles)[number][], actionMode: 'create' | 'update') => {
+  if (actionMode === 'create' && !roles.includes('TEACHER') && !roles.includes('STUDENT')) {
+    return true
+  }
+  if (actionMode === 'update') {
+    return true
+  }
+  return false
+}
+
 const UsersActionsDrawer: React.FC<IUsersActionsDrawer> = (props) => {
   const { isOpenActionDrawer, setIsOpenActionDrawer, editedUser, setEditedUser, actionMode } = props
 
@@ -140,7 +150,7 @@ const UsersActionsDrawer: React.FC<IUsersActionsDrawer> = (props) => {
       {editedUser && <Typography variant="subtitle1">{cutUserName(editedUser)}</Typography>}
 
       <form style={{ marginBottom: '40px' }} onSubmit={handleSubmit(onSubmit)}>
-        {!watch('role').includes('TEACHER') && !watch('role').includes('STUDENT') && (
+        {isShowFormInputs(watch('role'), actionMode) && (
           <>
             <Controller
               name="email"
@@ -243,14 +253,14 @@ const UsersActionsDrawer: React.FC<IUsersActionsDrawer> = (props) => {
           }}
         />
 
-        {!watch('role').includes('TEACHER') && !watch('role').includes('STUDENT') && (
+        {isShowFormInputs(watch('role'), actionMode) && (
           <Button variant="contained" type="submit" sx={{ width: '100%', mt: 4 }} disabled={isSubmitting}>
-            {actionMode === 'create' ? 'Створити' : 'Оновити'}
+            Оновити
           </Button>
         )}
       </form>
 
-      {watch('role').includes('TEACHER') && (
+      {actionMode === 'create' && watch('role').includes('TEACHER') && (
         <>
           <Divider sx={{ mb: 1 }} />
           <CreateTeacherForm editingTeacher={null} />

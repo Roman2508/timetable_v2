@@ -26,6 +26,8 @@ import { UserRoles, UserType } from '../../store/auth/authTypes'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
 import { deleteTeacher } from '../../store/teachers/teachersAsyncActions'
 import { deleteStudent } from '../../store/students/studentsAsyncActions'
+import axios from 'axios'
+import { formatRelativeTime } from '../../utils/formatRelativeTime'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -167,13 +169,15 @@ const UsersTab = () => {
                 <TableCell>ПІБ</TableCell>
                 <TableCell align="center">Пошта</TableCell>
                 <TableCell align="center">Ролі</TableCell>
+                <TableCell align="center">Останній вхід</TableCell>
                 <TableCell align="center">Дії</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
+              {/*  */}
               {!users && (
                 <TableRow>
-                  <TableCell colSpan={5} sx={{ py: 12 }}>
+                  <TableCell colSpan={5} sx={{ py: 24 }}>
                     <LoadingSpinner />
                   </TableCell>
                 </TableRow>
@@ -228,6 +232,9 @@ const UsersTab = () => {
                     )}
                   </TableCell>
 
+                  <TableCell align="center">{formatRelativeTime(user.lastLogin)}</TableCell>
+                  {/* <TableCell align="center">{user.lastLogin}</TableCell> */}
+
                   <TableCell align="center">
                     <IconButton
                       disabled={isDeleting}
@@ -250,37 +257,39 @@ const UsersTab = () => {
           </Table>
         </TableContainer>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 2, alignItems: 'center' }}>
-          <TablePagination
-            page={page}
-            component="div"
-            rowsPerPage={rowsPerPage}
-            count={users ? users.length : 0}
-            onPageChange={handleChangePage}
-            labelRowsPerPage="На одній сторінці:"
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            rowsPerPageOptions={[10, 25, 50, 100, 200, 500]}
-          />
+        {users && users.length && (
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 2, alignItems: 'center' }}>
+            <TablePagination
+              page={page}
+              component="div"
+              rowsPerPage={rowsPerPage}
+              count={users ? users.length : 0}
+              onPageChange={handleChangePage}
+              labelRowsPerPage="На одній сторінці:"
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[10, 25, 50, 100, 200, 500]}
+            />
 
-          <div>
-            <Button
-              variant="outlined"
-              sx={{ mr: 2 }}
-              onClick={() => {
-                setActionMode('create')
-                setIsOpenActionDrawer(true)
-              }}
-            >
-              <PlusOutlined style={{ marginRight: '8px' }} />
-              <span>Створити користувача</span>
-            </Button>
+            <div>
+              <Button
+                variant="outlined"
+                sx={{ mr: 2 }}
+                onClick={() => {
+                  setActionMode('create')
+                  setIsOpenActionDrawer(true)
+                }}
+              >
+                <PlusOutlined style={{ marginRight: '8px' }} />
+                <span>Створити користувача</span>
+              </Button>
 
-            <Button variant="outlined">
-              <FilterOutlined style={{ marginRight: '8px' }} />
-              <span>Фільтр</span>
-            </Button>
-          </div>
-        </Box>
+              <Button variant="outlined" disabled>
+                <FilterOutlined style={{ marginRight: '8px' }} />
+                <span>Фільтр</span>
+              </Button>
+            </div>
+          </Box>
+        )}
       </div>
     </>
   )

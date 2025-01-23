@@ -22,6 +22,9 @@ export type UserType = {
   login: string // ??????
   email: string
   role: (typeof userRoles)[number][]
+  picture: string | null
+  lastLogin: string | null
+  createdAt: string | null
   // role: ['ADMIN' | 'GUEST' | 'TEACHER' | 'STUDENT' | 'HEAD_OF_DEPARTMENT' | 'METHODIST']
   teacher: TeachersType | null
   student: StudentType | null

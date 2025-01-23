@@ -66,7 +66,7 @@ const StudentsForm: React.FC<IStudentsProps> = ({ editMode, setEditMode, editing
         const { status, ...rest } = data
         const { payload } = await dispatch(createStudent(rest))
         if (payload) {
-          reset(defaultValues)
+          // reset(defaultValues)
         }
       }
     } catch (error) {

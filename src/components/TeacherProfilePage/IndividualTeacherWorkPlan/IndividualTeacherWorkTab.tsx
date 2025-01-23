@@ -1,24 +1,28 @@
-import React from "react"
-import { useSelector } from "react-redux"
-import { Chip, Stack, Divider, Typography, OutlinedInput } from "@mui/material"
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { Chip, Stack, Divider, Typography, OutlinedInput } from '@mui/material'
 
 import {
   clearTeacherReports,
   teacherProfileSelector,
   clearIndividualTeacherWork,
-} from "../../../store/teacherProfile/teacherProfileSlice"
-import EmptyCard from "../../EmptyCard/EmptyCard"
-import { useAppDispatch } from "../../../store/store"
-import { customDayjs } from "../../Calendar/Calendar"
-import { menuSelector } from "../../../store/menu/menuSlice"
-import { sortItemsByKey } from "../../../utils/sortItemsByKey"
-import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner"
-import IndividualTeacherWorkItem from "./IndividualTeacherWorkItem"
-import { IndividualWorkPlanType } from "../../../store/teacherProfile/teacherProfileTypes"
-import { categoriesTypes, IFormState, IndividualTeacherWorkForm } from "./IndividualTeacherWorkForm"
-import { getIndividualTeacherWork, getTeacherReport } from "../../../store/teacherProfile/teacherProfileAsyncActions"
+} from '../../../store/teacherProfile/teacherProfileSlice'
+import EmptyCard from '../../EmptyCard/EmptyCard'
+import { useAppDispatch } from '../../../store/store'
+import { customDayjs } from '../../Calendar/Calendar'
+import { menuSelector } from '../../../store/menu/menuSlice'
+import { authSelector } from '../../../store/auth/authSlice'
+import { sortItemsByKey } from '../../../utils/sortItemsByKey'
+import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner'
+import IndividualTeacherWorkItem from './IndividualTeacherWorkItem'
+import { IndividualWorkPlanType } from '../../../store/teacherProfile/teacherProfileTypes'
+import { categoriesTypes, IFormState, IndividualTeacherWorkForm } from './IndividualTeacherWorkForm'
+import { getIndividualTeacherWork, getTeacherReport } from '../../../store/teacherProfile/teacherProfileAsyncActions'
+import { UserRoles } from '../../../store/auth/authTypes'
 
 const IndividualTeacherWorkTab = () => {
+  const { user } = useSelector(authSelector)
+
   const { drawerOpen } = useSelector(menuSelector)
   const { individualWorkPlan, report } = useSelector(teacherProfileSelector)
 
@@ -42,26 +46,34 @@ const IndividualTeacherWorkTab = () => {
     setPlannedHours(plannedHours)
   }, [report])
 
+  if (user && user.role.includes(UserRoles.TEACHER)) {
+    return (
+      <Typography align="center" sx={{ mt: 1 }}>
+        Сторінка доступна лише викладачам!
+      </Typography>
+    )
+  }
+
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: 'relative' }}>
       <div
         style={{
           right: 0,
           bottom: 0,
-          zIndex: "99",
-          position: "fixed",
-          textAlign: "center",
+          zIndex: '99',
+          position: 'fixed',
+          textAlign: 'center',
           left: drawerOpen ? 260 : 0,
         }}
       >
         <Typography
           variant="h5"
           style={{
-            width: "100%",
-            padding: "16px",
-            background: "#fff",
-            display: "inline-block",
-            maxWidth: drawerOpen ? "1620px" : "1770px",
+            width: '100%',
+            padding: '16px',
+            background: '#fff',
+            display: 'inline-block',
+            maxWidth: drawerOpen ? '1620px' : '1770px',
           }}
         >
           Заплановано на навчальний рік {plannedHours} годин.
@@ -71,14 +83,14 @@ const IndividualTeacherWorkTab = () => {
       <div
         style={{
           gap: 5,
-          width: "205px",
-          display: "flex",
-          margin: "0 auto",
-          alignItems: "center",
-          justifyContent: "space-between",
+          width: '205px',
+          display: 'flex',
+          margin: '0 auto',
+          alignItems: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <Typography variant="button" sx={{ textTransform: "inherit" }}>
+        <Typography variant="button" sx={{ textTransform: 'inherit' }}>
           Звіт за
         </Typography>
         <Stack spacing={1}>
@@ -88,10 +100,10 @@ const IndividualTeacherWorkTab = () => {
             type="number"
             value={showedYear}
             onChange={(e) => setShowedYear(Number(e.target.value))}
-            sx={{ width: "70px", input: { padding: "8.2px 2px 8.2px 16px" } }}
+            sx={{ width: '70px', input: { padding: '8.2px 2px 8.2px 16px' } }}
           />
         </Stack>
-        <Typography variant="button" sx={{ textTransform: "inherit", width: "77px" }}>
+        <Typography variant="button" sx={{ textTransform: 'inherit', width: '77px' }}>
           - {showedYear + 1} н.р.
         </Typography>
       </div>
@@ -122,7 +134,7 @@ const IndividualTeacherWorkTab = () => {
               <br />
               <br />
 
-              {sortItemsByKey(individualWork, "name").map((el: IndividualWorkPlanType) => {
+              {sortItemsByKey(individualWork, 'name').map((el: IndividualWorkPlanType) => {
                 const addedReport = report?.find((r) => r.individualWork.id === el.id)
 
                 return (
