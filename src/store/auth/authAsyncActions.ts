@@ -9,6 +9,7 @@ import {
   GoogleLoginPayloadType,
   UpdateUserPayloadType,
   CreateUserPayloadType,
+  GetUsersPayloadType,
 } from '../../api/apiTypes'
 import { authAPI } from '../../api/authAPI'
 import { setLoadingStatus } from './authSlice'
@@ -142,10 +143,10 @@ export const updateTeacherPrintedWorks = createAsyncThunk(
 
 /* USERS */
 
-export const getUsers = createAsyncThunk('users/getUsers', async (payload: any, thunkAPI) => {
+export const getUsers = createAsyncThunk('users/getUsers', async (payload: GetUsersPayloadType, thunkAPI) => {
   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.LOADING))
 
-  const promise = authAPI.getUsers()
+  const promise = authAPI.getUsers(payload)
 
   toast.promise(promise, {
     error: (error) => {

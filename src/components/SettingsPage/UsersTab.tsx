@@ -20,7 +20,7 @@ import { DeleteOutlined, EditOutlined, FilterOutlined, PlusOutlined } from '@ant
 import cutUserName from '../../utils/cutUserName'
 import { useAppDispatch } from '../../store/store'
 import UsersActionsDrawer from './UsersActionsDrawer'
-import { authSelector } from '../../store/auth/authSlice'
+import { authSelector, clearUser, clearUsers } from '../../store/auth/authSlice'
 import { deleteUser, getUsers } from '../../store/auth/authAsyncActions'
 import { UserRoles, UserType } from '../../store/auth/authTypes'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
@@ -65,13 +65,13 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
 const UsersTab = () => {
   const dispatch = useAppDispatch()
 
-  const [total, setTotal] = React.useState(0)
   const [isDeleting, setIsDeleting] = React.useState(false)
   const [isOpenActionDrawer, setIsOpenActionDrawer] = React.useState(false)
   const [editedUser, setEditedUser] = React.useState<UserType | null>(null)
   const [actionMode, setActionMode] = React.useState<'create' | 'update'>('create')
 
-  const [page, setPage] = React.useState(1)
+  const [page, setPage] = React.useState(0)
+  const [total, setTotal] = React.useState(0)
   const [rowsPerPage, setItemsPerPage] = React.useState(10)
   const [order, setOrder] = React.useState<Order>('asc')
   const [orderBy, setOrderBy] = React.useState('email')
@@ -112,13 +112,16 @@ const UsersTab = () => {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      const { payload } = await dispatch(getUsers({}))
+      dispatch(clearUsers())
+      const { payload } = await dispatch(getUsers({ offset: page * rowsPerPage, limit: rowsPerPage }))
       const userPayload = payload as [UserType[], number]
-      setTotal(userPayload[1])
+      if (userPayload) {
+        setTotal(userPayload[1])
+      }
     }
 
     fetchData()
-  }, [])
+  }, [page, rowsPerPage])
 
   // const rows = [
   //   ...Array(50)
@@ -233,7 +236,6 @@ const UsersTab = () => {
                   </TableCell>
 
                   <TableCell align="center">{formatRelativeTime(user.lastLogin)}</TableCell>
-                  {/* <TableCell align="center">{user.lastLogin}</TableCell> */}
 
                   <TableCell align="center">
                     <IconButton
@@ -261,9 +263,9 @@ const UsersTab = () => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 2, alignItems: 'center' }}>
             <TablePagination
               page={page}
+              count={total}
               component="div"
               rowsPerPage={rowsPerPage}
-              count={users ? users.length : 0}
               onPageChange={handleChangePage}
               labelRowsPerPage="На одній сторінці:"
               onRowsPerPageChange={handleChangeRowsPerPage}

@@ -461,4 +461,14 @@ export type UpdateUserPayloadType = {
 }
 
 export type CreateUserPayloadType = Omit<UpdateUserPayloadType, 'id'> & { roleId?: number }
+
+export type GetUsersPayloadType = {
+  query?: string
+  page?: number
+  limit?: number
+  offset?: number
+  sortBy?: string
+  order?: 'ASC' | 'DESC'
+}
+
 /* // auth */

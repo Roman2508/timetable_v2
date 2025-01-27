@@ -6,6 +6,7 @@ import {
   GoogleLoginPayloadType,
   UpdateUserPayloadType,
   CreateUserPayloadType,
+  GetUsersPayloadType,
 } from './apiTypes'
 import { instanse } from './api'
 import { TeachersType } from '../store/teachers/teachersTypes'
@@ -39,8 +40,8 @@ export const authAPI = {
   },
 
   /* users */
-  getUsers() {
-    return instanse.get<[UserType[], number]>('/users')
+  getUsers(payload: GetUsersPayloadType) {
+    return instanse.get<[UserType[], number]>('/users', { params: payload })
   },
   createUser(payload: CreateUserPayloadType) {
     return instanse.post<UserType>('/users', payload)

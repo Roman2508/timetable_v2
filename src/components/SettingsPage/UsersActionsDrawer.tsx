@@ -4,6 +4,7 @@ import {
   Stack,
   Button,
   Select,
+  Divider,
   MenuItem,
   IconButton,
   InputLabel,
@@ -11,7 +12,6 @@ import {
   OutlinedInput,
   FormHelperText,
   SelectChangeEvent,
-  Divider,
 } from '@mui/material'
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
@@ -267,7 +267,7 @@ const UsersActionsDrawer: React.FC<IUsersActionsDrawer> = (props) => {
         </>
       )}
 
-      {watch('role').includes('STUDENT') && (
+      {actionMode === 'create' && watch('role').includes('STUDENT') && (
         <>
           <Divider sx={{ mb: 1 }} />
           <StudentsForm editMode="create" editingsStudent={null} />

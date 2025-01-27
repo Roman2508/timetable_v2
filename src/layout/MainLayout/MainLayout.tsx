@@ -50,7 +50,7 @@ const MainLayout = () => {
     dispatch(getSettings(1))
   }, [])
 
-  if (!user) navigate("/auth")
+  // if (!user) navigate("/auth")
 
   return (
     <Box sx={{ display: "flex", width: "100%" }}>

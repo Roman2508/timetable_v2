@@ -34,6 +34,10 @@ const authSlice = createSlice({
     clearUser(state) {
       state.user = null
     },
+
+    clearUsers(state) {
+      state.users = null
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(authLogin.fulfilled, (state, action: PayloadAction<AuthResponseType>) => {
@@ -92,7 +96,7 @@ const authSlice = createSlice({
   },
 })
 
-export const { setLoadingStatus, clearUser } = authSlice.actions
+export const { setLoadingStatus, clearUser, clearUsers } = authSlice.actions
 
 export default authSlice.reducer
 
