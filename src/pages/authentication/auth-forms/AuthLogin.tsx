@@ -9,9 +9,9 @@ import { Button, FormHelperText, IconButton, InputLabel, OutlinedInput, Stack, T
 
 import { useAppDispatch } from '../../../store/store'
 import { AuthResponseType } from '../../../api/apiTypes'
-import { authSelector, clearUser } from '../../../store/auth/authSlice'
 import { validEmailPattern } from '../../../utils/validEmailPattern'
 import { setAppAlert } from '../../../store/appStatus/appStatusSlice'
+import { authSelector, clearUser } from '../../../store/auth/authSlice'
 import { authLogin, authMe, googleLogin } from '../../../store/auth/authAsyncActions'
 import { getLocalStorageToken, removeLocalStorageToken, setLocalStorageToken } from '../../../utils/localStorageToken'
 

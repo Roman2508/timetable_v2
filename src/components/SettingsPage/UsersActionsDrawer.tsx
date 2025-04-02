@@ -97,6 +97,7 @@ const UsersActionsDrawer: React.FC<IUsersActionsDrawer> = (props) => {
         const { payload } = await dispatch(updateUser({ ...data, id: editedUser.id }))
         if (payload) {
           setIsOpenActionDrawer(false)
+          reset({ email: '', role: [], password: '' })
         }
         return
       }

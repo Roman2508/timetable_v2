@@ -20,14 +20,13 @@ import { DeleteOutlined, EditOutlined, FilterOutlined, PlusOutlined } from '@ant
 import cutUserName from '../../utils/cutUserName'
 import { useAppDispatch } from '../../store/store'
 import UsersActionsDrawer from './UsersActionsDrawer'
-import { authSelector, clearUser, clearUsers } from '../../store/auth/authSlice'
-import { deleteUser, getUsers } from '../../store/auth/authAsyncActions'
-import { UserRoles, UserType } from '../../store/auth/authTypes'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import { UserRoles, UserType } from '../../store/auth/authTypes'
+import { formatRelativeTime } from '../../utils/formatRelativeTime'
+import { authSelector, clearUsers } from '../../store/auth/authSlice'
+import { deleteUser, getUsers } from '../../store/auth/authAsyncActions'
 import { deleteTeacher } from '../../store/teachers/teachersAsyncActions'
 import { deleteStudent } from '../../store/students/studentsAsyncActions'
-import axios from 'axios'
-import { formatRelativeTime } from '../../utils/formatRelativeTime'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -72,9 +71,9 @@ const UsersTab = () => {
 
   const [page, setPage] = React.useState(0)
   const [total, setTotal] = React.useState(0)
-  const [rowsPerPage, setItemsPerPage] = React.useState(10)
-  const [order, setOrder] = React.useState<Order>('asc')
   const [orderBy, setOrderBy] = React.useState('email')
+  const [order, setOrder] = React.useState<Order>('asc')
+  const [rowsPerPage, setItemsPerPage] = React.useState(10)
 
   const { users } = useSelector(authSelector)
 
@@ -180,7 +179,7 @@ const UsersTab = () => {
               {/*  */}
               {!users && (
                 <TableRow>
-                  <TableCell colSpan={5} sx={{ py: 24 }}>
+                  <TableCell colSpan={6} sx={{ py: 24 }}>
                     <LoadingSpinner />
                   </TableCell>
                 </TableRow>
@@ -192,7 +191,7 @@ const UsersTab = () => {
 
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Avatar />
+                      <Avatar src={user.picture || ''} />
                       <Box>
                         <Typography>{cutUserName(user)}</Typography>
                         <Typography sx={{ color: 'rgb(140, 140, 140)', fontSize: '12px' }}>

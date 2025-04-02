@@ -98,7 +98,7 @@ const SelectAuditoryModal: React.FC<ISelectAuditoryModalProps> = ({
   // on first render set selected category and auditory if they exist
   React.useEffect(() => {
     setPreConfirmationAuditoryId(null)
-    if (!auditoriCategories) return
+    if (!auditoriCategories || !auditoriCategories.length) return
 
     if (!selectedAuditoryId) {
       onSelectCategory(auditoriCategories[0].id)

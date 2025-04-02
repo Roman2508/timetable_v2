@@ -38,7 +38,9 @@ instanse.interceptors.response.use(
   (error) => {
     // Any status codes that fall outside the range of 2xx trigger this function
     if (error.response && error.response.status === 401) {
-      if (window.location.pathname !== '/auth') window.location.replace('/auth')
+      if (window.location.pathname !== '/auth') {
+        window.location.replace('/auth')
+      }
       // localStorage.removeItem(TOKEN_NAME)
     }
 

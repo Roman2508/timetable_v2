@@ -1,0 +1,95 @@
+.timeline-wrapper {
+  width: 90%;
+  height: 100px;
+  margin: 16px auto;
+  position: relative;
+  z-index: 0;
+}
+
+.timeline {
+  width: 100%;
+  height: 5px;
+  margin: 16px auto;
+  background-color: #bfbfbf;
+  position: absolute;
+  top: 20px;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.month {
+  width: 2px;
+  background-color: #bfbfbf;
+  position: relative;
+}
+
+.month span {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+}
+
+.month::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  transform: translateY(-50%);
+  top: calc(50% + 20px);
+  font-size: 12px;
+  background-color: #ededed;
+  height: 30px;
+  width: 2px;
+}
+.month.start-of-year::after {
+  top: calc(50% + 30px);
+  height: 20px;
+}
+
+.semester {
+  height: 5px;
+  margin: 16px auto;
+  background-color: rgb(22, 119, 255);
+  border-radius: 2px;
+  position: absolute;
+  top: 10px;
+  z-index: 1;
+}
+
+.semester.first::before {
+  content: attr(data-semester-start);
+  position: absolute;
+  left: 0;
+  top: -20px;
+  font-size: 12px;
+  color: #000;
+}
+
+.semester.first::after {
+  content: attr(data-semester-end);
+  position: absolute;
+  right: 0;
+  top: -20px;
+  font-size: 12px;
+  color: #000;
+}
+
+.semester.second::before {
+  content: attr(data-semester-start);
+  position: absolute;
+  left: 0;
+  bottom: -20px;
+  font-size: 12px;
+  color: #000;
+}
+
+.semester.second::after {
+  content: attr(data-semester-end);
+  position: absolute;
+  right: 0;
+  bottom: -20px;
+  font-size: 12px;
+  color: #000;
+}

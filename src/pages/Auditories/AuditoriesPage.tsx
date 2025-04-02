@@ -96,7 +96,7 @@ const AuditoriesPage = () => {
             {/* AUDITORIES LIST */}
             {!auditoriCategories && loadingStatus === LoadingStatusTypes.LOADING && <LoadingSpinner />}
             {!auditoriCategories?.length && loadingStatus !== LoadingStatusTypes.LOADING && <EmptyCard />}
-            {auditoriCategories?.length && (
+            {!!auditoriCategories?.length && (
               <AccordionItemsList
                 items={auditoriCategories}
                 /* @ts-ignore */

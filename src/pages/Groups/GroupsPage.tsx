@@ -157,7 +157,7 @@ const GroupsPage = () => {
           </Grid>
           <MainCard sx={{ mt: 2 }} content={false}>
             {loadingStatus === LoadingStatusTypes.LOADING && !groupCategories && <LoadingSpinner />}
-            {loadingStatus !== LoadingStatusTypes.LOADING && !groupCategories && <EmptyCard />}
+            {loadingStatus !== LoadingStatusTypes.LOADING && !groupCategories?.length && <EmptyCard />}
             {groupCategories && (
               <List sx={{ p: 0, '& .MuiListItemButton-root': { py: '12px' } }}>
                 {groupCategories.map((el) => (

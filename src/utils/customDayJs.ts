@@ -4,6 +4,9 @@ import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import updateLocale from 'dayjs/plugin/updateLocale'
 
+import dayOfYear from 'dayjs/plugin/dayOfYear'
+dayjs.extend(dayOfYear)
+
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
 dayjs.extend(updateLocale)
