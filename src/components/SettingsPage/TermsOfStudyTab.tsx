@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux'
 import { Button, Divider, Typography } from '@mui/material'
 
 import { useAppDispatch } from '../../store/store'
-import SemestersTimeline from './SemestersTimeline'
+import { customDayjs } from '../../utils/customDayJs'
 import { CustomDatePicker } from '../CustomDatePicker'
 import { settingsSelector } from '../../store/settings/settingsSlice'
+import SemestersTimeline from './semesters-timeline/SemestersTimeline'
 import { updateSemesterTerms } from '../../store/settings/settingsAsyncActions'
 
 const semesterTermsInitialState = {
@@ -41,13 +42,13 @@ const TermsOfStudyTab = () => {
   React.useEffect(() => {
     if (!settings) return
 
-    setSemesterTerms((prev) => ({
-      ...prev,
-      firstSemesterStart: settings.firstSemesterStart,
-      firstSemesterEnd: settings.firstSemesterEnd,
-      secondSemesterStart: settings.secondSemesterStart,
-      secondSemesterEnd: settings.secondSemesterEnd,
-    }))
+    setSemesterTerms((prev) => {
+      const firstSemesterStart = customDayjs(settings.firstSemesterStart, 'MM.DD.YYYY').format('DD.MM.YYYY')
+      const firstSemesterEnd = customDayjs(settings.firstSemesterEnd, 'MM.DD.YYYY').format('DD.MM.YYYY')
+      const secondSemesterStart = customDayjs(settings.secondSemesterStart, 'MM.DD.YYYY').format('DD.MM.YYYY')
+      const secondSemesterEnd = customDayjs(settings.secondSemesterEnd, 'MM.DD.YYYY').format('DD.MM.YYYY')
+      return { ...prev, firstSemesterStart, firstSemesterEnd, secondSemesterStart, secondSemesterEnd }
+    })
   }, [settings])
 
   return (

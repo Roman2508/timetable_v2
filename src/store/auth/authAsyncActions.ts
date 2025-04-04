@@ -62,8 +62,8 @@ export const authMe = createAsyncThunk('auth/authMe', async (token: string, thun
   const promise = authAPI.getMe(token)
 
   toast.promise(promise, {
-    loading: 'Завантаження...',
-    success: 'Авторизований',
+    // loading: 'Завантаження...',
+    // success: 'Авторизований',
     // error: (error) => {
     //   thunkAPI.dispatch(setLoadingStatus(LoadingStatusTypes.ERROR))
     //   return (error as any)?.response?.data?.message || error.message
